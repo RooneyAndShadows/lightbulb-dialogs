@@ -1,0 +1,114 @@
+<?xml version="1.0" encoding="utf-8"?>
+
+<androidx.constraintlayout.widget.ConstraintLayout xmlns:android="http://schemas.android.com/apk/res/android"
+    xmlns:app="http://schemas.android.com/apk/res-auto"
+    xmlns:tools="http://schemas.android.com/tools"
+    style="@style/Dialog">
+
+    <androidx.appcompat.widget.LinearLayoutCompat
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:orientation="vertical"
+        app:layout_constraintBottom_toTopOf="@+id/buttonsContainer"
+        app:layout_constraintEnd_toEndOf="parent"
+        app:layout_constraintStart_toStartOf="parent">
+
+        <androidx.appcompat.widget.LinearLayoutCompat
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content"
+            android:background="?android:attr/colorPrimary"
+            android:orientation="vertical"
+            android:padding="@dimen/dialog_spacing_size_normal">
+
+            <androidx.appcompat.widget.LinearLayoutCompat
+                android:layout_width="match_parent"
+                android:layout_height="wrap_content"
+                android:orientation="horizontal">
+
+                <TextView
+                    android:id="@+id/rangePickerFromText"
+                    style="@android:style/TextAppearance.Medium"
+                    android:layout_width="wrap_content"
+                    android:layout_height="wrap_content"
+                    android:layout_weight="1"
+                    android:textColor="?colorOnPrimary"
+                    android:textSize="@dimen/dialog_date_picker_header_text_size"
+                    android:textStyle="bold" />
+
+                <TextView
+                    android:id="@+id/rangePickerFromValue"
+                    style="@android:style/TextAppearance.Medium"
+                    android:layout_width="wrap_content"
+                    android:layout_height="wrap_content"
+                    android:gravity="center"
+                    android:text="@string/dialog_date_picker_empty_text"
+                    android:textColor="?colorOnPrimary"
+                    android:textSize="@dimen/dialog_date_picker_header_text_size"
+                    android:textStyle="bold" />
+
+            </androidx.appcompat.widget.LinearLayoutCompat>
+
+            <androidx.appcompat.widget.LinearLayoutCompat
+                android:layout_width="match_parent"
+                android:layout_height="wrap_content"
+                android:orientation="horizontal">
+
+                <TextView
+                    android:id="@+id/rangePickerToText"
+                    style="@android:style/TextAppearance.Medium"
+                    android:layout_width="0dp"
+                    android:layout_height="wrap_content"
+                    android:layout_weight="1"
+                    android:textColor="?colorOnPrimary"
+                    android:textSize="@dimen/dialog_date_picker_header_text_size"
+                    android:textStyle="bold" />
+
+                <TextView
+                    android:id="@+id/rangePickerToValue"
+                    style="@android:style/TextAppearance.Medium"
+                    android:layout_width="wrap_content"
+                    android:layout_height="match_parent"
+                    android:gravity="center"
+                    android:text="@string/dialog_date_picker_empty_text"
+                    android:textColor="?colorOnPrimary"
+                    android:textSize="@dimen/dialog_date_picker_header_text_size"
+                    android:textStyle="bold" />
+
+            </androidx.appcompat.widget.LinearLayoutCompat>
+        </androidx.appcompat.widget.LinearLayoutCompat>
+
+        <com.prolificinteractive.materialcalendarview.MaterialCalendarView
+            android:id="@+id/rangeCalendarView"
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:padding="@dimen/dialog_spacing_size_normal"
+            app:mcv_dateTextAppearance="@style/CalendarTextAppearance"
+            app:mcv_selectionColor="?android:attr/colorPrimary"
+            app:mcv_selectionMode="range"
+            app:mcv_showOtherDates="none"
+            app:mcv_tileHeight="@dimen/dialog_date_picker_calendar_tile_size"
+            app:mcv_tileWidth="@dimen/dialog_date_picker_calendar_tile_size"
+            tools:layout_height="150dp" />
+    </androidx.appcompat.widget.LinearLayoutCompat>
+
+    <androidx.appcompat.widget.LinearLayoutCompat
+        android:id="@+id/buttonsContainer"
+        style="@style/DialogButtonsContainer"
+        app:layout_constraintBottom_toBottomOf="parent"
+        app:layout_constraintEnd_toEndOf="parent"
+        app:layout_constraintStart_toStartOf="parent">
+
+        <Button
+            android:id="@+id/neg_button"
+            style="@style/DialogButton"
+            tools:ignore="HardcodedText"
+            tools:text="negative" />
+
+        <Button
+            android:id="@+id/pos_button"
+            style="@style/DialogButton"
+            android:layout_marginStart="@dimen/dialog_buttons_spacing"
+            tools:ignore="HardcodedText"
+            tools:text="positive" />
+    </androidx.appcompat.widget.LinearLayoutCompat>
+</androidx.constraintlayout.widget.ConstraintLayout>

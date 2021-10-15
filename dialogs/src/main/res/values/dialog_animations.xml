@@ -1,0 +1,28 @@
+<?xml version="1.0" encoding="utf-8"?>
+<resources>
+
+    <style name="NoAnimation">
+        <item name="android:windowEnterAnimation">@null</item>
+        <item name="android:windowExitAnimation">@null</item>
+    </style>
+
+    <style name="Animation_FromLeftToRight">
+        <item name="android:windowEnterAnimation">@anim/slide_enter_from_left</item>
+        <item name="android:windowExitAnimation">@anim/slide_exit_to_right</item>
+    </style>
+
+    <style name="Animation_FromTopToBottom">
+        <item name="android:windowEnterAnimation">@anim/slide_enter_from_top</item>
+        <item name="android:windowExitAnimation">@anim/slide_exit_to_bottom</item>
+    </style>
+
+    <style name="Animation_FromBottomToBottom">
+        <item name="android:windowEnterAnimation">@anim/slide_enter_from_bottom</item>
+        <item name="android:windowExitAnimation">@anim/slide_exit_to_bottom</item>
+    </style>
+
+    <style name="Animation_Fade">
+        <item name="android:windowEnterAnimation">@android:anim/fade_in</item>
+        <item name="android:windowExitAnimation">@android:anim/fade_out</item>
+    </style>
+</resources>

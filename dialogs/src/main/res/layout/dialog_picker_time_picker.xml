@@ -1,0 +1,37 @@
+<?xml version="1.0" encoding="utf-8"?>
+
+<androidx.constraintlayout.widget.ConstraintLayout xmlns:android="http://schemas.android.com/apk/res/android"
+    xmlns:app="http://schemas.android.com/apk/res-auto"
+    xmlns:tools="http://schemas.android.com/tools"
+    style="@style/Dialog">
+
+    <TimePicker
+        android:id="@+id/dialogTimePicker"
+        style="@style/Dialog"
+        android:layout_width="@dimen/dialog_time_picker_width"
+        android:layout_height="wrap_content"
+        android:headerBackground="?android:attr/colorPrimary"
+        android:timePickerMode="spinner"
+        app:layout_constraintBottom_toTopOf="@+id/buttonsContainer"
+        app:layout_constraintEnd_toEndOf="parent"
+        app:layout_constraintStart_toStartOf="parent" />
+
+    <androidx.appcompat.widget.LinearLayoutCompat
+        android:id="@+id/buttonsContainer"
+        style="@style/DialogButtonsContainer"
+        app:layout_constraintBottom_toBottomOf="parent"
+        app:layout_constraintEnd_toEndOf="parent"
+        app:layout_constraintStart_toStartOf="parent">
+
+        <Button
+            android:id="@+id/neg_button"
+            style="@style/DialogButton"
+            tools:text="negative" />
+
+        <Button
+            android:id="@+id/pos_button"
+            style="@style/DialogButton"
+            android:layout_marginStart="@dimen/dialog_buttons_spacing"
+            tools:text="positive" />
+    </androidx.appcompat.widget.LinearLayoutCompat>
+</androidx.constraintlayout.widget.ConstraintLayout>

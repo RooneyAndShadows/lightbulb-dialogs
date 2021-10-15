@@ -1,0 +1,71 @@
+apply plugin: 'com.android.library'
+apply plugin: 'maven-publish'
+
+android {
+    compileSdkVersion 30
+
+    defaultConfig {
+        minSdkVersion 24
+        targetSdkVersion 30
+        versionCode 1
+        versionName "1.0.0"
+        testInstrumentationRunner "androidx.test.runner.AndroidJUnitRunner"
+        consumerProguardFiles "consumer-rules.pro"
+    }
+    buildFeatures {
+        dataBinding true
+    }
+    buildTypes {
+        release {
+            minifyEnabled false
+            proguardFiles getDefaultProguardFile('proguard-android-optimize.txt'), 'proguard-rules.pro'
+        }
+    }
+    compileOptions {
+        sourceCompatibility JavaVersion.VERSION_1_8
+        targetCompatibility JavaVersion.VERSION_1_8
+    }
+}
+
+tasks.withType(JavaCompile) {
+    options.compilerArgs << "-Xlint:unchecked"
+    options.deprecation = true
+}
+
+task sourceJar(type: Jar) {
+    from android.sourceSets.main.java.srcDirs
+    classifier "sources"
+}
+
+afterEvaluate {
+    publishing {
+        repositories {
+            maven {
+                url "$environment.local_maven_dir"
+            }
+        }
+        publications {
+            release(MavenPublication) {
+                from components.release
+                groupId "$environment.group_id"
+                version android.defaultConfig.versionName
+                artifactId project.name
+            }
+        }
+    }
+}
+
+dependencies {
+    implementation fileTree(dir: "libs", include: ["*.jar"])
+    implementation "androidx.appcompat:appcompat:$versions.android_appcompat"
+    implementation "androidx.recyclerview:recyclerview:$versions.android_recyclerview"
+    implementation "com.rands.java:commons:$versions.java_commons"
+    api "androidx.constraintlayout:constraintlayout:$versions.android_constraintlayout"
+    api "com.rands.lightbulb:commons:$versions.lightbulb_commons"
+    api "com.rands.lightbulb:recycleradapters:$versions.lightbulb_recycler_adapters"
+    api "com.rands.lightbulb:selectableview:$versions.lightbulb_selectable_view"
+    api "com.rands.lightbulb:calendars:$versions.lightbulb_calendars"
+    api 'com.github.prolificinteractive:material-calendarview:2.0.1'
+
+
+}

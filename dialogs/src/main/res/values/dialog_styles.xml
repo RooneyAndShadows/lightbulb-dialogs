@@ -1,0 +1,52 @@
+<?xml version="1.0" encoding="utf-8"?>
+<resources>
+
+    <style name="Dialog">
+        <item name="android:layout_width">wrap_content</item>
+        <item name="android:layout_height">wrap_content</item>
+        <item name="android:layout_gravity">center</item>
+        <item name="android:background">?android:attr/colorBackground</item>
+        <item name="android:orientation">vertical</item>
+    </style>
+
+    <style name="DialogTitleAndMessageContainer">
+        <item name="android:layout_width">match_parent</item>
+        <item name="android:layout_height">wrap_content</item>
+        <item name="android:orientation">vertical</item>
+        <item name="android:padding">@dimen/dialog_header_padding</item>
+    </style>
+
+    <style name="DialogTitle" parent="@android:style/TextAppearance.Medium">
+        <item name="android:layout_width">match_parent</item>
+        <item name="android:layout_height">wrap_content</item>
+        <item name="android:orientation">vertical</item>
+        <item name="android:textSize">@dimen/dialog_title_text_size</item>
+        <item name="android:textStyle">bold</item>
+    </style>
+
+    <style name="DialogSubtitle" parent="@android:style/TextAppearance.Small">
+        <item name="android:layout_marginTop">@dimen/dialog_spacing_size_normal</item>
+        <item name="android:layout_width">match_parent</item>
+        <item name="android:layout_height">wrap_content</item>
+        <item name="android:textSize">@dimen/dialog_subtitle_text_size</item>
+    </style>
+
+    <style name="DialogButtonsContainer">
+        <item name="android:layout_width">match_parent</item>
+        <item name="android:layout_height">@dimen/dialog_buttons_container_height</item>
+        <item name="android:orientation">horizontal</item>
+        <item name="android:padding">@dimen/dialog_buttons_container_padding</item>
+        <item name="android:gravity">right</item>
+    </style>
+
+    <style name="DialogButton">
+        <item name="android:layout_width">wrap_content</item>
+        <item name="android:layout_height">@dimen/dialog_button_height</item>
+        <item name="android:background">@android:color/transparent</item>
+        <item name="android:textColor">?android:attr/colorPrimary</item>
+    </style>
+
+    <style name="CalendarTextAppearance" parent="@android:style/TextAppearance.Medium">
+        <item name="android:textSize">@dimen/dialog_date_picker_calendar_item_text_size</item>
+    </style>
+</resources>

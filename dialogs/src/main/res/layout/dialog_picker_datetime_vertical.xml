@@ -1,0 +1,93 @@
+<?xml version="1.0" encoding="utf-8"?>
+
+<androidx.constraintlayout.widget.ConstraintLayout xmlns:android="http://schemas.android.com/apk/res/android"
+    xmlns:app="http://schemas.android.com/apk/res-auto"
+    xmlns:tools="http://schemas.android.com/tools"
+    style="@style/Dialog">
+
+
+    <androidx.appcompat.widget.LinearLayoutCompat
+        android:id="@+id/dateTimePickerDialogHeading"
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content"
+        android:background="?android:attr/colorPrimary"
+        android:orientation="horizontal"
+        android:padding="@dimen/dialog_spacing_size_normal"
+        app:layout_constraintEnd_toEndOf="parent"
+        app:layout_constraintStart_toStartOf="parent"
+        app:layout_constraintTop_toTopOf="parent">
+
+        <androidx.appcompat.widget.AppCompatTextView
+            android:id="@+id/dateSelectionValue"
+            style="@android:style/TextAppearance.Medium"
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:layout_gravity="center|start"
+            android:layout_weight="1"
+            android:gravity="center|start"
+            android:includeFontPadding="false"
+            android:text="@string/dialog_date_picker_empty_text"
+            android:textColor="?colorOnPrimary"
+            android:textSize="@dimen/dialog_date_picker_header_text_size"
+            android:textStyle="bold" />
+
+        <androidx.appcompat.widget.AppCompatImageButton
+            android:id="@+id/datePickerModeChangeButton"
+            style="?android:attr/borderlessButtonStyle"
+            android:layout_width="@dimen/dialog_date_picker_calendar_change_mode_button_size"
+            android:layout_height="@dimen/dialog_date_picker_calendar_change_mode_button_size" />
+
+    </androidx.appcompat.widget.LinearLayoutCompat>
+
+    <RelativeLayout
+        android:id="@+id/dateTimeWidgets"
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        app:layout_constraintBottom_toTopOf="@id/buttonsContainer"
+        app:layout_constraintEnd_toEndOf="parent"
+        app:layout_constraintStart_toStartOf="parent"
+        app:layout_constraintTop_toBottomOf="@id/dateTimePickerDialogHeading">
+
+        <com.prolificinteractive.materialcalendarview.MaterialCalendarView
+            android:id="@+id/dateCalendarView"
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:layout_centerInParent="true"
+            android:padding="@dimen/dialog_spacing_size_normal"
+            app:mcv_dateTextAppearance="@style/CalendarTextAppearance"
+            app:mcv_selectionColor="?android:attr/colorPrimary"
+            app:mcv_selectionMode="single"
+            app:mcv_showOtherDates="none"
+            app:mcv_tileHeight="@dimen/dialog_date_picker_calendar_tile_size"
+            app:mcv_tileWidth="@dimen/dialog_date_picker_calendar_tile_size" />
+
+        <TimePicker
+            android:id="@+id/timePickerView"
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:layout_centerInParent="true"
+            android:timePickerMode="spinner" />
+
+    </RelativeLayout>
+
+    <androidx.appcompat.widget.LinearLayoutCompat
+        android:id="@+id/buttonsContainer"
+        style="@style/DialogButtonsContainer"
+        app:layout_constraintBottom_toBottomOf="parent"
+        app:layout_constraintEnd_toEndOf="parent"
+        app:layout_constraintStart_toStartOf="parent">
+
+        <Button
+            android:id="@+id/neg_button"
+            style="@style/DialogButton"
+            tools:ignore="HardcodedText"
+            tools:text="negative" />
+
+        <Button
+            android:id="@+id/pos_button"
+            style="@style/DialogButton"
+            android:layout_marginStart="8dp"
+            tools:ignore="HardcodedText"
+            tools:text="positive" />
+    </androidx.appcompat.widget.LinearLayoutCompat>
+</androidx.constraintlayout.widget.ConstraintLayout>
