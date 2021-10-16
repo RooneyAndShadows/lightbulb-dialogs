@@ -54,7 +54,7 @@ dependencies {
     implementation fileTree(dir: "libs", include: ["*.jar"])
     implementation "androidx.appcompat:appcompat:$versions.android_appcompat"
     implementation "androidx.recyclerview:recyclerview:$versions.android_recyclerview"
-    implementation "com.rands.java:commons:$versions.java_commons"
+    implementation "com.github.RooneyAndShadows:java-commons:$versions.java_commons"
     api "androidx.constraintlayout:constraintlayout:$versions.android_constraintlayout"
     api "com.github.RooneyAndShadows:lightbulb-commons:$versions.lightbulb_commons"
     api "com.github.RooneyAndShadows:lightbulb-recycleradapters:$versions.lightbulb_recycler_adapters"
