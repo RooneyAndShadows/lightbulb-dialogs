@@ -8,7 +8,7 @@ android {
         minSdkVersion 24
         targetSdkVersion 30
         versionCode 1
-        versionName "1.0.0"
+        versionName "1.0.1"
         testInstrumentationRunner "androidx.test.runner.AndroidJUnitRunner"
         consumerProguardFiles "consumer-rules.pro"
     }
@@ -56,10 +56,10 @@ dependencies {
     implementation "androidx.recyclerview:recyclerview:$versions.android_recyclerview"
     implementation "com.rands.java:commons:$versions.java_commons"
     api "androidx.constraintlayout:constraintlayout:$versions.android_constraintlayout"
-    api "com.rands.lightbulb:commons:$versions.lightbulb_commons"
-    api "com.rands.lightbulb:recycleradapters:$versions.lightbulb_recycler_adapters"
-    api "com.rands.lightbulb:selectableview:$versions.lightbulb_selectable_view"
-    api "com.rands.lightbulb:calendars:$versions.lightbulb_calendars"
+    api "com.github.RooneyAndShadows:lightbulb-commons:$versions.lightbulb_commons"
+    api "com.github.RooneyAndShadows:lightbulb-recycleradapters:$versions.lightbulb_recycler_adapters"
+    api "com.github.RooneyAndShadows:lightbulb-selectableview:$versions.lightbulb_selectable_view"
+    api "com.github.RooneyAndShadows:lightbulb-calendars:$versions.lightbulb_calendars"
     api 'com.github.prolificinteractive:material-calendarview:2.0.1'
 
 

@@ -11,15 +11,14 @@ buildscript {
                 android_recyclerview       : "1.2.1",
                 android_dynamicanimation   : "1.0.0",
                 material                   : "1.4.0",
-                lightbulb_commons          : "1.0.0",
-                lightbulb_recycler_adapters: "1.0.0",
-                lightbulb_selectable_view  : "1.0.0",
-                lightbulb_calendars        : "1.0.0",
+                lightbulb_commons          : "1.0.2",
+                lightbulb_recycler_adapters: "1.0.1",
+                lightbulb_selectable_view  : "1.0.1",
+                lightbulb_calendars        : "1.0.1",
                 java_commons               : "1.0.0"
 
         ]
         environment = [
-                "local_maven_dir": "D:\\ProgramData\\MavenRepo",
                 "group_id"       : "com.rands.lightbulb"
         ]
     }
