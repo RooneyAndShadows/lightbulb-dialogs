@@ -39,14 +39,12 @@ buildscript {
 
 allprojects {
     repositories {
-        google()
         //noinspection JcenterRepositoryObsolete
         jcenter()
+        google()
+        mavenLocal()
         maven {
             url "https://jitpack.io"
-        }
-        maven {
-            url "$environment.local_maven_dir"
         }
     }
 }

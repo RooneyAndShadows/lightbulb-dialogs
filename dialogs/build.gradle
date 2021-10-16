@@ -39,11 +39,6 @@ task sourceJar(type: Jar) {
 
 afterEvaluate {
     publishing {
-        repositories {
-            maven {
-                url "$environment.local_maven_dir"
-            }
-        }
         publications {
             release(MavenPublication) {
                 from components.release
