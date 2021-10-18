@@ -1,4 +1,4 @@
-package com.github.RooneyAndShadows.lightbulb.dialogs.picker_dialog_adapter;
+package com.github.rooneyandshadows.lightbulb.dialogs.picker_dialog_adapter;
 
 import android.content.res.Configuration;
 import android.graphics.Rect;
@@ -8,14 +8,14 @@ import android.view.View;
 import android.view.Window;
 import android.view.WindowManager;
 
-import com.github.RooneyAndShadows.lightbulb.dialogs.base.BasePickerDialogFragment;
-import com.github.RooneyAndShadows.lightbulb.dialogs.base.constraints.bottomsheet.BottomSheetDialogConstraints;
-import com.github.RooneyAndShadows.lightbulb.dialogs.base.constraints.regular.RegularDialogConstraints;
-import com.github.RooneyAndShadows.lightbulb.dialogs.base.constraints.regular.RegularDialogConstraintsBuilder;
-import com.github.RooneyAndShadows.lightbulb.recycleradapters.EasyAdapterDataModel;
-import com.github.RooneyAndShadows.lightbulb.recycleradapters.EasyRecyclerAdapter;
-import com.github.RooneyAndShadows.lightbulb.recycleradapters.callbacks.EasyAdapterSelectionChangedListener;
-import com.rands.lightbulb.dialogs.R;
+import com.github.rooneyandshadows.lightbulb.dialogs.base.BasePickerDialogFragment;
+import com.github.rooneyandshadows.lightbulb.dialogs.base.constraints.bottomsheet.BottomSheetDialogConstraints;
+import com.github.rooneyandshadows.lightbulb.dialogs.base.constraints.regular.RegularDialogConstraints;
+import com.github.rooneyandshadows.lightbulb.dialogs.base.constraints.regular.RegularDialogConstraintsBuilder;
+import com.github.rooneyandshadows.lightbulb.recycleradapters.EasyAdapterDataModel;
+import com.github.rooneyandshadows.lightbulb.recycleradapters.EasyRecyclerAdapter;
+import com.github.rooneyandshadows.lightbulb.recycleradapters.callbacks.EasyAdapterSelectionChangedListener;
+import com.github.rooneyandshadows.lightbulb.dialogs.R;
 
 import java.util.ArrayList;
 

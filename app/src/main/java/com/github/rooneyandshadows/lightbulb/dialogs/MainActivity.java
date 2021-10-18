@@ -1,4 +1,4 @@
-package com.rands.lightbulb.dialogs;
+package com.github.rooneyandshadows.lightbulb.dialogs;
 
 import androidx.appcompat.app.AppCompatActivity;
 

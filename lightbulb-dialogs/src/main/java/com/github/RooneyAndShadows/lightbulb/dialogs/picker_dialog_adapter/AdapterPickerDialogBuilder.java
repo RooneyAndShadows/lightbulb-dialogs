@@ -1,10 +1,10 @@
-package com.github.RooneyAndShadows.lightbulb.dialogs.picker_dialog_adapter;
+package com.github.rooneyandshadows.lightbulb.dialogs.picker_dialog_adapter;
 
 
-import com.github.RooneyAndShadows.lightbulb.dialogs.base.BaseDialogBuilder;
-import com.github.RooneyAndShadows.lightbulb.dialogs.base.BaseDialogFragment;
-import com.github.RooneyAndShadows.lightbulb.recycleradapters.EasyAdapterDataModel;
-import com.github.RooneyAndShadows.lightbulb.recycleradapters.EasyRecyclerAdapter;
+import com.github.rooneyandshadows.lightbulb.dialogs.base.BaseDialogBuilder;
+import com.github.rooneyandshadows.lightbulb.dialogs.base.BaseDialogFragment;
+import com.github.rooneyandshadows.lightbulb.recycleradapters.EasyAdapterDataModel;
+import com.github.rooneyandshadows.lightbulb.recycleradapters.EasyRecyclerAdapter;
 
 import androidx.fragment.app.FragmentManager;
 import androidx.recyclerview.widget.RecyclerView;

@@ -1,4 +1,4 @@
-package com.github.RooneyAndShadows.lightbulb.dialogs.base;
+package com.github.rooneyandshadows.lightbulb.dialogs.base;
 
 import android.annotation.SuppressLint;
 import android.app.Activity;
@@ -21,15 +21,15 @@ import android.view.WindowManager;
 import android.widget.Button;
 import android.widget.TextView;
 
-import com.github.RooneyAndShadows.commons.string.StringUtils;
-import com.github.RooneyAndShadows.lightbulb.commons.utils.ParcelableUtils;
-import com.github.RooneyAndShadows.lightbulb.commons.utils.WindowUtils;
-import com.github.RooneyAndShadows.lightbulb.dialogs.base.constraints.regular.RegularDialogConstraints;
-import com.github.RooneyAndShadows.lightbulb.dialogs.base.constraints.regular.RegularDialogConstraintsBuilder;
+import com.github.rooneyandshadows.commons.string.StringUtils;
+import com.github.rooneyandshadows.lightbulb.commons.utils.ParcelableUtils;
+import com.github.rooneyandshadows.lightbulb.commons.utils.WindowUtils;
+import com.github.rooneyandshadows.lightbulb.dialogs.base.constraints.regular.RegularDialogConstraints;
+import com.github.rooneyandshadows.lightbulb.dialogs.base.constraints.regular.RegularDialogConstraintsBuilder;
 import com.google.android.material.bottomsheet.BottomSheetBehavior;
-import com.rands.lightbulb.dialogs.R;
-import com.github.RooneyAndShadows.lightbulb.dialogs.base.constraints.bottomsheet.BottomSheetDialogConstraints;
-import com.github.RooneyAndShadows.lightbulb.dialogs.base.constraints.bottomsheet.BottomSheetDialogConstraintsBuilder;
+import com.github.rooneyandshadows.lightbulb.dialogs.R;
+import com.github.rooneyandshadows.lightbulb.dialogs.base.constraints.bottomsheet.BottomSheetDialogConstraints;
+import com.github.rooneyandshadows.lightbulb.dialogs.base.constraints.bottomsheet.BottomSheetDialogConstraintsBuilder;
 
 import org.jetbrains.annotations.NotNull;
 

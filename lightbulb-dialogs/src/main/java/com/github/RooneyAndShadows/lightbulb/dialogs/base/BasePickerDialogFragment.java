@@ -1,4 +1,4 @@
-package com.github.RooneyAndShadows.lightbulb.dialogs.base;
+package com.github.rooneyandshadows.lightbulb.dialogs.base;
 
 public abstract class BasePickerDialogFragment<SelectionType> extends BaseDialogFragment {
     protected final BaseDialogSelection<SelectionType> selection;

@@ -1,7 +1,7 @@
-package com.github.RooneyAndShadows.lightbulb.dialogs.picker_dialog_month;
+package com.github.rooneyandshadows.lightbulb.dialogs.picker_dialog_month;
 
-import com.github.RooneyAndShadows.lightbulb.dialogs.base.BaseDialogBuilder;
-import com.github.RooneyAndShadows.lightbulb.dialogs.base.BaseDialogFragment;
+import com.github.rooneyandshadows.lightbulb.dialogs.base.BaseDialogBuilder;
+import com.github.rooneyandshadows.lightbulb.dialogs.base.BaseDialogFragment;
 
 import java.util.ArrayList;
 

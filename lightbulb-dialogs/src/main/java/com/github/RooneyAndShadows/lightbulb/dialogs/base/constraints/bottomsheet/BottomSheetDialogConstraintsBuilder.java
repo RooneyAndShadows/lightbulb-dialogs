@@ -1,7 +1,7 @@
-package com.github.RooneyAndShadows.lightbulb.dialogs.base.constraints.bottomsheet;
+package com.github.rooneyandshadows.lightbulb.dialogs.base.constraints.bottomsheet;
 
-import com.github.RooneyAndShadows.lightbulb.dialogs.base.BaseDialogFragment;
-import com.github.RooneyAndShadows.lightbulb.dialogs.base.constraints.base.BaseDialogConstraintBuilder;
+import com.github.rooneyandshadows.lightbulb.dialogs.base.BaseDialogFragment;
+import com.github.rooneyandshadows.lightbulb.dialogs.base.constraints.base.BaseDialogConstraintBuilder;
 
 @SuppressWarnings("FieldCanBeLocal")
 public class BottomSheetDialogConstraintsBuilder extends BaseDialogConstraintBuilder {

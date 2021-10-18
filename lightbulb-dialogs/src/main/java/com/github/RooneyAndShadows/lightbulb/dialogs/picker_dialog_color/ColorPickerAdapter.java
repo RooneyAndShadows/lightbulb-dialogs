@@ -1,4 +1,4 @@
-package com.github.RooneyAndShadows.lightbulb.dialogs.picker_dialog_color;
+package com.github.rooneyandshadows.lightbulb.dialogs.picker_dialog_color;
 
 import android.content.Context;
 import android.graphics.Color;
@@ -8,12 +8,12 @@ import android.os.Parcelable;
 import android.view.LayoutInflater;
 import android.view.ViewGroup;
 
-import com.github.RooneyAndShadows.lightbulb.commons.utils.ResourceUtils;
-import com.github.RooneyAndShadows.lightbulb.recycleradapters.EasyAdapterConfiguration;
-import com.github.RooneyAndShadows.lightbulb.recycleradapters.EasyAdapterDataModel;
-import com.github.RooneyAndShadows.lightbulb.recycleradapters.EasyAdapterSelectableModes;
-import com.github.RooneyAndShadows.lightbulb.recycleradapters.EasyRecyclerAdapter;
-import com.rands.lightbulb.dialogs.R;
+import com.github.rooneyandshadows.lightbulb.commons.utils.ResourceUtils;
+import com.github.rooneyandshadows.lightbulb.recycleradapters.EasyAdapterConfiguration;
+import com.github.rooneyandshadows.lightbulb.recycleradapters.EasyAdapterDataModel;
+import com.github.rooneyandshadows.lightbulb.recycleradapters.EasyAdapterSelectableModes;
+import com.github.rooneyandshadows.lightbulb.recycleradapters.EasyRecyclerAdapter;
+import com.github.rooneyandshadows.lightbulb.dialogs.R;
 
 import java.util.ArrayList;
 import java.util.List;
@@ -22,7 +22,7 @@ import androidx.annotation.NonNull;
 import androidx.appcompat.widget.AppCompatImageButton;
 import androidx.recyclerview.widget.RecyclerView;
 
-import static com.github.RooneyAndShadows.lightbulb.dialogs.picker_dialog_color.ColorPickerAdapter.*;
+import static com.github.rooneyandshadows.lightbulb.dialogs.picker_dialog_color.ColorPickerAdapter.*;
 
 public class ColorPickerAdapter extends EasyRecyclerAdapter<ColorModel> {
     private final Context context;

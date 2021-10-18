@@ -1,4 +1,4 @@
-package com.github.RooneyAndShadows.lightbulb.dialogs.base;
+package com.github.rooneyandshadows.lightbulb.dialogs.base;
 
 import java.util.ArrayList;
 import java.util.HashMap;

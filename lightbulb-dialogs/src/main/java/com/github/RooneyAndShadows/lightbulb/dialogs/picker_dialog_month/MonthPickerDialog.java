@@ -1,4 +1,4 @@
-package com.github.RooneyAndShadows.lightbulb.dialogs.picker_dialog_month;
+package com.github.rooneyandshadows.lightbulb.dialogs.picker_dialog_month;
 
 import android.content.Context;
 import android.content.res.Configuration;
@@ -7,12 +7,12 @@ import android.view.LayoutInflater;
 import android.view.View;
 import android.widget.TextView;
 
-import com.github.RooneyAndShadows.commons.date.DateUtils;
-import com.github.RooneyAndShadows.commons.string.StringUtils;
-import com.github.RooneyAndShadows.lightbulb.calendars.month.MonthCalendarView;
-import com.github.RooneyAndShadows.lightbulb.dialogs.base.BasePickerDialogFragment;
-import com.github.RooneyAndShadows.lightbulb.commons.utils.ResourceUtils;
-import com.rands.lightbulb.dialogs.R;
+import com.github.rooneyandshadows.commons.date.DateUtils;
+import com.github.rooneyandshadows.commons.string.StringUtils;
+import com.github.rooneyandshadows.lightbulb.calendars.month.MonthCalendarView;
+import com.github.rooneyandshadows.lightbulb.dialogs.base.BasePickerDialogFragment;
+import com.github.rooneyandshadows.lightbulb.commons.utils.ResourceUtils;
+import com.github.rooneyandshadows.lightbulb.dialogs.R;
 
 import java.util.ArrayList;
 import java.util.Arrays;

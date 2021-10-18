@@ -1,13 +1,13 @@
-package com.github.RooneyAndShadows.lightbulb.dialogs.dialog_custom;
+package com.github.rooneyandshadows.lightbulb.dialogs.dialog_custom;
 
 import android.os.Bundle;
 import android.view.LayoutInflater;
 import android.view.View;
 import android.widget.ProgressBar;
 
-import com.github.RooneyAndShadows.lightbulb.commons.utils.ResourceUtils;
-import com.rands.lightbulb.dialogs.R;
-import com.github.RooneyAndShadows.lightbulb.dialogs.base.BaseDialogFragment;
+import com.github.rooneyandshadows.lightbulb.commons.utils.ResourceUtils;
+import com.github.rooneyandshadows.lightbulb.dialogs.R;
+import com.github.rooneyandshadows.lightbulb.dialogs.base.BaseDialogFragment;
 
 import androidx.appcompat.widget.AppCompatTextView;
 import androidx.appcompat.widget.LinearLayoutCompat;

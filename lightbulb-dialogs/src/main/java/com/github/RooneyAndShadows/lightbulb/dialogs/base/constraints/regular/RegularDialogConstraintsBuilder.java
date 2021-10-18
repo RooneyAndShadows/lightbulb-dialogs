@@ -1,9 +1,9 @@
-package com.github.RooneyAndShadows.lightbulb.dialogs.base.constraints.regular;
+package com.github.rooneyandshadows.lightbulb.dialogs.base.constraints.regular;
 
 import android.content.res.Configuration;
 
-import com.github.RooneyAndShadows.lightbulb.dialogs.base.BaseDialogFragment;
-import com.github.RooneyAndShadows.lightbulb.dialogs.base.constraints.base.BaseDialogConstraintBuilder;
+import com.github.rooneyandshadows.lightbulb.dialogs.base.BaseDialogFragment;
+import com.github.rooneyandshadows.lightbulb.dialogs.base.constraints.base.BaseDialogConstraintBuilder;
 
 @SuppressWarnings("FieldCanBeLocal")
 public class RegularDialogConstraintsBuilder extends BaseDialogConstraintBuilder {

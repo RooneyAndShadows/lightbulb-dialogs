@@ -1,4 +1,4 @@
-package com.github.RooneyAndShadows.lightbulb.dialogs.dialog_alert;
+package com.github.rooneyandshadows.lightbulb.dialogs.dialog_alert;
 
 import android.os.Bundle;
 import android.view.LayoutInflater;
@@ -6,8 +6,8 @@ import android.view.View;
 import android.view.ViewGroup;
 import android.view.Window;
 
-import com.rands.lightbulb.dialogs.R;
-import com.github.RooneyAndShadows.lightbulb.dialogs.base.BaseDialogFragment;
+import com.github.rooneyandshadows.lightbulb.dialogs.R;
+import com.github.rooneyandshadows.lightbulb.dialogs.base.BaseDialogFragment;
 
 import androidx.constraintlayout.widget.ConstraintLayout;
 

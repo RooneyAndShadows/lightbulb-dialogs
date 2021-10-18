@@ -1,4 +1,4 @@
-package com.github.RooneyAndShadows.lightbulb.dialogs.base.constraints.regular;
+package com.github.rooneyandshadows.lightbulb.dialogs.base.constraints.regular;
 
 public class RegularDialogConstraints {
     private final int minWidth;

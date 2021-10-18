@@ -12,13 +12,13 @@ buildscript {
                 android_dynamicanimation: "1.0.0",
                 material                : "1.4.0",
                 lightbulb               : [
-                        commons         : "1.0.5",
-                        recycleradapters: "1.0.3",
-                        calendars       : "1.0.5",
-                        selectableview  : "1.0.2",
+                        commons         : "1.0.6",
+                        recycleradapters: "1.0.4",
+                        calendars       : "1.0.6",
+                        selectableview  : "1.0.3",
                 ],
                 java                    : [
-                        commons: "1.0.2"
+                        commons: "1.0.3"
                 ]
 
         ]

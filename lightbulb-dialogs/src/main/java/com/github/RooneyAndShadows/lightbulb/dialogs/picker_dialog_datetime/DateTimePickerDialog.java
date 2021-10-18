@@ -1,4 +1,4 @@
-package com.github.RooneyAndShadows.lightbulb.dialogs.picker_dialog_datetime;
+package com.github.rooneyandshadows.lightbulb.dialogs.picker_dialog_datetime;
 
 import android.content.Context;
 import android.content.res.Configuration;
@@ -8,13 +8,13 @@ import android.view.LayoutInflater;
 import android.view.View;
 import android.widget.TimePicker;
 
-import com.github.RooneyAndShadows.commons.date.DateUtils;
-import com.github.RooneyAndShadows.commons.string.StringUtils;
+import com.github.rooneyandshadows.commons.date.DateUtils;
+import com.github.rooneyandshadows.commons.string.StringUtils;
 import com.prolificinteractive.materialcalendarview.CalendarDay;
 import com.prolificinteractive.materialcalendarview.MaterialCalendarView;
-import com.github.RooneyAndShadows.lightbulb.commons.utils.ResourceUtils;
-import com.rands.lightbulb.dialogs.R;
-import com.github.RooneyAndShadows.lightbulb.dialogs.base.BasePickerDialogFragment;
+import com.github.rooneyandshadows.lightbulb.commons.utils.ResourceUtils;
+import com.github.rooneyandshadows.lightbulb.dialogs.R;
+import com.github.rooneyandshadows.lightbulb.dialogs.base.BasePickerDialogFragment;
 
 import java.util.Date;
 import java.util.Locale;

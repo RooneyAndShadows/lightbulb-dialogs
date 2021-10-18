@@ -1,4 +1,4 @@
-package com.github.RooneyAndShadows.lightbulb.dialogs.picker_dialog_icon;
+package com.github.rooneyandshadows.lightbulb.dialogs.picker_dialog_icon;
 
 import android.content.res.Configuration;
 import android.graphics.Rect;
@@ -6,11 +6,11 @@ import android.os.Bundle;
 import android.view.View;
 import android.view.Window;
 
-import com.github.RooneyAndShadows.lightbulb.commons.utils.ResourceUtils;
-import com.github.RooneyAndShadows.lightbulb.dialogs.base.BaseDialogFragment;
-import com.github.RooneyAndShadows.lightbulb.dialogs.base.constraints.regular.RegularDialogConstraints;
-import com.github.RooneyAndShadows.lightbulb.dialogs.base.constraints.regular.RegularDialogConstraintsBuilder;
-import com.github.RooneyAndShadows.lightbulb.dialogs.picker_dialog_adapter.AdapterPickerDialog;
+import com.github.rooneyandshadows.lightbulb.commons.utils.ResourceUtils;
+import com.github.rooneyandshadows.lightbulb.dialogs.base.BaseDialogFragment;
+import com.github.rooneyandshadows.lightbulb.dialogs.base.constraints.regular.RegularDialogConstraints;
+import com.github.rooneyandshadows.lightbulb.dialogs.base.constraints.regular.RegularDialogConstraintsBuilder;
+import com.github.rooneyandshadows.lightbulb.dialogs.picker_dialog_adapter.AdapterPickerDialog;
 
 import java.util.ArrayList;
 import java.util.List;

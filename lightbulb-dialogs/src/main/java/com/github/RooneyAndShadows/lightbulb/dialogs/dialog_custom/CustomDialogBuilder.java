@@ -1,11 +1,11 @@
-package com.github.RooneyAndShadows.lightbulb.dialogs.dialog_custom;
+package com.github.rooneyandshadows.lightbulb.dialogs.dialog_custom;
 
-import com.github.RooneyAndShadows.lightbulb.dialogs.base.BaseDialogBuilder;
-import com.github.RooneyAndShadows.lightbulb.dialogs.base.BaseDialogFragment;
+import com.github.rooneyandshadows.lightbulb.dialogs.base.BaseDialogBuilder;
+import com.github.rooneyandshadows.lightbulb.dialogs.base.BaseDialogFragment;
 
 import androidx.fragment.app.FragmentManager;
 
-import static com.github.RooneyAndShadows.lightbulb.dialogs.dialog_custom.CustomDialog.*;
+import static com.github.rooneyandshadows.lightbulb.dialogs.dialog_custom.CustomDialog.*;
 
 
 public class CustomDialogBuilder<DialogType extends CustomDialog> extends BaseDialogBuilder<DialogType> {

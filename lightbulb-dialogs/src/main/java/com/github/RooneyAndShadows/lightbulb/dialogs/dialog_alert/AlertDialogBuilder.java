@@ -1,7 +1,7 @@
-package com.github.RooneyAndShadows.lightbulb.dialogs.dialog_alert;
+package com.github.rooneyandshadows.lightbulb.dialogs.dialog_alert;
 
-import com.github.RooneyAndShadows.lightbulb.dialogs.base.BaseDialogFragment;
-import com.github.RooneyAndShadows.lightbulb.dialogs.base.BaseDialogBuilder;
+import com.github.rooneyandshadows.lightbulb.dialogs.base.BaseDialogFragment;
+import com.github.rooneyandshadows.lightbulb.dialogs.base.BaseDialogBuilder;
 
 import androidx.fragment.app.FragmentManager;
 

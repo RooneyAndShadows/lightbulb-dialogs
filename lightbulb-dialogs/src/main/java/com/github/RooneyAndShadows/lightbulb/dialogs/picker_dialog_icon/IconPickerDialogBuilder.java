@@ -1,9 +1,9 @@
-package com.github.RooneyAndShadows.lightbulb.dialogs.picker_dialog_icon;
+package com.github.rooneyandshadows.lightbulb.dialogs.picker_dialog_icon;
 
-import com.github.RooneyAndShadows.lightbulb.dialogs.base.BaseDialogBuilder;
-import com.github.RooneyAndShadows.lightbulb.dialogs.base.BaseDialogFragment;
-import com.github.RooneyAndShadows.lightbulb.dialogs.base.BasePickerDialogFragment;
-import com.github.RooneyAndShadows.lightbulb.dialogs.picker_dialog_adapter.AdapterPickerDialog;
+import com.github.rooneyandshadows.lightbulb.dialogs.base.BaseDialogBuilder;
+import com.github.rooneyandshadows.lightbulb.dialogs.base.BaseDialogFragment;
+import com.github.rooneyandshadows.lightbulb.dialogs.base.BasePickerDialogFragment;
+import com.github.rooneyandshadows.lightbulb.dialogs.picker_dialog_adapter.AdapterPickerDialog;
 
 import androidx.fragment.app.FragmentManager;
 

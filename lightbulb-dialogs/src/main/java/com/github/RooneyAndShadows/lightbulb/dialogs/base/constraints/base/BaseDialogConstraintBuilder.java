@@ -1,9 +1,9 @@
-package com.github.RooneyAndShadows.lightbulb.dialogs.base.constraints.base;
+package com.github.rooneyandshadows.lightbulb.dialogs.base.constraints.base;
 
 import android.app.Activity;
 
-import com.github.RooneyAndShadows.lightbulb.commons.utils.WindowUtils;
-import com.github.RooneyAndShadows.lightbulb.dialogs.base.BaseDialogFragment;
+import com.github.rooneyandshadows.lightbulb.commons.utils.WindowUtils;
+import com.github.rooneyandshadows.lightbulb.dialogs.base.BaseDialogFragment;
 
 public class BaseDialogConstraintBuilder {
     protected final BaseDialogFragment dialogFragment;

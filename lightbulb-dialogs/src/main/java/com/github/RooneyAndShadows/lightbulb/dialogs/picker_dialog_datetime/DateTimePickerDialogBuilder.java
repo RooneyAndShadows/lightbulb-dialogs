@@ -1,8 +1,8 @@
-package com.github.RooneyAndShadows.lightbulb.dialogs.picker_dialog_datetime;
+package com.github.rooneyandshadows.lightbulb.dialogs.picker_dialog_datetime;
 
-import com.github.RooneyAndShadows.lightbulb.dialogs.base.BaseDialogBuilder;
-import com.github.RooneyAndShadows.lightbulb.dialogs.base.BaseDialogFragment;
-import com.github.RooneyAndShadows.lightbulb.dialogs.base.BasePickerDialogFragment;
+import com.github.rooneyandshadows.lightbulb.dialogs.base.BaseDialogBuilder;
+import com.github.rooneyandshadows.lightbulb.dialogs.base.BaseDialogFragment;
+import com.github.rooneyandshadows.lightbulb.dialogs.base.BasePickerDialogFragment;
 
 import java.util.Date;
 

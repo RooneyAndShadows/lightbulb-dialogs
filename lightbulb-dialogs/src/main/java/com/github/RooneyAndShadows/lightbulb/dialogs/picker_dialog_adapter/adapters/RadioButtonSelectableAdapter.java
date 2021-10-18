@@ -1,15 +1,15 @@
-package com.github.RooneyAndShadows.lightbulb.dialogs.picker_dialog_adapter.adapters;
+package com.github.rooneyandshadows.lightbulb.dialogs.picker_dialog_adapter.adapters;
 
 import android.graphics.drawable.Drawable;
 import android.view.LayoutInflater;
 import android.view.ViewGroup;
 
-import com.github.RooneyAndShadows.lightbulb.recycleradapters.EasyAdapterConfiguration;
-import com.github.RooneyAndShadows.lightbulb.recycleradapters.EasyAdapterDataModel;
-import com.github.RooneyAndShadows.lightbulb.recycleradapters.EasyAdapterSelectableModes;
-import com.github.RooneyAndShadows.lightbulb.recycleradapters.EasyRecyclerAdapter;
-import com.github.RooneyAndShadows.lightbulb.selectableview.RadioButtonView;
-import com.rands.lightbulb.dialogs.R;
+import com.github.rooneyandshadows.lightbulb.recycleradapters.EasyAdapterConfiguration;
+import com.github.rooneyandshadows.lightbulb.recycleradapters.EasyAdapterDataModel;
+import com.github.rooneyandshadows.lightbulb.recycleradapters.EasyAdapterSelectableModes;
+import com.github.rooneyandshadows.lightbulb.recycleradapters.EasyRecyclerAdapter;
+import com.github.rooneyandshadows.lightbulb.selectableview.RadioButtonView;
+import com.github.rooneyandshadows.lightbulb.dialogs.R;
 
 import androidx.annotation.NonNull;
 import androidx.recyclerview.widget.RecyclerView;

@@ -1,4 +1,4 @@
-package com.github.RooneyAndShadows.lightbulb.dialogs.picker_dialog_time;
+package com.github.rooneyandshadows.lightbulb.dialogs.picker_dialog_time;
 
 import android.os.Build;
 import android.os.Bundle;
@@ -6,9 +6,9 @@ import android.view.LayoutInflater;
 import android.view.View;
 import android.widget.TimePicker;
 
-import com.github.RooneyAndShadows.commons.date.DateUtils;
-import com.github.RooneyAndShadows.lightbulb.dialogs.base.BasePickerDialogFragment;
-import com.rands.lightbulb.dialogs.R;
+import com.github.rooneyandshadows.commons.date.DateUtils;
+import com.github.rooneyandshadows.lightbulb.dialogs.base.BasePickerDialogFragment;
+import com.github.rooneyandshadows.lightbulb.dialogs.R;
 
 import java.util.Date;
 

@@ -1,4 +1,4 @@
-package com.github.RooneyAndShadows.lightbulb.dialogs.base.constraints.bottomsheet;
+package com.github.rooneyandshadows.lightbulb.dialogs.base.constraints.bottomsheet;
 
 public class BottomSheetDialogConstraints {
     private final int minHeight;

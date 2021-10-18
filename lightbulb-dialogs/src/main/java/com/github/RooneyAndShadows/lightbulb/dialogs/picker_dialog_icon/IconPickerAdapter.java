@@ -1,4 +1,4 @@
-package com.github.RooneyAndShadows.lightbulb.dialogs.picker_dialog_icon;
+package com.github.rooneyandshadows.lightbulb.dialogs.picker_dialog_icon;
 
 import android.content.Context;
 import android.graphics.drawable.Drawable;
@@ -7,15 +7,15 @@ import android.os.Parcelable;
 import android.view.LayoutInflater;
 import android.view.ViewGroup;
 
-import com.github.RooneyAndShadows.lightbulb.commons.utils.IconUtils;
-import com.github.RooneyAndShadows.lightbulb.recycleradapters.EasyAdapterConfiguration;
-import com.github.RooneyAndShadows.lightbulb.recycleradapters.EasyAdapterDataModel;
-import com.github.RooneyAndShadows.lightbulb.recycleradapters.EasyAdapterSelectableModes;
-import com.github.RooneyAndShadows.lightbulb.recycleradapters.EasyRecyclerAdapter;
+import com.github.rooneyandshadows.lightbulb.commons.utils.IconUtils;
+import com.github.rooneyandshadows.lightbulb.recycleradapters.EasyAdapterConfiguration;
+import com.github.rooneyandshadows.lightbulb.recycleradapters.EasyAdapterDataModel;
+import com.github.rooneyandshadows.lightbulb.recycleradapters.EasyAdapterSelectableModes;
+import com.github.rooneyandshadows.lightbulb.recycleradapters.EasyRecyclerAdapter;
 import com.mikepenz.iconics.typeface.IIcon;
 import com.mikepenz.iconics.typeface.library.fontawesome.FontAwesome;
-import com.github.RooneyAndShadows.lightbulb.commons.utils.ResourceUtils;
-import com.rands.lightbulb.dialogs.R;
+import com.github.rooneyandshadows.lightbulb.commons.utils.ResourceUtils;
+import com.github.rooneyandshadows.lightbulb.dialogs.R;
 
 import java.util.ArrayList;
 import java.util.HashMap;
@@ -26,7 +26,7 @@ import androidx.annotation.NonNull;
 import androidx.appcompat.widget.AppCompatImageButton;
 import androidx.recyclerview.widget.RecyclerView;
 
-import static com.github.RooneyAndShadows.lightbulb.dialogs.picker_dialog_icon.IconPickerAdapter.IconModel;
+import static com.github.rooneyandshadows.lightbulb.dialogs.picker_dialog_icon.IconPickerAdapter.IconModel;
 
 public class IconPickerAdapter extends EasyRecyclerAdapter<IconModel> {
     private final Context context;
