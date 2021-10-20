@@ -31,7 +31,7 @@
 
         </androidx.appcompat.widget.LinearLayoutCompat>
 
-        <com.github.RooneyAndShadows.lightbulb.calendars.month.MonthCalendarView
+        <com.github.rooneyandshadows.lightbulb.calendars.month.MonthCalendarView
             android:id="@+id/dialogMonthPicker"
             android:layout_width="wrap_content"
             android:layout_height="wrap_content"
