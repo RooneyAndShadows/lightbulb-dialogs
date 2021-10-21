@@ -6,7 +6,7 @@ import android.view.LayoutInflater;
 import android.view.View;
 import android.widget.TimePicker;
 
-import com.github.rooneyandshadows.commons.date.DateUtils;
+import com.github.rooneyandshadows.java.commons.date.DateUtils;
 import com.github.rooneyandshadows.lightbulb.dialogs.base.BasePickerDialogFragment;
 import com.github.rooneyandshadows.lightbulb.dialogs.R;
 

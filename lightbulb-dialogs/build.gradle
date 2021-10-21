@@ -59,10 +59,10 @@ dependencies {
     implementation "androidx.recyclerview:recyclerview:$versions.android_recyclerview"
     implementation "androidx.constraintlayout:constraintlayout:$versions.android_constraintlayout"
     implementation "com.google.android.material:material:$versions.material"
-    implementation "com.github.RooneyAndShadows:java-commons:$versions.java.commons"
-    implementation "com.github.RooneyAndShadows:lightbulb-commons:$versions.lightbulb.commons"
-    implementation "com.github.RooneyAndShadows:lightbulb-recycleradapters:$versions.lightbulb.recycleradapters"
-    implementation "com.github.RooneyAndShadows:lightbulb-selectableview:$versions.lightbulb.selectableview"
-    implementation "com.github.RooneyAndShadows:lightbulb-calendars:$versions.lightbulb.calendars"
+    implementation "com.github.rooneyandshadows:java-commons:$versions.java.commons"
+    implementation "com.github.rooneyandshadows:lightbulb-commons:$versions.lightbulb.commons"
+    implementation "com.github.rooneyandshadows:lightbulb-recycleradapters:$versions.lightbulb.recycleradapters"
+    implementation "com.github.rooneyandshadows:lightbulb-selectableview:$versions.lightbulb.selectableview"
+    implementation "com.github.rooneyandshadows:lightbulb-calendars:$versions.lightbulb.calendars"
     implementation 'com.github.prolificinteractive:material-calendarview:2.0.1'
 }

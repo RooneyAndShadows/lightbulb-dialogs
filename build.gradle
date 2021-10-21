@@ -23,7 +23,7 @@ buildscript {
 
         ]
         environment = [
-                "group_id": "com.github.RooneyAndShadows"
+                "group_id": "com.github.rooneyandshadows"
         ]
     }
     repositories {

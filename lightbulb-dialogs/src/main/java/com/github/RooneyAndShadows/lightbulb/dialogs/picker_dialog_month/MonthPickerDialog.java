@@ -7,8 +7,8 @@ import android.view.LayoutInflater;
 import android.view.View;
 import android.widget.TextView;
 
-import com.github.rooneyandshadows.commons.date.DateUtils;
-import com.github.rooneyandshadows.commons.string.StringUtils;
+import com.github.rooneyandshadows.java.commons.date.DateUtils;
+import com.github.rooneyandshadows.java.commons.string.StringUtils;
 import com.github.rooneyandshadows.lightbulb.calendars.month.MonthCalendarView;
 import com.github.rooneyandshadows.lightbulb.dialogs.base.BasePickerDialogFragment;
 import com.github.rooneyandshadows.lightbulb.commons.utils.ResourceUtils;

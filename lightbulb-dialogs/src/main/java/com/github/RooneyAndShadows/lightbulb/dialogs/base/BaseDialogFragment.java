@@ -21,7 +21,7 @@ import android.view.WindowManager;
 import android.widget.Button;
 import android.widget.TextView;
 
-import com.github.rooneyandshadows.commons.string.StringUtils;
+import com.github.rooneyandshadows.java.commons.string.StringUtils;
 import com.github.rooneyandshadows.lightbulb.commons.utils.ParcelableUtils;
 import com.github.rooneyandshadows.lightbulb.commons.utils.WindowUtils;
 import com.github.rooneyandshadows.lightbulb.dialogs.base.constraints.regular.RegularDialogConstraints;
