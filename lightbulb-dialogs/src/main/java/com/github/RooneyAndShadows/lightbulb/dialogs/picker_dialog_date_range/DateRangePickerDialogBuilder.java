@@ -1,16 +1,16 @@
 package com.github.rooneyandshadows.lightbulb.dialogs.picker_dialog_date_range;
 
-import com.github.rooneyandshadows.lightbulb.dialogs.base.LightBulbDialogBuilder;
-import com.github.rooneyandshadows.lightbulb.dialogs.base.LightBulbDialogFragment;
-import com.github.rooneyandshadows.lightbulb.dialogs.base.LightBulbPickerDialogFragment;
+import com.github.rooneyandshadows.lightbulb.dialogs.base.BaseDialogBuilder;
+import com.github.rooneyandshadows.lightbulb.dialogs.base.BaseDialogFragment;
+import com.github.rooneyandshadows.lightbulb.dialogs.base.BasePickerDialogFragment;
 
 import java.util.Date;
 
 import androidx.fragment.app.FragmentManager;
 
-public class DateRangePickerDialogBuilder extends LightBulbDialogBuilder<DateRangePickerDialog> {
+public class DateRangePickerDialogBuilder extends BaseDialogBuilder<DateRangePickerDialog> {
 
-    private LightBulbPickerDialogFragment.SelectionChangedListener<Date[]> dateSetListener;
+    private BasePickerDialogFragment.SelectionChangedListener<Date[]> dateSetListener;
     private String textFrom;
     private String textTo;
     private String dateFormat;
@@ -31,27 +31,27 @@ public class DateRangePickerDialogBuilder extends LightBulbDialogBuilder<DateRan
     }
 
     @Override
-    public DateRangePickerDialogBuilder withPositiveButton(LightBulbDialogFragment.DialogButtonConfiguration positiveButtonConfiguration, LightBulbDialogFragment.DialogButtonClickListener onClickListener) {
+    public DateRangePickerDialogBuilder withPositiveButton(BaseDialogFragment.DialogButtonConfiguration positiveButtonConfiguration, BaseDialogFragment.DialogButtonClickListener onClickListener) {
         return (DateRangePickerDialogBuilder) super.withPositiveButton(positiveButtonConfiguration, onClickListener);
     }
 
     @Override
-    public DateRangePickerDialogBuilder withNegativeButton(LightBulbDialogFragment.DialogButtonConfiguration negativeButtonConfiguration, LightBulbDialogFragment.DialogButtonClickListener onClickListener) {
+    public DateRangePickerDialogBuilder withNegativeButton(BaseDialogFragment.DialogButtonConfiguration negativeButtonConfiguration, BaseDialogFragment.DialogButtonClickListener onClickListener) {
         return (DateRangePickerDialogBuilder) super.withNegativeButton(negativeButtonConfiguration, onClickListener);
     }
 
     @Override
-    public DateRangePickerDialogBuilder withOnCancelListener(LightBulbDialogFragment.DialogCancelListener listener) {
+    public DateRangePickerDialogBuilder withOnCancelListener(BaseDialogFragment.DialogCancelListener listener) {
         return (DateRangePickerDialogBuilder) super.withOnCancelListener(listener);
     }
 
     @Override
-    public DateRangePickerDialogBuilder withOnShowListener(LightBulbDialogFragment.DialogShowListener listener) {
+    public DateRangePickerDialogBuilder withOnShowListener(BaseDialogFragment.DialogShowListener listener) {
         return (DateRangePickerDialogBuilder) super.withOnShowListener(listener);
     }
 
     @Override
-    public DateRangePickerDialogBuilder withOnHideListener(LightBulbDialogFragment.DialogHideListener listener) {
+    public DateRangePickerDialogBuilder withOnHideListener(BaseDialogFragment.DialogHideListener listener) {
         return (DateRangePickerDialogBuilder) super.withOnHideListener(listener);
     }
 
@@ -61,12 +61,12 @@ public class DateRangePickerDialogBuilder extends LightBulbDialogBuilder<DateRan
     }
 
     @Override
-    public DateRangePickerDialogBuilder withDialogType(LightBulbDialogFragment.DialogTypes dialogType) {
+    public DateRangePickerDialogBuilder withDialogType(BaseDialogFragment.DialogTypes dialogType) {
         return (DateRangePickerDialogBuilder) super.withDialogType(dialogType);
     }
 
     @Override
-    public DateRangePickerDialogBuilder withAnimations(LightBulbDialogFragment.DialogAnimationTypes animation) {
+    public DateRangePickerDialogBuilder withAnimations(BaseDialogFragment.DialogAnimationTypes animation) {
         return (DateRangePickerDialogBuilder) super.withAnimations(animation);
     }
 
@@ -80,7 +80,7 @@ public class DateRangePickerDialogBuilder extends LightBulbDialogBuilder<DateRan
         return this;
     }
 
-    public DateRangePickerDialogBuilder withOnDateSelectedEvent(LightBulbPickerDialogFragment.SelectionChangedListener<Date[]> listener) {
+    public DateRangePickerDialogBuilder withOnDateSelectedEvent(BasePickerDialogFragment.SelectionChangedListener<Date[]> listener) {
         this.dateSetListener = listener;
         return this;
     }

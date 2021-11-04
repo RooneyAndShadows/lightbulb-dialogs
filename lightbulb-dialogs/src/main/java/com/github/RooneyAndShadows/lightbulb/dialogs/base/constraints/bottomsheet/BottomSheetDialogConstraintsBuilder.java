@@ -1,16 +1,16 @@
 package com.github.rooneyandshadows.lightbulb.dialogs.base.constraints.bottomsheet;
 
-import com.github.rooneyandshadows.lightbulb.dialogs.base.LightBulbDialogFragment;
-import com.github.rooneyandshadows.lightbulb.dialogs.base.constraints.base.LightBulbDialogConstraintBuilder;
+import com.github.rooneyandshadows.lightbulb.dialogs.base.BaseDialogFragment;
+import com.github.rooneyandshadows.lightbulb.dialogs.base.constraints.base.BaseDialogConstraintBuilder;
 
 @SuppressWarnings("FieldCanBeLocal")
-public class BottomSheetDialogConstraintsBuilder extends LightBulbDialogConstraintBuilder {
+public class BottomSheetDialogConstraintsBuilder extends BaseDialogConstraintBuilder {
     private final int DEF_MAX_HEIGHT_PERCENTS = 65;
     private final int DEF_MIN_HEIGHT_PERCENTS = 10;
     private int minHeight;
     private int maxHeight;
 
-    public BottomSheetDialogConstraintsBuilder(LightBulbDialogFragment dialogFragment) {
+    public BottomSheetDialogConstraintsBuilder(BaseDialogFragment dialogFragment) {
         super(dialogFragment);
     }
 

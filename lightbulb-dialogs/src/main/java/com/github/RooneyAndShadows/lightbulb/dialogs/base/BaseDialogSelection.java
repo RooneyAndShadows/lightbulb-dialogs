@@ -3,13 +3,13 @@ package com.github.rooneyandshadows.lightbulb.dialogs.base;
 import java.util.ArrayList;
 import java.util.HashMap;
 
-public abstract class LightBulbDialogSelection<SelectionType> {
+public abstract class BaseDialogSelection<SelectionType> {
     private final static String SELECTION_CURRENT = "SELECTION_CURRENT";
     private final static String SELECTION_DRAFT = "SELECTION_DRAFT";
     private final HashMap<String, SelectionType> selection = new HashMap<>();
     private final ArrayList<PickerSelectionListeners<SelectionType>> selectionListeners = new ArrayList<>();
 
-    public LightBulbDialogSelection(SelectionType current, SelectionType draft) {
+    public BaseDialogSelection(SelectionType current, SelectionType draft) {
         selection.put(SELECTION_CURRENT, current);
         selection.put(SELECTION_DRAFT, draft);
     }

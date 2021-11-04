@@ -8,10 +8,10 @@ import android.view.LayoutInflater;
 import android.view.ViewGroup;
 
 import com.github.rooneyandshadows.lightbulb.commons.utils.IconUtils;
-import com.github.rooneyandshadows.lightbulb.recycleradapters.LightBulbAdapter;
-import com.github.rooneyandshadows.lightbulb.recycleradapters.LightBulbAdapterConfiguration;
-import com.github.rooneyandshadows.lightbulb.recycleradapters.LightBulbAdapterDataModel;
-import com.github.rooneyandshadows.lightbulb.recycleradapters.LightBulbAdapterSelectableModes;
+import com.github.rooneyandshadows.lightbulb.recycleradapters.EasyAdapterConfiguration;
+import com.github.rooneyandshadows.lightbulb.recycleradapters.EasyAdapterDataModel;
+import com.github.rooneyandshadows.lightbulb.recycleradapters.EasyAdapterSelectableModes;
+import com.github.rooneyandshadows.lightbulb.recycleradapters.EasyRecyclerAdapter;
 import com.mikepenz.iconics.typeface.IIcon;
 import com.mikepenz.iconics.typeface.library.fontawesome.FontAwesome;
 import com.github.rooneyandshadows.lightbulb.commons.utils.ResourceUtils;
@@ -28,11 +28,11 @@ import androidx.recyclerview.widget.RecyclerView;
 
 import static com.github.rooneyandshadows.lightbulb.dialogs.picker_dialog_icon.IconPickerAdapter.IconModel;
 
-public class IconPickerAdapter extends LightBulbAdapter<IconModel> {
+public class IconPickerAdapter extends EasyRecyclerAdapter<IconModel> {
     private final Context context;
 
-    public IconPickerAdapter(Context context, LightBulbAdapterSelectableModes selectableMode) {
-        super(new LightBulbAdapterConfiguration<IconModel>().withSelectMode(selectableMode));
+    public IconPickerAdapter(Context context, EasyAdapterSelectableModes selectableMode) {
+        super(new EasyAdapterConfiguration<IconModel>().withSelectMode(selectableMode));
         this.context = context;
     }
 
@@ -147,7 +147,7 @@ public class IconPickerAdapter extends LightBulbAdapter<IconModel> {
         }
     }
 
-    public static class IconModel extends LightBulbAdapterDataModel {
+    public static class IconModel extends EasyAdapterDataModel {
         private final String iconName;
         private final IconSet iconSet;
         private final String iconExternalName;

@@ -7,13 +7,13 @@ import android.view.View;
 import android.widget.TimePicker;
 
 import com.github.rooneyandshadows.java.commons.date.DateUtils;
-import com.github.rooneyandshadows.lightbulb.dialogs.base.LightBulbPickerDialogFragment;
+import com.github.rooneyandshadows.lightbulb.dialogs.base.BasePickerDialogFragment;
 import com.github.rooneyandshadows.lightbulb.dialogs.R;
 
 import java.util.Date;
 
 @SuppressWarnings({"unused", "UnusedAssignment"})
-public class TimePickerDialog extends LightBulbPickerDialogFragment<int[]> {
+public class TimePickerDialog extends BasePickerDialogFragment<int[]> {
     private static final String TIME_SELECTION_TAG = "TIME_SELECTION_TAG";
     private static final String TIME_SELECTION_DRAFT_TAG = "TIME_SELECTION_DRAFT_TAG";
     private TimePicker picker;

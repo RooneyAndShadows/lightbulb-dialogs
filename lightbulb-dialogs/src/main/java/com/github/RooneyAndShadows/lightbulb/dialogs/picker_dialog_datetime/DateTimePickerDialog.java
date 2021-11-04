@@ -14,7 +14,7 @@ import com.prolificinteractive.materialcalendarview.CalendarDay;
 import com.prolificinteractive.materialcalendarview.MaterialCalendarView;
 import com.github.rooneyandshadows.lightbulb.commons.utils.ResourceUtils;
 import com.github.rooneyandshadows.lightbulb.dialogs.R;
-import com.github.rooneyandshadows.lightbulb.dialogs.base.LightBulbPickerDialogFragment;
+import com.github.rooneyandshadows.lightbulb.dialogs.base.BasePickerDialogFragment;
 
 import java.util.Date;
 import java.util.Locale;
@@ -23,7 +23,7 @@ import androidx.appcompat.widget.AppCompatImageButton;
 import androidx.appcompat.widget.AppCompatTextView;
 
 
-public class DateTimePickerDialog extends LightBulbPickerDialogFragment<Date> {
+public class DateTimePickerDialog extends BasePickerDialogFragment<Date> {
     private static final String SHOWING_TIME_PICKER_TAG = "SHOWING_TIME_PICKER_TAG";
     private static final String DATE_FORMAT_TAG = "DATE_FORMAT_TEXT";
     private static final String DATE_SELECTION_TAG = "DATE_PICKER_SELECTION_TAG";

@@ -1,14 +1,14 @@
 package com.github.rooneyandshadows.lightbulb.dialogs.dialog_custom;
 
-import com.github.rooneyandshadows.lightbulb.dialogs.base.LightBulbDialogBuilder;
-import com.github.rooneyandshadows.lightbulb.dialogs.base.LightBulbDialogFragment;
+import com.github.rooneyandshadows.lightbulb.dialogs.base.BaseDialogBuilder;
+import com.github.rooneyandshadows.lightbulb.dialogs.base.BaseDialogFragment;
 
 import androidx.fragment.app.FragmentManager;
 
 import static com.github.rooneyandshadows.lightbulb.dialogs.dialog_custom.CustomDialog.*;
 
 
-public class CustomDialogBuilder<DialogType extends CustomDialog> extends LightBulbDialogBuilder<DialogType> {
+public class CustomDialogBuilder<DialogType extends CustomDialog> extends BaseDialogBuilder<DialogType> {
     private final CustomDialogInitializer<DialogType> dialogInitializer;
     private final CustomDialogInflater dialogInflater;
     private boolean loading = false;
@@ -32,27 +32,27 @@ public class CustomDialogBuilder<DialogType extends CustomDialog> extends LightB
     }
 
     @Override
-    public CustomDialogBuilder<DialogType> withPositiveButton(DialogButtonConfiguration positiveButtonConfiguration, LightBulbDialogFragment.DialogButtonClickListener onClickListener) {
+    public CustomDialogBuilder<DialogType> withPositiveButton(DialogButtonConfiguration positiveButtonConfiguration, BaseDialogFragment.DialogButtonClickListener onClickListener) {
         return (CustomDialogBuilder<DialogType>) super.withPositiveButton(positiveButtonConfiguration, onClickListener);
     }
 
     @Override
-    public CustomDialogBuilder<DialogType> withNegativeButton(DialogButtonConfiguration negativeButtonConfiguration, LightBulbDialogFragment.DialogButtonClickListener onClickListener) {
+    public CustomDialogBuilder<DialogType> withNegativeButton(DialogButtonConfiguration negativeButtonConfiguration, BaseDialogFragment.DialogButtonClickListener onClickListener) {
         return (CustomDialogBuilder<DialogType>) super.withNegativeButton(negativeButtonConfiguration, onClickListener);
     }
 
     @Override
-    public CustomDialogBuilder<DialogType> withOnCancelListener(LightBulbDialogFragment.DialogCancelListener listener) {
+    public CustomDialogBuilder<DialogType> withOnCancelListener(BaseDialogFragment.DialogCancelListener listener) {
         return (CustomDialogBuilder<DialogType>) super.withOnCancelListener(listener);
     }
 
     @Override
-    public CustomDialogBuilder<DialogType> withOnShowListener(LightBulbDialogFragment.DialogShowListener listener) {
+    public CustomDialogBuilder<DialogType> withOnShowListener(BaseDialogFragment.DialogShowListener listener) {
         return (CustomDialogBuilder<DialogType>) super.withOnShowListener(listener);
     }
 
     @Override
-    public CustomDialogBuilder<DialogType> withOnHideListener(LightBulbDialogFragment.DialogHideListener listener) {
+    public CustomDialogBuilder<DialogType> withOnHideListener(BaseDialogFragment.DialogHideListener listener) {
         return (CustomDialogBuilder<DialogType>) super.withOnHideListener(listener);
     }
 
@@ -62,12 +62,12 @@ public class CustomDialogBuilder<DialogType extends CustomDialog> extends LightB
     }
 
     @Override
-    public CustomDialogBuilder<DialogType> withDialogType(LightBulbDialogFragment.DialogTypes dialogType) {
+    public CustomDialogBuilder<DialogType> withDialogType(BaseDialogFragment.DialogTypes dialogType) {
         return (CustomDialogBuilder<DialogType>) super.withDialogType(dialogType);
     }
 
     @Override
-    public CustomDialogBuilder<DialogType> withAnimations(LightBulbDialogFragment.DialogAnimationTypes animation) {
+    public CustomDialogBuilder<DialogType> withAnimations(BaseDialogFragment.DialogAnimationTypes animation) {
         return (CustomDialogBuilder<DialogType>) super.withAnimations(animation);
     }
 
@@ -85,7 +85,7 @@ public class CustomDialogBuilder<DialogType extends CustomDialog> extends LightB
         DialogType initialize(
                 String title, String message,
                 DialogButtonConfiguration positiveButtonConfiguration, DialogButtonConfiguration negativeButtonConfiguration,
-                boolean cancelable, boolean loading, LightBulbDialogFragment.DialogTypes dialogType, LightBulbDialogFragment.DialogAnimationTypes animationType
+                boolean cancelable, boolean loading, BaseDialogFragment.DialogTypes dialogType, BaseDialogFragment.DialogAnimationTypes animationType
         );
     }
 

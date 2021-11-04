@@ -1,10 +1,10 @@
 package com.github.rooneyandshadows.lightbulb.dialogs.picker_dialog_adapter;
 
-import com.github.rooneyandshadows.lightbulb.dialogs.base.LightBulbDialogSelection;
+import com.github.rooneyandshadows.lightbulb.dialogs.base.BaseDialogSelection;
 
 import java.util.Arrays;
 
-class AdapterPickerDialogSelection extends LightBulbDialogSelection<int[]> {
+class AdapterPickerDialogSelection extends BaseDialogSelection<int[]> {
     public AdapterPickerDialogSelection(int[] current, int[] draft) {
         super(current, draft);
     }

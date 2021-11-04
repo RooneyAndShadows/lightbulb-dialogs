@@ -1,11 +1,11 @@
 package com.github.rooneyandshadows.lightbulb.dialogs.picker_dialog_date_range;
 
-import com.github.rooneyandshadows.lightbulb.dialogs.base.LightBulbDialogSelection;
+import com.github.rooneyandshadows.lightbulb.dialogs.base.BaseDialogSelection;
 
 import java.util.Arrays;
 import java.util.Date;
 
-class DateRangeSelection extends LightBulbDialogSelection<Date[]> {
+class DateRangeSelection extends BaseDialogSelection<Date[]> {
     public DateRangeSelection(Date[] current, Date[] draft) {
         super(current, draft);
         if (current == null)

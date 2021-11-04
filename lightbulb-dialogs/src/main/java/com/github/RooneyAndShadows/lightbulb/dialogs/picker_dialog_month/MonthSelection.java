@@ -1,10 +1,10 @@
 package com.github.rooneyandshadows.lightbulb.dialogs.picker_dialog_month;
 
-import com.github.rooneyandshadows.lightbulb.dialogs.base.LightBulbDialogSelection;
+import com.github.rooneyandshadows.lightbulb.dialogs.base.BaseDialogSelection;
 
 import java.util.Arrays;
 
-class MonthSelection extends LightBulbDialogSelection<int[]> {
+class MonthSelection extends BaseDialogSelection<int[]> {
     public MonthSelection(int[] current, int[] draft) {
         super(current, draft);
     }

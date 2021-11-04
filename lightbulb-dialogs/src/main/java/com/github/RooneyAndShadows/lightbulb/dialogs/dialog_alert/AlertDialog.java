@@ -7,11 +7,11 @@ import android.view.ViewGroup;
 import android.view.Window;
 
 import com.github.rooneyandshadows.lightbulb.dialogs.R;
-import com.github.rooneyandshadows.lightbulb.dialogs.base.LightBulbDialogFragment;
+import com.github.rooneyandshadows.lightbulb.dialogs.base.BaseDialogFragment;
 
 import androidx.constraintlayout.widget.ConstraintLayout;
 
-public class AlertDialog extends LightBulbDialogFragment {
+public class AlertDialog extends BaseDialogFragment {
     public static AlertDialog newInstance(
             String title, String message, DialogButtonConfiguration positive, DialogButtonConfiguration negative,
             boolean cancelable, DialogTypes dialogType, DialogAnimationTypes animationType) {

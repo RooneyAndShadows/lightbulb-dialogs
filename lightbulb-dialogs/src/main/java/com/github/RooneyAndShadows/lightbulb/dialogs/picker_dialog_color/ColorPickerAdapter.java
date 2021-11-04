@@ -9,11 +9,11 @@ import android.view.LayoutInflater;
 import android.view.ViewGroup;
 
 import com.github.rooneyandshadows.lightbulb.commons.utils.ResourceUtils;
+import com.github.rooneyandshadows.lightbulb.recycleradapters.EasyAdapterConfiguration;
+import com.github.rooneyandshadows.lightbulb.recycleradapters.EasyAdapterDataModel;
+import com.github.rooneyandshadows.lightbulb.recycleradapters.EasyAdapterSelectableModes;
+import com.github.rooneyandshadows.lightbulb.recycleradapters.EasyRecyclerAdapter;
 import com.github.rooneyandshadows.lightbulb.dialogs.R;
-import com.github.rooneyandshadows.lightbulb.recycleradapters.LightBulbAdapter;
-import com.github.rooneyandshadows.lightbulb.recycleradapters.LightBulbAdapterConfiguration;
-import com.github.rooneyandshadows.lightbulb.recycleradapters.LightBulbAdapterDataModel;
-import com.github.rooneyandshadows.lightbulb.recycleradapters.LightBulbAdapterSelectableModes;
 
 import java.util.ArrayList;
 import java.util.List;
@@ -24,11 +24,11 @@ import androidx.recyclerview.widget.RecyclerView;
 
 import static com.github.rooneyandshadows.lightbulb.dialogs.picker_dialog_color.ColorPickerAdapter.*;
 
-public class ColorPickerAdapter extends LightBulbAdapter<ColorModel> {
+public class ColorPickerAdapter extends EasyRecyclerAdapter<ColorModel> {
     private final Context context;
 
-    public ColorPickerAdapter(Context context, LightBulbAdapterSelectableModes selectableMode) {
-        super(new LightBulbAdapterConfiguration<ColorModel>().withSelectMode(selectableMode));
+    public ColorPickerAdapter(Context context, EasyAdapterSelectableModes selectableMode) {
+        super(new EasyAdapterConfiguration<ColorModel>().withSelectMode(selectableMode));
         this.context = context;
     }
 
@@ -124,7 +124,7 @@ public class ColorPickerAdapter extends LightBulbAdapter<ColorModel> {
         }
     }
 
-    public static class ColorModel extends LightBulbAdapterDataModel {
+    public static class ColorModel extends EasyAdapterDataModel {
         private final String colorHex;
         private final String colorExternalName;
 

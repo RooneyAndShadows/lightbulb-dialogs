@@ -10,7 +10,7 @@ import android.widget.TextView;
 import com.github.rooneyandshadows.java.commons.date.DateUtils;
 import com.github.rooneyandshadows.java.commons.string.StringUtils;
 import com.github.rooneyandshadows.lightbulb.calendars.month.MonthCalendarView;
-import com.github.rooneyandshadows.lightbulb.dialogs.base.LightBulbPickerDialogFragment;
+import com.github.rooneyandshadows.lightbulb.dialogs.base.BasePickerDialogFragment;
 import com.github.rooneyandshadows.lightbulb.commons.utils.ResourceUtils;
 import com.github.rooneyandshadows.lightbulb.dialogs.R;
 
@@ -19,7 +19,7 @@ import java.util.Arrays;
 import java.util.Date;
 import java.util.Locale;
 
-public class MonthPickerDialog extends LightBulbPickerDialogFragment<int[]> {
+public class MonthPickerDialog extends BasePickerDialogFragment<int[]> {
     private static final String DATE_FORMAT_TAG = "DATE_FORMAT_TEXT";
     private static final String MONTH_SELECTION_TAG = "MONTH_PICKER_SELECTION_TAG";
     private static final String MONTH_SELECTION_DRAFT_TAG = "DATE_PICKER_SELECTION_DRAFT_TAG";

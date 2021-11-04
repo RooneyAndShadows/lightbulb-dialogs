@@ -1,11 +1,11 @@
 package com.github.rooneyandshadows.lightbulb.dialogs.dialog_alert;
 
-import com.github.rooneyandshadows.lightbulb.dialogs.base.LightBulbDialogFragment;
-import com.github.rooneyandshadows.lightbulb.dialogs.base.LightBulbDialogBuilder;
+import com.github.rooneyandshadows.lightbulb.dialogs.base.BaseDialogFragment;
+import com.github.rooneyandshadows.lightbulb.dialogs.base.BaseDialogBuilder;
 
 import androidx.fragment.app.FragmentManager;
 
-public class AlertDialogBuilder extends LightBulbDialogBuilder<AlertDialog> {
+public class AlertDialogBuilder extends BaseDialogBuilder<AlertDialog> {
 
     public AlertDialogBuilder(FragmentManager manager, String dialogTag) {
         super(manager, dialogTag);
@@ -23,27 +23,27 @@ public class AlertDialogBuilder extends LightBulbDialogBuilder<AlertDialog> {
 
 
     @Override
-    public AlertDialogBuilder withPositiveButton(LightBulbDialogFragment.DialogButtonConfiguration positiveButtonConfiguration, LightBulbDialogFragment.DialogButtonClickListener onClickListener) {
+    public AlertDialogBuilder withPositiveButton(BaseDialogFragment.DialogButtonConfiguration positiveButtonConfiguration, BaseDialogFragment.DialogButtonClickListener onClickListener) {
         return (AlertDialogBuilder) super.withPositiveButton(positiveButtonConfiguration, onClickListener);
     }
 
     @Override
-    public AlertDialogBuilder withNegativeButton(LightBulbDialogFragment.DialogButtonConfiguration negativeButtonConfiguration, LightBulbDialogFragment.DialogButtonClickListener onClickListener) {
+    public AlertDialogBuilder withNegativeButton(BaseDialogFragment.DialogButtonConfiguration negativeButtonConfiguration, BaseDialogFragment.DialogButtonClickListener onClickListener) {
         return (AlertDialogBuilder) super.withNegativeButton(negativeButtonConfiguration, onClickListener);
     }
 
     @Override
-    public AlertDialogBuilder withOnCancelListener(LightBulbDialogFragment.DialogCancelListener listener) {
+    public AlertDialogBuilder withOnCancelListener(BaseDialogFragment.DialogCancelListener listener) {
         return (AlertDialogBuilder) super.withOnCancelListener(listener);
     }
 
     @Override
-    public AlertDialogBuilder withOnShowListener(LightBulbDialogFragment.DialogShowListener listener) {
+    public AlertDialogBuilder withOnShowListener(BaseDialogFragment.DialogShowListener listener) {
         return (AlertDialogBuilder) super.withOnShowListener(listener);
     }
 
     @Override
-    public AlertDialogBuilder withOnHideListener(LightBulbDialogFragment.DialogHideListener listener) {
+    public AlertDialogBuilder withOnHideListener(BaseDialogFragment.DialogHideListener listener) {
         return (AlertDialogBuilder) super.withOnHideListener(listener);
     }
 
@@ -53,12 +53,12 @@ public class AlertDialogBuilder extends LightBulbDialogBuilder<AlertDialog> {
     }
 
     @Override
-    public AlertDialogBuilder withDialogType(LightBulbDialogFragment.DialogTypes dialogType) {
+    public AlertDialogBuilder withDialogType(BaseDialogFragment.DialogTypes dialogType) {
         return (AlertDialogBuilder) super.withDialogType(dialogType);
     }
 
     @Override
-    public AlertDialogBuilder withAnimations(LightBulbDialogFragment.DialogAnimationTypes animation) {
+    public AlertDialogBuilder withAnimations(BaseDialogFragment.DialogAnimationTypes animation) {
         return (AlertDialogBuilder) super.withAnimations(animation);
     }
 

@@ -3,12 +3,12 @@ package com.github.rooneyandshadows.lightbulb.dialogs.base.constraints.base;
 import android.app.Activity;
 
 import com.github.rooneyandshadows.lightbulb.commons.utils.WindowUtils;
-import com.github.rooneyandshadows.lightbulb.dialogs.base.LightBulbDialogFragment;
+import com.github.rooneyandshadows.lightbulb.dialogs.base.BaseDialogFragment;
 
-public class LightBulbDialogConstraintBuilder {
-    protected final LightBulbDialogFragment dialogFragment;
+public class BaseDialogConstraintBuilder {
+    protected final BaseDialogFragment dialogFragment;
 
-    public LightBulbDialogConstraintBuilder(LightBulbDialogFragment dialogFragment) {
+    public BaseDialogConstraintBuilder(BaseDialogFragment dialogFragment) {
         this.dialogFragment = dialogFragment;
     }
 

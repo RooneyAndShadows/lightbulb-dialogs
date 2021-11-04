@@ -1,13 +1,13 @@
 package com.github.rooneyandshadows.lightbulb.dialogs.picker_dialog_month;
 
-import com.github.rooneyandshadows.lightbulb.dialogs.base.LightBulbDialogBuilder;
-import com.github.rooneyandshadows.lightbulb.dialogs.base.LightBulbDialogFragment;
+import com.github.rooneyandshadows.lightbulb.dialogs.base.BaseDialogBuilder;
+import com.github.rooneyandshadows.lightbulb.dialogs.base.BaseDialogFragment;
 
 import java.util.ArrayList;
 
 import androidx.fragment.app.FragmentManager;
 
-public class MonthPickerDialogBuilder extends LightBulbDialogBuilder<MonthPickerDialog> {
+public class MonthPickerDialogBuilder extends BaseDialogBuilder<MonthPickerDialog> {
 
     private MonthPickerDialog.SelectionChangedListener<int[]> monthSetListener;
     private ArrayList<int[]> disabledMonths;
@@ -32,27 +32,27 @@ public class MonthPickerDialogBuilder extends LightBulbDialogBuilder<MonthPicker
     }
 
     @Override
-    public MonthPickerDialogBuilder withPositiveButton(LightBulbDialogFragment.DialogButtonConfiguration positiveButtonConfiguration, LightBulbDialogFragment.DialogButtonClickListener onClickListener) {
+    public MonthPickerDialogBuilder withPositiveButton(BaseDialogFragment.DialogButtonConfiguration positiveButtonConfiguration, BaseDialogFragment.DialogButtonClickListener onClickListener) {
         return (MonthPickerDialogBuilder) super.withPositiveButton(positiveButtonConfiguration, onClickListener);
     }
 
     @Override
-    public MonthPickerDialogBuilder withNegativeButton(LightBulbDialogFragment.DialogButtonConfiguration negativeButtonConfiguration, LightBulbDialogFragment.DialogButtonClickListener onClickListener) {
+    public MonthPickerDialogBuilder withNegativeButton(BaseDialogFragment.DialogButtonConfiguration negativeButtonConfiguration, BaseDialogFragment.DialogButtonClickListener onClickListener) {
         return (MonthPickerDialogBuilder) super.withNegativeButton(negativeButtonConfiguration, onClickListener);
     }
 
     @Override
-    public MonthPickerDialogBuilder withOnCancelListener(LightBulbDialogFragment.DialogCancelListener listener) {
+    public MonthPickerDialogBuilder withOnCancelListener(BaseDialogFragment.DialogCancelListener listener) {
         return (MonthPickerDialogBuilder) super.withOnCancelListener(listener);
     }
 
     @Override
-    public MonthPickerDialogBuilder withOnShowListener(LightBulbDialogFragment.DialogShowListener listener) {
+    public MonthPickerDialogBuilder withOnShowListener(BaseDialogFragment.DialogShowListener listener) {
         return (MonthPickerDialogBuilder) super.withOnShowListener(listener);
     }
 
     @Override
-    public MonthPickerDialogBuilder withOnHideListener(LightBulbDialogFragment.DialogHideListener listener) {
+    public MonthPickerDialogBuilder withOnHideListener(BaseDialogFragment.DialogHideListener listener) {
         return (MonthPickerDialogBuilder) super.withOnHideListener(listener);
     }
 
@@ -62,12 +62,12 @@ public class MonthPickerDialogBuilder extends LightBulbDialogBuilder<MonthPicker
     }
 
     @Override
-    public MonthPickerDialogBuilder withDialogType(LightBulbDialogFragment.DialogTypes dialogType) {
+    public MonthPickerDialogBuilder withDialogType(BaseDialogFragment.DialogTypes dialogType) {
         return (MonthPickerDialogBuilder) super.withDialogType(dialogType);
     }
 
     @Override
-    public MonthPickerDialogBuilder withAnimations(LightBulbDialogFragment.DialogAnimationTypes animation) {
+    public MonthPickerDialogBuilder withAnimations(BaseDialogFragment.DialogAnimationTypes animation) {
         return (MonthPickerDialogBuilder) super.withAnimations(animation);
     }
 
