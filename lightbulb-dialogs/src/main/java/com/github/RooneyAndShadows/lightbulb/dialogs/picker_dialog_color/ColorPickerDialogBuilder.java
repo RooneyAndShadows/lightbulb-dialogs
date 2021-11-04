@@ -1,13 +1,13 @@
 package com.github.rooneyandshadows.lightbulb.dialogs.picker_dialog_color;
 
-import com.github.rooneyandshadows.lightbulb.dialogs.base.BaseDialogBuilder;
-import com.github.rooneyandshadows.lightbulb.dialogs.base.BaseDialogFragment;
-import com.github.rooneyandshadows.lightbulb.dialogs.base.BasePickerDialogFragment;
+import com.github.rooneyandshadows.lightbulb.dialogs.base.LightBulbDialogBuilder;
+import com.github.rooneyandshadows.lightbulb.dialogs.base.LightBulbDialogFragment;
+import com.github.rooneyandshadows.lightbulb.dialogs.base.LightBulbPickerDialogFragment;
 
 import androidx.fragment.app.FragmentManager;
 
-public class ColorPickerDialogBuilder extends BaseDialogBuilder<ColorPickerDialog> {
-    private BasePickerDialogFragment.SelectionChangedListener<int[]> changedCallback;
+public class ColorPickerDialogBuilder extends LightBulbDialogBuilder<ColorPickerDialog> {
+    private LightBulbPickerDialogFragment.SelectionChangedListener<int[]> changedCallback;
     private int[] selection;
     private final ColorPickerAdapter adapter;
 
@@ -28,27 +28,27 @@ public class ColorPickerDialogBuilder extends BaseDialogBuilder<ColorPickerDialo
     }
 
     @Override
-    public ColorPickerDialogBuilder withPositiveButton(BaseDialogFragment.DialogButtonConfiguration positiveButtonConfiguration, BaseDialogFragment.DialogButtonClickListener onClickListener) {
+    public ColorPickerDialogBuilder withPositiveButton(LightBulbDialogFragment.DialogButtonConfiguration positiveButtonConfiguration, LightBulbDialogFragment.DialogButtonClickListener onClickListener) {
         return (ColorPickerDialogBuilder) super.withPositiveButton(positiveButtonConfiguration, onClickListener);
     }
 
     @Override
-    public ColorPickerDialogBuilder withNegativeButton(BaseDialogFragment.DialogButtonConfiguration negativeButtonConfiguration, BaseDialogFragment.DialogButtonClickListener onClickListener) {
+    public ColorPickerDialogBuilder withNegativeButton(LightBulbDialogFragment.DialogButtonConfiguration negativeButtonConfiguration, LightBulbDialogFragment.DialogButtonClickListener onClickListener) {
         return (ColorPickerDialogBuilder) super.withNegativeButton(negativeButtonConfiguration, onClickListener);
     }
 
     @Override
-    public ColorPickerDialogBuilder withOnCancelListener(BaseDialogFragment.DialogCancelListener listener) {
+    public ColorPickerDialogBuilder withOnCancelListener(LightBulbDialogFragment.DialogCancelListener listener) {
         return (ColorPickerDialogBuilder) super.withOnCancelListener(listener);
     }
 
     @Override
-    public ColorPickerDialogBuilder withOnShowListener(BaseDialogFragment.DialogShowListener listener) {
+    public ColorPickerDialogBuilder withOnShowListener(LightBulbDialogFragment.DialogShowListener listener) {
         return (ColorPickerDialogBuilder) super.withOnShowListener(listener);
     }
 
     @Override
-    public ColorPickerDialogBuilder withOnHideListener(BaseDialogFragment.DialogHideListener listener) {
+    public ColorPickerDialogBuilder withOnHideListener(LightBulbDialogFragment.DialogHideListener listener) {
         return (ColorPickerDialogBuilder) super.withOnHideListener(listener);
     }
 
@@ -58,16 +58,16 @@ public class ColorPickerDialogBuilder extends BaseDialogBuilder<ColorPickerDialo
     }
 
     @Override
-    public ColorPickerDialogBuilder withDialogType(BaseDialogFragment.DialogTypes dialogType) {
+    public ColorPickerDialogBuilder withDialogType(LightBulbDialogFragment.DialogTypes dialogType) {
         return (ColorPickerDialogBuilder) super.withDialogType(dialogType);
     }
 
     @Override
-    public ColorPickerDialogBuilder withAnimations(BaseDialogFragment.DialogAnimationTypes animation) {
+    public ColorPickerDialogBuilder withAnimations(LightBulbDialogFragment.DialogAnimationTypes animation) {
         return (ColorPickerDialogBuilder) super.withAnimations(animation);
     }
 
-    public ColorPickerDialogBuilder withSelectionCallback(BasePickerDialogFragment.SelectionChangedListener<int[]> listener) {
+    public ColorPickerDialogBuilder withSelectionCallback(LightBulbPickerDialogFragment.SelectionChangedListener<int[]> listener) {
         changedCallback = listener;
         return this;
     }

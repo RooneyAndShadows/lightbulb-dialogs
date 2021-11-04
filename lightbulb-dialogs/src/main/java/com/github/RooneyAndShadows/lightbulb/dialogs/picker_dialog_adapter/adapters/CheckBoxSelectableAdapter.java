@@ -4,10 +4,10 @@ import android.graphics.drawable.Drawable;
 import android.view.LayoutInflater;
 import android.view.ViewGroup;
 
-import com.github.rooneyandshadows.lightbulb.recycleradapters.EasyAdapterConfiguration;
-import com.github.rooneyandshadows.lightbulb.recycleradapters.EasyAdapterDataModel;
-import com.github.rooneyandshadows.lightbulb.recycleradapters.EasyAdapterSelectableModes;
-import com.github.rooneyandshadows.lightbulb.recycleradapters.EasyRecyclerAdapter;
+import com.github.rooneyandshadows.lightbulb.recycleradapters.LightBulbAdapter;
+import com.github.rooneyandshadows.lightbulb.recycleradapters.LightBulbAdapterConfiguration;
+import com.github.rooneyandshadows.lightbulb.recycleradapters.LightBulbAdapterDataModel;
+import com.github.rooneyandshadows.lightbulb.recycleradapters.LightBulbAdapterSelectableModes;
 import com.github.rooneyandshadows.lightbulb.selectableview.CheckBoxView;
 import com.github.rooneyandshadows.lightbulb.dialogs.R;
 
@@ -15,10 +15,10 @@ import androidx.annotation.NonNull;
 import androidx.recyclerview.widget.RecyclerView;
 
 @SuppressWarnings("unchecked")
-public class CheckBoxSelectableAdapter<ItemType extends EasyAdapterDataModel> extends EasyRecyclerAdapter<ItemType> {
+public class CheckBoxSelectableAdapter<ItemType extends LightBulbAdapterDataModel> extends LightBulbAdapter<ItemType> {
 
     public CheckBoxSelectableAdapter() {
-        super(new EasyAdapterConfiguration<ItemType>().withSelectMode(EasyAdapterSelectableModes.SELECT_MULTIPLE));
+        super(new LightBulbAdapterConfiguration<ItemType>().withSelectMode(LightBulbAdapterSelectableModes.SELECT_MULTIPLE));
     }
 
     @NonNull
@@ -63,7 +63,7 @@ public class CheckBoxSelectableAdapter<ItemType extends EasyAdapterDataModel> ex
         protected CheckBoxView selectableView;
         protected ItemType item;
 
-        CheckBoxViewHolder(CheckBoxView categoryItemBinding, EasyRecyclerAdapter<ItemType> adapter) {
+        CheckBoxViewHolder(CheckBoxView categoryItemBinding, LightBulbAdapter<ItemType> adapter) {
             super(categoryItemBinding);
             this.selectableView = (CheckBoxView) itemView;
             selectableView.setOnCheckedListener((view, isChecked) -> selectableView.post(() -> adapter.selectItemAt(getBindingAdapterPosition(), isChecked)));

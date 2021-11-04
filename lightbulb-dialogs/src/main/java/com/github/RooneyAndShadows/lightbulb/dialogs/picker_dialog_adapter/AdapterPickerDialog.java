@@ -8,13 +8,12 @@ import android.view.View;
 import android.view.Window;
 import android.view.WindowManager;
 
-import com.github.rooneyandshadows.lightbulb.dialogs.base.BasePickerDialogFragment;
+import com.github.rooneyandshadows.lightbulb.dialogs.base.LightBulbPickerDialogFragment;
 import com.github.rooneyandshadows.lightbulb.dialogs.base.constraints.bottomsheet.BottomSheetDialogConstraints;
 import com.github.rooneyandshadows.lightbulb.dialogs.base.constraints.regular.RegularDialogConstraints;
 import com.github.rooneyandshadows.lightbulb.dialogs.base.constraints.regular.RegularDialogConstraintsBuilder;
-import com.github.rooneyandshadows.lightbulb.recycleradapters.EasyAdapterDataModel;
-import com.github.rooneyandshadows.lightbulb.recycleradapters.EasyRecyclerAdapter;
-import com.github.rooneyandshadows.lightbulb.recycleradapters.callbacks.EasyAdapterSelectionChangedListener;
+import com.github.rooneyandshadows.lightbulb.recycleradapters.LightBulbAdapter;
+import com.github.rooneyandshadows.lightbulb.recycleradapters.LightBulbAdapterDataModel;
 import com.github.rooneyandshadows.lightbulb.dialogs.R;
 
 import java.util.ArrayList;
@@ -23,13 +22,13 @@ import androidx.appcompat.widget.LinearLayoutCompat;
 import androidx.recyclerview.widget.LinearLayoutManager;
 import androidx.recyclerview.widget.RecyclerView;
 
-public class AdapterPickerDialog<ItemType extends EasyAdapterDataModel> extends BasePickerDialogFragment<int[]> {
+public class AdapterPickerDialog<ItemType extends LightBulbAdapterDataModel> extends LightBulbPickerDialogFragment<int[]> {
     private static final String ADAPTER_SELECTION_TAG = "ADAPTER_SELECTION_TAG";
     private static final String ADAPTER_SELECTION_DRAFT_TAG = "ADAPTER_SELECTION_DRAFT_TAG";
     protected RecyclerView recyclerView;
     private RecyclerView.ItemDecoration itemDecoration;
-    protected EasyRecyclerAdapter<ItemType> adapter;
-    private final EasyAdapterSelectionChangedListener selectionListener;
+    protected LightBulbAdapter<ItemType> adapter;
+    private final LightBulbAdapter.SelectionChangedListener selectionListener;
 
     public AdapterPickerDialog() {
         super(new AdapterPickerDialogSelection(null, null));
@@ -39,7 +38,7 @@ public class AdapterPickerDialog<ItemType extends EasyAdapterDataModel> extends 
         };
     }
 
-    public static <ItemType extends EasyAdapterDataModel> AdapterPickerDialog<ItemType> newInstance(
+    public static <ItemType extends LightBulbAdapterDataModel> AdapterPickerDialog<ItemType> newInstance(
             String title, String message, DialogButtonConfiguration positive, DialogButtonConfiguration negative,
             boolean cancelable, DialogTypes dialogType, DialogAnimationTypes animationType) {
         AdapterPickerDialog<ItemType> dialogFragment = new AdapterPickerDialog<>();
@@ -173,7 +172,7 @@ public class AdapterPickerDialog<ItemType extends EasyAdapterDataModel> extends 
         selection.setCurrentSelection(new int[]{newSelection});
     }
 
-    public void setAdapter(EasyRecyclerAdapter<ItemType> adapter) {
+    public void setAdapter(LightBulbAdapter<ItemType> adapter) {
         this.adapter = adapter;
     }
 

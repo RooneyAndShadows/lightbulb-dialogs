@@ -1,11 +1,11 @@
 package com.github.rooneyandshadows.lightbulb.dialogs.picker_dialog_datetime;
 
 import com.github.rooneyandshadows.java.commons.date.DateUtils;
-import com.github.rooneyandshadows.lightbulb.dialogs.base.BaseDialogSelection;
+import com.github.rooneyandshadows.lightbulb.dialogs.base.LightBulbDialogSelection;
 
 import java.util.Date;
 
-class DateTimeSelection extends BaseDialogSelection<Date> {
+class DateTimeSelection extends LightBulbDialogSelection<Date> {
     public DateTimeSelection(Date current, Date draft) {
         super(current, draft);
     }

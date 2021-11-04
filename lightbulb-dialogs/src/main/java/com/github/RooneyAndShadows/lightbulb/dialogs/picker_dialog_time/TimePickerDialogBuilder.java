@@ -1,14 +1,14 @@
 package com.github.rooneyandshadows.lightbulb.dialogs.picker_dialog_time;
 
-import com.github.rooneyandshadows.lightbulb.dialogs.base.BaseDialogBuilder;
-import com.github.rooneyandshadows.lightbulb.dialogs.base.BaseDialogFragment;
-import com.github.rooneyandshadows.lightbulb.dialogs.base.BasePickerDialogFragment;
+import com.github.rooneyandshadows.lightbulb.dialogs.base.LightBulbDialogBuilder;
+import com.github.rooneyandshadows.lightbulb.dialogs.base.LightBulbDialogFragment;
+import com.github.rooneyandshadows.lightbulb.dialogs.base.LightBulbPickerDialogFragment;
 
 import androidx.fragment.app.FragmentManager;
 
-public class TimePickerDialogBuilder extends BaseDialogBuilder<TimePickerDialog> {
+public class TimePickerDialogBuilder extends LightBulbDialogBuilder<TimePickerDialog> {
 
-    private BasePickerDialogFragment.SelectionChangedListener<int[]> timeSetListener;
+    private LightBulbPickerDialogFragment.SelectionChangedListener<int[]> timeSetListener;
     private int[] initialTime;
 
     public TimePickerDialogBuilder(FragmentManager manager, String dialogTag) {
@@ -26,27 +26,27 @@ public class TimePickerDialogBuilder extends BaseDialogBuilder<TimePickerDialog>
     }
 
     @Override
-    public TimePickerDialogBuilder withPositiveButton(BaseDialogFragment.DialogButtonConfiguration positiveButtonConfiguration, BaseDialogFragment.DialogButtonClickListener onClickListener) {
+    public TimePickerDialogBuilder withPositiveButton(LightBulbDialogFragment.DialogButtonConfiguration positiveButtonConfiguration, LightBulbDialogFragment.DialogButtonClickListener onClickListener) {
         return (TimePickerDialogBuilder) super.withPositiveButton(positiveButtonConfiguration, onClickListener);
     }
 
     @Override
-    public TimePickerDialogBuilder withNegativeButton(BaseDialogFragment.DialogButtonConfiguration negativeButtonConfiguration, BaseDialogFragment.DialogButtonClickListener onClickListener) {
+    public TimePickerDialogBuilder withNegativeButton(LightBulbDialogFragment.DialogButtonConfiguration negativeButtonConfiguration, LightBulbDialogFragment.DialogButtonClickListener onClickListener) {
         return (TimePickerDialogBuilder) super.withNegativeButton(negativeButtonConfiguration, onClickListener);
     }
 
     @Override
-    public TimePickerDialogBuilder withOnCancelListener(BaseDialogFragment.DialogCancelListener listener) {
+    public TimePickerDialogBuilder withOnCancelListener(LightBulbDialogFragment.DialogCancelListener listener) {
         return (TimePickerDialogBuilder) super.withOnCancelListener(listener);
     }
 
     @Override
-    public TimePickerDialogBuilder withOnShowListener(BaseDialogFragment.DialogShowListener listener) {
+    public TimePickerDialogBuilder withOnShowListener(LightBulbDialogFragment.DialogShowListener listener) {
         return (TimePickerDialogBuilder) super.withOnShowListener(listener);
     }
 
     @Override
-    public TimePickerDialogBuilder withOnHideListener(BaseDialogFragment.DialogHideListener listener) {
+    public TimePickerDialogBuilder withOnHideListener(LightBulbDialogFragment.DialogHideListener listener) {
         return (TimePickerDialogBuilder) super.withOnHideListener(listener);
     }
 
@@ -56,16 +56,16 @@ public class TimePickerDialogBuilder extends BaseDialogBuilder<TimePickerDialog>
     }
 
     @Override
-    public TimePickerDialogBuilder withDialogType(BaseDialogFragment.DialogTypes dialogType) {
+    public TimePickerDialogBuilder withDialogType(LightBulbDialogFragment.DialogTypes dialogType) {
         return (TimePickerDialogBuilder) super.withDialogType(dialogType);
     }
 
     @Override
-    public TimePickerDialogBuilder withAnimations(BaseDialogFragment.DialogAnimationTypes animation) {
+    public TimePickerDialogBuilder withAnimations(LightBulbDialogFragment.DialogAnimationTypes animation) {
         return (TimePickerDialogBuilder) super.withAnimations(animation);
     }
 
-    public TimePickerDialogBuilder withOnDateSelectedEvent(BasePickerDialogFragment.SelectionChangedListener<int[]> listener) {
+    public TimePickerDialogBuilder withOnDateSelectedEvent(LightBulbPickerDialogFragment.SelectionChangedListener<int[]> listener) {
         this.timeSetListener = listener;
         return this;
     }

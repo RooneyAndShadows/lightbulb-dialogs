@@ -7,7 +7,7 @@ import android.view.View;
 import android.view.Window;
 
 import com.github.rooneyandshadows.lightbulb.commons.utils.ResourceUtils;
-import com.github.rooneyandshadows.lightbulb.dialogs.base.BaseDialogFragment;
+import com.github.rooneyandshadows.lightbulb.dialogs.base.LightBulbDialogFragment;
 import com.github.rooneyandshadows.lightbulb.dialogs.base.constraints.regular.RegularDialogConstraints;
 import com.github.rooneyandshadows.lightbulb.dialogs.base.constraints.regular.RegularDialogConstraintsBuilder;
 import com.github.rooneyandshadows.lightbulb.dialogs.picker_dialog_adapter.AdapterPickerDialog;
@@ -27,19 +27,19 @@ public class IconPickerDialog extends AdapterPickerDialog<IconPickerAdapter.Icon
     private RecyclerView recyclerView;
 
     public static IconPickerDialog newInstance(
-            String title, String message, BaseDialogFragment.DialogButtonConfiguration positive, BaseDialogFragment.DialogButtonConfiguration negative,
-            boolean cancelable, BaseDialogFragment.DialogAnimationTypes animationType) {
+            String title, String message, LightBulbDialogFragment.DialogButtonConfiguration positive, LightBulbDialogFragment.DialogButtonConfiguration negative,
+            boolean cancelable, LightBulbDialogFragment.DialogAnimationTypes animationType) {
         IconPickerDialog dialogFragment = new IconPickerDialog();
         Bundle args = new Bundle();
-        dialogFragment.setArguments(new BaseDialogFragment.DialogBundleHelper()
+        dialogFragment.setArguments(new LightBulbDialogFragment.DialogBundleHelper()
                 .withTitle(title)
                 .withMessage(message)
                 .withPositiveButtonConfig(positive)
                 .withNegativeButtonConfig(negative)
                 .withCancelable(cancelable)
                 .withShowing(false)
-                .withDialogType(BaseDialogFragment.DialogTypes.NORMAL)
-                .withAnimation(animationType == null ? BaseDialogFragment.DialogAnimationTypes.NO_ANIMATION : animationType)
+                .withDialogType(LightBulbDialogFragment.DialogTypes.NORMAL)
+                .withAnimation(animationType == null ? LightBulbDialogFragment.DialogAnimationTypes.NO_ANIMATION : animationType)
                 .getBundle()
         );
         return dialogFragment;

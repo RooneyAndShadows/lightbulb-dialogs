@@ -4,10 +4,10 @@ import android.graphics.drawable.Drawable;
 import android.view.LayoutInflater;
 import android.view.ViewGroup;
 
-import com.github.rooneyandshadows.lightbulb.recycleradapters.EasyAdapterConfiguration;
-import com.github.rooneyandshadows.lightbulb.recycleradapters.EasyAdapterDataModel;
-import com.github.rooneyandshadows.lightbulb.recycleradapters.EasyAdapterSelectableModes;
-import com.github.rooneyandshadows.lightbulb.recycleradapters.EasyRecyclerAdapter;
+import com.github.rooneyandshadows.lightbulb.recycleradapters.LightBulbAdapter;
+import com.github.rooneyandshadows.lightbulb.recycleradapters.LightBulbAdapterConfiguration;
+import com.github.rooneyandshadows.lightbulb.recycleradapters.LightBulbAdapterDataModel;
+import com.github.rooneyandshadows.lightbulb.recycleradapters.LightBulbAdapterSelectableModes;
 import com.github.rooneyandshadows.lightbulb.selectableview.RadioButtonView;
 import com.github.rooneyandshadows.lightbulb.dialogs.R;
 
@@ -15,10 +15,10 @@ import androidx.annotation.NonNull;
 import androidx.recyclerview.widget.RecyclerView;
 
 @SuppressWarnings({"unchecked"})
-public class RadioButtonSelectableAdapter<ItemType extends EasyAdapterDataModel> extends EasyRecyclerAdapter<ItemType> {
+public class RadioButtonSelectableAdapter<ItemType extends LightBulbAdapterDataModel> extends LightBulbAdapter<ItemType> {
 
     public RadioButtonSelectableAdapter() {
-        super(new EasyAdapterConfiguration<ItemType>().withSelectMode(EasyAdapterSelectableModes.SELECT_SINGLE));
+        super(new LightBulbAdapterConfiguration<ItemType>().withSelectMode(LightBulbAdapterSelectableModes.SELECT_SINGLE));
     }
 
     @NonNull

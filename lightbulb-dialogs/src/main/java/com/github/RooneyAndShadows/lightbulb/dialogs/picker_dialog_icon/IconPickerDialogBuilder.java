@@ -1,14 +1,14 @@
 package com.github.rooneyandshadows.lightbulb.dialogs.picker_dialog_icon;
 
-import com.github.rooneyandshadows.lightbulb.dialogs.base.BaseDialogBuilder;
-import com.github.rooneyandshadows.lightbulb.dialogs.base.BaseDialogFragment;
-import com.github.rooneyandshadows.lightbulb.dialogs.base.BasePickerDialogFragment;
+import com.github.rooneyandshadows.lightbulb.dialogs.base.LightBulbDialogBuilder;
+import com.github.rooneyandshadows.lightbulb.dialogs.base.LightBulbDialogFragment;
+import com.github.rooneyandshadows.lightbulb.dialogs.base.LightBulbPickerDialogFragment;
 import com.github.rooneyandshadows.lightbulb.dialogs.picker_dialog_adapter.AdapterPickerDialog;
 
 import androidx.fragment.app.FragmentManager;
 
-public class IconPickerDialogBuilder extends BaseDialogBuilder<IconPickerDialog> {
-    private BasePickerDialogFragment.SelectionChangedListener<int[]> changedCallback;
+public class IconPickerDialogBuilder extends LightBulbDialogBuilder<IconPickerDialog> {
+    private LightBulbPickerDialogFragment.SelectionChangedListener<int[]> changedCallback;
     private int[] selection;
     private final IconPickerAdapter adapter;
 
@@ -29,27 +29,27 @@ public class IconPickerDialogBuilder extends BaseDialogBuilder<IconPickerDialog>
     }
 
     @Override
-    public IconPickerDialogBuilder withPositiveButton(BaseDialogFragment.DialogButtonConfiguration positiveButtonConfiguration, BaseDialogFragment.DialogButtonClickListener onClickListener) {
+    public IconPickerDialogBuilder withPositiveButton(LightBulbDialogFragment.DialogButtonConfiguration positiveButtonConfiguration, LightBulbDialogFragment.DialogButtonClickListener onClickListener) {
         return (IconPickerDialogBuilder) super.withPositiveButton(positiveButtonConfiguration, onClickListener);
     }
 
     @Override
-    public IconPickerDialogBuilder withNegativeButton(BaseDialogFragment.DialogButtonConfiguration negativeButtonConfiguration, BaseDialogFragment.DialogButtonClickListener onClickListener) {
+    public IconPickerDialogBuilder withNegativeButton(LightBulbDialogFragment.DialogButtonConfiguration negativeButtonConfiguration, LightBulbDialogFragment.DialogButtonClickListener onClickListener) {
         return (IconPickerDialogBuilder) super.withNegativeButton(negativeButtonConfiguration, onClickListener);
     }
 
     @Override
-    public IconPickerDialogBuilder withOnCancelListener(BaseDialogFragment.DialogCancelListener listener) {
+    public IconPickerDialogBuilder withOnCancelListener(LightBulbDialogFragment.DialogCancelListener listener) {
         return (IconPickerDialogBuilder) super.withOnCancelListener(listener);
     }
 
     @Override
-    public IconPickerDialogBuilder withOnShowListener(BaseDialogFragment.DialogShowListener listener) {
+    public IconPickerDialogBuilder withOnShowListener(LightBulbDialogFragment.DialogShowListener listener) {
         return (IconPickerDialogBuilder) super.withOnShowListener(listener);
     }
 
     @Override
-    public IconPickerDialogBuilder withOnHideListener(BaseDialogFragment.DialogHideListener listener) {
+    public IconPickerDialogBuilder withOnHideListener(LightBulbDialogFragment.DialogHideListener listener) {
         return (IconPickerDialogBuilder) super.withOnHideListener(listener);
     }
 
@@ -59,12 +59,12 @@ public class IconPickerDialogBuilder extends BaseDialogBuilder<IconPickerDialog>
     }
 
     @Override
-    public IconPickerDialogBuilder withDialogType(BaseDialogFragment.DialogTypes dialogType) {
+    public IconPickerDialogBuilder withDialogType(LightBulbDialogFragment.DialogTypes dialogType) {
         return (IconPickerDialogBuilder) super.withDialogType(dialogType);
     }
 
     @Override
-    public IconPickerDialogBuilder withAnimations(BaseDialogFragment.DialogAnimationTypes animation) {
+    public IconPickerDialogBuilder withAnimations(LightBulbDialogFragment.DialogAnimationTypes animation) {
         return (IconPickerDialogBuilder) super.withAnimations(animation);
     }
 

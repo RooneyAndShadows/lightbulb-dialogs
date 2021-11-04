@@ -9,7 +9,7 @@ import android.widget.TextView;
 
 import com.github.rooneyandshadows.java.commons.date.DateUtils;
 import com.github.rooneyandshadows.java.commons.string.StringUtils;
-import com.github.rooneyandshadows.lightbulb.dialogs.base.BasePickerDialogFragment;
+import com.github.rooneyandshadows.lightbulb.dialogs.base.LightBulbPickerDialogFragment;
 import com.prolificinteractive.materialcalendarview.CalendarDay;
 import com.prolificinteractive.materialcalendarview.MaterialCalendarView;
 import com.github.rooneyandshadows.lightbulb.commons.utils.ResourceUtils;
@@ -19,7 +19,7 @@ import java.util.Date;
 import java.util.Locale;
 
 @SuppressWarnings("unused")
-public class DateRangePickerDialog extends BasePickerDialogFragment<Date[]> {
+public class DateRangePickerDialog extends LightBulbPickerDialogFragment<Date[]> {
     private static final String SELECTION_FROM_TAG = "DATE_RANGE_SELECTION_FROM_TAG";
     private static final String SELECTION_TO_TAG = "DATE_RANGE_SELECTION_TO_TAG";
     private static final String DRAFT_FROM_TAG = "DATE_RANGE_DRAFT_FROM_TAG";

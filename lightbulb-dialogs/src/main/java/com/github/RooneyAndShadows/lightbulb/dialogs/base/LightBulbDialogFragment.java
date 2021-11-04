@@ -44,7 +44,7 @@ import androidx.fragment.app.FragmentManager;
 import androidx.fragment.app.FragmentTransaction;
 
 @SuppressWarnings("unused")
-public abstract class BaseDialogFragment extends androidx.fragment.app.DialogFragment {
+public abstract class LightBulbDialogFragment extends androidx.fragment.app.DialogFragment {
     private View rootView;
     protected String title;
     protected String message;
@@ -771,19 +771,19 @@ public abstract class BaseDialogFragment extends androidx.fragment.app.DialogFra
     }
 
     public interface DialogShowListener {
-        void onShow(BaseDialogFragment dialogFragment);
+        void onShow(LightBulbDialogFragment dialogFragment);
     }
 
     public interface DialogHideListener {
-        void onHide(BaseDialogFragment dialogFragment);
+        void onHide(LightBulbDialogFragment dialogFragment);
     }
 
     public interface DialogCancelListener {
-        void onCancel(BaseDialogFragment dialogFragment);
+        void onCancel(LightBulbDialogFragment dialogFragment);
     }
 
     public interface DialogButtonClickListener {
-        void onClick(View view, BaseDialogFragment dialogFragment);
+        void onClick(View view, LightBulbDialogFragment dialogFragment);
     }
 
     public enum DialogTypes {

@@ -2,11 +2,11 @@ package com.github.rooneyandshadows.lightbulb.dialogs.base.constraints.regular;
 
 import android.content.res.Configuration;
 
-import com.github.rooneyandshadows.lightbulb.dialogs.base.BaseDialogFragment;
-import com.github.rooneyandshadows.lightbulb.dialogs.base.constraints.base.BaseDialogConstraintBuilder;
+import com.github.rooneyandshadows.lightbulb.dialogs.base.LightBulbDialogFragment;
+import com.github.rooneyandshadows.lightbulb.dialogs.base.constraints.base.LightBulbDialogConstraintBuilder;
 
 @SuppressWarnings("FieldCanBeLocal")
-public class RegularDialogConstraintsBuilder extends BaseDialogConstraintBuilder {
+public class RegularDialogConstraintsBuilder extends LightBulbDialogConstraintBuilder {
     private final int DEF_MAX_WIDTH_PERCENTS_PORTRAIT = 85;
     private final int DEF_MAX_WIDTH_PERCENTS_LANDSCAPE = 65;
     private final int DEF_MAX_HEIGHT_PERCENTS = 85;
@@ -15,7 +15,7 @@ public class RegularDialogConstraintsBuilder extends BaseDialogConstraintBuilder
     private int minHeight;
     private int maxHeight;
 
-    public RegularDialogConstraintsBuilder(BaseDialogFragment dialogFragment) {
+    public RegularDialogConstraintsBuilder(LightBulbDialogFragment dialogFragment) {
         super(dialogFragment);
     }
 

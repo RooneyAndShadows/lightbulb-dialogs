@@ -1,21 +1,21 @@
 package com.github.rooneyandshadows.lightbulb.dialogs.picker_dialog_adapter;
 
 
-import com.github.rooneyandshadows.lightbulb.dialogs.base.BaseDialogBuilder;
-import com.github.rooneyandshadows.lightbulb.dialogs.base.BaseDialogFragment;
-import com.github.rooneyandshadows.lightbulb.recycleradapters.EasyAdapterDataModel;
-import com.github.rooneyandshadows.lightbulb.recycleradapters.EasyRecyclerAdapter;
+import com.github.rooneyandshadows.lightbulb.dialogs.base.LightBulbDialogBuilder;
+import com.github.rooneyandshadows.lightbulb.dialogs.base.LightBulbDialogFragment;
+import com.github.rooneyandshadows.lightbulb.recycleradapters.LightBulbAdapter;
+import com.github.rooneyandshadows.lightbulb.recycleradapters.LightBulbAdapterDataModel;
 
 import androidx.fragment.app.FragmentManager;
 import androidx.recyclerview.widget.RecyclerView;
 
-public class AdapterPickerDialogBuilder<ModelType extends EasyAdapterDataModel> extends BaseDialogBuilder<AdapterPickerDialog<ModelType>> {
-    private final EasyRecyclerAdapter<ModelType> adapter;
+public class AdapterPickerDialogBuilder<ModelType extends LightBulbAdapterDataModel> extends LightBulbDialogBuilder<AdapterPickerDialog<ModelType>> {
+    private final LightBulbAdapter<ModelType> adapter;
     private AdapterPickerDialog.SelectionChangedListener<int[]> changedCallback;
     private RecyclerView.ItemDecoration itemDecoration;
     private int[] selection;
 
-    public AdapterPickerDialogBuilder(FragmentManager manager, String dialogTag, EasyRecyclerAdapter<ModelType> adapter) {
+    public AdapterPickerDialogBuilder(FragmentManager manager, String dialogTag, LightBulbAdapter<ModelType> adapter) {
         super(manager, dialogTag);
         this.adapter = adapter;
     }
@@ -31,27 +31,27 @@ public class AdapterPickerDialogBuilder<ModelType extends EasyAdapterDataModel> 
     }
 
     @Override
-    public AdapterPickerDialogBuilder<ModelType> withPositiveButton(BaseDialogFragment.DialogButtonConfiguration positiveButtonConfiguration, BaseDialogFragment.DialogButtonClickListener onClickListener) {
+    public AdapterPickerDialogBuilder<ModelType> withPositiveButton(LightBulbDialogFragment.DialogButtonConfiguration positiveButtonConfiguration, LightBulbDialogFragment.DialogButtonClickListener onClickListener) {
         return (AdapterPickerDialogBuilder<ModelType>) super.withPositiveButton(positiveButtonConfiguration, onClickListener);
     }
 
     @Override
-    public AdapterPickerDialogBuilder<ModelType> withNegativeButton(BaseDialogFragment.DialogButtonConfiguration negativeButtonConfiguration, BaseDialogFragment.DialogButtonClickListener onClickListener) {
+    public AdapterPickerDialogBuilder<ModelType> withNegativeButton(LightBulbDialogFragment.DialogButtonConfiguration negativeButtonConfiguration, LightBulbDialogFragment.DialogButtonClickListener onClickListener) {
         return (AdapterPickerDialogBuilder<ModelType>) super.withNegativeButton(negativeButtonConfiguration, onClickListener);
     }
 
     @Override
-    public AdapterPickerDialogBuilder<ModelType> withOnCancelListener(BaseDialogFragment.DialogCancelListener listener) {
+    public AdapterPickerDialogBuilder<ModelType> withOnCancelListener(LightBulbDialogFragment.DialogCancelListener listener) {
         return (AdapterPickerDialogBuilder<ModelType>) super.withOnCancelListener(listener);
     }
 
     @Override
-    public AdapterPickerDialogBuilder<ModelType> withOnShowListener(BaseDialogFragment.DialogShowListener listener) {
+    public AdapterPickerDialogBuilder<ModelType> withOnShowListener(LightBulbDialogFragment.DialogShowListener listener) {
         return (AdapterPickerDialogBuilder<ModelType>) super.withOnShowListener(listener);
     }
 
     @Override
-    public AdapterPickerDialogBuilder<ModelType> withOnHideListener(BaseDialogFragment.DialogHideListener listener) {
+    public AdapterPickerDialogBuilder<ModelType> withOnHideListener(LightBulbDialogFragment.DialogHideListener listener) {
         return (AdapterPickerDialogBuilder<ModelType>) super.withOnHideListener(listener);
     }
 
@@ -61,12 +61,12 @@ public class AdapterPickerDialogBuilder<ModelType extends EasyAdapterDataModel> 
     }
 
     @Override
-    public AdapterPickerDialogBuilder<ModelType> withDialogType(BaseDialogFragment.DialogTypes dialogType) {
+    public AdapterPickerDialogBuilder<ModelType> withDialogType(LightBulbDialogFragment.DialogTypes dialogType) {
         return (AdapterPickerDialogBuilder<ModelType>) super.withDialogType(dialogType);
     }
 
     @Override
-    public AdapterPickerDialogBuilder<ModelType> withAnimations(BaseDialogFragment.DialogAnimationTypes animation) {
+    public AdapterPickerDialogBuilder<ModelType> withAnimations(LightBulbDialogFragment.DialogAnimationTypes animation) {
         return (AdapterPickerDialogBuilder<ModelType>) super.withAnimations(animation);
     }
 

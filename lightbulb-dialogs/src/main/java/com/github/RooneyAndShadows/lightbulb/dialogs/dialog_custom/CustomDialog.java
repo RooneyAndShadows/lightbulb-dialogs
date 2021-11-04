@@ -7,12 +7,12 @@ import android.widget.ProgressBar;
 
 import com.github.rooneyandshadows.lightbulb.commons.utils.ResourceUtils;
 import com.github.rooneyandshadows.lightbulb.dialogs.R;
-import com.github.rooneyandshadows.lightbulb.dialogs.base.BaseDialogFragment;
+import com.github.rooneyandshadows.lightbulb.dialogs.base.LightBulbDialogFragment;
 
 import androidx.appcompat.widget.AppCompatTextView;
 import androidx.appcompat.widget.LinearLayoutCompat;
 
-public class CustomDialog extends BaseDialogFragment {
+public class CustomDialog extends LightBulbDialogFragment {
     private static final String IS_LOADING_KEY = "IS_LOADING_KEY";
     private ProgressBar loadingIndicator;
     private AppCompatTextView titleView;

@@ -1,11 +1,11 @@
 package com.github.rooneyandshadows.lightbulb.dialogs.dialog_loading;
 
-import com.github.rooneyandshadows.lightbulb.dialogs.base.BaseDialogBuilder;
-import com.github.rooneyandshadows.lightbulb.dialogs.base.BaseDialogFragment;
+import com.github.rooneyandshadows.lightbulb.dialogs.base.LightBulbDialogBuilder;
+import com.github.rooneyandshadows.lightbulb.dialogs.base.LightBulbDialogFragment;
 
 import androidx.fragment.app.FragmentManager;
 
-public class LoadingDialogBuilder extends BaseDialogBuilder<LoadingDialog> {
+public class LoadingDialogBuilder extends LightBulbDialogBuilder<LoadingDialog> {
 
     public LoadingDialogBuilder(FragmentManager manager, String dialogTag) {
         super(manager, dialogTag);
@@ -22,27 +22,27 @@ public class LoadingDialogBuilder extends BaseDialogBuilder<LoadingDialog> {
     }
 
     @Override
-    public LoadingDialogBuilder withPositiveButton(BaseDialogFragment.DialogButtonConfiguration positiveButtonConfiguration, BaseDialogFragment.DialogButtonClickListener onClickListener) {
+    public LoadingDialogBuilder withPositiveButton(LightBulbDialogFragment.DialogButtonConfiguration positiveButtonConfiguration, LightBulbDialogFragment.DialogButtonClickListener onClickListener) {
         return (LoadingDialogBuilder) super.withPositiveButton(positiveButtonConfiguration, onClickListener);
     }
 
     @Override
-    public LoadingDialogBuilder withNegativeButton(BaseDialogFragment.DialogButtonConfiguration negativeButtonConfiguration, BaseDialogFragment.DialogButtonClickListener onClickListener) {
+    public LoadingDialogBuilder withNegativeButton(LightBulbDialogFragment.DialogButtonConfiguration negativeButtonConfiguration, LightBulbDialogFragment.DialogButtonClickListener onClickListener) {
         return (LoadingDialogBuilder) super.withNegativeButton(negativeButtonConfiguration, onClickListener);
     }
 
     @Override
-    public LoadingDialogBuilder withOnCancelListener(BaseDialogFragment.DialogCancelListener listener) {
+    public LoadingDialogBuilder withOnCancelListener(LightBulbDialogFragment.DialogCancelListener listener) {
         return (LoadingDialogBuilder) super.withOnCancelListener(listener);
     }
 
     @Override
-    public LoadingDialogBuilder withOnShowListener(BaseDialogFragment.DialogShowListener listener) {
+    public LoadingDialogBuilder withOnShowListener(LightBulbDialogFragment.DialogShowListener listener) {
         return (LoadingDialogBuilder) super.withOnShowListener(listener);
     }
 
     @Override
-    public LoadingDialogBuilder withOnHideListener(BaseDialogFragment.DialogHideListener listener) {
+    public LoadingDialogBuilder withOnHideListener(LightBulbDialogFragment.DialogHideListener listener) {
         return (LoadingDialogBuilder) super.withOnHideListener(listener);
     }
 
@@ -52,12 +52,12 @@ public class LoadingDialogBuilder extends BaseDialogBuilder<LoadingDialog> {
     }
 
     @Override
-    public LoadingDialogBuilder withDialogType(BaseDialogFragment.DialogTypes dialogType) {
+    public LoadingDialogBuilder withDialogType(LightBulbDialogFragment.DialogTypes dialogType) {
         return (LoadingDialogBuilder) super.withDialogType(dialogType);
     }
 
     @Override
-    public LoadingDialogBuilder withAnimations(BaseDialogFragment.DialogAnimationTypes animation) {
+    public LoadingDialogBuilder withAnimations(LightBulbDialogFragment.DialogAnimationTypes animation) {
         return (LoadingDialogBuilder) super.withAnimations(animation);
     }
 

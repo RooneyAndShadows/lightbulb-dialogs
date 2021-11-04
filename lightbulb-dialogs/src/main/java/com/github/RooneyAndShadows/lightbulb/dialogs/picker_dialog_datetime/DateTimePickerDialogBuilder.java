@@ -1,16 +1,16 @@
 package com.github.rooneyandshadows.lightbulb.dialogs.picker_dialog_datetime;
 
-import com.github.rooneyandshadows.lightbulb.dialogs.base.BaseDialogBuilder;
-import com.github.rooneyandshadows.lightbulb.dialogs.base.BaseDialogFragment;
-import com.github.rooneyandshadows.lightbulb.dialogs.base.BasePickerDialogFragment;
+import com.github.rooneyandshadows.lightbulb.dialogs.base.LightBulbDialogBuilder;
+import com.github.rooneyandshadows.lightbulb.dialogs.base.LightBulbDialogFragment;
+import com.github.rooneyandshadows.lightbulb.dialogs.base.LightBulbPickerDialogFragment;
 
 import java.util.Date;
 
 import androidx.fragment.app.FragmentManager;
 
-public class DateTimePickerDialogBuilder extends BaseDialogBuilder<DateTimePickerDialog> {
+public class DateTimePickerDialogBuilder extends LightBulbDialogBuilder<DateTimePickerDialog> {
 
-    private BasePickerDialogFragment.SelectionChangedListener<Date> dateSetListener;
+    private LightBulbPickerDialogFragment.SelectionChangedListener<Date> dateSetListener;
     private Date initialDate;
     private String dateFormat;
 
@@ -29,27 +29,27 @@ public class DateTimePickerDialogBuilder extends BaseDialogBuilder<DateTimePicke
     }
 
     @Override
-    public DateTimePickerDialogBuilder withPositiveButton(BaseDialogFragment.DialogButtonConfiguration positiveButtonConfiguration, BaseDialogFragment.DialogButtonClickListener onClickListener) {
+    public DateTimePickerDialogBuilder withPositiveButton(LightBulbDialogFragment.DialogButtonConfiguration positiveButtonConfiguration, LightBulbDialogFragment.DialogButtonClickListener onClickListener) {
         return (DateTimePickerDialogBuilder) super.withPositiveButton(positiveButtonConfiguration, onClickListener);
     }
 
     @Override
-    public DateTimePickerDialogBuilder withNegativeButton(BaseDialogFragment.DialogButtonConfiguration negativeButtonConfiguration, BaseDialogFragment.DialogButtonClickListener onClickListener) {
+    public DateTimePickerDialogBuilder withNegativeButton(LightBulbDialogFragment.DialogButtonConfiguration negativeButtonConfiguration, LightBulbDialogFragment.DialogButtonClickListener onClickListener) {
         return (DateTimePickerDialogBuilder) super.withNegativeButton(negativeButtonConfiguration, onClickListener);
     }
 
     @Override
-    public DateTimePickerDialogBuilder withOnCancelListener(BaseDialogFragment.DialogCancelListener listener) {
+    public DateTimePickerDialogBuilder withOnCancelListener(LightBulbDialogFragment.DialogCancelListener listener) {
         return (DateTimePickerDialogBuilder) super.withOnCancelListener(listener);
     }
 
     @Override
-    public DateTimePickerDialogBuilder withOnShowListener(BaseDialogFragment.DialogShowListener listener) {
+    public DateTimePickerDialogBuilder withOnShowListener(LightBulbDialogFragment.DialogShowListener listener) {
         return (DateTimePickerDialogBuilder) super.withOnShowListener(listener);
     }
 
     @Override
-    public DateTimePickerDialogBuilder withOnHideListener(BaseDialogFragment.DialogHideListener listener) {
+    public DateTimePickerDialogBuilder withOnHideListener(LightBulbDialogFragment.DialogHideListener listener) {
         return (DateTimePickerDialogBuilder) super.withOnHideListener(listener);
     }
 
@@ -59,16 +59,16 @@ public class DateTimePickerDialogBuilder extends BaseDialogBuilder<DateTimePicke
     }
 
     @Override
-    public DateTimePickerDialogBuilder withDialogType(BaseDialogFragment.DialogTypes dialogType) {
+    public DateTimePickerDialogBuilder withDialogType(LightBulbDialogFragment.DialogTypes dialogType) {
         return (DateTimePickerDialogBuilder) super.withDialogType(dialogType);
     }
 
     @Override
-    public DateTimePickerDialogBuilder withAnimations(BaseDialogFragment.DialogAnimationTypes animation) {
+    public DateTimePickerDialogBuilder withAnimations(LightBulbDialogFragment.DialogAnimationTypes animation) {
         return (DateTimePickerDialogBuilder) super.withAnimations(animation);
     }
 
-    public DateTimePickerDialogBuilder withOnDateSelectedEvent(BasePickerDialogFragment.SelectionChangedListener<Date> listener) {
+    public DateTimePickerDialogBuilder withOnDateSelectedEvent(LightBulbPickerDialogFragment.SelectionChangedListener<Date> listener) {
         this.dateSetListener = listener;
         return this;
     }

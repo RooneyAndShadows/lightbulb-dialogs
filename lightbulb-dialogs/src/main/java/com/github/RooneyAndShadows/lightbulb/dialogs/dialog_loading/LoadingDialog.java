@@ -5,9 +5,9 @@ import android.view.LayoutInflater;
 import android.view.View;
 
 import com.github.rooneyandshadows.lightbulb.dialogs.R;
-import com.github.rooneyandshadows.lightbulb.dialogs.base.BaseDialogFragment;
+import com.github.rooneyandshadows.lightbulb.dialogs.base.LightBulbDialogFragment;
 
-public class LoadingDialog extends BaseDialogFragment {
+public class LoadingDialog extends LightBulbDialogFragment {
 
     public static LoadingDialog newInstance(String title, String message, DialogTypes dialogType, DialogAnimationTypes animationType) {
         LoadingDialog dialogFragment = new LoadingDialog();
