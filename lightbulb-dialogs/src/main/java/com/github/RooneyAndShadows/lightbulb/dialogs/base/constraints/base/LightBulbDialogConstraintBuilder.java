@@ -5,10 +5,10 @@ import android.app.Activity;
 import com.github.rooneyandshadows.lightbulb.commons.utils.WindowUtils;
 import com.github.rooneyandshadows.lightbulb.dialogs.base.LightBulbDialogFragment;
 
-public class LightBulbDialogConstraintBuilder {
+public class BaseDialogConstraintBuilder {
     protected final LightBulbDialogFragment dialogFragment;
 
-    public LightBulbDialogConstraintBuilder(LightBulbDialogFragment dialogFragment) {
+    public BaseDialogConstraintBuilder(LightBulbDialogFragment dialogFragment) {
         this.dialogFragment = dialogFragment;
     }
 
