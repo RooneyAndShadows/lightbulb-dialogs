@@ -502,6 +502,10 @@ public abstract class BaseDialogFragment extends androidx.fragment.app.DialogFra
             return;
         if (buttonPositive == null && buttonNegative == null || (positiveButtonConfig == null && negativeButtonConfig == null))
             buttonsContainer.setVisibility(View.GONE);
+        if (buttonPositive != null && positiveButtonConfig == null)
+            buttonPositive.setVisibility(View.GONE);
+        if (buttonNegative != null && negativeButtonConfig == null)
+            buttonNegative.setVisibility(View.GONE);
         if (buttonPositive != null && positiveButtonConfig != null) {
             buttonPositive.setEnabled(positiveButtonConfig.getButtonEnabled());
             buttonPositive.setTextColor(buttonPositive.getTextColors().withAlpha(positiveButtonConfig.getButtonEnabled() ? 255 : 140));
