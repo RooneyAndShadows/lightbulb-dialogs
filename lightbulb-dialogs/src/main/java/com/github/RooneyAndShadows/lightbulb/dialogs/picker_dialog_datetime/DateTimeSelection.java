@@ -1,18 +1,18 @@
 package com.github.rooneyandshadows.lightbulb.dialogs.picker_dialog_datetime;
 
-import com.github.rooneyandshadows.java.commons.date.DateUtils;
+import com.github.rooneyandshadows.java.commons.date.DateUtilsOffsetDate;
 import com.github.rooneyandshadows.lightbulb.dialogs.base.BaseDialogSelection;
 
-import java.util.Date;
+import java.time.OffsetDateTime;
 
-class DateTimeSelection extends BaseDialogSelection<Date> {
-    public DateTimeSelection(Date current, Date draft) {
+class DateTimeSelection extends BaseDialogSelection<OffsetDateTime> {
+    public DateTimeSelection(OffsetDateTime current, OffsetDateTime draft) {
         super(current, draft);
     }
 
     @Override
-    public boolean compareValues(Date v1, Date v2) {
-        return DateUtils.isDateEqual(v1, v2, true);
+    public boolean compareValues(OffsetDateTime v1, OffsetDateTime v2) {
+        return DateUtilsOffsetDate.isDateEqual(v1, v2, true);
     }
 
     @Override

@@ -6,11 +6,11 @@ import android.view.LayoutInflater;
 import android.view.View;
 import android.widget.TimePicker;
 
-import com.github.rooneyandshadows.java.commons.date.DateUtils;
+import com.github.rooneyandshadows.java.commons.date.DateUtilsOffsetDate;
 import com.github.rooneyandshadows.lightbulb.dialogs.base.BasePickerDialogFragment;
 import com.github.rooneyandshadows.lightbulb.dialogs.R;
 
-import java.util.Date;
+import java.time.OffsetDateTime;
 
 @SuppressWarnings({"unused", "UnusedAssignment"})
 public class TimePickerDialog extends BasePickerDialogFragment<int[]> {
@@ -34,7 +34,7 @@ public class TimePickerDialog extends BasePickerDialogFragment<int[]> {
     }
 
     public TimePickerDialog() {
-        super(new TimeSelection(new int[]{DateUtils.getHourOfDay(DateUtils.now()), DateUtils.getMinuteOfHour(DateUtils.now())}, null), false);
+        super(new TimeSelection(new int[]{DateUtilsOffsetDate.getHourOfDay(DateUtilsOffsetDate.nowLocal()), DateUtilsOffsetDate.getMinuteOfHour(DateUtilsOffsetDate.nowLocal())}, null), false);
     }
 
     @Override
@@ -114,10 +114,10 @@ public class TimePickerDialog extends BasePickerDialogFragment<int[]> {
             setSelection(newSelection[0], newSelection[1]);
     }
 
-    public void setSelectionFromDate(Date newSelection) {
+    public void setSelectionFromDate(OffsetDateTime newSelection) {
         if (newSelection == null) setSelection(null);
         else
-            setSelection(DateUtils.extractYearFromDate(newSelection), DateUtils.extractMonthOfYearFromDate(newSelection));
+            setSelection(DateUtilsOffsetDate.extractYearFromDate(newSelection), DateUtilsOffsetDate.extractMonthOfYearFromDate(newSelection));
     }
 
     private int validateHour(int hour) {
@@ -144,7 +144,7 @@ public class TimePickerDialog extends BasePickerDialogFragment<int[]> {
     }
 
 
-    private int[] getTimeFromDate(Date date) {
-        return date == null ? null : new int[]{DateUtils.getHourOfDay(date), DateUtils.getMinuteOfHour(date)};
+    private int[] getTimeFromDate(OffsetDateTime date) {
+        return date == null ? null : new int[]{DateUtilsOffsetDate.getHourOfDay(date), DateUtilsOffsetDate.getMinuteOfHour(date)};
     }
 }

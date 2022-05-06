@@ -7,16 +7,16 @@ import android.view.LayoutInflater;
 import android.view.View;
 import android.widget.TextView;
 
-import com.github.rooneyandshadows.java.commons.date.DateUtils;
+import com.github.rooneyandshadows.java.commons.date.DateUtilsOffsetDate;
 import com.github.rooneyandshadows.java.commons.string.StringUtils;
 import com.github.rooneyandshadows.lightbulb.calendars.month.MonthCalendarView;
 import com.github.rooneyandshadows.lightbulb.dialogs.base.BasePickerDialogFragment;
 import com.github.rooneyandshadows.lightbulb.commons.utils.ResourceUtils;
 import com.github.rooneyandshadows.lightbulb.dialogs.R;
 
+import java.time.OffsetDateTime;
 import java.util.ArrayList;
 import java.util.Arrays;
-import java.util.Date;
 import java.util.Locale;
 
 public class MonthPickerDialog extends BasePickerDialogFragment<int[]> {
@@ -79,9 +79,9 @@ public class MonthPickerDialog extends BasePickerDialogFragment<int[]> {
             if (previouslyDisabled != null) {
                 ArrayList<int[]> previouslyDisabledMonths = new ArrayList<>();
                 for (String disabledMonth : previouslyDisabled) {
-                    Date monthAsDate = DateUtils.getDateFromStringInDefaultFormat(disabledMonth);
-                    int year = DateUtils.extractYearFromDate(monthAsDate);
-                    int month = DateUtils.extractMonthOfYearFromDate(monthAsDate);
+                    OffsetDateTime monthAsDate = DateUtilsOffsetDate.getDateFromStringInDefaultFormat(disabledMonth);
+                    int year = DateUtilsOffsetDate.extractYearFromDate(monthAsDate);
+                    int month = DateUtilsOffsetDate.extractMonthOfYearFromDate(monthAsDate);
                     previouslyDisabledMonths.add(new int[]{year, month});
                 }
                 setDisabledMonths(previouslyDisabledMonths);
@@ -89,9 +89,9 @@ public class MonthPickerDialog extends BasePickerDialogFragment<int[]> {
             if (previouslyEnabled != null) {
                 ArrayList<int[]> previouslyEnabledMonths = new ArrayList<>();
                 for (String enabledMonth : previouslyEnabled) {
-                    Date monthAsDate = DateUtils.getDateFromStringInDefaultFormat(enabledMonth);
-                    int year = DateUtils.extractYearFromDate(monthAsDate);
-                    int month = DateUtils.extractMonthOfYearFromDate(monthAsDate);
+                    OffsetDateTime monthAsDate = DateUtilsOffsetDate.getDateFromStringInDefaultFormat(enabledMonth);
+                    int year = DateUtilsOffsetDate.extractYearFromDate(monthAsDate);
+                    int month = DateUtilsOffsetDate.extractMonthOfYearFromDate(monthAsDate);
                     previouslyEnabledMonths.add(new int[]{year, month});
                 }
                 setEnabledMonths(previouslyEnabledMonths);
@@ -110,13 +110,13 @@ public class MonthPickerDialog extends BasePickerDialogFragment<int[]> {
         if (this.enabledMonths != null) {
             ArrayList<String> enabledMonths = new ArrayList<>();
             for (int[] enabledMonth : this.enabledMonths)
-                enabledMonths.add(DateUtils.getDateStringInDefaultFormat(DateUtils.date(enabledMonth[0], enabledMonth[1])));
+                enabledMonths.add(DateUtilsOffsetDate.getDateStringInDefaultFormat(DateUtilsOffsetDate.date(enabledMonth[0], enabledMonth[1])));
             outState.putStringArrayList(PICKER_ENABLED_MONTHS, enabledMonths);
         }
         if (this.disabledMonths != null) {
             ArrayList<String> disabledMonths = new ArrayList<>();
             for (int[] disabledMonth : this.disabledMonths)
-                disabledMonths.add(DateUtils.getDateStringInDefaultFormat(DateUtils.date(disabledMonth[0], disabledMonth[1])));
+                disabledMonths.add(DateUtilsOffsetDate.getDateStringInDefaultFormat(DateUtilsOffsetDate.date(disabledMonth[0], disabledMonth[1])));
             outState.putStringArrayList(PICKER_DISABLED_MONTHS, disabledMonths);
         }
         if (monthCalendar != null)
@@ -127,9 +127,9 @@ public class MonthPickerDialog extends BasePickerDialogFragment<int[]> {
     protected View setDialogLayout(LayoutInflater inflater) {
         int orientation = getResources().getConfiguration().orientation;
         if (orientation == Configuration.ORIENTATION_PORTRAIT) {
-            return View.inflate(getContext(),R.layout.dialog_picker_month_vertical, null);
+            return View.inflate(getContext(), R.layout.dialog_picker_month_vertical, null);
         } else {
-            return View.inflate(getContext(),R.layout.dialog_picker_month_horizontal, null);
+            return View.inflate(getContext(), R.layout.dialog_picker_month_horizontal, null);
         }
     }
 
@@ -158,9 +158,9 @@ public class MonthPickerDialog extends BasePickerDialogFragment<int[]> {
             }
         }
         if (pickerHeadingSelectionTextView != null) {
-            Date date = newValue == null ? null : DateUtils.date(newValue[0], newValue[1]);
+            OffsetDateTime date = newValue == null ? null : DateUtilsOffsetDate.date(newValue[0], newValue[1]);
             Context ctx = pickerHeadingSelectionTextView.getContext();
-            String dateString = DateUtils.getDateString(dateFormat, date, Locale.getDefault());
+            String dateString = DateUtilsOffsetDate.getDateString(dateFormat, date, Locale.getDefault());
             if (dateString == null || dateString.equals(""))
                 dateString = ResourceUtils.getPhrase(ctx, R.string.dialog_month_picker_empty_text);
             pickerHeadingSelectionTextView.setText(dateString);
@@ -181,12 +181,6 @@ public class MonthPickerDialog extends BasePickerDialogFragment<int[]> {
         selection.setCurrentSelection(processedInput);
     }
 
-    public void setSelectionFromDate(Date newSelection) {
-        if (newSelection == null) clearSelection();
-        else
-            setSelection(DateUtils.extractYearFromDate(newSelection), DateUtils.extractMonthOfYearFromDate(newSelection));
-    }
-
     public void setCalendarBounds(int min, int max) {
         if (min > max) {
             maxYear = min;
@@ -195,8 +189,8 @@ public class MonthPickerDialog extends BasePickerDialogFragment<int[]> {
             minYear = min;
             maxYear = max;
         }
-        Date targetDate = isDialogShown() ? getMonthAsDate(selection.getDraftSelection()) : getMonthAsDate(selection.getCurrentSelection());
-        if (targetDate != null && !DateUtils.isDateInRange(targetDate, DateUtils.date(minYear, 1), DateUtils.date(maxYear, 12)))
+        OffsetDateTime targetDate = isDialogShown() ? getMonthAsDate(selection.getDraftSelection()) : getMonthAsDate(selection.getCurrentSelection());
+        if (targetDate != null && !DateUtilsOffsetDate.isDateInRange(targetDate, DateUtilsOffsetDate.date(minYear, 1), DateUtilsOffsetDate.date(maxYear, 12)))
             setSelection(null);
         if (monthCalendar != null)
             monthCalendar.setCalendarBounds(minYear, maxYear);
@@ -215,7 +209,7 @@ public class MonthPickerDialog extends BasePickerDialogFragment<int[]> {
     public void setEnabledMonths(ArrayList<int[]> enabled) {
         enabledMonths = enabled;
         if (enabledMonths != null) {
-            minYear = DateUtils.extractYearFromDate(DateUtils.now());
+            minYear = DateUtilsOffsetDate.extractYearFromDate(DateUtilsOffsetDate.nowLocal());
             maxYear = minYear;
             if (enabledMonths.size() > 0) {
                 minYear = enabled.get(0)[0];
@@ -260,7 +254,7 @@ public class MonthPickerDialog extends BasePickerDialogFragment<int[]> {
         return new int[]{year, month};
     }
 
-    public Date getMonthAsDate(int[] month) {
-        return month == null ? null : DateUtils.date(month[0], month[1]);
+    public OffsetDateTime getMonthAsDate(int[] month) {
+        return month == null ? null : DateUtilsOffsetDate.date(month[0], month[1]);
     }
 }

@@ -9,31 +9,35 @@ import android.view.View;
 import android.widget.TimePicker;
 
 import com.github.rooneyandshadows.java.commons.date.DateUtils;
+import com.github.rooneyandshadows.java.commons.date.DateUtilsOffsetDate;
 import com.github.rooneyandshadows.java.commons.string.StringUtils;
-import com.prolificinteractive.materialcalendarview.CalendarDay;
-import com.prolificinteractive.materialcalendarview.MaterialCalendarView;
 import com.github.rooneyandshadows.lightbulb.commons.utils.ResourceUtils;
 import com.github.rooneyandshadows.lightbulb.dialogs.R;
 import com.github.rooneyandshadows.lightbulb.dialogs.base.BasePickerDialogFragment;
+import com.prolificinteractive.materialcalendarview.CalendarDay;
+import com.prolificinteractive.materialcalendarview.MaterialCalendarView;
 
-import java.util.Date;
+import java.time.OffsetDateTime;
+import java.time.ZoneOffset;
 import java.util.Locale;
 
 import androidx.appcompat.widget.AppCompatImageButton;
 import androidx.appcompat.widget.AppCompatTextView;
 
 
-public class DateTimePickerDialog extends BasePickerDialogFragment<Date> {
+public class DateTimePickerDialog extends BasePickerDialogFragment<OffsetDateTime> {
     private static final String SHOWING_TIME_PICKER_TAG = "SHOWING_TIME_PICKER_TAG";
     private static final String DATE_FORMAT_TAG = "DATE_FORMAT_TEXT";
     private static final String DATE_SELECTION_TAG = "DATE_PICKER_SELECTION_TAG";
     private static final String DATE_SELECTION_DRAFT_TAG = "DATE_PICKER_SELECTION_DRAFT_TAG";
+    private static final String DATE_OFFSET_TAG = "DATE_OFFSET_TAG";
     private String dateFormat = "dd MMM HH:mm, yyyy";
     private boolean showingTimePicker;
     private MaterialCalendarView calendarView;
     private TimePicker timePickerView;
     private AppCompatTextView selectionTextValue;
     private AppCompatImageButton modeChangeButton;
+    private ZoneOffset zoneOffset = ZoneOffset.of(DateUtilsOffsetDate.getLocalTimeZone());
 
     public static DateTimePickerDialog newInstance(
             DialogButtonConfiguration positive, DialogButtonConfiguration negative,
@@ -66,13 +70,14 @@ public class DateTimePickerDialog extends BasePickerDialogFragment<Date> {
             if (hasSelection()) {
                 selection.setCurrentSelection(selection.getCurrentSelection());
             } else {
-                Date selectedDateFromArguments = DateUtils.getDateFromStringInDefaultFormat(dialogArguments.getString(DATE_SELECTION_TAG));
+                OffsetDateTime selectedDateFromArguments = DateUtilsOffsetDate.getDateFromString(DateUtilsOffsetDate.defaultFormatWithTimeZone, dialogArguments.getString(DATE_SELECTION_TAG));
                 selection.setCurrentSelection(selectedDateFromArguments);
             }
         } else {
             showingTimePicker = savedInstanceState.getBoolean(SHOWING_TIME_PICKER_TAG);
-            selection.setCurrentSelection(DateUtils.getDateFromStringInDefaultFormat(savedInstanceState.getString(DATE_SELECTION_TAG)), false);
-            selection.setDraftSelection(DateUtils.getDateFromStringInDefaultFormat(savedInstanceState.getString(DATE_SELECTION_DRAFT_TAG)), false);
+            selection.setCurrentSelection(DateUtilsOffsetDate.getDateFromString(DateUtilsOffsetDate.defaultFormatWithTimeZone, savedInstanceState.getString(DATE_SELECTION_TAG)), false);
+            selection.setDraftSelection(DateUtilsOffsetDate.getDateFromString(DateUtilsOffsetDate.defaultFormatWithTimeZone, savedInstanceState.getString(DATE_SELECTION_DRAFT_TAG)), false);
+            zoneOffset = ZoneOffset.of(savedInstanceState.getString(DATE_OFFSET_TAG));
         }
     }
 
@@ -80,9 +85,10 @@ public class DateTimePickerDialog extends BasePickerDialogFragment<Date> {
     protected void saveInstanceState(Bundle outState) {
         super.saveInstanceState(outState);
         if (selection.getCurrentSelection() != null)
-            outState.putString(DATE_SELECTION_TAG, DateUtils.getDateStringInDefaultFormat(selection.getCurrentSelection()));
+            outState.putString(DATE_SELECTION_TAG, DateUtilsOffsetDate.getDateString(DateUtilsOffsetDate.defaultFormatWithTimeZone, selection.getCurrentSelection()));
         if (selection.getDraftSelection() != null)
-            outState.putString(DATE_SELECTION_DRAFT_TAG, DateUtils.getDateStringInDefaultFormat(selection.getDraftSelection()));
+            outState.putString(DATE_SELECTION_DRAFT_TAG, DateUtilsOffsetDate.getDateString(DateUtilsOffsetDate.defaultFormatWithTimeZone, selection.getDraftSelection()));
+        outState.putString(DATE_OFFSET_TAG, zoneOffset.toString());
         outState.putBoolean(SHOWING_TIME_PICKER_TAG, showingTimePicker);
     }
 
@@ -112,29 +118,29 @@ public class DateTimePickerDialog extends BasePickerDialogFragment<Date> {
         calendarView.getRightArrow().setTint(ResourceUtils.getColorByAttribute(ctx, R.attr.colorAccent));
         calendarView.setOnDateChangedListener((widget, date, selected) -> {
             if (isDialogShown()) {
-                Date draftDate = selection.getDraftSelection();
+                OffsetDateTime draftDate = selection.getDraftSelection();
                 int hour = 0;
                 int minute = 0;
                 int second = 0;
                 if (draftDate != null) {
-                    hour = DateUtils.getHourOfDay(draftDate);
-                    minute = DateUtils.getMinuteOfHour(draftDate);
+                    hour = DateUtilsOffsetDate.getHourOfDay(draftDate);
+                    minute = DateUtilsOffsetDate.getMinuteOfHour(draftDate);
                 }
-                selection.setDraftSelection(DateUtils.date(date.getYear(), date.getMonth(), date.getDay(), hour, minute, second));
+                selection.setDraftSelection(DateUtilsOffsetDate.date(date.getYear(), date.getMonth(), date.getDay(), hour, minute, second, zoneOffset));
             } else {
-                Date currentDate = selection.getCurrentSelection();
+                OffsetDateTime currentDate = selection.getCurrentSelection();
                 int hour = 0;
                 int minute = 0;
                 int second = 0;
                 if (currentDate != null) {
-                    hour = DateUtils.getHourOfDay(currentDate);
-                    minute = DateUtils.getMinuteOfHour(currentDate);
+                    hour = DateUtilsOffsetDate.getHourOfDay(currentDate);
+                    minute = DateUtilsOffsetDate.getMinuteOfHour(currentDate);
                 }
-                selection.setCurrentSelection(DateUtils.date(date.getYear(), date.getMonth(), date.getDay(), hour, minute, second));
+                selection.setCurrentSelection(DateUtilsOffsetDate.date(date.getYear(), date.getMonth(), date.getDay(), hour, minute, second, zoneOffset));
             }
         });
         timePickerView.setOnTimeChangedListener((view1, hourOfDay, minute) -> {
-            Date date = DateUtils.setTimeToDate(selection.getDraftSelection(), hourOfDay, minute, 0);
+            OffsetDateTime date = DateUtilsOffsetDate.setTimeToDate(selection.getDraftSelection(), hourOfDay, minute, 0);
             if (isDialogShown()) selection.setDraftSelection(date);
             else selection.setCurrentSelection(date);
         });
@@ -144,7 +150,7 @@ public class DateTimePickerDialog extends BasePickerDialogFragment<Date> {
 
     @Override
     protected void synchronizeSelectUi() {
-        Date newDate = selection.hasDraftSelection() ? selection.getDraftSelection() : selection.getCurrentSelection();
+        OffsetDateTime newDate = selection.hasDraftSelection() ? selection.getDraftSelection() : selection.getCurrentSelection();
         if (newDate != null) {
             if (calendarView != null) {
                 modeChangeButton.setVisibility(View.VISIBLE);
@@ -152,8 +158,8 @@ public class DateTimePickerDialog extends BasePickerDialogFragment<Date> {
                 calendarView.clearSelection();
                 calendarView.setDateSelected(selectedDate, true);
                 calendarView.setCurrentDate(selectedDate, false);
-                timePickerView.setHour(DateUtils.getHourOfDay(newDate));
-                timePickerView.setMinute(DateUtils.getMinuteOfHour(newDate));
+                timePickerView.setHour(DateUtilsOffsetDate.getHourOfDay(newDate));
+                timePickerView.setMinute(DateUtilsOffsetDate.getMinuteOfHour(newDate));
             }
         } else {
             if (calendarView != null) {
@@ -164,22 +170,28 @@ public class DateTimePickerDialog extends BasePickerDialogFragment<Date> {
         updateHeader(newDate);
     }
 
-    private void updateHeader(Date newDate) {
+    @Override
+    public void setSelection(OffsetDateTime newSelection) {
+        super.setSelection(newSelection);
+        zoneOffset = newSelection.getOffset();
+    }
+
+    private void updateHeader(OffsetDateTime newDate) {
         if (selectionTextValue != null) {
             Context ctx = selectionTextValue.getContext();
-            String dateString = DateUtils.getDateString(dateFormat, newDate, Locale.getDefault());
+            String dateString = DateUtilsOffsetDate.getDateString(dateFormat, newDate, Locale.getDefault());
             if (dateString == null || dateString.equals(""))
                 dateString = ResourceUtils.getPhrase(ctx, R.string.dialog_month_picker_empty_text);
             selectionTextValue.setText(dateString);
         }
     }
 
-    private CalendarDay dateToCalendarDay(Date date) {
+    private CalendarDay dateToCalendarDay(OffsetDateTime date) {
         if (date == null)
             return null;
-        int year = DateUtils.extractYearFromDate(date);
-        int month = DateUtils.extractMonthOfYearFromDate(date);
-        int day = DateUtils.extractDayOfMonthFromDate(date);
+        int year = DateUtilsOffsetDate.extractYearFromDate(date);
+        int month = DateUtilsOffsetDate.extractMonthOfYearFromDate(date);
+        int day = DateUtilsOffsetDate.extractDayOfMonthFromDate(date);
         return CalendarDay.from(year, month, day);
     }
 

@@ -8,6 +8,7 @@ import android.view.View;
 import android.widget.TextView;
 
 import com.github.rooneyandshadows.java.commons.date.DateUtils;
+import com.github.rooneyandshadows.java.commons.date.DateUtilsOffsetDate;
 import com.github.rooneyandshadows.java.commons.string.StringUtils;
 import com.github.rooneyandshadows.lightbulb.dialogs.base.BasePickerDialogFragment;
 import com.prolificinteractive.materialcalendarview.CalendarDay;
@@ -15,11 +16,13 @@ import com.prolificinteractive.materialcalendarview.MaterialCalendarView;
 import com.github.rooneyandshadows.lightbulb.commons.utils.ResourceUtils;
 import com.github.rooneyandshadows.lightbulb.dialogs.R;
 
+import java.time.OffsetDateTime;
+import java.time.ZoneOffset;
 import java.util.Date;
 import java.util.Locale;
 
 @SuppressWarnings("unused")
-public class DateRangePickerDialog extends BasePickerDialogFragment<Date[]> {
+public class DateRangePickerDialog extends BasePickerDialogFragment<OffsetDateTime[]> {
     private static final String SELECTION_FROM_TAG = "DATE_RANGE_SELECTION_FROM_TAG";
     private static final String SELECTION_TO_TAG = "DATE_RANGE_SELECTION_TO_TAG";
     private static final String DRAFT_FROM_TAG = "DATE_RANGE_DRAFT_FROM_TAG";
@@ -27,12 +30,16 @@ public class DateRangePickerDialog extends BasePickerDialogFragment<Date[]> {
     private static final String DATE_RANGE_FROM_TEXT_TAG = "DATE_RANGE_FROM_TEXT_TAG";
     private static final String DATE_RANGE_TO_TEXT_TAG = "DATE_RANGE_TO_TEXT_TAG";
     private static final String DATE_FORMAT_TAG = "DATE_FORMAT_TAG";
+    private static final String DATE_FROM_ZONE_TAG = "DATE_FROM_ZONE_TAG";
+    private static final String DATE_TO_ZONE_TAG = "DATE_TO_ZONE_TAG";
     private String textFrom;
     private String textTo;
     private String dateFormat = "MMM dd, yyyy";
     private TextView textViewFromValue;
     private TextView textViewToValue;
     private MaterialCalendarView calendar;
+    private ZoneOffset offsetFrom = ZoneOffset.of(DateUtilsOffsetDate.getLocalTimeZone());
+    private ZoneOffset offsetTo = ZoneOffset.of(DateUtilsOffsetDate.getLocalTimeZone());
 
     public DateRangePickerDialog() {
         super(new DateRangeSelection(null, null));
@@ -67,40 +74,44 @@ public class DateRangePickerDialog extends BasePickerDialogFragment<Date[]> {
             textTo = dialogArguments.getString(DATE_RANGE_TO_TEXT_TAG);
             dateFormat = StringUtils.getOrDefault(dialogArguments.getString(DATE_FORMAT_TAG), dateFormat);
             if (hasSelection()) {
-                selection.setCurrentSelection(new Date[]{selection.getCurrentSelection()[0], selection.getCurrentSelection()[1]});
+                selection.setCurrentSelection(new OffsetDateTime[]{selection.getCurrentSelection()[0], selection.getCurrentSelection()[1]});
             } else {
-                Date from = DateUtils.getDateFromStringInDefaultFormat(dialogArguments.getString(SELECTION_FROM_TAG));
-                Date to = DateUtils.getDateFromStringInDefaultFormat(dialogArguments.getString(SELECTION_TO_TAG));
-                selection.setCurrentSelection(new Date[]{from, to});
+                OffsetDateTime from = DateUtilsOffsetDate.getDateFromString(DateUtilsOffsetDate.defaultFormatWithTimeZone, dialogArguments.getString(SELECTION_FROM_TAG));
+                OffsetDateTime to = DateUtilsOffsetDate.getDateFromString(DateUtilsOffsetDate.defaultFormatWithTimeZone, dialogArguments.getString(SELECTION_TO_TAG));
+                selection.setCurrentSelection(new OffsetDateTime[]{from, to});
             }
         } else {
+            offsetFrom = ZoneOffset.of(savedInstanceState.getString(DATE_FROM_ZONE_TAG));
+            offsetTo = ZoneOffset.of(savedInstanceState.getString(DATE_TO_ZONE_TAG));
             textFrom = savedInstanceState.getString(DATE_RANGE_FROM_TEXT_TAG);
             textTo = savedInstanceState.getString(DATE_RANGE_TO_TEXT_TAG);
             dateFormat = StringUtils.getOrDefault(savedInstanceState.getString(DATE_FORMAT_TAG), dateFormat);
-            Date selectionFrom = DateUtils.getDateFromStringInDefaultFormat(savedInstanceState.getString(SELECTION_FROM_TAG));
-            Date selectionTo = DateUtils.getDateFromStringInDefaultFormat(savedInstanceState.getString(SELECTION_TO_TAG));
-            Date draftFrom = DateUtils.getDateFromStringInDefaultFormat(savedInstanceState.getString(DRAFT_FROM_TAG));
-            Date draftTo = DateUtils.getDateFromStringInDefaultFormat(savedInstanceState.getString(DRAFT_TO_TAG));
-            selection.setCurrentSelection(new Date[]{selectionFrom, selectionTo}, false);
-            selection.setDraftSelection(new Date[]{draftFrom, draftTo}, false);
+            OffsetDateTime selectionFrom = DateUtilsOffsetDate.getDateFromString(DateUtilsOffsetDate.defaultFormatWithTimeZone, savedInstanceState.getString(SELECTION_FROM_TAG));
+            OffsetDateTime selectionTo = DateUtilsOffsetDate.getDateFromString(DateUtilsOffsetDate.defaultFormatWithTimeZone, savedInstanceState.getString(SELECTION_TO_TAG));
+            OffsetDateTime draftFrom = DateUtilsOffsetDate.getDateFromString(DateUtilsOffsetDate.defaultFormatWithTimeZone, savedInstanceState.getString(DRAFT_FROM_TAG));
+            OffsetDateTime draftTo = DateUtilsOffsetDate.getDateFromString(DateUtilsOffsetDate.defaultFormatWithTimeZone, savedInstanceState.getString(DRAFT_TO_TAG));
+            selection.setCurrentSelection(new OffsetDateTime[]{selectionFrom, selectionTo}, false);
+            selection.setDraftSelection(new OffsetDateTime[]{draftFrom, draftTo}, false);
         }
     }
 
     @Override
     protected void saveInstanceState(Bundle outState) {
         super.saveInstanceState(outState);
-        Date selectionFrom = selection.getCurrentSelection()[0];
-        Date selectionTo = selection.getCurrentSelection()[1];
-        Date draftFrom = selection.getDraftSelection()[0];
-        Date draftTo = selection.getDraftSelection()[1];
+        outState.putString(DATE_FROM_ZONE_TAG, offsetFrom.toString());
+        outState.putString(DATE_TO_ZONE_TAG, offsetTo.toString());
+        OffsetDateTime selectionFrom = selection.getCurrentSelection()[0];
+        OffsetDateTime selectionTo = selection.getCurrentSelection()[1];
+        OffsetDateTime draftFrom = selection.getDraftSelection()[0];
+        OffsetDateTime draftTo = selection.getDraftSelection()[1];
         if (selectionFrom != null)
-            outState.putString(SELECTION_FROM_TAG, DateUtils.getDateStringInDefaultFormat(selectionFrom));
+            outState.putString(SELECTION_FROM_TAG, DateUtilsOffsetDate.getDateString(DateUtilsOffsetDate.defaultFormatWithTimeZone, selectionFrom));
         if (selectionTo != null)
-            outState.putString(SELECTION_TO_TAG, DateUtils.getDateStringInDefaultFormat(selectionTo));
+            outState.putString(SELECTION_TO_TAG, DateUtilsOffsetDate.getDateString(DateUtilsOffsetDate.defaultFormatWithTimeZone, selectionTo));
         if (draftFrom != null)
-            outState.putString(DRAFT_FROM_TAG, DateUtils.getDateStringInDefaultFormat(draftFrom));
+            outState.putString(DRAFT_FROM_TAG, DateUtilsOffsetDate.getDateString(DateUtilsOffsetDate.defaultFormatWithTimeZone, draftFrom));
         if (draftTo != null)
-            outState.putString(DRAFT_TO_TAG, DateUtils.getDateStringInDefaultFormat(draftTo));
+            outState.putString(DRAFT_TO_TAG, DateUtilsOffsetDate.getDateString(DateUtilsOffsetDate.defaultFormatWithTimeZone, draftTo));
         outState.putString(DATE_RANGE_FROM_TEXT_TAG, textFrom);
         outState.putString(DATE_RANGE_TO_TEXT_TAG, textTo);
     }
@@ -131,20 +142,20 @@ public class DateRangePickerDialog extends BasePickerDialogFragment<Date[]> {
                 return;
             CalendarDay first = dates.get(0);
             CalendarDay last = dates.get(dates.size() - 1);
-            Date newFrom = DateUtils.date(first.getYear(), first.getMonth(), first.getDay(), 0, 0, 0);
-            Date newTo = DateUtils.date(last.getYear(), last.getMonth(), last.getDay(), 23, 59, 59);
+            OffsetDateTime newFrom = DateUtilsOffsetDate.date(first.getYear(), first.getMonth(), first.getDay(), 0, 0, 0, offsetFrom);
+            OffsetDateTime newTo = DateUtilsOffsetDate.date(last.getYear(), last.getMonth(), last.getDay(), 23, 59, 59, offsetTo);
             if (isDialogShown())
-                selection.setDraftSelection(new Date[]{newFrom, newTo});
+                selection.setDraftSelection(new OffsetDateTime[]{newFrom, newTo});
             else
-                selection.setCurrentSelection(new Date[]{newFrom, newTo});
+                selection.setCurrentSelection(new OffsetDateTime[]{newFrom, newTo});
         });
         synchronizeSelectUi();
     }
 
     @Override
     protected void synchronizeSelectUi() {
-        Date newFrom = selection.hasDraftSelection() ? selection.getDraftSelection()[0] : selection.getCurrentSelection()[0];
-        Date newTo = selection.hasDraftSelection() ? selection.getDraftSelection()[1] : selection.getCurrentSelection()[1];
+        OffsetDateTime newFrom = selection.hasDraftSelection() ? selection.getDraftSelection()[0] : selection.getCurrentSelection()[0];
+        OffsetDateTime newTo = selection.hasDraftSelection() ? selection.getDraftSelection()[1] : selection.getCurrentSelection()[1];
         if (calendar != null) {
             if (newFrom == null && newTo == null)
                 calendar.post(() -> calendar.clearSelection());
@@ -157,8 +168,8 @@ public class DateRangePickerDialog extends BasePickerDialogFragment<Date[]> {
         }
         if (textViewFromValue != null && textViewToValue != null) {
             Context ctx = textViewFromValue.getContext();
-            String dateStringFrom = DateUtils.getDateString(dateFormat, newFrom, Locale.getDefault());
-            String dateStringTo = DateUtils.getDateString(dateFormat, newTo, Locale.getDefault());
+            String dateStringFrom = DateUtilsOffsetDate.getDateString(dateFormat, newFrom, Locale.getDefault());
+            String dateStringTo = DateUtilsOffsetDate.getDateString(dateFormat, newTo, Locale.getDefault());
             if (dateStringFrom == null || dateStringFrom.equals(""))
                 dateStringFrom = ResourceUtils.getPhrase(ctx, R.string.dialog_date_picker_empty_text);
             if (dateStringTo == null || dateStringTo.equals(""))
@@ -168,45 +179,51 @@ public class DateRangePickerDialog extends BasePickerDialogFragment<Date[]> {
         }
     }
 
-    public final void setSelection(Date newFrom, Date newTo) {
-        Date[] preparedDates = prepareRangeForSet(newFrom, newTo);
+
+    public final void setSelection(OffsetDateTime newFrom, OffsetDateTime newTo) {
+        OffsetDateTime[] preparedDates = prepareRangeForSet(newFrom, newTo);
         newFrom = preparedDates[0];
         newTo = preparedDates[1];
         boolean isValid = ((newFrom != null && newTo != null) || (newFrom == null && newTo == null));
         if (!isValid)
             return;
-        selection.setCurrentSelection(new Date[]{newFrom, newTo});
+        selection.setCurrentSelection(new OffsetDateTime[]{newFrom, newTo});
+        if (newFrom != null)
+            offsetFrom = newFrom.getOffset();
+        if (newTo != null)
+            offsetTo = newTo.getOffset();
     }
 
-    public final void setSelection(Date[] range) {
+    @Override
+    public final void setSelection(OffsetDateTime[] range) {
         if (range == null)
-            range = new Date[]{null, null};
+            range = new OffsetDateTime[]{null, null};
         setSelection(range[0], range[1]);
     }
 
-    private Date[] prepareRangeForSet(Date newFrom, Date newTo) {
+    private OffsetDateTime[] prepareRangeForSet(OffsetDateTime newFrom, OffsetDateTime newTo) {
         if (newFrom != null && newTo != null) {
-            if (DateUtils.isDateAfter(newFrom, newTo)) {
-                Date tmp = newFrom;
+            if (DateUtilsOffsetDate.isDateAfter(newFrom, newTo)) {
+                OffsetDateTime tmp = newFrom;
                 newFrom = newTo;
                 newTo = tmp;
-            } else if (DateUtils.isDateBefore(newTo, newFrom)) {
-                Date tmp = newFrom;
+            } else if (DateUtilsOffsetDate.isDateBefore(newTo, newFrom)) {
+                OffsetDateTime tmp = newFrom;
                 newFrom = newTo;
                 newTo = tmp;
             }
         }
-        newFrom = DateUtils.setTimeToDate(newFrom, 0, 0, 0);
-        newTo = DateUtils.setTimeToDate(newTo, 23, 59, 59);
-        return new Date[]{newFrom, newTo};
+        newFrom = DateUtilsOffsetDate.setTimeToDate(newFrom, 0, 0, 0);
+        newTo = DateUtilsOffsetDate.setTimeToDate(newTo, 23, 59, 59);
+        return new OffsetDateTime[]{newFrom, newTo};
     }
 
-    private CalendarDay dateToCalendarDay(Date date) {
+    private CalendarDay dateToCalendarDay(OffsetDateTime date) {
         if (date == null)
             return null;
-        int year = DateUtils.extractYearFromDate(date);
-        int month = DateUtils.extractMonthOfYearFromDate(date);
-        int day = DateUtils.extractDayOfMonthFromDate(date);
+        int year = DateUtilsOffsetDate.extractYearFromDate(date);
+        int month = DateUtilsOffsetDate.extractMonthOfYearFromDate(date);
+        int day = DateUtilsOffsetDate.extractDayOfMonthFromDate(date);
         return CalendarDay.from(year, month, day);
     }
 }

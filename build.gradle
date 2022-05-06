@@ -18,7 +18,7 @@ buildscript {
                         selectableview  : "1.0.1",
                 ],
                 java                    : [
-                        commons: "1.0.0"
+                        commons: "1.0.6"
                 ]
 
         ]

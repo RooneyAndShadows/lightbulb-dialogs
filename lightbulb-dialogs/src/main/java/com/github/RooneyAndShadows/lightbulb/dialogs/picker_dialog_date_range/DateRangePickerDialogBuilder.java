@@ -4,17 +4,18 @@ import com.github.rooneyandshadows.lightbulb.dialogs.base.BaseDialogBuilder;
 import com.github.rooneyandshadows.lightbulb.dialogs.base.BaseDialogFragment;
 import com.github.rooneyandshadows.lightbulb.dialogs.base.BasePickerDialogFragment;
 
+import java.time.OffsetDateTime;
 import java.util.Date;
 
 import androidx.fragment.app.FragmentManager;
 
 public class DateRangePickerDialogBuilder extends BaseDialogBuilder<DateRangePickerDialog> {
 
-    private BasePickerDialogFragment.SelectionChangedListener<Date[]> dateSetListener;
+    private BasePickerDialogFragment.SelectionChangedListener<OffsetDateTime[]> dateSetListener;
     private String textFrom;
     private String textTo;
     private String dateFormat;
-    private Date[] initialRange;
+    private OffsetDateTime[] initialRange;
 
     public DateRangePickerDialogBuilder(FragmentManager manager, String dialogTag) {
         super(manager, dialogTag);
@@ -80,12 +81,12 @@ public class DateRangePickerDialogBuilder extends BaseDialogBuilder<DateRangePic
         return this;
     }
 
-    public DateRangePickerDialogBuilder withOnDateSelectedEvent(BasePickerDialogFragment.SelectionChangedListener<Date[]> listener) {
+    public DateRangePickerDialogBuilder withOnDateSelectedEvent(BasePickerDialogFragment.SelectionChangedListener<OffsetDateTime[]> listener) {
         this.dateSetListener = listener;
         return this;
     }
 
-    public DateRangePickerDialogBuilder withSelection(Date[] range) {
+    public DateRangePickerDialogBuilder withSelection(OffsetDateTime[] range) {
         this.initialRange = range;
         return this;
     }
