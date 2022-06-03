@@ -173,7 +173,8 @@ public class DateTimePickerDialog extends BasePickerDialogFragment<OffsetDateTim
     @Override
     public void setSelection(OffsetDateTime newSelection) {
         super.setSelection(newSelection);
-        zoneOffset = newSelection.getOffset();
+        if (newSelection != null)
+            zoneOffset = newSelection.getOffset();
     }
 
     private void updateHeader(OffsetDateTime newDate) {

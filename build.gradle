@@ -3,17 +3,18 @@
 buildscript {
     ext {
         versions = [
-                kotlin                  : "1.6.10",
+                kotlin                  : "1.6.21",
                 ktx                     : [
                         core: "1.7.0"
                 ],
-                android_appcompat       : "1.4.1",
+                android_appcompat       : "1.4.2",
+                android_constraintlayout: "2.1.4",
                 android_recyclerview    : "1.2.1",
                 android_dynamicanimation: "1.0.0",
                 material                : "1.4.0",
                 lightbulb               : [
-                        commons         : "1.0.5",
-                        recycleradapters: "1.0.2",
+                        commons         : "1.0.6",
+                        recycleradapters: "1.0.8",
                         calendars       : "1.0.1",
                         selectableview  : "1.0.1",
                 ],
