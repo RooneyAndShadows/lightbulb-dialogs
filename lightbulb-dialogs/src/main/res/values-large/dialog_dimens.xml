@@ -15,10 +15,6 @@
     <dimen name="dialog_date_picker_calendar_tile_size">33dp</dimen>
     <dimen name="dialog_date_picker_calendar_item_text_size">12sp</dimen>
     <dimen name="dialog_date_picker_header_horizontal_width">130dp</dimen>
-
-    <!-- Adapter picker-->
-    <dimen name="dialog_adapter_item_horizontal_padding">15dp</dimen>
-    <dimen name="dialog_adapter_item_vertical_padding">10dp</dimen>
     <!-- Time picker-->
     <dimen name="dialog_time_picker_width">270dp</dimen>
     <!-- Icon picker -->

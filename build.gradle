@@ -16,7 +16,6 @@ buildscript {
                         commons         : "1.0.6",
                         recycleradapters: "1.0.8",
                         calendars       : "1.0.1",
-                        selectableview  : "1.0.1",
                 ],
                 java                    : [
                         commons: "1.0.6"
