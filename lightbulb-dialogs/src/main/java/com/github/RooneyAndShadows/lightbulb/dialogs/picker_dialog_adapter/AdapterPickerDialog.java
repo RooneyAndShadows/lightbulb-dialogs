@@ -86,7 +86,7 @@ public class AdapterPickerDialog<ItemType extends EasyAdapterDataModel> extends 
     protected void synchronizeSelectUi() {
         int[] newSelection = selection.hasDraftSelection() ? selection.getDraftSelection() : selection.getCurrentSelection();
         if (adapter != null)
-            adapter.selectPositions(newSelection);
+            adapter.selectPositions(newSelection, true, false);
     }
 
     protected void configureRecyclerView(RecyclerView recyclerView) {
