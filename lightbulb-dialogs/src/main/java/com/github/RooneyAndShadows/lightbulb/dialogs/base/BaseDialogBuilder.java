@@ -16,6 +16,7 @@ public abstract class BaseDialogBuilder<DialogType extends BaseDialogFragment> {
     protected BaseDialogFragment.DialogCancelListener onCancelListener;
     protected BaseDialogFragment.DialogAnimationTypes animation;
     protected BaseDialogFragment.DialogTypes dialogType;
+    protected BaseDialogFragment.DialogCallbacks dialogCallbacks;
     protected boolean cancelableOnClickOutside = true;
 
     public BaseDialogBuilder(FragmentManager manager, String dialogTag) {
@@ -72,6 +73,11 @@ public abstract class BaseDialogBuilder<DialogType extends BaseDialogFragment> {
 
     public BaseDialogBuilder<DialogType> withAnimations(BaseDialogFragment.DialogAnimationTypes animation) {
         this.animation = animation;
+        return this;
+    }
+
+    public BaseDialogBuilder<DialogType> withDialogCallbacks(BaseDialogFragment.DialogCallbacks callbacks) {
+        this.dialogCallbacks = callbacks;
         return this;
     }
 

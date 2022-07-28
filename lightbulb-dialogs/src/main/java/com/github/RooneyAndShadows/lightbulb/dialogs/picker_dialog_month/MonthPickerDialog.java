@@ -124,7 +124,7 @@ public class MonthPickerDialog extends BasePickerDialogFragment<int[]> {
     }
 
     @Override
-    protected View setDialogLayout(LayoutInflater inflater) {
+    protected final View setDialogLayout(LayoutInflater inflater) {
         int orientation = getResources().getConfiguration().orientation;
         if (orientation == Configuration.ORIENTATION_PORTRAIT) {
             return View.inflate(getContext(), R.layout.dialog_picker_month_vertical, null);

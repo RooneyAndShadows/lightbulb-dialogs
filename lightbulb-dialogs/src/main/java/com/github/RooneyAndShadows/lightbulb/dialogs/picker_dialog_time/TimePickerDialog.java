@@ -62,7 +62,7 @@ public class TimePickerDialog extends BasePickerDialogFragment<int[]> {
     }
 
     @Override
-    protected View setDialogLayout(LayoutInflater inflater) {
+    protected final View setDialogLayout(LayoutInflater inflater) {
         return View.inflate(getContext(), R.layout.dialog_picker_time_picker, null);
     }
 

@@ -2,6 +2,8 @@ package com.github.rooneyandshadows.lightbulb.dialogs.picker_dialog_month;
 
 import com.github.rooneyandshadows.lightbulb.dialogs.base.BaseDialogBuilder;
 import com.github.rooneyandshadows.lightbulb.dialogs.base.BaseDialogFragment;
+import com.github.rooneyandshadows.lightbulb.dialogs.base.BaseDialogFragment.DialogCallbacks;
+import com.github.rooneyandshadows.lightbulb.dialogs.dialog_custom.CustomDialogBuilder;
 
 import java.util.ArrayList;
 
@@ -71,6 +73,11 @@ public class MonthPickerDialogBuilder extends BaseDialogBuilder<MonthPickerDialo
         return (MonthPickerDialogBuilder) super.withAnimations(animation);
     }
 
+    @Override
+    public MonthPickerDialogBuilder withDialogCallbacks(DialogCallbacks callbacks) {
+        return (MonthPickerDialogBuilder) super.withDialogCallbacks(callbacks);
+    }
+
     public MonthPickerDialogBuilder withDisabledMonths(ArrayList<int[]> disabledMonths) {
         this.disabledMonths = disabledMonths;
         return this;
@@ -111,6 +118,7 @@ public class MonthPickerDialogBuilder extends BaseDialogBuilder<MonthPickerDialo
         MonthPickerDialog dialogFragment = (MonthPickerDialog) fragmentManager.findFragmentByTag(dialogTag);
         if (dialogFragment == null)
             dialogFragment = MonthPickerDialog.newInstance(positiveButtonConfiguration, negativeButtonConfiguration, dateFormat, cancelableOnClickOutside, animation);
+        dialogFragment.setDialogCallbacks(dialogCallbacks);
         dialogFragment.setFragmentManager(fragmentManager);
         dialogFragment.setDialogTag(dialogTag);
         dialogFragment.addOnNegativeClickListeners(onNegativeClickListener);

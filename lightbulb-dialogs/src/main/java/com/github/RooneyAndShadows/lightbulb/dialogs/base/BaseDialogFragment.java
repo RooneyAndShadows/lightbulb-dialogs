@@ -24,12 +24,13 @@ import android.widget.TextView;
 import com.github.rooneyandshadows.java.commons.string.StringUtils;
 import com.github.rooneyandshadows.lightbulb.commons.utils.ParcelableUtils;
 import com.github.rooneyandshadows.lightbulb.commons.utils.WindowUtils;
-import com.github.rooneyandshadows.lightbulb.dialogs.base.constraints.regular.RegularDialogConstraints;
-import com.github.rooneyandshadows.lightbulb.dialogs.base.constraints.regular.RegularDialogConstraintsBuilder;
-import com.google.android.material.bottomsheet.BottomSheetBehavior;
 import com.github.rooneyandshadows.lightbulb.dialogs.R;
 import com.github.rooneyandshadows.lightbulb.dialogs.base.constraints.bottomsheet.BottomSheetDialogConstraints;
 import com.github.rooneyandshadows.lightbulb.dialogs.base.constraints.bottomsheet.BottomSheetDialogConstraintsBuilder;
+import com.github.rooneyandshadows.lightbulb.dialogs.base.constraints.regular.RegularDialogConstraints;
+import com.github.rooneyandshadows.lightbulb.dialogs.base.constraints.regular.RegularDialogConstraintsBuilder;
+import com.github.rooneyandshadows.lightbulb.dialogs.dialog_custom.CustomDialog;
+import com.google.android.material.bottomsheet.BottomSheetBehavior;
 
 import org.jetbrains.annotations.NotNull;
 
@@ -68,6 +69,7 @@ public abstract class BaseDialogFragment extends androidx.fragment.app.DialogFra
     private final ArrayList<DialogShowListener> onShowListeners = new ArrayList<>();
     private final ArrayList<DialogHideListener> onHideListeners = new ArrayList<>();
     private final ArrayList<DialogCancelListener> onCancelListeners = new ArrayList<>();
+    private DialogCallbacks dialogCallbacks;
 
 
     protected abstract View setDialogLayout(LayoutInflater inflater);
@@ -135,6 +137,8 @@ public abstract class BaseDialogFragment extends androidx.fragment.app.DialogFra
         }
         setCancelable(cancelableOnClickOutside);
         create(getArguments(), savedInstanceState);
+        if (dialogCallbacks != null)
+            dialogCallbacks.onCreate(this, getArguments(), savedInstanceState);
     }
 
     @Override
@@ -151,6 +155,8 @@ public abstract class BaseDialogFragment extends androidx.fragment.app.DialogFra
                 .withDialogType(dialogType)
                 .withAnimation(animationType);
         saveInstanceState(helper.getBundle());
+        if (dialogCallbacks != null)
+            dialogCallbacks.onSaveInstanceState(this, getView(), outState);
     }
 
     @Nullable
@@ -186,6 +192,8 @@ public abstract class BaseDialogFragment extends androidx.fragment.app.DialogFra
         configureContent(rootView, savedInstanceState);
         measureDialogLayout();
         viewCreated(view, savedInstanceState);
+        if (dialogCallbacks != null)
+            dialogCallbacks.onInflated(this, view, savedInstanceState);
     }
 
     @Override
@@ -300,6 +308,10 @@ public abstract class BaseDialogFragment extends androidx.fragment.app.DialogFra
         return message;
     }
 
+    public DialogTypes getDialogType() {
+        return dialogType;
+    }
+
     public void configurePositiveButton(DialogButtonConfigurationCreator configurationCreator) {
         this.positiveButtonConfig = configurationCreator == null ? null : configurationCreator.create(positiveButtonConfig);
         configureButtons();
@@ -353,6 +365,10 @@ public abstract class BaseDialogFragment extends androidx.fragment.app.DialogFra
 
     public void removeOnHideListener(DialogHideListener hideListener) {
         onHideListeners.remove(hideListener);
+    }
+
+    public final void setDialogCallbacks(DialogCallbacks callbacks) {
+        this.dialogCallbacks = callbacks;
     }
 
     public void show() {
@@ -844,5 +860,14 @@ public abstract class BaseDialogFragment extends androidx.fragment.app.DialogFra
         public int getValue() {
             return value;
         }
+    }
+
+    public interface DialogCallbacks {
+
+        void onCreate(BaseDialogFragment dialog, Bundle dialogArguments, Bundle savedInstanceState);
+
+        void onInflated(BaseDialogFragment dialog, View layout, Bundle savedInstanceState);
+
+        void onSaveInstanceState(BaseDialogFragment dialog, View layout, Bundle outState);
     }
 }

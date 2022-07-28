@@ -59,7 +59,7 @@ public class AdapterPickerDialog<ItemType extends EasyAdapterDataModel> extends 
     }
 
     @Override
-    protected View setDialogLayout(LayoutInflater inflater) {
+    protected final View setDialogLayout(LayoutInflater inflater) {
         return View.inflate(getContext(), R.layout.dialog_picker_normal, null);
     }
 

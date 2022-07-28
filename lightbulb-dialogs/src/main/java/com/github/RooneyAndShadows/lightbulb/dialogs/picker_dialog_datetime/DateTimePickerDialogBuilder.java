@@ -3,6 +3,7 @@ package com.github.rooneyandshadows.lightbulb.dialogs.picker_dialog_datetime;
 import com.github.rooneyandshadows.lightbulb.dialogs.base.BaseDialogBuilder;
 import com.github.rooneyandshadows.lightbulb.dialogs.base.BaseDialogFragment;
 import com.github.rooneyandshadows.lightbulb.dialogs.base.BasePickerDialogFragment;
+import com.github.rooneyandshadows.lightbulb.dialogs.dialog_custom.CustomDialogBuilder;
 
 import java.time.OffsetDateTime;
 
@@ -68,6 +69,11 @@ public class DateTimePickerDialogBuilder extends BaseDialogBuilder<DateTimePicke
         return (DateTimePickerDialogBuilder) super.withAnimations(animation);
     }
 
+    @Override
+    public DateTimePickerDialogBuilder withDialogCallbacks(BaseDialogFragment.DialogCallbacks callbacks) {
+        return (DateTimePickerDialogBuilder) super.withDialogCallbacks(callbacks);
+    }
+
     public DateTimePickerDialogBuilder withOnDateSelectedEvent(BasePickerDialogFragment.SelectionChangedListener<OffsetDateTime> listener) {
         this.dateSetListener = listener;
         return this;
@@ -88,6 +94,7 @@ public class DateTimePickerDialogBuilder extends BaseDialogBuilder<DateTimePicke
         DateTimePickerDialog dialogFragment = (DateTimePickerDialog) fragmentManager.findFragmentByTag(dialogTag);
         if (dialogFragment == null)
             dialogFragment = DateTimePickerDialog.newInstance(positiveButtonConfiguration, negativeButtonConfiguration, dateFormat, cancelableOnClickOutside, animation);
+        dialogFragment.setDialogCallbacks(dialogCallbacks);
         dialogFragment.setFragmentManager(fragmentManager);
         dialogFragment.setDialogTag(dialogTag);
         dialogFragment.addOnNegativeClickListeners(onNegativeClickListener);

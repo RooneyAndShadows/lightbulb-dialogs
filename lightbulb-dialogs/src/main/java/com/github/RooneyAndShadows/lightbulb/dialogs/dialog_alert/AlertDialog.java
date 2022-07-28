@@ -30,7 +30,7 @@ public class AlertDialog extends BaseDialogFragment {
     }
 
     @Override
-    protected View setDialogLayout(LayoutInflater inflater) {
+    protected final View setDialogLayout(LayoutInflater inflater) {
         return View.inflate(getContext(), R.layout.dialog_alert, null);
     }
 

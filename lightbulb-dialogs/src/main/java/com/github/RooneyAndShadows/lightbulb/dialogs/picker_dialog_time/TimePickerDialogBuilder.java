@@ -7,7 +7,6 @@ import com.github.rooneyandshadows.lightbulb.dialogs.base.BasePickerDialogFragme
 import androidx.fragment.app.FragmentManager;
 
 public class TimePickerDialogBuilder extends BaseDialogBuilder<TimePickerDialog> {
-
     private BasePickerDialogFragment.SelectionChangedListener<int[]> timeSetListener;
     private int[] initialTime;
 
@@ -65,6 +64,11 @@ public class TimePickerDialogBuilder extends BaseDialogBuilder<TimePickerDialog>
         return (TimePickerDialogBuilder) super.withAnimations(animation);
     }
 
+    @Override
+    public TimePickerDialogBuilder withDialogCallbacks(BaseDialogFragment.DialogCallbacks callbacks) {
+        return (TimePickerDialogBuilder) super.withDialogCallbacks(callbacks);
+    }
+
     public TimePickerDialogBuilder withOnDateSelectedEvent(BasePickerDialogFragment.SelectionChangedListener<int[]> listener) {
         this.timeSetListener = listener;
         return this;
@@ -85,6 +89,7 @@ public class TimePickerDialogBuilder extends BaseDialogBuilder<TimePickerDialog>
         TimePickerDialog dialogFragment = (TimePickerDialog) fragmentManager.findFragmentByTag(dialogTag);
         if (dialogFragment == null)
             dialogFragment = TimePickerDialog.newInstance(positiveButtonConfiguration, negativeButtonConfiguration, cancelableOnClickOutside, animation);
+        dialogFragment.setDialogCallbacks(dialogCallbacks);
         dialogFragment.setFragmentManager(fragmentManager);
         dialogFragment.setDialogTag(dialogTag);
         dialogFragment.addOnNegativeClickListeners(onNegativeClickListener);

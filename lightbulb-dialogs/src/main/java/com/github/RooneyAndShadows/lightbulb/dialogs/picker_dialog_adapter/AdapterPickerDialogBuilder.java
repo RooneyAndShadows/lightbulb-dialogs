@@ -3,6 +3,8 @@ package com.github.rooneyandshadows.lightbulb.dialogs.picker_dialog_adapter;
 
 import com.github.rooneyandshadows.lightbulb.dialogs.base.BaseDialogBuilder;
 import com.github.rooneyandshadows.lightbulb.dialogs.base.BaseDialogFragment;
+import com.github.rooneyandshadows.lightbulb.dialogs.base.BaseDialogFragment.DialogCallbacks;
+import com.github.rooneyandshadows.lightbulb.dialogs.dialog_custom.CustomDialogBuilder;
 import com.github.rooneyandshadows.lightbulb.recycleradapters.abstraction.EasyAdapterDataModel;
 import com.github.rooneyandshadows.lightbulb.recycleradapters.abstraction.EasyRecyclerAdapter;
 
@@ -70,6 +72,11 @@ public class AdapterPickerDialogBuilder<ModelType extends EasyAdapterDataModel> 
         return (AdapterPickerDialogBuilder<ModelType>) super.withAnimations(animation);
     }
 
+    @Override
+    public AdapterPickerDialogBuilder<ModelType> withDialogCallbacks(DialogCallbacks callbacks) {
+        return (AdapterPickerDialogBuilder<ModelType>) super.withDialogCallbacks(callbacks);
+    }
+
     public AdapterPickerDialogBuilder<ModelType> withSelectionCallback(AdapterPickerDialog.SelectionChangedListener<int[]> listener) {
         changedCallback = listener;
         return this;
@@ -85,13 +92,13 @@ public class AdapterPickerDialogBuilder<ModelType extends EasyAdapterDataModel> 
         return this;
     }
 
-
     @Override
     @SuppressWarnings("unchecked")
     public AdapterPickerDialog<ModelType> buildDialog() {
         AdapterPickerDialog<ModelType> dialogFragment = (AdapterPickerDialog<ModelType>) fragmentManager.findFragmentByTag(dialogTag);
         if (dialogFragment == null)
             dialogFragment = AdapterPickerDialog.newInstance(title, message, positiveButtonConfiguration, negativeButtonConfiguration, cancelableOnClickOutside, dialogType, animation);
+        dialogFragment.setDialogCallbacks(dialogCallbacks);
         dialogFragment.setFragmentManager(fragmentManager);
         dialogFragment.setDialogTag(dialogTag);
         dialogFragment.addOnNegativeClickListeners(onNegativeClickListener);

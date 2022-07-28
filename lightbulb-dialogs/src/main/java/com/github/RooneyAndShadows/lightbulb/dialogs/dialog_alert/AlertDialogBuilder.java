@@ -63,6 +63,11 @@ public class AlertDialogBuilder extends BaseDialogBuilder<AlertDialog> {
     }
 
     @Override
+    public AlertDialogBuilder withDialogCallbacks(BaseDialogFragment.DialogCallbacks callbacks) {
+        return (AlertDialogBuilder) super.withDialogCallbacks(callbacks);
+    }
+
+    @Override
     public AlertDialog buildDialog() {
         AlertDialog alertDialog = (AlertDialog) fragmentManager.findFragmentByTag(dialogTag);
         if (alertDialog == null)

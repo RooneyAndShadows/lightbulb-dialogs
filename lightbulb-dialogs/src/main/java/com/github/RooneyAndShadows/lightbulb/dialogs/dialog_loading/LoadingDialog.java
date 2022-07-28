@@ -24,7 +24,7 @@ public class LoadingDialog extends BaseDialogFragment {
     }
 
     @Override
-    protected View setDialogLayout(LayoutInflater inflater) {
+    protected final View setDialogLayout(LayoutInflater inflater) {
         return View.inflate(getContext(), R.layout.dialog_loading_normal, null);
     }
 

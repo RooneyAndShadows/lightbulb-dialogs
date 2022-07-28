@@ -12,8 +12,6 @@ public class CustomDialogBuilder<DialogType extends CustomDialog> extends BaseDi
     private final CustomDialogInitializer<DialogType> dialogInitializer;
     private final CustomDialogInflater dialogInflater;
     private boolean loading = false;
-    private CustomDialogCallbacks dialogCallbacks;
-
 
     public CustomDialogBuilder(FragmentManager manager, String dialogTag, CustomDialogInitializer<DialogType> customDialogInitializer, CustomDialogInflater inflatedListener) {
         super(manager, dialogTag);
@@ -71,13 +69,13 @@ public class CustomDialogBuilder<DialogType extends CustomDialog> extends BaseDi
         return (CustomDialogBuilder<DialogType>) super.withAnimations(animation);
     }
 
-    public CustomDialogBuilder<DialogType> withLoading(boolean isLoading) {
-        this.loading = isLoading;
-        return this;
+    @Override
+    public CustomDialogBuilder<DialogType> withDialogCallbacks(DialogCallbacks callbacks) {
+        return (CustomDialogBuilder<DialogType>) super.withDialogCallbacks(callbacks);
     }
 
-    public CustomDialogBuilder<DialogType> withDialogCallbacks(CustomDialogCallbacks dialogCallbacks) {
-        this.dialogCallbacks = dialogCallbacks;
+    public CustomDialogBuilder<DialogType> withLoading(boolean isLoading) {
+        this.loading = isLoading;
         return this;
     }
 

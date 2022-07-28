@@ -2,7 +2,9 @@ package com.github.rooneyandshadows.lightbulb.dialogs.picker_dialog_color;
 
 import com.github.rooneyandshadows.lightbulb.dialogs.base.BaseDialogBuilder;
 import com.github.rooneyandshadows.lightbulb.dialogs.base.BaseDialogFragment;
+import com.github.rooneyandshadows.lightbulb.dialogs.base.BaseDialogFragment.DialogCallbacks;
 import com.github.rooneyandshadows.lightbulb.dialogs.base.BasePickerDialogFragment;
+import com.github.rooneyandshadows.lightbulb.dialogs.dialog_custom.CustomDialogBuilder;
 
 import androidx.fragment.app.FragmentManager;
 
@@ -10,7 +12,6 @@ public class ColorPickerDialogBuilder extends BaseDialogBuilder<ColorPickerDialo
     private BasePickerDialogFragment.SelectionChangedListener<int[]> changedCallback;
     private int[] selection;
     private final ColorPickerAdapter adapter;
-
 
     public ColorPickerDialogBuilder(FragmentManager manager, String dialogTag, ColorPickerAdapter adapter) {
         super(manager, dialogTag);
@@ -67,6 +68,11 @@ public class ColorPickerDialogBuilder extends BaseDialogBuilder<ColorPickerDialo
         return (ColorPickerDialogBuilder) super.withAnimations(animation);
     }
 
+    @Override
+    public ColorPickerDialogBuilder withDialogCallbacks(DialogCallbacks callbacks) {
+        return (ColorPickerDialogBuilder) super.withDialogCallbacks(callbacks);
+    }
+
     public ColorPickerDialogBuilder withSelectionCallback(BasePickerDialogFragment.SelectionChangedListener<int[]> listener) {
         changedCallback = listener;
         return this;
@@ -82,6 +88,7 @@ public class ColorPickerDialogBuilder extends BaseDialogBuilder<ColorPickerDialo
         ColorPickerDialog colorPickerDialog = (ColorPickerDialog) fragmentManager.findFragmentByTag(dialogTag);
         if (colorPickerDialog == null)
             colorPickerDialog = ColorPickerDialog.newInstance(title, message, positiveButtonConfiguration, negativeButtonConfiguration, cancelableOnClickOutside, animation);
+        colorPickerDialog.setDialogCallbacks(dialogCallbacks);
         colorPickerDialog.setFragmentManager(fragmentManager);
         colorPickerDialog.setDialogTag(dialogTag);
         colorPickerDialog.addOnShowListener(onShowListener);

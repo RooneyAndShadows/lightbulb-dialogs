@@ -2,7 +2,9 @@ package com.github.rooneyandshadows.lightbulb.dialogs.picker_dialog_icon;
 
 import com.github.rooneyandshadows.lightbulb.dialogs.base.BaseDialogBuilder;
 import com.github.rooneyandshadows.lightbulb.dialogs.base.BaseDialogFragment;
+import com.github.rooneyandshadows.lightbulb.dialogs.base.BaseDialogFragment.DialogCallbacks;
 import com.github.rooneyandshadows.lightbulb.dialogs.base.BasePickerDialogFragment;
+import com.github.rooneyandshadows.lightbulb.dialogs.dialog_custom.CustomDialogBuilder;
 import com.github.rooneyandshadows.lightbulb.dialogs.picker_dialog_adapter.AdapterPickerDialog;
 
 import androidx.fragment.app.FragmentManager;
@@ -11,7 +13,6 @@ public class IconPickerDialogBuilder extends BaseDialogBuilder<IconPickerDialog>
     private BasePickerDialogFragment.SelectionChangedListener<int[]> changedCallback;
     private int[] selection;
     private final IconPickerAdapter adapter;
-
 
     public IconPickerDialogBuilder(FragmentManager manager, String dialogTag, IconPickerAdapter adapter) {
         super(manager, dialogTag);
@@ -68,6 +69,11 @@ public class IconPickerDialogBuilder extends BaseDialogBuilder<IconPickerDialog>
         return (IconPickerDialogBuilder) super.withAnimations(animation);
     }
 
+    @Override
+    public IconPickerDialogBuilder withDialogCallbacks(DialogCallbacks callbacks) {
+        return (IconPickerDialogBuilder) super.withDialogCallbacks(callbacks);
+    }
+
     public IconPickerDialogBuilder withSelectionCallback(AdapterPickerDialog.SelectionChangedListener<int[]> listener) {
         changedCallback = listener;
         return this;
@@ -83,6 +89,7 @@ public class IconPickerDialogBuilder extends BaseDialogBuilder<IconPickerDialog>
         IconPickerDialog iconPickerDialog = (IconPickerDialog) fragmentManager.findFragmentByTag(dialogTag);
         if (iconPickerDialog == null)
             iconPickerDialog = IconPickerDialog.newInstance(title, message, positiveButtonConfiguration, negativeButtonConfiguration, cancelableOnClickOutside, animation);
+        iconPickerDialog.setDialogCallbacks(dialogCallbacks);
         iconPickerDialog.setFragmentManager(fragmentManager);
         iconPickerDialog.setDialogTag(dialogTag);
         iconPickerDialog.addOnShowListener(onShowListener);

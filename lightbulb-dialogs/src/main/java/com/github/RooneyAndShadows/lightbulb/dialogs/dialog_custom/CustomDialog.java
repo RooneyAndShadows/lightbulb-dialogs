@@ -11,12 +11,12 @@ import com.github.rooneyandshadows.lightbulb.dialogs.base.BaseDialogFragment;
 
 import androidx.appcompat.widget.AppCompatTextView;
 import androidx.appcompat.widget.LinearLayoutCompat;
+import androidx.constraintlayout.widget.ConstraintLayout;
 
 public class CustomDialog extends BaseDialogFragment {
     private static final String IS_LOADING_KEY = "IS_LOADING_KEY";
     private ProgressBar loadingIndicator;
     private AppCompatTextView titleView;
-    private CustomDialogCallbacks dialogCallbacks;
     private CustomDialogInflater dialogInflater;
     private boolean loading = false;
 
@@ -43,6 +43,8 @@ public class CustomDialog extends BaseDialogFragment {
         View view = View.inflate(getContext(), R.layout.dialog_custom, null);
         LinearLayoutCompat contentContainer = view.findViewById(R.id.customDialogContentContainer);
         contentContainer.removeAllViews();
+        if (getDialogType() == DialogTypes.FULLSCREEN)
+            contentContainer.getLayoutParams().height = 0;
         if (dialogInflater != null)
             contentContainer.addView(dialogInflater.inflateView(this, inflater));
         return view;
@@ -53,23 +55,17 @@ public class CustomDialog extends BaseDialogFragment {
         loading = savedInstanceState == null ?
                 dialogArguments.getBoolean(IS_LOADING_KEY) :
                 savedInstanceState.getBoolean(IS_LOADING_KEY);
-        if (dialogCallbacks != null)
-            dialogCallbacks.onCreate(this, dialogArguments, savedInstanceState);
     }
 
     @Override
     protected void configureContent(View view, Bundle savedInstanceState) {
         selectViews();
         setupLoadingView();
-        if (dialogCallbacks != null)
-            dialogCallbacks.onInflated(this, view, savedInstanceState);
     }
 
     @Override
     protected void saveInstanceState(Bundle outState) {
         super.saveInstanceState(outState);
-        if (dialogCallbacks != null)
-            dialogCallbacks.onSaveInstanceState(this, getView(), outState);
         outState.putBoolean(IS_LOADING_KEY, loading);
     }
 
@@ -80,10 +76,6 @@ public class CustomDialog extends BaseDialogFragment {
 
     public final void setDialogInflater(CustomDialogInflater dialogInflater) {
         this.dialogInflater = dialogInflater;
-    }
-
-    public final void setDialogCallbacks(CustomDialogCallbacks inflateListener) {
-        this.dialogCallbacks = inflateListener;
     }
 
     public interface CustomDialogInflater {
@@ -103,14 +95,5 @@ public class CustomDialog extends BaseDialogFragment {
         loadingIndicator.setVisibility(loading ? View.VISIBLE : View.GONE);
         int endPadding = loading ? ResourceUtils.getDimenPxById(loadingIndicator.getContext(), R.dimen.dialog_spacing_size_small) : 0;
         titleView.setPadding(titleView.getPaddingLeft(), titleView.getPaddingTop(), endPadding, titleView.getPaddingBottom());
-    }
-
-    public interface CustomDialogCallbacks {
-
-        void onCreate(CustomDialog dialog, Bundle dialogArguments, Bundle savedInstanceState);
-
-        void onInflated(CustomDialog dialog, View layout, Bundle savedInstanceState);
-
-        void onSaveInstanceState(CustomDialog dialog, View layout, Bundle outState);
     }
 }

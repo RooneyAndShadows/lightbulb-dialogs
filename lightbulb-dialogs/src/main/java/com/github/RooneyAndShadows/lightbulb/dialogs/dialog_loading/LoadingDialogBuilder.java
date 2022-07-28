@@ -2,6 +2,8 @@ package com.github.rooneyandshadows.lightbulb.dialogs.dialog_loading;
 
 import com.github.rooneyandshadows.lightbulb.dialogs.base.BaseDialogBuilder;
 import com.github.rooneyandshadows.lightbulb.dialogs.base.BaseDialogFragment;
+import com.github.rooneyandshadows.lightbulb.dialogs.base.BaseDialogFragment.DialogCallbacks;
+import com.github.rooneyandshadows.lightbulb.dialogs.dialog_custom.CustomDialogBuilder;
 
 import androidx.fragment.app.FragmentManager;
 
@@ -62,10 +64,16 @@ public class LoadingDialogBuilder extends BaseDialogBuilder<LoadingDialog> {
     }
 
     @Override
+    public LoadingDialogBuilder withDialogCallbacks(DialogCallbacks callbacks) {
+        return (LoadingDialogBuilder) super.withDialogCallbacks(callbacks);
+    }
+
+    @Override
     public LoadingDialog buildDialog() {
         LoadingDialog dialogFragment = (LoadingDialog) fragmentManager.findFragmentByTag(dialogTag);
         if (dialogFragment == null)
             dialogFragment = LoadingDialog.newInstance(title, message, dialogType, animation);
+        dialogFragment.setDialogCallbacks(dialogCallbacks);
         dialogFragment.setFragmentManager(fragmentManager);
         dialogFragment.setDialogTag(dialogTag);
         dialogFragment.addOnShowListener(onShowListener);
