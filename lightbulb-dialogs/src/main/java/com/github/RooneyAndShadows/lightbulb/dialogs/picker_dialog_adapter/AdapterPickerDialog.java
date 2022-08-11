@@ -78,7 +78,7 @@ public class AdapterPickerDialog<ItemType extends EasyAdapterDataModel> extends 
         return new RegularDialogConstraintsBuilder(this)
                 .Default()
                 .withMinWidth(getPercentOfWindowWidth(orientation == Configuration.ORIENTATION_PORTRAIT ? 70 : 60))
-                .withMaxHeight(getPercentOfWindowHeight(orientation == Configuration.ORIENTATION_PORTRAIT ? 65 : 85))
+                .withMaxHeight(getPercentOfWindowHeight(orientation == Configuration.ORIENTATION_PORTRAIT ? 70 : 85))
                 .build();
     }
 
@@ -100,7 +100,7 @@ public class AdapterPickerDialog<ItemType extends EasyAdapterDataModel> extends 
     @Override
     protected void setupRegularDialog(RegularDialogConstraints constraints, Window dialogWindow, View dialogLayout, Rect fgPadding) {
         int widthMeasureSpec = View.MeasureSpec.makeMeasureSpec(constraints.getMaxWidth(), View.MeasureSpec.AT_MOST);
-        int heightMeasureSpec = View.MeasureSpec.makeMeasureSpec(0, View.MeasureSpec.UNSPECIFIED);
+        int heightMeasureSpec = View.MeasureSpec.makeMeasureSpec(constraints.getMaxHeight(), View.MeasureSpec.AT_MOST);
         dialogLayout.measure(widthMeasureSpec, heightMeasureSpec);
         int desiredHeightForRecycler = recyclerView.getMeasuredHeight();
         int horPadding = fgPadding.left + fgPadding.right;
