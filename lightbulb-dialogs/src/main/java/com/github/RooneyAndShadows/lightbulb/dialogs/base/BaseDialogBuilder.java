@@ -1,10 +1,12 @@
 package com.github.rooneyandshadows.lightbulb.dialogs.base;
 
 import androidx.fragment.app.FragmentManager;
+import androidx.lifecycle.LifecycleOwner;
 
 public abstract class BaseDialogBuilder<DialogType extends BaseDialogFragment> {
-    protected final String dialogTag;
+    protected final LifecycleOwner dialogLifecycleOwner;
     protected final FragmentManager fragmentManager;
+    protected final String dialogTag;
     protected String title;
     protected String message;
     protected BaseDialogFragment.DialogButtonConfiguration positiveButtonConfiguration;
@@ -19,9 +21,14 @@ public abstract class BaseDialogBuilder<DialogType extends BaseDialogFragment> {
     protected BaseDialogFragment.DialogCallbacks dialogCallbacks;
     protected boolean cancelableOnClickOutside = true;
 
-    public BaseDialogBuilder(FragmentManager manager, String dialogTag) {
-        this.dialogTag = dialogTag;
+    public BaseDialogBuilder(LifecycleOwner lifecycleOwner, FragmentManager manager, String dialogTag) {
+        this.dialogLifecycleOwner = lifecycleOwner;
         this.fragmentManager = manager;
+        this.dialogTag = dialogTag;
+    }
+
+    public BaseDialogBuilder(FragmentManager manager, String dialogTag) {
+        this(null, manager, dialogTag);
     }
 
     public BaseDialogBuilder<DialogType> withTitle(String title) {

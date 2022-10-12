@@ -5,6 +5,7 @@ import com.github.rooneyandshadows.lightbulb.dialogs.base.BaseDialogFragment;
 import com.github.rooneyandshadows.lightbulb.dialogs.base.BasePickerDialogFragment;
 
 import androidx.fragment.app.FragmentManager;
+import androidx.lifecycle.LifecycleOwner;
 
 public class TimePickerDialogBuilder extends BaseDialogBuilder<TimePickerDialog> {
     private BasePickerDialogFragment.SelectionChangedListener<int[]> timeSetListener;
@@ -12,6 +13,10 @@ public class TimePickerDialogBuilder extends BaseDialogBuilder<TimePickerDialog>
 
     public TimePickerDialogBuilder(FragmentManager manager, String dialogTag) {
         super(manager, dialogTag);
+    }
+
+    public TimePickerDialogBuilder(LifecycleOwner lifecycleOwner, FragmentManager manager, String dialogTag) {
+        super(lifecycleOwner, manager, dialogTag);
     }
 
     @Override
@@ -89,6 +94,7 @@ public class TimePickerDialogBuilder extends BaseDialogBuilder<TimePickerDialog>
         TimePickerDialog dialogFragment = (TimePickerDialog) fragmentManager.findFragmentByTag(dialogTag);
         if (dialogFragment == null)
             dialogFragment = TimePickerDialog.newInstance(positiveButtonConfiguration, negativeButtonConfiguration, cancelableOnClickOutside, animation);
+        dialogFragment.setLifecycleOwner(dialogLifecycleOwner);
         dialogFragment.setDialogCallbacks(dialogCallbacks);
         dialogFragment.setFragmentManager(fragmentManager);
         dialogFragment.setDialogTag(dialogTag);

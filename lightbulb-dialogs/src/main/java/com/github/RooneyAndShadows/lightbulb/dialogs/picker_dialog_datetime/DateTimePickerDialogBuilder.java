@@ -8,6 +8,7 @@ import com.github.rooneyandshadows.lightbulb.dialogs.dialog_custom.CustomDialogB
 import java.time.OffsetDateTime;
 
 import androidx.fragment.app.FragmentManager;
+import androidx.lifecycle.LifecycleOwner;
 
 public class DateTimePickerDialogBuilder extends BaseDialogBuilder<DateTimePickerDialog> {
 
@@ -17,6 +18,10 @@ public class DateTimePickerDialogBuilder extends BaseDialogBuilder<DateTimePicke
 
     public DateTimePickerDialogBuilder(FragmentManager manager, String dialogTag) {
         super(manager, dialogTag);
+    }
+
+    public DateTimePickerDialogBuilder(LifecycleOwner lifecycleOwner, FragmentManager manager, String dialogTag) {
+        super(lifecycleOwner, manager, dialogTag);
     }
 
     @Override
@@ -94,6 +99,7 @@ public class DateTimePickerDialogBuilder extends BaseDialogBuilder<DateTimePicke
         DateTimePickerDialog dialogFragment = (DateTimePickerDialog) fragmentManager.findFragmentByTag(dialogTag);
         if (dialogFragment == null)
             dialogFragment = DateTimePickerDialog.newInstance(positiveButtonConfiguration, negativeButtonConfiguration, dateFormat, cancelableOnClickOutside, animation);
+        dialogFragment.setLifecycleOwner(dialogLifecycleOwner);
         dialogFragment.setDialogCallbacks(dialogCallbacks);
         dialogFragment.setFragmentManager(fragmentManager);
         dialogFragment.setDialogTag(dialogTag);

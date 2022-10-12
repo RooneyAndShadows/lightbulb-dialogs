@@ -10,6 +10,7 @@ import java.time.OffsetDateTime;
 import java.util.Date;
 
 import androidx.fragment.app.FragmentManager;
+import androidx.lifecycle.LifecycleOwner;
 
 public class DateRangePickerDialogBuilder extends BaseDialogBuilder<DateRangePickerDialog> {
 
@@ -21,6 +22,10 @@ public class DateRangePickerDialogBuilder extends BaseDialogBuilder<DateRangePic
 
     public DateRangePickerDialogBuilder(FragmentManager manager, String dialogTag) {
         super(manager, dialogTag);
+    }
+
+    public DateRangePickerDialogBuilder(LifecycleOwner lifecycleOwner, FragmentManager manager, String dialogTag) {
+        super(lifecycleOwner, manager, dialogTag);
     }
 
     @Override
@@ -108,6 +113,7 @@ public class DateRangePickerDialogBuilder extends BaseDialogBuilder<DateRangePic
         DateRangePickerDialog dialogFragment = (DateRangePickerDialog) fragmentManager.findFragmentByTag(dialogTag);
         if (dialogFragment == null)
             dialogFragment = DateRangePickerDialog.newInstance(positiveButtonConfiguration, negativeButtonConfiguration, dateFormat, textFrom, textTo, cancelableOnClickOutside, animation);
+        dialogFragment.setLifecycleOwner(dialogLifecycleOwner);
         dialogFragment.setDialogCallbacks(dialogCallbacks);
         dialogFragment.setFragmentManager(fragmentManager);
         dialogFragment.setDialogTag(dialogTag);

@@ -4,6 +4,7 @@ import com.github.rooneyandshadows.lightbulb.dialogs.base.BaseDialogBuilder;
 import com.github.rooneyandshadows.lightbulb.dialogs.base.BaseDialogFragment;
 
 import androidx.fragment.app.FragmentManager;
+import androidx.lifecycle.LifecycleOwner;
 
 import static com.github.rooneyandshadows.lightbulb.dialogs.dialog_custom.CustomDialog.*;
 
@@ -13,10 +14,16 @@ public class CustomDialogBuilder<DialogType extends CustomDialog> extends BaseDi
     private final CustomDialogInflater dialogInflater;
     private boolean loading = false;
 
-    public CustomDialogBuilder(FragmentManager manager, String dialogTag, CustomDialogInitializer<DialogType> customDialogInitializer, CustomDialogInflater inflatedListener) {
+    public CustomDialogBuilder(LifecycleOwner lifecycleOwner, FragmentManager manager, String dialogTag, CustomDialogInitializer<DialogType> dialogInitializer, CustomDialogInflater dialogInflater) {
+        super(lifecycleOwner, manager, dialogTag);
+        this.dialogInitializer = dialogInitializer;
+        this.dialogInflater = dialogInflater;
+    }
+
+    public CustomDialogBuilder(FragmentManager manager, String dialogTag, CustomDialogInitializer<DialogType> dialogInitializer, CustomDialogInflater dialogInflater) {
         super(manager, dialogTag);
-        this.dialogInflater = inflatedListener;
-        this.dialogInitializer = customDialogInitializer;
+        this.dialogInitializer = dialogInitializer;
+        this.dialogInflater = dialogInflater;
     }
 
     @Override
@@ -60,12 +67,12 @@ public class CustomDialogBuilder<DialogType extends CustomDialog> extends BaseDi
     }
 
     @Override
-    public CustomDialogBuilder<DialogType> withDialogType(BaseDialogFragment.DialogTypes dialogType) {
+    public CustomDialogBuilder<DialogType> withDialogType(DialogTypes dialogType) {
         return (CustomDialogBuilder<DialogType>) super.withDialogType(dialogType);
     }
 
     @Override
-    public CustomDialogBuilder<DialogType> withAnimations(BaseDialogFragment.DialogAnimationTypes animation) {
+    public CustomDialogBuilder<DialogType> withAnimations(DialogAnimationTypes animation) {
         return (CustomDialogBuilder<DialogType>) super.withAnimations(animation);
     }
 
@@ -81,9 +88,14 @@ public class CustomDialogBuilder<DialogType extends CustomDialog> extends BaseDi
 
     public interface CustomDialogInitializer<DialogType extends CustomDialog> {
         DialogType initialize(
-                String title, String message,
-                DialogButtonConfiguration positiveButtonConfiguration, DialogButtonConfiguration negativeButtonConfiguration,
-                boolean cancelable, boolean loading, BaseDialogFragment.DialogTypes dialogType, BaseDialogFragment.DialogAnimationTypes animationType
+                String title,
+                String message,
+                DialogButtonConfiguration positiveButtonConfiguration,
+                DialogButtonConfiguration negativeButtonConfiguration,
+                boolean cancelable,
+                boolean loading,
+                DialogTypes dialogType,
+                DialogAnimationTypes animationType
         );
     }
 
@@ -96,6 +108,7 @@ public class CustomDialogBuilder<DialogType extends CustomDialog> extends BaseDi
                     title, message, positiveButtonConfiguration, negativeButtonConfiguration,
                     cancelableOnClickOutside, loading, dialogType, animation
             );
+        dialogFragment.setLifecycleOwner(dialogLifecycleOwner);
         dialogFragment.setDialogInflater(dialogInflater);
         dialogFragment.setDialogCallbacks(dialogCallbacks);
         dialogFragment.setFragmentManager(fragmentManager);

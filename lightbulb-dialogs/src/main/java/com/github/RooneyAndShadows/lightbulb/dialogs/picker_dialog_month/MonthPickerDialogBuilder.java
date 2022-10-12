@@ -8,6 +8,7 @@ import com.github.rooneyandshadows.lightbulb.dialogs.dialog_custom.CustomDialogB
 import java.util.ArrayList;
 
 import androidx.fragment.app.FragmentManager;
+import androidx.lifecycle.LifecycleOwner;
 
 public class MonthPickerDialogBuilder extends BaseDialogBuilder<MonthPickerDialog> {
 
@@ -21,6 +22,10 @@ public class MonthPickerDialogBuilder extends BaseDialogBuilder<MonthPickerDialo
 
     public MonthPickerDialogBuilder(FragmentManager manager, String dialogTag) {
         super(manager, dialogTag);
+    }
+
+    public MonthPickerDialogBuilder(LifecycleOwner lifecycleOwner, FragmentManager manager, String dialogTag) {
+        super(lifecycleOwner, manager, dialogTag);
     }
 
     @Override
@@ -118,6 +123,7 @@ public class MonthPickerDialogBuilder extends BaseDialogBuilder<MonthPickerDialo
         MonthPickerDialog dialogFragment = (MonthPickerDialog) fragmentManager.findFragmentByTag(dialogTag);
         if (dialogFragment == null)
             dialogFragment = MonthPickerDialog.newInstance(positiveButtonConfiguration, negativeButtonConfiguration, dateFormat, cancelableOnClickOutside, animation);
+        dialogFragment.setLifecycleOwner(dialogLifecycleOwner);
         dialogFragment.setDialogCallbacks(dialogCallbacks);
         dialogFragment.setFragmentManager(fragmentManager);
         dialogFragment.setDialogTag(dialogTag);

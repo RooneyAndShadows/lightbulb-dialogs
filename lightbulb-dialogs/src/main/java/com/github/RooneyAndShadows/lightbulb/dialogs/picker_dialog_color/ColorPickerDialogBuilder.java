@@ -7,6 +7,7 @@ import com.github.rooneyandshadows.lightbulb.dialogs.base.BasePickerDialogFragme
 import com.github.rooneyandshadows.lightbulb.dialogs.dialog_custom.CustomDialogBuilder;
 
 import androidx.fragment.app.FragmentManager;
+import androidx.lifecycle.LifecycleOwner;
 
 public class ColorPickerDialogBuilder extends BaseDialogBuilder<ColorPickerDialog> {
     private BasePickerDialogFragment.SelectionChangedListener<int[]> changedCallback;
@@ -15,6 +16,11 @@ public class ColorPickerDialogBuilder extends BaseDialogBuilder<ColorPickerDialo
 
     public ColorPickerDialogBuilder(FragmentManager manager, String dialogTag, ColorPickerAdapter adapter) {
         super(manager, dialogTag);
+        this.adapter = adapter;
+    }
+
+    public ColorPickerDialogBuilder(LifecycleOwner lifecycleOwner, FragmentManager manager, String dialogTag, ColorPickerAdapter adapter) {
+        super(lifecycleOwner, manager, dialogTag);
         this.adapter = adapter;
     }
 
@@ -88,6 +94,7 @@ public class ColorPickerDialogBuilder extends BaseDialogBuilder<ColorPickerDialo
         ColorPickerDialog colorPickerDialog = (ColorPickerDialog) fragmentManager.findFragmentByTag(dialogTag);
         if (colorPickerDialog == null)
             colorPickerDialog = ColorPickerDialog.newInstance(title, message, positiveButtonConfiguration, negativeButtonConfiguration, cancelableOnClickOutside, animation);
+        colorPickerDialog.setLifecycleOwner(dialogLifecycleOwner);
         colorPickerDialog.setDialogCallbacks(dialogCallbacks);
         colorPickerDialog.setFragmentManager(fragmentManager);
         colorPickerDialog.setDialogTag(dialogTag);

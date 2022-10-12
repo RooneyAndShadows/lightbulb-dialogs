@@ -8,6 +8,7 @@ import com.github.rooneyandshadows.lightbulb.dialogs.dialog_custom.CustomDialogB
 import com.github.rooneyandshadows.lightbulb.dialogs.picker_dialog_adapter.AdapterPickerDialog;
 
 import androidx.fragment.app.FragmentManager;
+import androidx.lifecycle.LifecycleOwner;
 
 public class IconPickerDialogBuilder extends BaseDialogBuilder<IconPickerDialog> {
     private BasePickerDialogFragment.SelectionChangedListener<int[]> changedCallback;
@@ -16,6 +17,11 @@ public class IconPickerDialogBuilder extends BaseDialogBuilder<IconPickerDialog>
 
     public IconPickerDialogBuilder(FragmentManager manager, String dialogTag, IconPickerAdapter adapter) {
         super(manager, dialogTag);
+        this.adapter = adapter;
+    }
+
+    public IconPickerDialogBuilder(LifecycleOwner lifecycleOwner, FragmentManager manager, String dialogTag, IconPickerAdapter adapter) {
+        super(lifecycleOwner, manager, dialogTag);
         this.adapter = adapter;
     }
 
@@ -89,6 +95,7 @@ public class IconPickerDialogBuilder extends BaseDialogBuilder<IconPickerDialog>
         IconPickerDialog iconPickerDialog = (IconPickerDialog) fragmentManager.findFragmentByTag(dialogTag);
         if (iconPickerDialog == null)
             iconPickerDialog = IconPickerDialog.newInstance(title, message, positiveButtonConfiguration, negativeButtonConfiguration, cancelableOnClickOutside, animation);
+        iconPickerDialog.setLifecycleOwner(dialogLifecycleOwner);
         iconPickerDialog.setDialogCallbacks(dialogCallbacks);
         iconPickerDialog.setFragmentManager(fragmentManager);
         iconPickerDialog.setDialogTag(dialogTag);

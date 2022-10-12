@@ -4,8 +4,13 @@ import com.github.rooneyandshadows.lightbulb.dialogs.base.BaseDialogFragment;
 import com.github.rooneyandshadows.lightbulb.dialogs.base.BaseDialogBuilder;
 
 import androidx.fragment.app.FragmentManager;
+import androidx.lifecycle.LifecycleOwner;
 
 public class AlertDialogBuilder extends BaseDialogBuilder<AlertDialog> {
+
+    public AlertDialogBuilder(LifecycleOwner lifecycleOwner, FragmentManager manager, String dialogTag) {
+        super(lifecycleOwner, manager, dialogTag);
+    }
 
     public AlertDialogBuilder(FragmentManager manager, String dialogTag) {
         super(manager, dialogTag);
@@ -20,7 +25,6 @@ public class AlertDialogBuilder extends BaseDialogBuilder<AlertDialog> {
     public AlertDialogBuilder withMessage(String message) {
         return (AlertDialogBuilder) super.withMessage(message);
     }
-
 
     @Override
     public AlertDialogBuilder withPositiveButton(BaseDialogFragment.DialogButtonConfiguration positiveButtonConfiguration, BaseDialogFragment.DialogButtonClickListener onClickListener) {
@@ -72,6 +76,7 @@ public class AlertDialogBuilder extends BaseDialogBuilder<AlertDialog> {
         AlertDialog alertDialog = (AlertDialog) fragmentManager.findFragmentByTag(dialogTag);
         if (alertDialog == null)
             alertDialog = AlertDialog.newInstance(title, message, positiveButtonConfiguration, negativeButtonConfiguration, cancelableOnClickOutside, dialogType, animation);
+        alertDialog.setLifecycleOwner(dialogLifecycleOwner);
         alertDialog.setFragmentManager(fragmentManager);
         alertDialog.setDialogTag(dialogTag);
         alertDialog.addOnShowListener(onShowListener);

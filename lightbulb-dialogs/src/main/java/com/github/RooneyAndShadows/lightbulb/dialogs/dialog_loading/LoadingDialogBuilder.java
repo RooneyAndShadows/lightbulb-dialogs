@@ -6,11 +6,16 @@ import com.github.rooneyandshadows.lightbulb.dialogs.base.BaseDialogFragment.Dia
 import com.github.rooneyandshadows.lightbulb.dialogs.dialog_custom.CustomDialogBuilder;
 
 import androidx.fragment.app.FragmentManager;
+import androidx.lifecycle.LifecycleOwner;
 
 public class LoadingDialogBuilder extends BaseDialogBuilder<LoadingDialog> {
 
     public LoadingDialogBuilder(FragmentManager manager, String dialogTag) {
         super(manager, dialogTag);
+    }
+
+    public LoadingDialogBuilder(LifecycleOwner lifecycleOwner, FragmentManager manager, String dialogTag) {
+        super(lifecycleOwner, manager, dialogTag);
     }
 
     @Override
@@ -73,6 +78,7 @@ public class LoadingDialogBuilder extends BaseDialogBuilder<LoadingDialog> {
         LoadingDialog dialogFragment = (LoadingDialog) fragmentManager.findFragmentByTag(dialogTag);
         if (dialogFragment == null)
             dialogFragment = LoadingDialog.newInstance(title, message, dialogType, animation);
+        dialogFragment.setLifecycleOwner(dialogLifecycleOwner);
         dialogFragment.setDialogCallbacks(dialogCallbacks);
         dialogFragment.setFragmentManager(fragmentManager);
         dialogFragment.setDialogTag(dialogTag);

@@ -9,6 +9,7 @@ import com.github.rooneyandshadows.lightbulb.recycleradapters.abstraction.EasyAd
 import com.github.rooneyandshadows.lightbulb.recycleradapters.abstraction.EasyRecyclerAdapter;
 
 import androidx.fragment.app.FragmentManager;
+import androidx.lifecycle.LifecycleOwner;
 import androidx.recyclerview.widget.RecyclerView;
 
 public class AdapterPickerDialogBuilder<ModelType extends EasyAdapterDataModel> extends BaseDialogBuilder<AdapterPickerDialog<ModelType>> {
@@ -19,6 +20,11 @@ public class AdapterPickerDialogBuilder<ModelType extends EasyAdapterDataModel> 
 
     public AdapterPickerDialogBuilder(FragmentManager manager, String dialogTag, EasyRecyclerAdapter<ModelType> adapter) {
         super(manager, dialogTag);
+        this.adapter = adapter;
+    }
+
+    public AdapterPickerDialogBuilder(LifecycleOwner lifecycleOwner, FragmentManager manager, String dialogTag, EasyRecyclerAdapter<ModelType> adapter) {
+        super(lifecycleOwner, manager, dialogTag);
         this.adapter = adapter;
     }
 
@@ -98,6 +104,7 @@ public class AdapterPickerDialogBuilder<ModelType extends EasyAdapterDataModel> 
         AdapterPickerDialog<ModelType> dialogFragment = (AdapterPickerDialog<ModelType>) fragmentManager.findFragmentByTag(dialogTag);
         if (dialogFragment == null)
             dialogFragment = AdapterPickerDialog.newInstance(title, message, positiveButtonConfiguration, negativeButtonConfiguration, cancelableOnClickOutside, dialogType, animation);
+        dialogFragment.setLifecycleOwner(dialogLifecycleOwner);
         dialogFragment.setDialogCallbacks(dialogCallbacks);
         dialogFragment.setFragmentManager(fragmentManager);
         dialogFragment.setDialogTag(dialogTag);

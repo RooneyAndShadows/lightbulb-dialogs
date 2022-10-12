@@ -1,5 +1,7 @@
 package com.github.rooneyandshadows.lightbulb.dialogs.base;
 
+import androidx.lifecycle.LifecycleOwner;
+
 public abstract class BasePickerDialogFragment<SelectionType> extends BaseDialogFragment {
     protected final BaseDialogSelection<SelectionType> selection;
     private SelectionChangedListener<SelectionType> onSelectionChangedListener;
@@ -40,6 +42,11 @@ public abstract class BasePickerDialogFragment<SelectionType> extends BaseDialog
                 synchronizeSelectUi();
             }
         });
+    }
+
+    @Override
+    protected boolean canShowDialog(LifecycleOwner dialogLifecycleOwner) {
+        return true;
     }
 
     protected abstract void synchronizeSelectUi();

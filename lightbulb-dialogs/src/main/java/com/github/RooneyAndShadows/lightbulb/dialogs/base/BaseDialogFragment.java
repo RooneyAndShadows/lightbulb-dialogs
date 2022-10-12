@@ -9,6 +9,7 @@ import android.graphics.drawable.ColorDrawable;
 import android.os.Bundle;
 import android.os.Parcel;
 import android.os.Parcelable;
+import android.util.Log;
 import android.util.SparseArray;
 import android.view.GestureDetector;
 import android.view.Gravity;
@@ -29,7 +30,6 @@ import com.github.rooneyandshadows.lightbulb.dialogs.base.constraints.bottomshee
 import com.github.rooneyandshadows.lightbulb.dialogs.base.constraints.bottomsheet.BottomSheetDialogConstraintsBuilder;
 import com.github.rooneyandshadows.lightbulb.dialogs.base.constraints.regular.RegularDialogConstraints;
 import com.github.rooneyandshadows.lightbulb.dialogs.base.constraints.regular.RegularDialogConstraintsBuilder;
-import com.github.rooneyandshadows.lightbulb.dialogs.dialog_custom.CustomDialog;
 import com.google.android.material.bottomsheet.BottomSheetBehavior;
 
 import org.jetbrains.annotations.NotNull;
@@ -43,9 +43,11 @@ import androidx.coordinatorlayout.widget.CoordinatorLayout;
 import androidx.fragment.app.Fragment;
 import androidx.fragment.app.FragmentManager;
 import androidx.fragment.app.FragmentTransaction;
+import androidx.lifecycle.DefaultLifecycleObserver;
+import androidx.lifecycle.LifecycleOwner;
 
 @SuppressWarnings("unused")
-public abstract class BaseDialogFragment extends androidx.fragment.app.DialogFragment {
+public abstract class BaseDialogFragment extends androidx.fragment.app.DialogFragment implements DefaultLifecycleObserver {
     private View rootView;
     protected String title;
     protected String message;
@@ -55,6 +57,7 @@ public abstract class BaseDialogFragment extends androidx.fragment.app.DialogFra
     private DialogButtonConfiguration negativeButtonConfig;
     private boolean shown = false;
     protected boolean fullscreen = false;
+    protected boolean isLifecycleOwnerInStateAllowingShow = false;
     private DialogTypes dialogType;
     private DialogAnimationTypes animationType;
     private FragmentManager fragmentManager;
@@ -70,7 +73,7 @@ public abstract class BaseDialogFragment extends androidx.fragment.app.DialogFra
     private final ArrayList<DialogHideListener> onHideListeners = new ArrayList<>();
     private final ArrayList<DialogCancelListener> onCancelListeners = new ArrayList<>();
     private DialogCallbacks dialogCallbacks;
-
+    private LifecycleOwner dialogLifecycleOwner;
 
     protected abstract View setDialogLayout(LayoutInflater inflater);
 
@@ -89,6 +92,18 @@ public abstract class BaseDialogFragment extends androidx.fragment.app.DialogFra
     }
 
     protected void onDismiss() {
+    }
+
+    @Override
+    public void onCreate(@NonNull LifecycleOwner owner) {
+        DefaultLifecycleObserver.super.onCreate(owner);
+        isLifecycleOwnerInStateAllowingShow = true;
+    }
+
+    @Override
+    public void onStop(@NonNull LifecycleOwner owner) {
+        DefaultLifecycleObserver.super.onStop(owner);
+        isLifecycleOwnerInStateAllowingShow = false;
     }
 
     @Override
@@ -265,12 +280,48 @@ public abstract class BaseDialogFragment extends androidx.fragment.app.DialogFra
         dismiss();
     }
 
+    @Override
+    public int show(@NonNull FragmentTransaction transaction, @Nullable String tag) {
+        if (checkIfDialogCanBeShown()) return super.show(transaction, tag);
+        else return -1;
+    }
+
+    @Override
+    public void showNow(@NonNull FragmentManager manager, @Nullable String tag) {
+        if (checkIfDialogCanBeShown())
+            super.showNow(manager, tag);
+    }
+
+    @Override
+    public void show(@NonNull FragmentManager manager, @Nullable String tag) {
+        if (checkIfDialogCanBeShown())
+            super.show(manager, tag);
+    }
+
+    public void show() {
+        if (!checkIfDialogCanBeShown())
+            return;
+        Fragment prev = fragmentManager.findFragmentByTag(dialogTag);
+        FragmentTransaction transaction = fragmentManager.beginTransaction();
+        if (prev != null)
+            transaction.remove(prev);
+        super.show(transaction, dialogTag);
+    }
+
     public boolean isDialogShown() {
         return shown;
     }
 
     public boolean isFullscreen() {
         return fullscreen;
+    }
+
+    public void setLifecycleOwner(LifecycleOwner lifecycleOwner) {
+        this.dialogLifecycleOwner = lifecycleOwner;
+        if (this.dialogLifecycleOwner == null)
+            return;
+        this.dialogLifecycleOwner.getLifecycle().removeObserver(this);
+        this.dialogLifecycleOwner.getLifecycle().addObserver(this);
     }
 
     public void setFragmentManager(FragmentManager fragmentManager) {
@@ -371,22 +422,22 @@ public abstract class BaseDialogFragment extends androidx.fragment.app.DialogFra
         this.dialogCallbacks = callbacks;
     }
 
-    public void show() {
-        if (shown)
-            return;
-        Fragment prev = fragmentManager.findFragmentByTag(dialogTag);
-        FragmentTransaction transaction = fragmentManager.beginTransaction();
-        if (prev != null)
-            transaction.remove(prev);
-        show(transaction, dialogTag);
-    }
-
     protected RegularDialogConstraints getRegularConstraints() {
         return null;
     }
 
     protected BottomSheetDialogConstraints getBottomSheetConstraints() {
         return null;
+    }
+
+    protected boolean canShowDialog(LifecycleOwner dialogLifecycleOwner) {
+        if (dialogLifecycleOwner == null)
+            Log.w(getClass().getName(), "You are using dialog without lifecycle owner. This may produce unexpected behaviour when trying to show the dialog in specific lifecycle states. It is highly recommended to build your dialog with a lifecycle ownner.");
+        if (dialogLifecycleOwner != null && !isLifecycleOwnerInStateAllowingShow) {
+            Log.w(getClass().getName(), "Showing of dialog cancelled: Lifecycle owner is not in valid state. You are probably trying to show dialog after saveInstanceState has been executed.");
+            return false;
+        }
+        return true;
     }
 
     protected final int getPercentOfWindowHeight(int heightInPercents) {
@@ -468,6 +519,10 @@ public abstract class BaseDialogFragment extends androidx.fragment.app.DialogFra
         int desiredHeight = dialogLayout.getMeasuredHeight();
         desiredHeight = constraints.resolveHeight(desiredHeight);
         dialogWindow.setLayout(WindowManager.LayoutParams.MATCH_PARENT, desiredHeight);
+    }
+
+    private boolean checkIfDialogCanBeShown() {
+        return !shown && canShowDialog(dialogLifecycleOwner);
     }
 
     private void handleDismiss() {
