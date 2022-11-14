@@ -95,8 +95,8 @@ public abstract class BaseDialogFragment extends androidx.fragment.app.DialogFra
     }
 
     @Override
-    public void onCreate(@NonNull LifecycleOwner owner) {
-        DefaultLifecycleObserver.super.onCreate(owner);
+    public void onResume(@NonNull LifecycleOwner owner) {
+        DefaultLifecycleObserver.super.onResume(owner);
         isLifecycleOwnerInStateAllowingShow = true;
     }
 
