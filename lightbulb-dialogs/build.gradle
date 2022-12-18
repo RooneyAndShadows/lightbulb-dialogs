@@ -4,12 +4,17 @@ plugins {
     id 'kotlin-kapt'
     id 'maven-publish'
 }
+apply plugin: 'kotlin-android'
+
+repositories {
+    mavenCentral()
+}
 
 android {
-    compileSdkVersion 31
+    compileSdkVersion 33
     defaultConfig {
         minSdkVersion 24
-        targetSdkVersion 31
+        targetSdkVersion 33
         versionCode 1013
         versionName "1.0.13"
         testInstrumentationRunner "androidx.test.runner.AndroidJUnitRunner"
@@ -61,7 +66,8 @@ afterEvaluate {
 
 dependencies {
     implementation fileTree(dir: "libs", include: ["*.jar"])
-    coreLibraryDesugaring 'com.android.tools:desugar_jdk_libs:1.1.5'
+    coreLibraryDesugaring 'com.android.tools:desugar_jdk_libs:1.1.6'
+    implementation "androidx.core:core-ktx:$versions.ktx.core"
     implementation "androidx.appcompat:appcompat:$versions.android_appcompat"
     implementation "androidx.recyclerview:recyclerview:$versions.android_recyclerview"
     implementation "androidx.constraintlayout:constraintlayout:$versions.android_constraintlayout"
@@ -71,4 +77,5 @@ dependencies {
     implementation "com.github.rooneyandshadows:lightbulb-recycleradapters:$versions.lightbulb.recycleradapters"
     implementation "com.github.rooneyandshadows:lightbulb-calendars:$versions.lightbulb.calendars"
     implementation 'com.github.prolificinteractive:material-calendarview:2.0.1'
+    implementation "org.jetbrains.kotlin:kotlin-stdlib-jdk7:$versions.kotlin"
 }
