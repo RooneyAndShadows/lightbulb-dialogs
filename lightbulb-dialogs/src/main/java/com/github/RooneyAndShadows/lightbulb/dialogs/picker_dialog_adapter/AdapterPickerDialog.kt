@@ -116,7 +116,7 @@ open class AdapterPickerDialog<ItemType : EasyAdapterDataModel?> :
         dialogWindow!!.setLayout(WindowManager.LayoutParams.MATCH_PARENT, desiredHeight)
     }
 
-    override fun create(dialogArguments: Bundle?, savedInstanceState: Bundle?) {
+    override fun doOnCreate(dialogArguments: Bundle?, savedInstanceState: Bundle?) {
         if (savedInstanceState == null) {
             requireNotNull(dialogArguments) { "Bundle args required" }
             if (hasSelection()) selection.setCurrentSelection(selection.currentSelection) else selection.setCurrentSelection(
@@ -130,8 +130,8 @@ open class AdapterPickerDialog<ItemType : EasyAdapterDataModel?> :
         }
     }
 
-    override fun saveInstanceState(outState: Bundle?) {
-        super.saveInstanceState(outState)
+    override fun doOnSaveInstanceState(outState: Bundle?) {
+        super.doOnSaveInstanceState(outState)
         if (selection.currentSelection != null) outState!!.putIntArray(ADAPTER_SELECTION_TAG, selection.currentSelection)
         if (selection.draftSelection != null) outState!!.putIntArray(ADAPTER_SELECTION_DRAFT_TAG, selection.draftSelection)
     }

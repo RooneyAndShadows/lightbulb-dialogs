@@ -18,13 +18,13 @@ class IconPickerDialog : AdapterPickerDialog<IconModel?>() {
     private var spans = 0
     private var lastVisibleItemPosition = -1
     private override val recyclerView: RecyclerView? = null
-    override fun create(dialogArguments: Bundle?, savedInstanceState: Bundle?) {
-        super.create(dialogArguments, savedInstanceState)
+    override fun doOnCreate(dialogArguments: Bundle?, savedInstanceState: Bundle?) {
+        super.doOnCreate(dialogArguments, savedInstanceState)
         if (savedInstanceState != null) lastVisibleItemPosition = savedInstanceState.getInt("LAST_VISIBLE_ITEM")
     }
 
-    override fun saveInstanceState(outState: Bundle?) {
-        super.saveInstanceState(outState)
+    override fun doOnSaveInstanceState(outState: Bundle?) {
+        super.doOnSaveInstanceState(outState)
         val manager = recyclerView!!.layoutManager as GridLayoutManager?
         if (manager != null) outState!!.putInt("LAST_VISIBLE_ITEM", manager.findFirstVisibleItemPosition())
     }
