@@ -8,8 +8,6 @@ import android.graphics.Color
 import android.graphics.Rect
 import android.graphics.drawable.ColorDrawable
 import android.os.Bundle
-import android.os.Parcel
-import android.os.Parcelable
 import android.util.Log
 import android.view.*
 import android.view.View.GONE
@@ -23,8 +21,6 @@ import androidx.fragment.app.FragmentTransaction
 import androidx.lifecycle.DefaultLifecycleObserver
 import androidx.lifecycle.LifecycleOwner
 import com.github.rooneyandshadows.java.commons.string.StringUtils
-import com.github.rooneyandshadows.lightbulb.commons.utils.BundleUtils
-import com.github.rooneyandshadows.lightbulb.commons.utils.ParcelUtils
 import com.github.rooneyandshadows.lightbulb.commons.utils.WindowUtils
 import com.github.rooneyandshadows.lightbulb.dialogs.R
 import com.github.rooneyandshadows.lightbulb.dialogs.base.constraints.bottomsheet.BottomSheetDialogConstraints
@@ -35,6 +31,7 @@ import com.github.rooneyandshadows.lightbulb.dialogs.base.internal.DialogAnimati
 import com.github.rooneyandshadows.lightbulb.dialogs.base.internal.DialogBundleHelper
 import com.github.rooneyandshadows.lightbulb.dialogs.base.internal.DialogButtonConfiguration
 import com.github.rooneyandshadows.lightbulb.dialogs.base.internal.DialogTypes
+import com.github.rooneyandshadows.lightbulb.dialogs.base.internal.callbacks.*
 import com.google.android.material.bottomsheet.BottomSheetBehavior
 import java.util.ArrayList
 import java.util.function.Consumer
@@ -77,7 +74,7 @@ abstract class BaseDialogFragment : DialogFragment(), DefaultLifecycleObserver {
     private val onShowListeners = ArrayList<DialogShowListener>()
     private val onHideListeners = ArrayList<DialogHideListener>()
     private val onCancelListeners = ArrayList<DialogCancelListener>()
-    private var dialogCallbacks: DialogCallbacks? = null
+    private var dialogCallbacks: DialogListeners? = null
     private var dialogLifecycleOwner: LifecycleOwner? = null
     protected abstract fun setDialogLayout(inflater: LayoutInflater?): View
     protected abstract fun configureContent(view: View?, savedInstanceState: Bundle?)
@@ -160,7 +157,8 @@ abstract class BaseDialogFragment : DialogFragment(), DefaultLifecycleObserver {
             .withDialogType(dialogType)
             .withAnimation(animationType)
         doOnSaveInstanceState(helper.bundle)
-        if (dialogCallbacks != null) dialogCallbacks!!.doOnSaveInstanceState(this, view, outState)
+        if (dialogCallbacks != null)
+            dialogCallbacks!!.doOnSaveInstanceState(this, view, outState)
     }
 
     @Override
@@ -200,7 +198,7 @@ abstract class BaseDialogFragment : DialogFragment(), DefaultLifecycleObserver {
         dialog.setOnShowListener {
             if (savedInstanceState == null)
                 for (onShowListener in onShowListeners)
-                    onShowListener.onShow(this)
+                    onShowListener.doOnShow(this)
             // executes animation and onShowEvent only if dialog is shown for the first time in it's lifecycle
         }
         return dialog
@@ -229,13 +227,13 @@ abstract class BaseDialogFragment : DialogFragment(), DefaultLifecycleObserver {
     final override fun onDismiss(dialog: DialogInterface) {
         super.onDismiss(dialog)
         for (onHideListener in onHideListeners)
-            onHideListener.onHide(this)
+            onHideListener.doOnHide(this)
         onDismiss()
     }
 
     override fun onCancel(dialog: DialogInterface) {
         for (onCancelListener in onCancelListeners)
-            onCancelListener.onCancel(this)
+            onCancelListener.doOnCancel(this)
         dismiss()
     }
 
@@ -336,7 +334,7 @@ abstract class BaseDialogFragment : DialogFragment(), DefaultLifecycleObserver {
         onHideListeners.remove(hideListener)
     }
 
-    fun setDialogCallbacks(callbacks: DialogCallbacks?) {
+    fun setDialogCallbacks(callbacks: DialogListeners?) {
         dialogCallbacks = callbacks
     }
 
@@ -469,13 +467,15 @@ abstract class BaseDialogFragment : DialogFragment(), DefaultLifecycleObserver {
         else
             titleAndMessageContainer!!.visibility = View.VISIBLE
         if (titleTextView != null) {
-            if (StringUtils.isNullOrEmptyString(title)) titleTextView.visibility = GONE else {
+            if (title.isNullOrBlank()) titleTextView.visibility = GONE
+            else {
                 titleTextView.visibility = View.VISIBLE
                 titleTextView.text = title
             }
         }
         if (messageTextView != null) {
-            if (StringUtils.isNullOrEmptyString(message)) messageTextView.visibility = GONE else {
+            if (message.isNullOrBlank()) messageTextView.visibility = GONE
+            else {
                 messageTextView.visibility = View.VISIBLE
                 messageTextView.text = message
             }
@@ -498,118 +498,86 @@ abstract class BaseDialogFragment : DialogFragment(), DefaultLifecycleObserver {
         if (buttonPositive != null && positiveButtonConfig != null) {
             buttonPositive!!.isEnabled = positiveButtonConfig!!.buttonEnabled
             buttonPositive!!.setTextColor(buttonPositive!!.textColors.withAlpha(if (positiveButtonConfig!!.buttonEnabled) 255 else 140))
-            if (positiveButtonConfig!!.buttonTitle.isBlank())
-                if (StringUtils.isNullOrEmptyString(positiveButtonConfig!!.buttonTitle)) buttonPositive!!.visibility =
-                    GONE else {
-                    buttonPositive!!.text = positiveButtonConfig!!.buttonTitle
-                    buttonPositive!!.setOnClickListener { view: View? ->
-                        onPositiveClickListeners.forEach(Consumer { listener: DialogButtonClickListener ->
-                            listener.onClick(
-                                view,
-                                this
-                            )
-                        })
-                        if (positiveButtonConfig!!.closeDialogOnClick) handleDismiss()
-                    }
+            if (positiveButtonConfig!!.buttonTitle.isBlank()) buttonPositive!!.visibility = GONE
+            else {
+                buttonPositive!!.text = positiveButtonConfig!!.buttonTitle
+                buttonPositive!!.setOnClickListener { view: View? ->
+                    for (listener in onPositiveClickListeners)
+                        listener.doOnClick(view, this)
+                    if (positiveButtonConfig!!.closeDialogOnClick)
+                        handleDismiss()
                 }
+            }
         }
         if (buttonNegative != null && negativeButtonConfig != null) {
             buttonNegative!!.isEnabled = negativeButtonConfig!!.buttonEnabled
             buttonNegative!!.setTextColor(buttonNegative!!.textColors.withAlpha(if (negativeButtonConfig!!.buttonEnabled) 255 else 140))
-            if (StringUtils.isNullOrEmptyString(negativeButtonConfig!!.buttonTitle)) buttonNegative!!.visibility =
-                GONE else {
+            if (negativeButtonConfig!!.buttonTitle.isBlank()) buttonNegative!!.visibility = GONE
+            else {
                 buttonNegative!!.text = negativeButtonConfig!!.buttonTitle
                 buttonNegative!!.setOnClickListener { view: View? ->
-                    onNegativeClickListeners.forEach(Consumer { listener: DialogButtonClickListener ->
-                        listener.onClick(
-                            view,
-                            this
-                        )
-                    })
-                    if (negativeButtonConfig!!.closeDialogOnClick) handleDismiss()
+                    for (listener in onNegativeClickListeners)
+                        listener.doOnClick(view, this)
+                    if (negativeButtonConfig!!.closeDialogOnClick)
+                        handleDismiss()
                 }
             }
         }
-    }
 
-    @SuppressLint("ClickableViewAccessibility")
-    private fun setBottomSheetDialogLayout(): View {
-        val context = requireContext()
-        if (!cancelableOnClickOutside) return setDialogLayout(LayoutInflater.from(context))
-        val parent = CoordinatorLayout(context)
-        val params: CoordinatorLayout.LayoutParams = CoordinatorLayout.LayoutParams(
-            ViewGroup.LayoutParams.MATCH_PARENT,
-            ViewGroup.LayoutParams.WRAP_CONTENT
-        )
-        val behavior: BottomSheetBehavior<View> = BottomSheetBehavior<View>()
-        behavior.state = BottomSheetBehavior.STATE_EXPANDED
-        behavior.isFitToContents = true
-        val handlingFling = booleanArrayOf(false)
-        behavior.addBottomSheetCallback(object : BottomSheetBehavior.BottomSheetCallback() {
-            @Override
-            override fun onStateChanged(bottomSheet: View, newState: Int) {
-                if (handlingFling[0]) {
-                    handlingFling[0] = false
-                    return
-                }
-                if (newState == BottomSheetBehavior.STATE_COLLAPSED) {
-                    dismiss()
-                    return
-                }
-                if (newState == BottomSheetBehavior.STATE_DRAGGING) return
-                val threshold = (bottomSheet.height * 0.45).toFloat()
-                behavior.state =
-                    if (bottomSheet.top > threshold) BottomSheetBehavior.STATE_COLLAPSED else BottomSheetBehavior.STATE_EXPANDED
-            }
-
-            @Override
-            override fun onSlide(bottomSheet: View, slideOffset: Float) {
-            }
-        })
-        params.behavior = behavior
-        val child = setDialogLayout(LayoutInflater.from(context))
-        child.layoutParams = params
-        parent.addView(child)
-        val gesture = GestureDetector(activity, object : GestureDetector.SimpleOnGestureListener() {
-            override fun onFling(e1: MotionEvent, e2: MotionEvent, velocityX: Float, velocityY: Float): Boolean {
-                if (velocityY > 2000) {
-                    handlingFling[0] = true
-                    behavior.setState(BottomSheetBehavior.STATE_COLLAPSED)
-                } else behavior.setState(BottomSheetBehavior.STATE_EXPANDED)
-                return super.onFling(e1, e2, velocityX, velocityY)
-            }
-        })
-        parent.setOnTouchListener { _: View?, event: MotionEvent? ->
-            gesture.onTouchEvent(
-                event!!
+        @SuppressLint("ClickableViewAccessibility")
+        private fun setBottomSheetDialogLayout(): View {
+            val context = requireContext()
+            if (!cancelableOnClickOutside) return setDialogLayout(LayoutInflater.from(context))
+            val parent = CoordinatorLayout(context)
+            val params: CoordinatorLayout.LayoutParams = CoordinatorLayout.LayoutParams(
+                ViewGroup.LayoutParams.MATCH_PARENT,
+                ViewGroup.LayoutParams.WRAP_CONTENT
             )
+            val behavior: BottomSheetBehavior<View> = BottomSheetBehavior<View>()
+            behavior.state = BottomSheetBehavior.STATE_EXPANDED
+            behavior.isFitToContents = true
+            val handlingFling = booleanArrayOf(false)
+            behavior.addBottomSheetCallback(object : BottomSheetBehavior.BottomSheetCallback() {
+                @Override
+                override fun onStateChanged(bottomSheet: View, newState: Int) {
+                    if (handlingFling[0]) {
+                        handlingFling[0] = false
+                        return
+                    }
+                    if (newState == BottomSheetBehavior.STATE_COLLAPSED) {
+                        dismiss()
+                        return
+                    }
+                    if (newState == BottomSheetBehavior.STATE_DRAGGING) return
+                    val threshold = (bottomSheet.height * 0.45).toFloat()
+                    behavior.state =
+                        if (bottomSheet.top > threshold) BottomSheetBehavior.STATE_COLLAPSED else BottomSheetBehavior.STATE_EXPANDED
+                }
+
+                @Override
+                override fun onSlide(bottomSheet: View, slideOffset: Float) {
+                }
+            })
+            params.behavior = behavior
+            val child = setDialogLayout(LayoutInflater.from(context))
+            child.layoutParams = params
+            parent.addView(child)
+            val gesture = GestureDetector(activity, object : GestureDetector.SimpleOnGestureListener() {
+                override fun onFling(e1: MotionEvent, e2: MotionEvent, velocityX: Float, velocityY: Float): Boolean {
+                    if (velocityY > 2000) {
+                        handlingFling[0] = true
+                        behavior.setState(BottomSheetBehavior.STATE_COLLAPSED)
+                    } else behavior.setState(BottomSheetBehavior.STATE_EXPANDED)
+                    return super.onFling(e1, e2, velocityX, velocityY)
+                }
+            })
+            parent.setOnTouchListener { _: View?, event: MotionEvent? ->
+                gesture.onTouchEvent(
+                    event!!
+                )
+            }
+            return parent
         }
-        return parent
-    }
 
-    interface DialogButtonConfigurationCreator {
-        fun create(currentConfiguration: DialogButtonConfiguration?): DialogButtonConfiguration?
-    }
 
-    interface DialogShowListener {
-        fun onShow(dialogFragment: BaseDialogFragment?)
     }
-
-    interface DialogHideListener {
-        fun onHide(dialogFragment: BaseDialogFragment?)
-    }
-
-    interface DialogCancelListener {
-        fun onCancel(dialogFragment: BaseDialogFragment?)
-    }
-
-    interface DialogButtonClickListener {
-        fun onClick(view: View?, dialogFragment: BaseDialogFragment?)
-    }
-
-    interface DialogCallbacks {
-        fun doOnCreate(dialog: BaseDialogFragment?, dialogArguments: Bundle?, savedInstanceState: Bundle?)
-        fun doOnInflated(dialog: BaseDialogFragment?, layout: View?, savedInstanceState: Bundle?)
-        fun doOnSaveInstanceState(dialog: BaseDialogFragment?, layout: View?, outState: Bundle?)
-    }
-}
