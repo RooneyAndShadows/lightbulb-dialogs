@@ -56,8 +56,8 @@ class AlertDialogBuilder : BaseDialogBuilder<AlertDialog?> {
         return super.withOnHideListener(listener) as AlertDialogBuilder
     }
 
-    override fun withCancelOnClickOutsude(closeOnClickOutside: Boolean): AlertDialogBuilder? {
-        return super.withCancelOnClickOutsude(closeOnClickOutside) as AlertDialogBuilder
+    override fun withCancelOnClickOutside(closeOnClickOutside: Boolean): AlertDialogBuilder? {
+        return super.withCancelOnClickOutside(closeOnClickOutside) as AlertDialogBuilder
     }
 
     override fun withDialogType(dialogType: DialogTypes?): AlertDialogBuilder? {
@@ -68,8 +68,8 @@ class AlertDialogBuilder : BaseDialogBuilder<AlertDialog?> {
         return super.withAnimations(animation) as AlertDialogBuilder
     }
 
-    override fun withDialogCallbacks(callbacks: DialogCallbacks?): AlertDialogBuilder? {
-        return super.withDialogCallbacks(callbacks) as AlertDialogBuilder
+    override fun withDialogListeners(callbacks: DialogCallbacks?): AlertDialogBuilder? {
+        return super.withDialogListeners(callbacks) as AlertDialogBuilder
     }
 
     override fun buildDialog(): AlertDialog? {

@@ -61,8 +61,8 @@ class DateTimePickerDialogBuilder : BaseDialogBuilder<DateTimePickerDialog?> {
         return super.withOnHideListener(listener) as DateTimePickerDialogBuilder
     }
 
-    override fun withCancelOnClickOutsude(closeOnClickOutside: Boolean): DateTimePickerDialogBuilder? {
-        return super.withCancelOnClickOutsude(closeOnClickOutside) as DateTimePickerDialogBuilder
+    override fun withCancelOnClickOutside(closeOnClickOutside: Boolean): DateTimePickerDialogBuilder? {
+        return super.withCancelOnClickOutside(closeOnClickOutside) as DateTimePickerDialogBuilder
     }
 
     override fun withDialogType(dialogType: DialogTypes?): DateTimePickerDialogBuilder? {
@@ -73,8 +73,8 @@ class DateTimePickerDialogBuilder : BaseDialogBuilder<DateTimePickerDialog?> {
         return super.withAnimations(animation) as DateTimePickerDialogBuilder
     }
 
-    override fun withDialogCallbacks(callbacks: DialogCallbacks?): DateTimePickerDialogBuilder? {
-        return super.withDialogCallbacks(callbacks) as DateTimePickerDialogBuilder
+    override fun withDialogListeners(callbacks: DialogCallbacks?): DateTimePickerDialogBuilder? {
+        return super.withDialogListeners(callbacks) as DateTimePickerDialogBuilder
     }
 
     fun withOnDateSelectedEvent(listener: SelectionChangedListener<OffsetDateTime>?): DateTimePickerDialogBuilder {
@@ -102,7 +102,7 @@ class DateTimePickerDialogBuilder : BaseDialogBuilder<DateTimePickerDialog?> {
             animation
         )
         dialogFragment.setLifecycleOwner(dialogLifecycleOwner)
-        dialogFragment.setDialogCallbacks(dialogCallbacks)
+        dialogFragment.setDialogCallbacks(dialogListeners)
         dialogFragment.setFragmentManager(fragmentManager)
         dialogFragment.setDialogTag(dialogTag)
         dialogFragment.addOnNegativeClickListeners(onNegativeClickListener)

@@ -65,8 +65,8 @@ class ColorPickerDialogBuilder : BaseDialogBuilder<ColorPickerDialog?> {
         return super.withOnHideListener(listener) as ColorPickerDialogBuilder
     }
 
-    override fun withCancelOnClickOutsude(closeOnClickOutside: Boolean): ColorPickerDialogBuilder? {
-        return super.withCancelOnClickOutsude(closeOnClickOutside) as ColorPickerDialogBuilder
+    override fun withCancelOnClickOutside(closeOnClickOutside: Boolean): ColorPickerDialogBuilder? {
+        return super.withCancelOnClickOutside(closeOnClickOutside) as ColorPickerDialogBuilder
     }
 
     override fun withDialogType(dialogType: DialogTypes?): ColorPickerDialogBuilder? {
@@ -77,8 +77,8 @@ class ColorPickerDialogBuilder : BaseDialogBuilder<ColorPickerDialog?> {
         return super.withAnimations(animation) as ColorPickerDialogBuilder
     }
 
-    override fun withDialogCallbacks(callbacks: DialogCallbacks?): ColorPickerDialogBuilder? {
-        return super.withDialogCallbacks(callbacks) as ColorPickerDialogBuilder
+    override fun withDialogListeners(callbacks: DialogCallbacks?): ColorPickerDialogBuilder? {
+        return super.withDialogListeners(callbacks) as ColorPickerDialogBuilder
     }
 
     fun withSelectionCallback(listener: SelectionChangedListener<IntArray>?): ColorPickerDialogBuilder {
@@ -102,7 +102,7 @@ class ColorPickerDialogBuilder : BaseDialogBuilder<ColorPickerDialog?> {
             animation
         )
         colorPickerDialog.setLifecycleOwner(dialogLifecycleOwner)
-        colorPickerDialog.setDialogCallbacks(dialogCallbacks)
+        colorPickerDialog.setDialogCallbacks(dialogListeners)
         colorPickerDialog.setFragmentManager(fragmentManager)
         colorPickerDialog.setDialogTag(dialogTag)
         colorPickerDialog.addOnShowListener(onShowListener)

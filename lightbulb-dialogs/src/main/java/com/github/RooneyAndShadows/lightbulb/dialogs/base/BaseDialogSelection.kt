@@ -5,7 +5,7 @@ import java.util.HashMap
 
 abstract class BaseDialogSelection<SelectionType>(current: SelectionType?, draft: SelectionType?) {
     private val selection = HashMap<String, SelectionType?>()
-    private val selectionListeners = ArrayList<PickerSelectionListeners<SelectionType?>>()
+    private val selectionListeners = ArrayList<PickerSelectionListeners<SelectionType>>()
     abstract fun compareValues(v1: SelectionType?, v2: SelectionType?): Boolean
     abstract fun hasCurrentSelection(): Boolean
     abstract fun hasDraftSelection(): Boolean
@@ -18,11 +18,11 @@ abstract class BaseDialogSelection<SelectionType>(current: SelectionType?, draft
         this.selectionListeners.add(selectionListeners)
     }
 
-    fun setCurrentSelection(newValue: SelectionType) {
+    fun setCurrentSelection(newValue: SelectionType?) {
         setCurrentSelection(newValue, true)
     }
 
-    fun setDraftSelection(newValue: SelectionType) {
+    fun setDraftSelection(newValue: SelectionType?) {
         setDraftSelection(newValue, true)
     }
 
@@ -31,7 +31,9 @@ abstract class BaseDialogSelection<SelectionType>(current: SelectionType?, draft
         if (compareValues(current, newValue)) return
         selection.remove(SELECTION_CURRENT)
         selection[SELECTION_CURRENT] = newValue
-        if (notify) for (listener in selectionListeners) listener.onCurrentSelectionChangedListener(newValue, current)
+        if (!notify) return
+        for (listener in selectionListeners)
+            listener.onCurrentSelectionChangedListener(newValue, current)
     }
 
     open fun setDraftSelection(newValue: SelectionType?, notify: Boolean) {
@@ -39,7 +41,9 @@ abstract class BaseDialogSelection<SelectionType>(current: SelectionType?, draft
         if (compareValues(draft, newValue)) return
         selection.remove(SELECTION_DRAFT)
         selection[SELECTION_DRAFT] = newValue
-        if (notify) for (listener in selectionListeners) listener.onDraftSelectionChangedListener(newValue)
+        if (!notify) return
+        for (listener in selectionListeners)
+            listener.onDraftSelectionChangedListener(newValue)
     }
 
     fun clearDraft() {
@@ -65,9 +69,9 @@ abstract class BaseDialogSelection<SelectionType>(current: SelectionType?, draft
     }
 
     interface PickerSelectionListeners<SelectionType> {
-        fun onCurrentSelectionChangedListener(newValue: SelectionType, oldValue: SelectionType)
-        fun onDraftSelectionChangedListener(newValue: SelectionType)
-        fun onDraftCommit(newValue: SelectionType, beforeCommit: SelectionType)
+        fun onCurrentSelectionChangedListener(newValue: SelectionType?, oldValue: SelectionType?)
+        fun onDraftSelectionChangedListener(newValue: SelectionType?)
+        fun onDraftCommit(newValue: SelectionType?, beforeCommit: SelectionType?)
         fun onDraftReverted()
     }
 

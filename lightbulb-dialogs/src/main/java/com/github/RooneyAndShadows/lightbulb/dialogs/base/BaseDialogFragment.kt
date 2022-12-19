@@ -27,14 +27,19 @@ import com.github.rooneyandshadows.lightbulb.dialogs.base.constraints.bottomshee
 import com.github.rooneyandshadows.lightbulb.dialogs.base.constraints.regular.RegularDialogConstraints
 import com.github.rooneyandshadows.lightbulb.dialogs.base.constraints.regular.RegularDialogConstraintsBuilder
 import com.github.rooneyandshadows.lightbulb.dialogs.base.internal.DialogAnimationTypes
+import com.github.rooneyandshadows.lightbulb.dialogs.base.internal.DialogAnimationTypes.*
 import com.github.rooneyandshadows.lightbulb.dialogs.base.internal.DialogBundleHelper
 import com.github.rooneyandshadows.lightbulb.dialogs.base.internal.DialogButtonConfiguration
 import com.github.rooneyandshadows.lightbulb.dialogs.base.internal.DialogTypes
 import com.github.rooneyandshadows.lightbulb.dialogs.base.internal.callbacks.*
 import com.google.android.material.bottomsheet.BottomSheetBehavior
 
+@Suppress("MemberVisibilityCanBePrivate")
 abstract class BaseDialogFragment : DialogFragment(), DefaultLifecycleObserver {
-    private lateinit var rootView: View
+    var isDialogShown = false
+        private set
+    var isFullscreen = false
+        protected set
     protected var title: String? = null
         set(value) {
             field = value
@@ -47,39 +52,95 @@ abstract class BaseDialogFragment : DialogFragment(), DefaultLifecycleObserver {
             configureHeading()
             measureDialogLayout()
         }
-    private var dialogTag: String? = null
+    protected val windowHeight: Int
+        get() {
+            val activity = context as Activity? ?: return -1
+            return WindowUtils.getWindowHeight(activity)
+        }
+
+    protected val windowWidth: Int
+        get() {
+            val activity = context as Activity? ?: return -1
+            return WindowUtils.getWindowWidth(activity)
+        }
+    private var dialogTag: String = javaClass.name.plus("_TAG")
     private var cancelableOnClickOutside = true
     private var positiveButtonConfig: DialogButtonConfiguration? = null
     private var negativeButtonConfig: DialogButtonConfiguration? = null
-    var isDialogShown = false
-        private set
-    var isFullscreen = false
-        protected set
-    protected var isLifecycleOwnerInStateAllowingShow = false
-    lateinit var dialogType: DialogTypes
-        private set
-    private lateinit var animationType: DialogAnimationTypes
-    private lateinit var parentFragManager: FragmentManager
-    protected var titleAndMessageContainer: LinearLayoutCompat? = null
-    protected var buttonsContainer: LinearLayoutCompat? = null
-    protected var buttonPositive: Button? = null
-    protected var buttonNegative: Button? = null
-    private lateinit var regularDialogConstraints: RegularDialogConstraints
-    private lateinit var bottomSheetDialogConstraints: BottomSheetDialogConstraints
-    private val onPositiveClickListeners = ArrayList<DialogButtonClickListener>()
-    private val onNegativeClickListeners = ArrayList<DialogButtonClickListener>()
-    private val onShowListeners = ArrayList<DialogShowListener>()
-    private val onHideListeners = ArrayList<DialogHideListener>()
-    private val onCancelListeners = ArrayList<DialogCancelListener>()
+    private var isLifecycleOwnerInStateAllowingShow = false
+    private var titleAndMessageContainer: LinearLayoutCompat? = null
+    private var buttonsContainer: LinearLayoutCompat? = null
+    private var buttonPositive: Button? = null
+    private var buttonNegative: Button? = null
+    private val onPositiveClickListeners: MutableList<DialogButtonClickListener> = mutableListOf()
+    private val onNegativeClickListeners: MutableList<DialogButtonClickListener> = mutableListOf()
+    private val onShowListeners: MutableList<DialogShowListener> = mutableListOf()
+    private val onHideListeners: MutableList<DialogHideListener> = mutableListOf()
+    private val onCancelListeners: MutableList<DialogCancelListener> = mutableListOf()
     private var dialogCallbacks: DialogListeners? = null
     private var dialogLifecycleOwner: LifecycleOwner? = null
-    protected abstract fun setDialogLayout(inflater: LayoutInflater?): View
-    protected abstract fun configureContent(view: View?, savedInstanceState: Bundle?)
+    private lateinit var rootView: View
+    private lateinit var regularDialogConstraints: RegularDialogConstraints
+    private lateinit var bottomSheetDialogConstraints: BottomSheetDialogConstraints
+    private lateinit var parentFragManager: FragmentManager
+    lateinit var dialogType: DialogTypes
+        private set
+    lateinit var animationType: DialogAnimationTypes
+        private set
+
+    /**
+     * Used to create layout for the dialog.
+     *
+     * @param layoutInflater - LayoutInflater to use for view creation.
+     * @return layout for the dialog.
+     */
+    protected abstract fun getDialogLayout(layoutInflater: LayoutInflater): View
+
+    /**
+     * Used to configure content if necessary. Dialog layout is remeasured after this method.
+     *
+     * @param view - layout of the dialog.
+     * @param savedInstanceState - If the fragment is being re-created from a previous saved state, this is the state.
+     */
+    protected abstract fun configureContent(view: View, savedInstanceState: Bundle?)
+
+    /**
+     * Called to do initial creation of a fragment. This is called after onAttach(Activity)
+     * and before onCreateView(LayoutInflater, ViewGroup, Bundle).
+     *
+     * @param dialogArguments - Arguments passed to the dialog fragment if any.
+     * @param savedInstanceState - If the fragment is being re-created from a previous saved state, this is the state.
+     */
     protected open fun doOnCreate(dialogArguments: Bundle?, savedInstanceState: Bundle?) {}
-    protected fun doOnViewCreated(view: View?, savedInstanceState: Bundle?) {}
-    protected fun doOnViewStateRestored(savedInstanceState: Bundle?) {}
+
+    /**
+     * Called immediately after onCreateView(LayoutInflater, ViewGroup, Bundle) has returned,
+     * but before any saved state has been restored in to the view.
+     *
+     * @param view - layout of the dialog
+     * @param savedInstanceState - If the fragment is being re-created from a previous saved state, this is the state.
+     */
+    protected open fun doOnViewCreated(view: View?, savedInstanceState: Bundle?) {}
+
+    /**
+     * Called when all saved state has been restored into the view hierarchy of the dialog fragment.
+     *
+     * @param savedInstanceState
+     */
+    protected open fun doOnViewStateRestored(savedInstanceState: Bundle?) {}
+
+    /**
+     * Called to ask the fragment to save its current dynamic state, so it
+     * can later be reconstructed in a new instance if its process is
+     * restarted.
+     * @param outState - Bundle in which to place your saved state.
+     */
     protected open fun doOnSaveInstanceState(outState: Bundle?) {}
-    protected fun onDismiss() {}
+
+    /**
+     * Called upon dismiss of the dialog.
+     */
+    protected open fun doOnDismiss() {}
 
     @Override
     override fun onResume(owner: LifecycleOwner) {
@@ -98,7 +159,18 @@ abstract class BaseDialogFragment : DialogFragment(), DefaultLifecycleObserver {
         super<DialogFragment>.onCreate(savedInstanceState)
         val bundle = savedInstanceState ?: requireArguments()
         val helper = DialogBundleHelper(bundle)
-        if (savedInstanceState == null) {
+        val hasSavedState = savedInstanceState != null
+        if (hasSavedState) {
+            title = helper.getTitle()
+            message = helper.getMessage()
+            positiveButtonConfig = helper.getPositiveButtonConfig()
+            negativeButtonConfig = helper.getNegativeButtonConfig()
+            cancelableOnClickOutside = helper.cancelable
+            isDialogShown = helper.showing
+            isFullscreen = helper.getFullscreen()
+            dialogType = helper.getDialogType()
+            animationType = helper.getAnimationType()
+        } else {
             dialogType = helper.getDialogType()
             when (dialogType) {
                 DialogTypes.NORMAL -> {
@@ -111,7 +183,7 @@ abstract class BaseDialogFragment : DialogFragment(), DefaultLifecycleObserver {
                 }
                 DialogTypes.BOTTOM_SHEET -> {
                     isFullscreen = false
-                    animationType = DialogAnimationTypes.TRANSITION_FROM_BOTTOM_TO_BOTTOM
+                    animationType = TRANSITION_FROM_BOTTOM_TO_BOTTOM
                 }
             }
             if (title == null) //if not set outside of builder | otherwise ignore
@@ -123,16 +195,6 @@ abstract class BaseDialogFragment : DialogFragment(), DefaultLifecycleObserver {
             if (negativeButtonConfig == null) //if not set outside of builder | otherwise ignore
                 negativeButtonConfig = helper.getNegativeButtonConfig()
             cancelableOnClickOutside = helper.cancelable
-        } else {
-            title = helper.getTitle()
-            message = helper.getMessage()
-            positiveButtonConfig = helper.getPositiveButtonConfig()
-            negativeButtonConfig = helper.getNegativeButtonConfig()
-            cancelableOnClickOutside = helper.cancelable
-            isDialogShown = helper.showing
-            isFullscreen = helper.getFullscreen()
-            dialogType = helper.getDialogType()
-            animationType = helper.getAnimationType()
         }
         isCancelable = cancelableOnClickOutside
         doOnCreate(arguments, savedInstanceState)
@@ -159,20 +221,17 @@ abstract class BaseDialogFragment : DialogFragment(), DefaultLifecycleObserver {
     }
 
     @Override
-    override fun onCreateView(inflater: LayoutInflater, container: ViewGroup?, savedInstanceState: Bundle?): View? {
+    final override fun onCreateView(inflater: LayoutInflater, container: ViewGroup?, savedInstanceState: Bundle?): View {
         regularDialogConstraints = getRegularConstraints()
         bottomSheetDialogConstraints = getBottomSheetConstraints()
         rootView = when (dialogType) {
-            DialogTypes.NORMAL, DialogTypes.FULLSCREEN -> setDialogLayout(
-                LayoutInflater.from(
-                    context
-                )
-            )
-            DialogTypes.BOTTOM_SHEET -> setBottomSheetDialogLayout()
+            DialogTypes.NORMAL, DialogTypes.FULLSCREEN -> getDialogLayout(LayoutInflater.from(requireContext()))
+            DialogTypes.BOTTOM_SHEET -> getBottomSheetDialogLayout()
         }
         return rootView
     }
 
+    @Override
     final override fun onViewCreated(view: View, savedInstanceState: Bundle?) {
         super.onViewCreated(view, savedInstanceState)
         configureHeading()
@@ -184,11 +243,13 @@ abstract class BaseDialogFragment : DialogFragment(), DefaultLifecycleObserver {
             dialogCallbacks!!.doOnInflated(this, view, savedInstanceState)
     }
 
+    @Override
     final override fun onViewStateRestored(savedInstanceState: Bundle?) {
         super.onViewStateRestored(savedInstanceState)
         doOnViewStateRestored(savedInstanceState)
     }
 
+    @Override
     final override fun onCreateDialog(savedInstanceState: Bundle?): Dialog {
         val dialog = Dialog(requireContext())
         isDialogShown = true
@@ -201,49 +262,57 @@ abstract class BaseDialogFragment : DialogFragment(), DefaultLifecycleObserver {
         return dialog
     }
 
+    @Override
     final override fun onStart() {
         super<DialogFragment>.onStart()
-        if (dialog == null || dialog!!.window == null)
-            return
-        val dialogWindow = dialog!!.window
+        val dialogWindow = dialog?.window ?: return
         when (animationType) {
-            DialogAnimationTypes.NO_ANIMATION -> dialogWindow!!.setWindowAnimations(R.style.NoAnimation)
-            DialogAnimationTypes.FADE -> dialogWindow!!.setWindowAnimations(R.style.Animation_Fade)
-            DialogAnimationTypes.TRANSITION_FROM_BOTTOM_TO_BOTTOM -> dialogWindow!!.setWindowAnimations(R.style.Animation_FromBottomToBottom)
-            DialogAnimationTypes.TRANSITION_FROM_LEFT_TO_RIGHT -> dialogWindow!!.setWindowAnimations(R.style.Animation_FromLeftToRight)
-            DialogAnimationTypes.TRANSITION_FROM_TOP_TO_BOTTOM -> dialogWindow!!.setWindowAnimations(R.style.Animation_FromTopToBottom)
+            NO_ANIMATION -> dialogWindow.setWindowAnimations(R.style.NoAnimation)
+            FADE -> dialogWindow.setWindowAnimations(R.style.Animation_Fade)
+            TRANSITION_FROM_BOTTOM_TO_BOTTOM -> dialogWindow.setWindowAnimations(R.style.Animation_FromBottomToBottom)
+            TRANSITION_FROM_LEFT_TO_RIGHT -> dialogWindow.setWindowAnimations(R.style.Animation_FromLeftToRight)
+            TRANSITION_FROM_TOP_TO_BOTTOM -> dialogWindow.setWindowAnimations(R.style.Animation_FromTopToBottom)
         }
     }
 
-    override fun dismiss() {
+    @Override
+    final override fun dismiss() {
         if (!isDialogShown) return
         super.dismiss()
         isDialogShown = false
     }
 
+    @Override
     final override fun onDismiss(dialog: DialogInterface) {
         super.onDismiss(dialog)
         for (onHideListener in onHideListeners)
             onHideListener.doOnHide(this)
-        onDismiss()
+        doOnDismiss()
     }
 
-    override fun onCancel(dialog: DialogInterface) {
+    @Override
+    final override fun onCancel(dialog: DialogInterface) {
         for (onCancelListener in onCancelListeners)
             onCancelListener.doOnCancel(this)
         dismiss()
     }
 
-    override fun show(transaction: FragmentTransaction, tag: String?): Int {
-        return if (checkIfDialogCanBeShown()) super.show(transaction, tag) else -1
+    @Override
+    final override fun show(transaction: FragmentTransaction, tag: String?): Int {
+        return if (checkIfDialogCanBeShown())
+            super.show(transaction, tag) else -1
     }
 
-    override fun showNow(manager: FragmentManager, tag: String?) {
-        if (checkIfDialogCanBeShown()) super.showNow(manager, tag)
+    @Override
+    final override fun showNow(manager: FragmentManager, tag: String?) {
+        if (checkIfDialogCanBeShown())
+            super.showNow(manager, tag)
     }
 
-    override fun show(manager: FragmentManager, tag: String?) {
-        if (checkIfDialogCanBeShown()) super.show(manager, tag)
+    @Override
+    final override fun show(manager: FragmentManager, tag: String?) {
+        if (checkIfDialogCanBeShown())
+            super.show(manager, tag)
     }
 
     fun show() {
@@ -265,7 +334,7 @@ abstract class BaseDialogFragment : DialogFragment(), DefaultLifecycleObserver {
         this.parentFragManager = fragmentManager
     }
 
-    fun setDialogTag(dialogTag: String?) {
+    fun setDialogTag(dialogTag: String) {
         this.dialogTag = dialogTag
     }
 
@@ -276,38 +345,38 @@ abstract class BaseDialogFragment : DialogFragment(), DefaultLifecycleObserver {
         measureDialogLayout()
     }
 
-    fun configurePositiveButton(configurationCreator: DialogButtonConfigurationCreator?) {
-        positiveButtonConfig = configurationCreator?.create(positiveButtonConfig)
+    fun configurePositiveButton(configurationCreator: DialogButtonConfigurationCreator) {
+        positiveButtonConfig = configurationCreator.create(positiveButtonConfig)
         configureButtons()
     }
 
-    fun configureNegativeButton(configurationCreator: DialogButtonConfigurationCreator?) {
-        negativeButtonConfig = configurationCreator?.create(negativeButtonConfig)
+    fun configureNegativeButton(configurationCreator: DialogButtonConfigurationCreator) {
+        negativeButtonConfig = configurationCreator.create(negativeButtonConfig)
         configureButtons()
     }
 
-    fun addOnPositiveClickListener(onPositiveClickListener: DialogButtonClickListener?) {
-        if (onPositiveClickListener != null && !onPositiveClickListeners.contains(onPositiveClickListener))
+    fun addOnPositiveClickListener(onPositiveClickListener: DialogButtonClickListener) {
+        if (!onPositiveClickListeners.contains(onPositiveClickListener))
             onPositiveClickListeners.add(onPositiveClickListener)
     }
 
-    fun addOnNegativeClickListeners(onNegativeClickListener: DialogButtonClickListener?) {
-        if (onNegativeClickListener != null && !onNegativeClickListeners.contains(onNegativeClickListener))
+    fun addOnNegativeClickListeners(onNegativeClickListener: DialogButtonClickListener) {
+        if (!onNegativeClickListeners.contains(onNegativeClickListener))
             onNegativeClickListeners.add(onNegativeClickListener)
     }
 
-    fun addOnCancelListener(onCancelListener: DialogCancelListener?) {
-        if (onCancelListener != null && !onCancelListeners.contains(onCancelListener))
+    fun addOnCancelListener(onCancelListener: DialogCancelListener) {
+        if (!onCancelListeners.contains(onCancelListener))
             onCancelListeners.add(onCancelListener)
     }
 
-    fun addOnShowListener(onShowListener: DialogShowListener?) {
-        if (onShowListener != null && !onShowListeners.contains(onShowListener))
+    fun addOnShowListener(onShowListener: DialogShowListener) {
+        if (!onShowListeners.contains(onShowListener))
             onShowListeners.add(onShowListener)
     }
 
-    fun addOnHideListener(hideListener: DialogHideListener?) {
-        if (hideListener != null && !onHideListeners.contains(hideListener))
+    fun addOnHideListener(hideListener: DialogHideListener) {
+        if (!onHideListeners.contains(hideListener))
             onHideListeners.add(hideListener)
     }
 
@@ -347,21 +416,6 @@ abstract class BaseDialogFragment : DialogFragment(), DefaultLifecycleObserver {
             .build()
     }
 
-    protected open fun canShowDialog(dialogLifecycleOwner: LifecycleOwner?): Boolean {
-        if (dialogLifecycleOwner == null) Log.w(
-            javaClass.name,
-            "You are using dialog without lifecycle owner. This may produce unexpected behaviour when trying to show the dialog in specific lifecycle states. It is highly recommended to build your dialog with a lifecycle ownner."
-        )
-        if (dialogLifecycleOwner != null && !isLifecycleOwnerInStateAllowingShow) {
-            Log.w(
-                javaClass.name,
-                "Showing of dialog cancelled: Lifecycle owner is not in valid state. You are probably trying to show dialog after saveInstanceState has been executed."
-            )
-            return false
-        }
-        return true
-    }
-
     protected fun getPercentOfWindowHeight(heightInPercents: Int): Int {
         return windowHeight * validatePercents(heightInPercents) / 100
     }
@@ -369,18 +423,6 @@ abstract class BaseDialogFragment : DialogFragment(), DefaultLifecycleObserver {
     protected fun getPercentOfWindowWidth(widthInPercents: Int): Int {
         return windowWidth * validatePercents(widthInPercents) / 100
     }
-
-    protected val windowHeight: Int
-        get() {
-            val activity = context as Activity? ?: return -1
-            return WindowUtils.getWindowHeight(activity)
-        }
-
-    protected val windowWidth: Int
-        get() {
-            val activity = context as Activity? ?: return -1
-            return WindowUtils.getWindowWidth(activity)
-        }
 
     protected fun measureDialogLayout() {
         val dialog = dialog
@@ -412,7 +454,7 @@ abstract class BaseDialogFragment : DialogFragment(), DefaultLifecycleObserver {
     ) {
         val widthMeasureSpec = View.MeasureSpec.makeMeasureSpec(constraints.getMaxWidth(), View.MeasureSpec.AT_MOST)
         val heightMeasureSpec = View.MeasureSpec.makeMeasureSpec(0, View.MeasureSpec.UNSPECIFIED)
-        val params = ViewGroup.LayoutParams(0, 0)
+        //val params = ViewGroup.LayoutParams(0, 0)
         dialogLayout.measure(widthMeasureSpec, heightMeasureSpec)
         val horPadding = fgPadding.left + fgPadding.right
         val verPadding = fgPadding.top + fgPadding.bottom
@@ -523,9 +565,9 @@ abstract class BaseDialogFragment : DialogFragment(), DefaultLifecycleObserver {
     }
 
     @SuppressLint("ClickableViewAccessibility")
-    private fun setBottomSheetDialogLayout(): View {
+    private fun getBottomSheetDialogLayout(): View {
         val context = requireContext()
-        if (!cancelableOnClickOutside) return setDialogLayout(LayoutInflater.from(context))
+        if (!cancelableOnClickOutside) return getDialogLayout(LayoutInflater.from(context))
         val parent = CoordinatorLayout(context)
         val params: CoordinatorLayout.LayoutParams = CoordinatorLayout.LayoutParams(
             ViewGroup.LayoutParams.MATCH_PARENT,
@@ -557,7 +599,7 @@ abstract class BaseDialogFragment : DialogFragment(), DefaultLifecycleObserver {
             }
         })
         params.behavior = behavior
-        val child = setDialogLayout(LayoutInflater.from(context))
+        val child = getDialogLayout(LayoutInflater.from(context))
         child.layoutParams = params
         parent.addView(child)
         val gesture = GestureDetector(activity, object : GestureDetector.SimpleOnGestureListener() {
@@ -573,5 +615,24 @@ abstract class BaseDialogFragment : DialogFragment(), DefaultLifecycleObserver {
             gesture.onTouchEvent(event!!)
         }
         return parent
+    }
+
+    private fun canShowDialog(dialogLifecycleOwner: LifecycleOwner?): Boolean {
+        if (dialogLifecycleOwner == null)
+            Log.w(
+                javaClass.name,
+                "You are using dialog without lifecycle owner. This may produce unexpected behaviour when trying to " +
+                        "show the dialog in specific lifecycle states. It is highly recommended to build your dialog with a " +
+                        "lifecycle ownner."
+            )
+        if (dialogLifecycleOwner != null && !isLifecycleOwnerInStateAllowingShow) {
+            Log.w(
+                javaClass.name,
+                "Showing of dialog cancelled: Lifecycle owner is not in valid state. You are probably trying to " +
+                        "show the dialog after saveInstanceState has been executed."
+            )
+            return false
+        }
+        return true
     }
 }

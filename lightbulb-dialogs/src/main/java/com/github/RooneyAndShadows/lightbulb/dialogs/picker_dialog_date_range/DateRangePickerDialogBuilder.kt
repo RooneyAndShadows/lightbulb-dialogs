@@ -63,8 +63,8 @@ class DateRangePickerDialogBuilder : BaseDialogBuilder<DateRangePickerDialog?> {
         return super.withOnHideListener(listener) as DateRangePickerDialogBuilder
     }
 
-    override fun withCancelOnClickOutsude(closeOnClickOutside: Boolean): DateRangePickerDialogBuilder? {
-        return super.withCancelOnClickOutsude(closeOnClickOutside) as DateRangePickerDialogBuilder
+    override fun withCancelOnClickOutside(closeOnClickOutside: Boolean): DateRangePickerDialogBuilder? {
+        return super.withCancelOnClickOutside(closeOnClickOutside) as DateRangePickerDialogBuilder
     }
 
     override fun withDialogType(dialogType: DialogTypes?): DateRangePickerDialogBuilder? {
@@ -75,8 +75,8 @@ class DateRangePickerDialogBuilder : BaseDialogBuilder<DateRangePickerDialog?> {
         return super.withAnimations(animation) as DateRangePickerDialogBuilder
     }
 
-    override fun withDialogCallbacks(callbacks: DialogCallbacks?): DateRangePickerDialogBuilder? {
-        return super.withDialogCallbacks(callbacks) as DateRangePickerDialogBuilder
+    override fun withDialogListeners(callbacks: DialogCallbacks?): DateRangePickerDialogBuilder? {
+        return super.withDialogListeners(callbacks) as DateRangePickerDialogBuilder
     }
 
     fun withTextFrom(textFrom: String?): DateRangePickerDialogBuilder {
@@ -116,7 +116,7 @@ class DateRangePickerDialogBuilder : BaseDialogBuilder<DateRangePickerDialog?> {
             animation
         )
         dialogFragment.setLifecycleOwner(dialogLifecycleOwner)
-        dialogFragment.setDialogCallbacks(dialogCallbacks)
+        dialogFragment.setDialogCallbacks(dialogListeners)
         dialogFragment.setFragmentManager(fragmentManager)
         dialogFragment.setDialogTag(dialogTag)
         dialogFragment.addOnNegativeClickListeners(onNegativeClickListener)

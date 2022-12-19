@@ -65,8 +65,8 @@ class IconPickerDialogBuilder : BaseDialogBuilder<IconPickerDialog?> {
         return super.withOnHideListener(listener) as IconPickerDialogBuilder
     }
 
-    override fun withCancelOnClickOutsude(closeOnClickOutside: Boolean): IconPickerDialogBuilder? {
-        return super.withCancelOnClickOutsude(closeOnClickOutside) as IconPickerDialogBuilder
+    override fun withCancelOnClickOutside(closeOnClickOutside: Boolean): IconPickerDialogBuilder? {
+        return super.withCancelOnClickOutside(closeOnClickOutside) as IconPickerDialogBuilder
     }
 
     override fun withDialogType(dialogType: DialogTypes?): IconPickerDialogBuilder? {
@@ -77,8 +77,8 @@ class IconPickerDialogBuilder : BaseDialogBuilder<IconPickerDialog?> {
         return super.withAnimations(animation) as IconPickerDialogBuilder
     }
 
-    override fun withDialogCallbacks(callbacks: DialogCallbacks?): IconPickerDialogBuilder? {
-        return super.withDialogCallbacks(callbacks) as IconPickerDialogBuilder
+    override fun withDialogListeners(callbacks: DialogCallbacks?): IconPickerDialogBuilder? {
+        return super.withDialogListeners(callbacks) as IconPickerDialogBuilder
     }
 
     fun withSelectionCallback(listener: SelectionChangedListener<IntArray>?): IconPickerDialogBuilder {
@@ -102,7 +102,7 @@ class IconPickerDialogBuilder : BaseDialogBuilder<IconPickerDialog?> {
             animation
         )
         iconPickerDialog.setLifecycleOwner(dialogLifecycleOwner)
-        iconPickerDialog.setDialogCallbacks(dialogCallbacks)
+        iconPickerDialog.setDialogCallbacks(dialogListeners)
         iconPickerDialog.setFragmentManager(fragmentManager)
         iconPickerDialog.setDialogTag(dialogTag)
         iconPickerDialog.addOnShowListener(onShowListener)

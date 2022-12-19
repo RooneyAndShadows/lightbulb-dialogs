@@ -73,8 +73,8 @@ class CustomDialogBuilder<DialogType : CustomDialog?> : BaseDialogBuilder<Dialog
         return super.withOnHideListener(listener) as CustomDialogBuilder<DialogType?>
     }
 
-    override fun withCancelOnClickOutsude(closeOnClickOutside: Boolean): CustomDialogBuilder<DialogType?>? {
-        return super.withCancelOnClickOutsude(closeOnClickOutside) as CustomDialogBuilder<DialogType?>
+    override fun withCancelOnClickOutside(closeOnClickOutside: Boolean): CustomDialogBuilder<DialogType?>? {
+        return super.withCancelOnClickOutside(closeOnClickOutside) as CustomDialogBuilder<DialogType?>
     }
 
     override fun withDialogType(dialogType: DialogTypes?): CustomDialogBuilder<DialogType?>? {
@@ -85,8 +85,8 @@ class CustomDialogBuilder<DialogType : CustomDialog?> : BaseDialogBuilder<Dialog
         return super.withAnimations(animation) as CustomDialogBuilder<DialogType?>
     }
 
-    override fun withDialogCallbacks(callbacks: DialogCallbacks?): CustomDialogBuilder<DialogType?>? {
-        return super.withDialogCallbacks(callbacks) as CustomDialogBuilder<DialogType?>
+    override fun withDialogListeners(callbacks: DialogCallbacks?): CustomDialogBuilder<DialogType?>? {
+        return super.withDialogListeners(callbacks) as CustomDialogBuilder<DialogType?>
     }
 
     fun withLoading(isLoading: Boolean): CustomDialogBuilder<DialogType> {
@@ -115,7 +115,7 @@ class CustomDialogBuilder<DialogType : CustomDialog?> : BaseDialogBuilder<Dialog
         )
         dialogFragment!!.setLifecycleOwner(dialogLifecycleOwner)
         dialogFragment.setDialogInflater(dialogInflater)
-        dialogFragment.setDialogCallbacks(dialogCallbacks)
+        dialogFragment.setDialogCallbacks(dialogListeners)
         dialogFragment.fragmentManager = fragmentManager
         dialogFragment.setDialogTag(dialogTag)
         dialogFragment.addOnShowListener(onShowListener)

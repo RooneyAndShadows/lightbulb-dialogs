@@ -78,8 +78,8 @@ class AdapterPickerDialogBuilder<ModelType : EasyAdapterDataModel?> : BaseDialog
         return super.withOnHideListener(listener) as AdapterPickerDialogBuilder<ModelType?>
     }
 
-    override fun withCancelOnClickOutsude(closeOnClickOutside: Boolean): AdapterPickerDialogBuilder<ModelType?>? {
-        return super.withCancelOnClickOutsude(closeOnClickOutside) as AdapterPickerDialogBuilder<ModelType?>
+    override fun withCancelOnClickOutside(closeOnClickOutside: Boolean): AdapterPickerDialogBuilder<ModelType?>? {
+        return super.withCancelOnClickOutside(closeOnClickOutside) as AdapterPickerDialogBuilder<ModelType?>
     }
 
     override fun withDialogType(dialogType: DialogTypes?): AdapterPickerDialogBuilder<ModelType?>? {
@@ -90,8 +90,8 @@ class AdapterPickerDialogBuilder<ModelType : EasyAdapterDataModel?> : BaseDialog
         return super.withAnimations(animation) as AdapterPickerDialogBuilder<ModelType?>
     }
 
-    override fun withDialogCallbacks(callbacks: DialogCallbacks?): AdapterPickerDialogBuilder<ModelType?>? {
-        return super.withDialogCallbacks(callbacks) as AdapterPickerDialogBuilder<ModelType?>
+    override fun withDialogListeners(callbacks: DialogCallbacks?): AdapterPickerDialogBuilder<ModelType?>? {
+        return super.withDialogListeners(callbacks) as AdapterPickerDialogBuilder<ModelType?>
     }
 
     fun withSelectionCallback(listener: SelectionChangedListener<IntArray?>?): AdapterPickerDialogBuilder<ModelType> {
@@ -121,7 +121,7 @@ class AdapterPickerDialogBuilder<ModelType : EasyAdapterDataModel?> : BaseDialog
             animation
         )
         dialogFragment.setLifecycleOwner(dialogLifecycleOwner)
-        dialogFragment.setDialogCallbacks(dialogCallbacks)
+        dialogFragment.setDialogCallbacks(dialogListeners)
         dialogFragment.setFragmentManager(fragmentManager)
         dialogFragment.setDialogTag(dialogTag)
         dialogFragment.addOnNegativeClickListeners(onNegativeClickListener)

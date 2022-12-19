@@ -2,12 +2,13 @@ package com.github.rooneyandshadows.lightbulb.dialogs.base
 
 import androidx.fragment.app.FragmentManager
 import androidx.lifecycle.LifecycleOwner
-import com.github.rooneyandshadows.lightbulb.dialogs.base.BaseDialogFragment.*
+import com.github.rooneyandshadows.lightbulb.dialogs.base.internal.*
+import com.github.rooneyandshadows.lightbulb.dialogs.base.internal.callbacks.*
 
-abstract class BaseDialogBuilder<DialogType : BaseDialogFragment?>(
-    protected val dialogLifecycleOwner: LifecycleOwner?,
-    protected val fragmentManager: FragmentManager?,
-    protected val dialogTag: String?
+abstract class BaseDialogBuilder<DialogType : BaseDialogFragment?> @JvmOverloads constructor(
+    protected val dialogLifecycleOwner: LifecycleOwner? = null,
+    protected val fragmentManager: FragmentManager,
+    protected val dialogTag: String
 ) {
     protected var title: String? = null
     protected var message: String? = null
@@ -20,10 +21,8 @@ abstract class BaseDialogBuilder<DialogType : BaseDialogFragment?>(
     protected var onCancelListener: DialogCancelListener? = null
     protected var animation: DialogAnimationTypes? = null
     protected var dialogType: DialogTypes? = null
-    protected var dialogCallbacks: DialogCallbacks? = null
+    protected var dialogListeners: DialogListeners? = null
     protected var cancelableOnClickOutside = true
-
-    constructor(manager: FragmentManager?, dialogTag: String?) : this(null, manager, dialogTag)
 
     open fun withTitle(title: String?): BaseDialogBuilder<DialogType> {
         this.title = title
@@ -68,7 +67,7 @@ abstract class BaseDialogBuilder<DialogType : BaseDialogFragment?>(
         return this
     }
 
-    open fun withCancelOnClickOutsude(closeOnClickOutside: Boolean): BaseDialogBuilder<DialogType> {
+    open fun withCancelOnClickOutside(closeOnClickOutside: Boolean): BaseDialogBuilder<DialogType> {
         cancelableOnClickOutside = closeOnClickOutside
         return this
     }
@@ -83,8 +82,8 @@ abstract class BaseDialogBuilder<DialogType : BaseDialogFragment?>(
         return this
     }
 
-    open fun withDialogCallbacks(callbacks: DialogCallbacks?): BaseDialogBuilder<DialogType> {
-        dialogCallbacks = callbacks
+    open fun withDialogListeners(listeners: DialogListeners?): BaseDialogBuilder<DialogType> {
+        dialogListeners = listeners
         return this
     }
 

@@ -59,8 +59,8 @@ class TimePickerDialogBuilder : BaseDialogBuilder<TimePickerDialog?> {
         return super.withOnHideListener(listener) as TimePickerDialogBuilder
     }
 
-    override fun withCancelOnClickOutsude(closeOnClickOutside: Boolean): TimePickerDialogBuilder? {
-        return super.withCancelOnClickOutsude(closeOnClickOutside) as TimePickerDialogBuilder
+    override fun withCancelOnClickOutside(closeOnClickOutside: Boolean): TimePickerDialogBuilder? {
+        return super.withCancelOnClickOutside(closeOnClickOutside) as TimePickerDialogBuilder
     }
 
     override fun withDialogType(dialogType: DialogTypes?): TimePickerDialogBuilder? {
@@ -71,8 +71,8 @@ class TimePickerDialogBuilder : BaseDialogBuilder<TimePickerDialog?> {
         return super.withAnimations(animation) as TimePickerDialogBuilder
     }
 
-    override fun withDialogCallbacks(callbacks: DialogCallbacks?): TimePickerDialogBuilder? {
-        return super.withDialogCallbacks(callbacks) as TimePickerDialogBuilder
+    override fun withDialogListeners(callbacks: DialogCallbacks?): TimePickerDialogBuilder? {
+        return super.withDialogListeners(callbacks) as TimePickerDialogBuilder
     }
 
     fun withOnDateSelectedEvent(listener: SelectionChangedListener<IntArray>?): TimePickerDialogBuilder {
@@ -99,7 +99,7 @@ class TimePickerDialogBuilder : BaseDialogBuilder<TimePickerDialog?> {
             animation
         )
         dialogFragment.setLifecycleOwner(dialogLifecycleOwner)
-        dialogFragment.setDialogCallbacks(dialogCallbacks)
+        dialogFragment.setDialogCallbacks(dialogListeners)
         dialogFragment.setFragmentManager(fragmentManager)
         dialogFragment.setDialogTag(dialogTag)
         dialogFragment.addOnNegativeClickListeners(onNegativeClickListener)

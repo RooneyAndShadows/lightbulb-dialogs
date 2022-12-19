@@ -1,8 +1,10 @@
 package com.github.rooneyandshadows.lightbulb.dialogs.base
 
 import android.view.View
-import androidx.lifecycle.LifecycleOwner
 import com.github.rooneyandshadows.lightbulb.dialogs.base.BaseDialogSelection.PickerSelectionListeners
+import com.github.rooneyandshadows.lightbulb.dialogs.base.internal.callbacks.DialogButtonClickListener
+import com.github.rooneyandshadows.lightbulb.dialogs.base.internal.callbacks.DialogCancelListener
+import com.github.rooneyandshadows.lightbulb.dialogs.base.internal.callbacks.DialogShowListener
 
 abstract class BasePickerDialogFragment<SelectionType>(
     protected val selection: BaseDialogSelection<SelectionType>,
@@ -10,10 +12,10 @@ abstract class BasePickerDialogFragment<SelectionType>(
 ) : BaseDialogFragment() {
     private var onSelectionChangedListener: SelectionChangedListener<SelectionType>? = null
 
-    protected constructor(selection: BaseDialogSelection<SelectionType>) : this(selection, true) {}
+    protected constructor(selection: BaseDialogSelection<SelectionType>) : this(selection, true)
 
-    override fun canShowDialog(dialogLifecycleOwner: LifecycleOwner?): Boolean {
-        return true
+    init {
+        initializeListeners()
     }
 
     protected abstract fun synchronizeSelectUi()
@@ -22,8 +24,8 @@ abstract class BasePickerDialogFragment<SelectionType>(
         this.onSelectionChangedListener = onSelectionChangedListener
     }
 
-    open fun setSelection(newSelection: SelectionType) {
-        selection.currentSelection = newSelection
+    open fun setSelection(newSelection: SelectionType?) {
+        selection.setCurrentSelection(newSelection)
     }
 
     fun getSelection(): SelectionType? {
@@ -34,30 +36,42 @@ abstract class BasePickerDialogFragment<SelectionType>(
         return selection.hasCurrentSelection()
     }
 
-    protected fun dispatchSelectionChangedEvent(oldValue: SelectionType, newValue: SelectionType) {
+    protected fun dispatchSelectionChangedEvent(oldValue: SelectionType?, newValue: SelectionType?) {
         if (onSelectionChangedListener != null) onSelectionChangedListener!!.onSelectionChanged(oldValue, newValue)
     }
 
-    interface SelectionChangedListener<SType> {
-        fun onSelectionChanged(oldValue: SType, newValue: SType)
-    }
-
-    init {
-        addOnShowListener { dialogFragment: BaseDialogFragment? -> selection.startDraft() }
-        addOnCancelListener { dialogFragment: BaseDialogFragment? -> selection.revertDraft() }
-        addOnNegativeClickListeners { view: View?, dialogFragment: BaseDialogFragment? -> selection.revertDraft() }
-        addOnPositiveClickListener { view: View?, dialogFragment: BaseDialogFragment? -> selection.commitDraft() }
+    private fun initializeListeners() {
+        addOnShowListener(object : DialogShowListener {
+            override fun doOnShow(dialogFragment: BaseDialogFragment) {
+                selection.startDraft()
+            }
+        })
+        addOnCancelListener(object : DialogCancelListener {
+            override fun doOnCancel(dialogFragment: BaseDialogFragment) {
+                selection.revertDraft()
+            }
+        })
+        addOnNegativeClickListeners(object : DialogButtonClickListener {
+            override fun doOnClick(buttonView: View?, dialogFragment: BaseDialogFragment) {
+                selection.revertDraft()
+            }
+        })
+        addOnPositiveClickListener(object : DialogButtonClickListener {
+            override fun doOnClick(buttonView: View?, dialogFragment: BaseDialogFragment) {
+                selection.commitDraft()
+            }
+        })
         selection.addSelectionListeners(object : PickerSelectionListeners<SelectionType> {
-            override fun onCurrentSelectionChangedListener(newValue: SelectionType, oldValue: SelectionType) {
+            override fun onCurrentSelectionChangedListener(newValue: SelectionType?, oldValue: SelectionType?) {
                 synchronizeSelectUi()
                 dispatchSelectionChangedEvent(oldValue, newValue)
             }
 
-            override fun onDraftSelectionChangedListener(newValue: SelectionType) {
+            override fun onDraftSelectionChangedListener(newValue: SelectionType?) {
                 if (synchronizeUiOnDraftChange) synchronizeSelectUi()
             }
 
-            override fun onDraftCommit(newValue: SelectionType, beforeCommit: SelectionType) {
+            override fun onDraftCommit(newValue: SelectionType?, beforeCommit: SelectionType?) {
                 synchronizeSelectUi()
                 dispatchSelectionChangedEvent(beforeCommit, newValue)
             }
@@ -66,5 +80,9 @@ abstract class BasePickerDialogFragment<SelectionType>(
                 synchronizeSelectUi()
             }
         })
+    }
+
+    interface SelectionChangedListener<SType> {
+        fun onSelectionChanged(oldValue: SType?, newValue: SType?)
     }
 }

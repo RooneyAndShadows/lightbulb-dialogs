@@ -65,8 +65,8 @@ class MonthPickerDialogBuilder : BaseDialogBuilder<MonthPickerDialog?> {
         return super.withOnHideListener(listener) as MonthPickerDialogBuilder
     }
 
-    override fun withCancelOnClickOutsude(closeOnClickOutside: Boolean): MonthPickerDialogBuilder? {
-        return super.withCancelOnClickOutsude(closeOnClickOutside) as MonthPickerDialogBuilder
+    override fun withCancelOnClickOutside(closeOnClickOutside: Boolean): MonthPickerDialogBuilder? {
+        return super.withCancelOnClickOutside(closeOnClickOutside) as MonthPickerDialogBuilder
     }
 
     override fun withDialogType(dialogType: DialogTypes?): MonthPickerDialogBuilder? {
@@ -77,8 +77,8 @@ class MonthPickerDialogBuilder : BaseDialogBuilder<MonthPickerDialog?> {
         return super.withAnimations(animation) as MonthPickerDialogBuilder
     }
 
-    override fun withDialogCallbacks(callbacks: DialogCallbacks?): MonthPickerDialogBuilder? {
-        return super.withDialogCallbacks(callbacks) as MonthPickerDialogBuilder
+    override fun withDialogListeners(callbacks: DialogCallbacks?): MonthPickerDialogBuilder? {
+        return super.withDialogListeners(callbacks) as MonthPickerDialogBuilder
     }
 
     fun withDisabledMonths(disabledMonths: ArrayList<IntArray>?): MonthPickerDialogBuilder {
@@ -126,7 +126,7 @@ class MonthPickerDialogBuilder : BaseDialogBuilder<MonthPickerDialog?> {
             animation
         )
         dialogFragment.setLifecycleOwner(dialogLifecycleOwner)
-        dialogFragment.setDialogCallbacks(dialogCallbacks)
+        dialogFragment.setDialogCallbacks(dialogListeners)
         dialogFragment.setFragmentManager(fragmentManager)
         dialogFragment.setDialogTag(dialogTag)
         dialogFragment.addOnNegativeClickListeners(onNegativeClickListener)

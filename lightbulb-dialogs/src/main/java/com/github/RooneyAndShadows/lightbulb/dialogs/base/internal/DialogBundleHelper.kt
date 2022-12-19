@@ -102,6 +102,4 @@ class DialogBundleHelper(val bundle: Bundle = Bundle()) {
         bundle.putInt(DIALOG_ANIMATION_TAG, animationType.value)
         return this
     }
-
-
 }

@@ -55,8 +55,8 @@ class LoadingDialogBuilder : BaseDialogBuilder<LoadingDialog?> {
         return super.withOnHideListener(listener) as LoadingDialogBuilder
     }
 
-    override fun withCancelOnClickOutsude(closeOnClickOutside: Boolean): LoadingDialogBuilder? {
-        return super.withCancelOnClickOutsude(closeOnClickOutside) as LoadingDialogBuilder
+    override fun withCancelOnClickOutside(closeOnClickOutside: Boolean): LoadingDialogBuilder? {
+        return super.withCancelOnClickOutside(closeOnClickOutside) as LoadingDialogBuilder
     }
 
     override fun withDialogType(dialogType: DialogTypes?): LoadingDialogBuilder? {
@@ -67,8 +67,8 @@ class LoadingDialogBuilder : BaseDialogBuilder<LoadingDialog?> {
         return super.withAnimations(animation) as LoadingDialogBuilder
     }
 
-    override fun withDialogCallbacks(callbacks: DialogCallbacks?): LoadingDialogBuilder? {
-        return super.withDialogCallbacks(callbacks) as LoadingDialogBuilder
+    override fun withDialogListeners(callbacks: DialogCallbacks?): LoadingDialogBuilder? {
+        return super.withDialogListeners(callbacks) as LoadingDialogBuilder
     }
 
     override fun buildDialog(): LoadingDialog? {
@@ -76,7 +76,7 @@ class LoadingDialogBuilder : BaseDialogBuilder<LoadingDialog?> {
         if (dialogFragment == null) dialogFragment =
             LoadingDialog.Companion.newInstance(title, message, dialogType, animation)
         dialogFragment.setLifecycleOwner(dialogLifecycleOwner)
-        dialogFragment.setDialogCallbacks(dialogCallbacks)
+        dialogFragment.setDialogCallbacks(dialogListeners)
         dialogFragment.setFragmentManager(fragmentManager)
         dialogFragment.setDialogTag(dialogTag)
         dialogFragment.addOnShowListener(onShowListener)
