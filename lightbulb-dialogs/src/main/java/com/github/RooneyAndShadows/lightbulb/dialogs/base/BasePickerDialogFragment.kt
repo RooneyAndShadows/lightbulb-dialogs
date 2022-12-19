@@ -17,6 +17,7 @@ abstract class BasePickerDialogFragment<SelectionType>(
     }
 
     protected abstract fun synchronizeSelectUi()
+
     fun setOnSelectionChangedListener(onSelectionChangedListener: SelectionChangedListener<SelectionType>?) {
         this.onSelectionChangedListener = onSelectionChangedListener
     }

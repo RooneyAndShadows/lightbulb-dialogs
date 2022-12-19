@@ -2,9 +2,9 @@ package com.github.rooneyandshadows.lightbulb.dialogs.base.internal
 
 import android.os.Bundle
 import com.github.rooneyandshadows.lightbulb.commons.utils.BundleUtils
-import com.github.rooneyandshadows.lightbulb.dialogs.base.BaseDialogFragment
 
 class DialogBundleHelper(val bundle: Bundle = Bundle()) {
+
     companion object {
         private const val DIALOG_TITLE_TEXT_TAG = "DIALOG_TITLE_TEXT_TAG"
         private const val DIALOG_MESSAGE_TEXT_TAG = "DIALOG_MESSAGE_TEXT_TAG"
@@ -25,19 +25,19 @@ class DialogBundleHelper(val bundle: Bundle = Bundle()) {
         return bundle.getString(DIALOG_MESSAGE_TEXT_TAG)
     }
 
-    fun getPositiveButtonConfig(): BaseDialogFragment.DialogButtonConfiguration? {
+    fun getPositiveButtonConfig(): DialogButtonConfiguration? {
         return BundleUtils.getParcelable(
             DIALOG_POSITIVE_BUTTON_CONFIG_TAG,
             bundle,
-            BaseDialogFragment.DialogButtonConfiguration::class.java
+            DialogButtonConfiguration::class.java
         )
     }
 
-    fun getNegativeButtonConfig(): BaseDialogFragment.DialogButtonConfiguration? {
+    fun getNegativeButtonConfig(): DialogButtonConfiguration? {
         return BundleUtils.getParcelable(
             DIALOG_NEGATIVE_BUTTON_CONFIG_TAG,
             bundle,
-            BaseDialogFragment.DialogButtonConfiguration::class.java
+            DialogButtonConfiguration::class.java
         )
     }
 
@@ -46,16 +46,16 @@ class DialogBundleHelper(val bundle: Bundle = Bundle()) {
     val showing: Boolean
         get() = bundle.getBoolean(DIALOG_CANCELABLE_TAG)
 
-    fun getDialogType(): BaseDialogFragment.DialogTypes {
-        return BaseDialogFragment.DialogTypes.valueOf(bundle.getInt(DIALOG_TYPE_TAG))
+    fun getDialogType(): DialogTypes {
+        return DialogTypes.valueOf(bundle.getInt(DIALOG_TYPE_TAG))
     }
 
     fun getFullscreen(): Boolean {
         return bundle.getBoolean(DIALOG_FULLSCREEN_TAG)
     }
 
-    fun getAnimationType(): BaseDialogFragment.DialogAnimationTypes {
-        return BaseDialogFragment.DialogAnimationTypes.valueOf(bundle.getInt(DIALOG_ANIMATION_TAG))
+    fun getAnimationType(): DialogAnimationTypes {
+        return DialogAnimationTypes.valueOf(bundle.getInt(DIALOG_ANIMATION_TAG))
     }
 
     fun withTitle(dialogTitle: String?): DialogBundleHelper {
@@ -68,12 +68,12 @@ class DialogBundleHelper(val bundle: Bundle = Bundle()) {
         return this
     }
 
-    fun withPositiveButtonConfig(positiveButtonConfig: BaseDialogFragment.DialogButtonConfiguration?): DialogBundleHelper {
+    fun withPositiveButtonConfig(positiveButtonConfig: DialogButtonConfiguration?): DialogBundleHelper {
         bundle.putParcelable(DIALOG_POSITIVE_BUTTON_CONFIG_TAG, positiveButtonConfig)
         return this
     }
 
-    fun withNegativeButtonConfig(negativeButtonConfig: BaseDialogFragment.DialogButtonConfiguration?): DialogBundleHelper {
+    fun withNegativeButtonConfig(negativeButtonConfig: DialogButtonConfiguration?): DialogBundleHelper {
         bundle.putParcelable(DIALOG_NEGATIVE_BUTTON_CONFIG_TAG, negativeButtonConfig)
         return this
     }
@@ -88,7 +88,7 @@ class DialogBundleHelper(val bundle: Bundle = Bundle()) {
         return this
     }
 
-    fun withDialogType(dialogType: BaseDialogFragment.DialogTypes): DialogBundleHelper {
+    fun withDialogType(dialogType: DialogTypes): DialogBundleHelper {
         bundle.putInt(DIALOG_TYPE_TAG, dialogType.value)
         return this
     }
@@ -98,7 +98,7 @@ class DialogBundleHelper(val bundle: Bundle = Bundle()) {
         return this
     }
 
-    fun withAnimation(animationType: BaseDialogFragment.DialogAnimationTypes): DialogBundleHelper {
+    fun withAnimation(animationType: DialogAnimationTypes): DialogBundleHelper {
         bundle.putInt(DIALOG_ANIMATION_TAG, animationType.value)
         return this
     }

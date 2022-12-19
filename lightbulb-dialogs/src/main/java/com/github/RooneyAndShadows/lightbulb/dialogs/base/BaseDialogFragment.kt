@@ -20,7 +20,6 @@ import androidx.fragment.app.FragmentManager
 import androidx.fragment.app.FragmentTransaction
 import androidx.lifecycle.DefaultLifecycleObserver
 import androidx.lifecycle.LifecycleOwner
-import com.github.rooneyandshadows.java.commons.string.StringUtils
 import com.github.rooneyandshadows.lightbulb.commons.utils.WindowUtils
 import com.github.rooneyandshadows.lightbulb.dialogs.R
 import com.github.rooneyandshadows.lightbulb.dialogs.base.constraints.bottomsheet.BottomSheetDialogConstraints
@@ -33,8 +32,6 @@ import com.github.rooneyandshadows.lightbulb.dialogs.base.internal.DialogButtonC
 import com.github.rooneyandshadows.lightbulb.dialogs.base.internal.DialogTypes
 import com.github.rooneyandshadows.lightbulb.dialogs.base.internal.callbacks.*
 import com.google.android.material.bottomsheet.BottomSheetBehavior
-import java.util.ArrayList
-import java.util.function.Consumer
 
 abstract class BaseDialogFragment : DialogFragment(), DefaultLifecycleObserver {
     private lateinit var rootView: View
@@ -523,61 +520,58 @@ abstract class BaseDialogFragment : DialogFragment(), DefaultLifecycleObserver {
                 }
             }
         }
-
-        @SuppressLint("ClickableViewAccessibility")
-        private fun setBottomSheetDialogLayout(): View {
-            val context = requireContext()
-            if (!cancelableOnClickOutside) return setDialogLayout(LayoutInflater.from(context))
-            val parent = CoordinatorLayout(context)
-            val params: CoordinatorLayout.LayoutParams = CoordinatorLayout.LayoutParams(
-                ViewGroup.LayoutParams.MATCH_PARENT,
-                ViewGroup.LayoutParams.WRAP_CONTENT
-            )
-            val behavior: BottomSheetBehavior<View> = BottomSheetBehavior<View>()
-            behavior.state = BottomSheetBehavior.STATE_EXPANDED
-            behavior.isFitToContents = true
-            val handlingFling = booleanArrayOf(false)
-            behavior.addBottomSheetCallback(object : BottomSheetBehavior.BottomSheetCallback() {
-                @Override
-                override fun onStateChanged(bottomSheet: View, newState: Int) {
-                    if (handlingFling[0]) {
-                        handlingFling[0] = false
-                        return
-                    }
-                    if (newState == BottomSheetBehavior.STATE_COLLAPSED) {
-                        dismiss()
-                        return
-                    }
-                    if (newState == BottomSheetBehavior.STATE_DRAGGING) return
-                    val threshold = (bottomSheet.height * 0.45).toFloat()
-                    behavior.state =
-                        if (bottomSheet.top > threshold) BottomSheetBehavior.STATE_COLLAPSED else BottomSheetBehavior.STATE_EXPANDED
-                }
-
-                @Override
-                override fun onSlide(bottomSheet: View, slideOffset: Float) {
-                }
-            })
-            params.behavior = behavior
-            val child = setDialogLayout(LayoutInflater.from(context))
-            child.layoutParams = params
-            parent.addView(child)
-            val gesture = GestureDetector(activity, object : GestureDetector.SimpleOnGestureListener() {
-                override fun onFling(e1: MotionEvent, e2: MotionEvent, velocityX: Float, velocityY: Float): Boolean {
-                    if (velocityY > 2000) {
-                        handlingFling[0] = true
-                        behavior.setState(BottomSheetBehavior.STATE_COLLAPSED)
-                    } else behavior.setState(BottomSheetBehavior.STATE_EXPANDED)
-                    return super.onFling(e1, e2, velocityX, velocityY)
-                }
-            })
-            parent.setOnTouchListener { _: View?, event: MotionEvent? ->
-                gesture.onTouchEvent(
-                    event!!
-                )
-            }
-            return parent
-        }
-
-
     }
+
+    @SuppressLint("ClickableViewAccessibility")
+    private fun setBottomSheetDialogLayout(): View {
+        val context = requireContext()
+        if (!cancelableOnClickOutside) return setDialogLayout(LayoutInflater.from(context))
+        val parent = CoordinatorLayout(context)
+        val params: CoordinatorLayout.LayoutParams = CoordinatorLayout.LayoutParams(
+            ViewGroup.LayoutParams.MATCH_PARENT,
+            ViewGroup.LayoutParams.WRAP_CONTENT
+        )
+        val behavior: BottomSheetBehavior<View> = BottomSheetBehavior<View>()
+        behavior.state = BottomSheetBehavior.STATE_EXPANDED
+        behavior.isFitToContents = true
+        val handlingFling = booleanArrayOf(false)
+        behavior.addBottomSheetCallback(object : BottomSheetBehavior.BottomSheetCallback() {
+            @Override
+            override fun onStateChanged(bottomSheet: View, newState: Int) {
+                if (handlingFling[0]) {
+                    handlingFling[0] = false
+                    return
+                }
+                if (newState == BottomSheetBehavior.STATE_COLLAPSED) {
+                    dismiss()
+                    return
+                }
+                if (newState == BottomSheetBehavior.STATE_DRAGGING) return
+                val threshold = (bottomSheet.height * 0.45).toFloat()
+                behavior.state =
+                    if (bottomSheet.top > threshold) BottomSheetBehavior.STATE_COLLAPSED else BottomSheetBehavior.STATE_EXPANDED
+            }
+
+            @Override
+            override fun onSlide(bottomSheet: View, slideOffset: Float) {
+            }
+        })
+        params.behavior = behavior
+        val child = setDialogLayout(LayoutInflater.from(context))
+        child.layoutParams = params
+        parent.addView(child)
+        val gesture = GestureDetector(activity, object : GestureDetector.SimpleOnGestureListener() {
+            override fun onFling(e1: MotionEvent, e2: MotionEvent, velocityX: Float, velocityY: Float): Boolean {
+                if (velocityY > 2000) {
+                    handlingFling[0] = true
+                    behavior.setState(BottomSheetBehavior.STATE_COLLAPSED)
+                } else behavior.setState(BottomSheetBehavior.STATE_EXPANDED)
+                return super.onFling(e1, e2, velocityX, velocityY)
+            }
+        })
+        parent.setOnTouchListener { _: View?, event: MotionEvent? ->
+            gesture.onTouchEvent(event!!)
+        }
+        return parent
+    }
+}

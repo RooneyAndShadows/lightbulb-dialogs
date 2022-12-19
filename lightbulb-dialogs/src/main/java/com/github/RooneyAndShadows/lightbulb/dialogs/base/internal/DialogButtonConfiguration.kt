@@ -16,21 +16,25 @@ class DialogButtonConfiguration @JvmOverloads constructor(
         ParcelUtils.readBoolean(parcel)!!
     )
 
+    @Override
     override fun writeToParcel(dest: Parcel, flags: Int) {
         ParcelUtils.writeString(dest, buttonTitle)
             .writeBoolean(dest, buttonEnabled)
             .writeBoolean(dest, closeDialogOnClick)
     }
 
+    @Override
     override fun describeContents(): Int {
         return 0
     }
 
     companion object CREATOR : Parcelable.Creator<DialogButtonConfiguration> {
+        @Override
         override fun createFromParcel(parcel: Parcel): DialogButtonConfiguration {
             return DialogButtonConfiguration(parcel)
         }
 
+        @Override
         override fun newArray(size: Int): Array<DialogButtonConfiguration?> {
             return arrayOfNulls(size)
         }
