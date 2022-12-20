@@ -93,7 +93,7 @@ class DateTimePickerDialogBuilder : BaseDialogBuilder<DateTimePickerDialog?> {
     }
 
     override fun buildDialog(): DateTimePickerDialog? {
-        var dialogFragment = fragmentManager!!.findFragmentByTag(dialogTag) as DateTimePickerDialog?
+        var dialogFragment = dialogParentFragmentManager!!.findFragmentByTag(dialogParentFragmentManager) as DateTimePickerDialog?
         if (dialogFragment == null) dialogFragment = DateTimePickerDialog.Companion.newInstance(
             positiveButtonConfiguration,
             negativeButtonConfiguration,
@@ -103,8 +103,8 @@ class DateTimePickerDialogBuilder : BaseDialogBuilder<DateTimePickerDialog?> {
         )
         dialogFragment.setLifecycleOwner(dialogLifecycleOwner)
         dialogFragment.setDialogCallbacks(dialogListeners)
-        dialogFragment.setFragmentManager(fragmentManager)
-        dialogFragment.setDialogTag(dialogTag)
+        dialogFragment.setParentFragManager(dialogParentFragmentManager)
+        dialogFragment.setDialogTag(dialogParentFragmentManager)
         dialogFragment.addOnNegativeClickListeners(onNegativeClickListener)
         dialogFragment.addOnPositiveClickListener(onPositiveClickListener)
         dialogFragment.setOnSelectionChangedListener(dateSetListener)

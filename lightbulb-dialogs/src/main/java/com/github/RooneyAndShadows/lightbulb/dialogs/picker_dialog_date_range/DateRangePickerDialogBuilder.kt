@@ -105,7 +105,7 @@ class DateRangePickerDialogBuilder : BaseDialogBuilder<DateRangePickerDialog?> {
     }
 
     override fun buildDialog(): DateRangePickerDialog? {
-        var dialogFragment = fragmentManager!!.findFragmentByTag(dialogTag) as DateRangePickerDialog?
+        var dialogFragment = dialogParentFragmentManager!!.findFragmentByTag(dialogParentFragmentManager) as DateRangePickerDialog?
         if (dialogFragment == null) dialogFragment = DateRangePickerDialog.Companion.newInstance(
             positiveButtonConfiguration,
             negativeButtonConfiguration,
@@ -117,8 +117,8 @@ class DateRangePickerDialogBuilder : BaseDialogBuilder<DateRangePickerDialog?> {
         )
         dialogFragment.setLifecycleOwner(dialogLifecycleOwner)
         dialogFragment.setDialogCallbacks(dialogListeners)
-        dialogFragment.setFragmentManager(fragmentManager)
-        dialogFragment.setDialogTag(dialogTag)
+        dialogFragment.setParentFragManager(dialogParentFragmentManager)
+        dialogFragment.setDialogTag(dialogParentFragmentManager)
         dialogFragment.addOnNegativeClickListeners(onNegativeClickListener)
         dialogFragment.addOnPositiveClickListener(onPositiveClickListener)
         dialogFragment.setOnSelectionChangedListener(dateSetListener)

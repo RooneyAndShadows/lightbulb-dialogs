@@ -36,10 +36,22 @@ import com.google.android.material.bottomsheet.BottomSheetBehavior
 
 @Suppress("MemberVisibilityCanBePrivate")
 abstract class BaseDialogFragment : DialogFragment(), DefaultLifecycleObserver {
-    var isDialogShown = false
-        private set
-    var isFullscreen = false
-        protected set
+    private var dialogTag: String = javaClass.name.plus("_TAG")
+    private var cancelableOnClickOutside = true
+    private var positiveButtonConfig: DialogButtonConfiguration? = null
+    private var negativeButtonConfig: DialogButtonConfiguration? = null
+    private var isLifecycleOwnerInStateAllowingShow = false
+    private val onPositiveClickListeners: MutableList<DialogButtonClickListener> = mutableListOf()
+    private val onNegativeClickListeners: MutableList<DialogButtonClickListener> = mutableListOf()
+    private val onShowListeners: MutableList<DialogShowListener> = mutableListOf()
+    private val onHideListeners: MutableList<DialogHideListener> = mutableListOf()
+    private val onCancelListeners: MutableList<DialogCancelListener> = mutableListOf()
+    private var dialogCallbacks: DialogListeners? = null
+    private var dialogLifecycleOwner: LifecycleOwner? = null
+    private lateinit var rootView: View
+    private lateinit var regularDialogConstraints: RegularDialogConstraints
+    private lateinit var bottomSheetDialogConstraints: BottomSheetDialogConstraints
+    private lateinit var parentFragManager: FragmentManager
     protected var title: String? = null
         set(value) {
             field = value
@@ -63,29 +75,21 @@ abstract class BaseDialogFragment : DialogFragment(), DefaultLifecycleObserver {
             val activity = context as Activity? ?: return -1
             return WindowUtils.getWindowWidth(activity)
         }
-    private var dialogTag: String = javaClass.name.plus("_TAG")
-    private var cancelableOnClickOutside = true
-    private var positiveButtonConfig: DialogButtonConfiguration? = null
-    private var negativeButtonConfig: DialogButtonConfiguration? = null
-    private var isLifecycleOwnerInStateAllowingShow = false
-    private var titleAndMessageContainer: LinearLayoutCompat? = null
-    private var buttonsContainer: LinearLayoutCompat? = null
-    private var buttonPositive: Button? = null
-    private var buttonNegative: Button? = null
-    private val onPositiveClickListeners: MutableList<DialogButtonClickListener> = mutableListOf()
-    private val onNegativeClickListeners: MutableList<DialogButtonClickListener> = mutableListOf()
-    private val onShowListeners: MutableList<DialogShowListener> = mutableListOf()
-    private val onHideListeners: MutableList<DialogHideListener> = mutableListOf()
-    private val onCancelListeners: MutableList<DialogCancelListener> = mutableListOf()
-    private var dialogCallbacks: DialogListeners? = null
-    private var dialogLifecycleOwner: LifecycleOwner? = null
-    private lateinit var rootView: View
-    private lateinit var regularDialogConstraints: RegularDialogConstraints
-    private lateinit var bottomSheetDialogConstraints: BottomSheetDialogConstraints
-    private lateinit var parentFragManager: FragmentManager
+    protected var titleAndMessageContainer: LinearLayoutCompat? = null
+        private set
+    protected var buttonsContainer: LinearLayoutCompat? = null
+        private set
+    protected var buttonPositive: Button? = null
+        private set
+    protected var buttonNegative: Button? = null
+        private set
     lateinit var dialogType: DialogTypes
         private set
     lateinit var animationType: DialogAnimationTypes
+        private set
+    var isDialogShown = false
+        private set
+    var isFullscreen = false
         private set
 
     /**
@@ -330,7 +334,7 @@ abstract class BaseDialogFragment : DialogFragment(), DefaultLifecycleObserver {
         dialogLifecycleOwner!!.lifecycle.addObserver(this)
     }
 
-    fun setFragmentManager(fragmentManager: FragmentManager) {
+    fun setParentFragManager(fragmentManager: FragmentManager) {
         this.parentFragManager = fragmentManager
     }
 

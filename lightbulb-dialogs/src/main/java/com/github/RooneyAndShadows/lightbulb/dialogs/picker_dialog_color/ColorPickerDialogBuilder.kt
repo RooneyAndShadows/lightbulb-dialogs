@@ -92,7 +92,7 @@ class ColorPickerDialogBuilder : BaseDialogBuilder<ColorPickerDialog?> {
     }
 
     override fun buildDialog(): ColorPickerDialog? {
-        var colorPickerDialog = fragmentManager!!.findFragmentByTag(dialogTag) as ColorPickerDialog?
+        var colorPickerDialog = dialogParentFragmentManager!!.findFragmentByTag(dialogParentFragmentManager) as ColorPickerDialog?
         if (colorPickerDialog == null) colorPickerDialog = ColorPickerDialog.Companion.newInstance(
             title,
             message,
@@ -103,8 +103,8 @@ class ColorPickerDialogBuilder : BaseDialogBuilder<ColorPickerDialog?> {
         )
         colorPickerDialog.setLifecycleOwner(dialogLifecycleOwner)
         colorPickerDialog.setDialogCallbacks(dialogListeners)
-        colorPickerDialog.setFragmentManager(fragmentManager)
-        colorPickerDialog.setDialogTag(dialogTag)
+        colorPickerDialog.setParentFragManager(dialogParentFragmentManager)
+        colorPickerDialog.setDialogTag(dialogParentFragmentManager)
         colorPickerDialog.addOnShowListener(onShowListener)
         colorPickerDialog.addOnHideListener(onHideListener)
         colorPickerDialog.addOnCancelListener(onCancelListener)

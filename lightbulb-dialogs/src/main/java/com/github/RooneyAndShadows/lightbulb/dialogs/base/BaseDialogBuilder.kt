@@ -7,7 +7,7 @@ import com.github.rooneyandshadows.lightbulb.dialogs.base.internal.callbacks.*
 
 abstract class BaseDialogBuilder<DialogType : BaseDialogFragment?> @JvmOverloads constructor(
     protected val dialogLifecycleOwner: LifecycleOwner? = null,
-    protected val fragmentManager: FragmentManager,
+    protected val dialogParentFragmentManager: FragmentManager,
     protected val dialogTag: String
 ) {
     protected var title: String? = null
@@ -24,19 +24,19 @@ abstract class BaseDialogBuilder<DialogType : BaseDialogFragment?> @JvmOverloads
     protected var dialogListeners: DialogListeners? = null
     protected var cancelableOnClickOutside = true
 
-    open fun withTitle(title: String?): BaseDialogBuilder<DialogType> {
+    open fun withTitle(title: String): BaseDialogBuilder<DialogType> {
         this.title = title
         return this
     }
 
-    open fun withMessage(message: String?): BaseDialogBuilder<DialogType> {
+    open fun withMessage(message: String): BaseDialogBuilder<DialogType> {
         this.message = message
         return this
     }
 
     open fun withPositiveButton(
-        configuration: DialogButtonConfiguration?,
-        onClickListener: DialogButtonClickListener?
+        configuration: DialogButtonConfiguration,
+        onClickListener: DialogButtonClickListener
     ): BaseDialogBuilder<DialogType> {
         this.positiveButtonConfiguration = configuration
         onPositiveClickListener = onClickListener
@@ -44,25 +44,25 @@ abstract class BaseDialogBuilder<DialogType : BaseDialogFragment?> @JvmOverloads
     }
 
     open fun withNegativeButton(
-        configuration: DialogButtonConfiguration?,
-        onClickListener: DialogButtonClickListener?
+        configuration: DialogButtonConfiguration,
+        onClickListener: DialogButtonClickListener
     ): BaseDialogBuilder<DialogType> {
         this.negativeButtonConfiguration = configuration
         onNegativeClickListener = onClickListener
         return this
     }
 
-    open fun withOnCancelListener(listener: DialogCancelListener?): BaseDialogBuilder<DialogType> {
+    open fun withOnCancelListener(listener: DialogCancelListener): BaseDialogBuilder<DialogType> {
         onCancelListener = listener
         return this
     }
 
-    open fun withOnShowListener(listener: DialogShowListener?): BaseDialogBuilder<DialogType> {
+    open fun withOnShowListener(listener: DialogShowListener): BaseDialogBuilder<DialogType> {
         onShowListener = listener
         return this
     }
 
-    open fun withOnHideListener(listener: DialogHideListener?): BaseDialogBuilder<DialogType> {
+    open fun withOnHideListener(listener: DialogHideListener): BaseDialogBuilder<DialogType> {
         onHideListener = listener
         return this
     }
@@ -72,17 +72,17 @@ abstract class BaseDialogBuilder<DialogType : BaseDialogFragment?> @JvmOverloads
         return this
     }
 
-    open fun withDialogType(dialogType: DialogTypes?): BaseDialogBuilder<DialogType> {
+    open fun withDialogType(dialogType: DialogTypes): BaseDialogBuilder<DialogType> {
         this.dialogType = dialogType
         return this
     }
 
-    open fun withAnimations(animation: DialogAnimationTypes?): BaseDialogBuilder<DialogType> {
+    open fun withAnimations(animation: DialogAnimationTypes): BaseDialogBuilder<DialogType> {
         this.animation = animation
         return this
     }
 
-    open fun withDialogListeners(listeners: DialogListeners?): BaseDialogBuilder<DialogType> {
+    open fun withDialogListeners(listeners: DialogListeners): BaseDialogBuilder<DialogType> {
         dialogListeners = listeners
         return this
     }

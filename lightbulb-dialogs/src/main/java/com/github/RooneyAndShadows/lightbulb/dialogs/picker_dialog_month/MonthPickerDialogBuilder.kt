@@ -117,7 +117,7 @@ class MonthPickerDialogBuilder : BaseDialogBuilder<MonthPickerDialog?> {
     }
 
     override fun buildDialog(): MonthPickerDialog? {
-        var dialogFragment = fragmentManager!!.findFragmentByTag(dialogTag) as MonthPickerDialog?
+        var dialogFragment = dialogParentFragmentManager!!.findFragmentByTag(dialogParentFragmentManager) as MonthPickerDialog?
         if (dialogFragment == null) dialogFragment = MonthPickerDialog.Companion.newInstance(
             positiveButtonConfiguration,
             negativeButtonConfiguration,
@@ -127,8 +127,8 @@ class MonthPickerDialogBuilder : BaseDialogBuilder<MonthPickerDialog?> {
         )
         dialogFragment.setLifecycleOwner(dialogLifecycleOwner)
         dialogFragment.setDialogCallbacks(dialogListeners)
-        dialogFragment.setFragmentManager(fragmentManager)
-        dialogFragment.setDialogTag(dialogTag)
+        dialogFragment.setParentFragManager(dialogParentFragmentManager)
+        dialogFragment.setDialogTag(dialogParentFragmentManager)
         dialogFragment.addOnNegativeClickListeners(onNegativeClickListener)
         dialogFragment.addOnPositiveClickListener(onPositiveClickListener)
         dialogFragment.addOnShowListener(onShowListener)

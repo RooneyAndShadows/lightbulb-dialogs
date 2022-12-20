@@ -110,7 +110,7 @@ class AdapterPickerDialogBuilder<ModelType : EasyAdapterDataModel?> : BaseDialog
     }
 
     override fun buildDialog(): AdapterPickerDialog<ModelType?>? {
-        var dialogFragment = fragmentManager!!.findFragmentByTag(dialogTag) as AdapterPickerDialog<ModelType?>?
+        var dialogFragment = dialogParentFragmentManager!!.findFragmentByTag(dialogParentFragmentManager) as AdapterPickerDialog<ModelType?>?
         if (dialogFragment == null) dialogFragment = AdapterPickerDialog.Companion.newInstance<ModelType?>(
             title,
             message,
@@ -122,8 +122,8 @@ class AdapterPickerDialogBuilder<ModelType : EasyAdapterDataModel?> : BaseDialog
         )
         dialogFragment.setLifecycleOwner(dialogLifecycleOwner)
         dialogFragment.setDialogCallbacks(dialogListeners)
-        dialogFragment.setFragmentManager(fragmentManager)
-        dialogFragment.setDialogTag(dialogTag)
+        dialogFragment.setParentFragManager(dialogParentFragmentManager)
+        dialogFragment.setDialogTag(dialogParentFragmentManager)
         dialogFragment.addOnNegativeClickListeners(onNegativeClickListener)
         dialogFragment.addOnPositiveClickListener(onPositiveClickListener)
         dialogFragment.addOnShowListener(onShowListener)

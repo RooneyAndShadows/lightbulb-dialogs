@@ -92,7 +92,7 @@ class IconPickerDialogBuilder : BaseDialogBuilder<IconPickerDialog?> {
     }
 
     override fun buildDialog(): IconPickerDialog? {
-        var iconPickerDialog = fragmentManager!!.findFragmentByTag(dialogTag) as IconPickerDialog?
+        var iconPickerDialog = dialogParentFragmentManager!!.findFragmentByTag(dialogParentFragmentManager) as IconPickerDialog?
         if (iconPickerDialog == null) iconPickerDialog = IconPickerDialog.Companion.newInstance(
             title,
             message,
@@ -103,8 +103,8 @@ class IconPickerDialogBuilder : BaseDialogBuilder<IconPickerDialog?> {
         )
         iconPickerDialog.setLifecycleOwner(dialogLifecycleOwner)
         iconPickerDialog.setDialogCallbacks(dialogListeners)
-        iconPickerDialog.setFragmentManager(fragmentManager)
-        iconPickerDialog.setDialogTag(dialogTag)
+        iconPickerDialog.setParentFragManager(dialogParentFragmentManager)
+        iconPickerDialog.setDialogTag(dialogParentFragmentManager)
         iconPickerDialog.addOnShowListener(onShowListener)
         iconPickerDialog.addOnHideListener(onHideListener)
         iconPickerDialog.addOnCancelListener(onCancelListener)

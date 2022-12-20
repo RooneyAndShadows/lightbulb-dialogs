@@ -91,7 +91,7 @@ class TimePickerDialogBuilder : BaseDialogBuilder<TimePickerDialog?> {
     }
 
     override fun buildDialog(): TimePickerDialog? {
-        var dialogFragment = fragmentManager!!.findFragmentByTag(dialogTag) as TimePickerDialog?
+        var dialogFragment = dialogParentFragmentManager!!.findFragmentByTag(dialogParentFragmentManager) as TimePickerDialog?
         if (dialogFragment == null) dialogFragment = TimePickerDialog.Companion.newInstance(
             positiveButtonConfiguration,
             negativeButtonConfiguration,
@@ -100,8 +100,8 @@ class TimePickerDialogBuilder : BaseDialogBuilder<TimePickerDialog?> {
         )
         dialogFragment.setLifecycleOwner(dialogLifecycleOwner)
         dialogFragment.setDialogCallbacks(dialogListeners)
-        dialogFragment.setFragmentManager(fragmentManager)
-        dialogFragment.setDialogTag(dialogTag)
+        dialogFragment.setParentFragManager(dialogParentFragmentManager)
+        dialogFragment.setDialogTag(dialogParentFragmentManager)
         dialogFragment.addOnNegativeClickListeners(onNegativeClickListener)
         dialogFragment.addOnPositiveClickListener(onPositiveClickListener)
         dialogFragment.selection = initialTime

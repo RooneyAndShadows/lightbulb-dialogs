@@ -8,38 +8,53 @@ import android.view.Window
 import com.github.rooneyandshadows.lightbulb.dialogs.base.BaseDialogFragment
 import androidx.constraintlayout.widget.ConstraintLayout
 import com.github.rooneyandshadows.lightbulb.dialogs.R
+import com.github.rooneyandshadows.lightbulb.dialogs.base.internal.DialogAnimationTypes
+import com.github.rooneyandshadows.lightbulb.dialogs.base.internal.DialogBundleHelper
+import com.github.rooneyandshadows.lightbulb.dialogs.base.internal.DialogButtonConfiguration
+import com.github.rooneyandshadows.lightbulb.dialogs.base.internal.DialogTypes
 
 class AlertDialog : BaseDialogFragment() {
-    override fun setDialogLayout(inflater: LayoutInflater?): View {
+    companion object {
+        fun newInstance(
+            title: String?,
+            message: String?,
+            positive: DialogButtonConfiguration?,
+            negative: DialogButtonConfiguration?,
+            cancelable: Boolean = true,
+            dialogType: DialogTypes? = null,
+            animationType: DialogAnimationTypes? = null
+        ): AlertDialog {
+            return AlertDialog().apply {
+                arguments = DialogBundleHelper()
+                    .withTitle(title)
+                    .withMessage(message)
+                    .withPositiveButtonConfig(positive)
+                    .withNegativeButtonConfig(negative)
+                    .withCancelable(cancelable)
+                    .withShowing(false)
+                    .withDialogType(dialogType ?: DialogTypes.NORMAL)
+                    .withAnimation(animationType ?: DialogAnimationTypes.NO_ANIMATION)
+                    .bundle
+            }
+        }
+    }
+
+    @Override
+    override fun getDialogLayout(layoutInflater: LayoutInflater): View {
         return View.inflate(context, R.layout.dialog_alert, null)
     }
 
-    override fun configureContent(view: View?, savedInstanceState: Bundle?) {}
-    override fun setupFullScreenDialog(dialogWindow: Window?, dialogLayout: View?) {
-        super.setupFullScreenDialog(dialogWindow, dialogLayout)
-        if (titleAndMessageContainer != null) titleAndMessageContainer.layoutParams = ConstraintLayout.LayoutParams(
-            ViewGroup.LayoutParams.MATCH_PARENT,
-            ViewGroup.LayoutParams.MATCH_PARENT
-        )
+    @Override
+    override fun configureContent(view: View, savedInstanceState: Bundle?) {
     }
 
-    companion object {
-        fun newInstance(
-            title: String?, message: String?, positive: DialogButtonConfiguration?, negative: DialogButtonConfiguration?,
-            cancelable: Boolean, dialogType: DialogTypes?, animationType: DialogAnimationTypes?
-        ): AlertDialog {
-            val dialogFragment = AlertDialog()
-            dialogFragment.arguments = DialogBundleHelper()
-                .withTitle(title)
-                .withMessage(message)
-                .withPositiveButtonConfig(positive)
-                .withNegativeButtonConfig(negative)
-                .withCancelable(cancelable)
-                .withShowing(false)
-                .withDialogType(dialogType ?: DialogTypes.NORMAL)
-                .withAnimation(animationType ?: DialogAnimationTypes.NO_ANIMATION)
-                .bundle
-            return dialogFragment
-        }
+    @Override
+    override fun setupFullScreenDialog(dialogWindow: Window?, dialogLayout: View?) {
+        super.setupFullScreenDialog(dialogWindow, dialogLayout)
+        if (titleAndMessageContainer != null)
+            titleAndMessageContainer!!.layoutParams = ConstraintLayout.LayoutParams(
+                ViewGroup.LayoutParams.MATCH_PARENT,
+                ViewGroup.LayoutParams.MATCH_PARENT
+            )
     }
 }

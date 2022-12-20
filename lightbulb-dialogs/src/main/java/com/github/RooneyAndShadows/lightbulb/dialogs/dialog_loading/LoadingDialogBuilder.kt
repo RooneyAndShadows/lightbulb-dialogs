@@ -72,13 +72,13 @@ class LoadingDialogBuilder : BaseDialogBuilder<LoadingDialog?> {
     }
 
     override fun buildDialog(): LoadingDialog? {
-        var dialogFragment = fragmentManager!!.findFragmentByTag(dialogTag) as LoadingDialog?
+        var dialogFragment = dialogParentFragmentManager!!.findFragmentByTag(dialogParentFragmentManager) as LoadingDialog?
         if (dialogFragment == null) dialogFragment =
             LoadingDialog.Companion.newInstance(title, message, dialogType, animation)
         dialogFragment.setLifecycleOwner(dialogLifecycleOwner)
         dialogFragment.setDialogCallbacks(dialogListeners)
-        dialogFragment.setFragmentManager(fragmentManager)
-        dialogFragment.setDialogTag(dialogTag)
+        dialogFragment.setParentFragManager(dialogParentFragmentManager)
+        dialogFragment.setDialogTag(dialogParentFragmentManager)
         dialogFragment.addOnShowListener(onShowListener)
         dialogFragment.addOnHideListener(onHideListener)
         dialogFragment.addOnCancelListener(onCancelListener)
