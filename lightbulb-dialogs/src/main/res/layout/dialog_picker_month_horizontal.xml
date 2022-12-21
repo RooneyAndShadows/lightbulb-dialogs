@@ -8,7 +8,7 @@
         android:layout_width="wrap_content"
         android:layout_height="wrap_content"
         android:orientation="horizontal"
-        app:layout_constraintBottom_toTopOf="@+id/buttonsContainer"
+        app:layout_constraintBottom_toTopOf="@+id/dialogButtonsContainer"
         app:layout_constraintEnd_toEndOf="parent"
         app:layout_constraintStart_toStartOf="parent">
 
@@ -40,20 +40,20 @@
     </androidx.appcompat.widget.LinearLayoutCompat>
 
     <androidx.appcompat.widget.LinearLayoutCompat
-        android:id="@+id/buttonsContainer"
+        android:id="@+id/dialogButtonsContainer"
         style="@style/DialogButtonsContainer"
         app:layout_constraintBottom_toBottomOf="parent"
         app:layout_constraintEnd_toEndOf="parent"
         app:layout_constraintStart_toStartOf="parent">
 
         <Button
-            android:id="@+id/neg_button"
+            android:id="@+id/dialogNegativeButton"
             style="@style/DialogButton"
             tools:ignore="HardcodedText"
             tools:text="negative" />
 
         <Button
-            android:id="@+id/pos_button"
+            android:id="@+id/dialogPositiveButton"
             style="@style/DialogButton"
             android:layout_marginStart="@dimen/dialog_buttons_spacing"
             tools:ignore="HardcodedText"

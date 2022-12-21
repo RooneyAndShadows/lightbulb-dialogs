@@ -76,26 +76,24 @@ class AlertDialogBuilder @JvmOverloads constructor(
 
     @Override
     override fun buildDialog(): AlertDialog {
-        var alertDialog = dialogParentFragmentManager.findFragmentByTag(dialogTag) as AlertDialog?
-        if (alertDialog == null)
-            alertDialog = AlertDialog.newInstance(
-                title,
-                message,
-                positiveButtonConfiguration,
-                negativeButtonConfiguration,
-                cancelableOnClickOutside,
-                dialogType,
-                animation
-            ).apply {
-                setLifecycleOwner(dialogLifecycleOwner)
-                setParentFragManager(dialogParentFragmentManager)
-                setDialogTag(dialogTag)
-                if (onShowListener != null) addOnShowListener(onShowListener!!)
-                if (onHideListener != null) addOnHideListener(onHideListener!!)
-                if (onCancelListener != null) addOnCancelListener(onCancelListener!!)
-                if (onNegativeClickListener != null) addOnNegativeClickListeners(onNegativeClickListener!!)
-                if (onPositiveClickListener != null) addOnPositiveClickListener(onPositiveClickListener!!)
-            }
-        return alertDialog
+        val alertDialog = dialogParentFragmentManager.findFragmentByTag(dialogTag) as AlertDialog?
+        return alertDialog ?: AlertDialog.newInstance(
+            title,
+            message,
+            positiveButtonConfiguration,
+            negativeButtonConfiguration,
+            cancelableOnClickOutside,
+            dialogType,
+            animation
+        ).apply {
+            setLifecycleOwner(dialogLifecycleOwner)
+            setParentFragManager(dialogParentFragmentManager)
+            setDialogTag(dialogTag)
+            onShowListener?.apply { addOnShowListener(this) }
+            onHideListener?.apply { addOnHideListener(this) }
+            onCancelListener?.apply { addOnCancelListener(this) }
+            onNegativeClickListener?.apply { addOnNegativeClickListeners(this) }
+            onPositiveClickListener?.apply { addOnPositiveClickListener(this) }
+        }
     }
 }

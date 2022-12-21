@@ -240,7 +240,7 @@ abstract class BaseDialogFragment : DialogFragment(), DefaultLifecycleObserver {
         super.onViewCreated(view, savedInstanceState)
         configureHeading()
         configureButtons()
-        configureContent(rootView, savedInstanceState)
+        configureContent(rootView, savedInstanceState)//TODO add button components and heading components
         measureDialogLayout()
         doOnViewCreated(view, savedInstanceState)
         if (dialogCallbacks != null)
@@ -501,9 +501,9 @@ abstract class BaseDialogFragment : DialogFragment(), DefaultLifecycleObserver {
 
     private fun configureHeading() {
         val dialogView = rootView
-        titleAndMessageContainer = dialogView.findViewById(R.id.titleAndMessageContainer)
-        val titleTextView = dialogView.findViewById<TextView>(R.id.title)
-        val messageTextView = dialogView.findViewById<TextView>(R.id.message)
+        titleAndMessageContainer = dialogView.findViewById(R.id.DialogtitleAndMessageContainer)
+        val titleTextView = dialogView.findViewById<TextView>(R.id.dialogTitleTextView)
+        val messageTextView = dialogView.findViewById<TextView>(R.id.dialogMessageTextView)
         if (titleAndMessageContainer == null) return
         if (titleTextView == null && messageTextView == null || title.isNullOrBlank() && message.isNullOrBlank())
             titleAndMessageContainer!!.visibility = GONE
@@ -527,9 +527,9 @@ abstract class BaseDialogFragment : DialogFragment(), DefaultLifecycleObserver {
 
     private fun configureButtons() {
         val dialogView = rootView
-        buttonsContainer = dialogView.findViewById(R.id.buttonsContainer)
-        buttonPositive = dialogView.findViewById(R.id.pos_button)
-        buttonNegative = dialogView.findViewById(R.id.neg_button)
+        buttonsContainer = dialogView.findViewById(R.id.dialogButtonsContainer)
+        buttonPositive = dialogView.findViewById(R.id.dialogPositiveButton)
+        buttonNegative = dialogView.findViewById(R.id.dialogNegativeButton)
         if (buttonsContainer == null)
             return
         if (buttonPositive == null && buttonNegative == null || positiveButtonConfig == null && negativeButtonConfig == null)

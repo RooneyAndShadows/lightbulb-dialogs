@@ -43,7 +43,7 @@
         android:id="@+id/dateTimeWidgets"
         android:layout_width="wrap_content"
         android:layout_height="wrap_content"
-        app:layout_constraintBottom_toTopOf="@id/buttonsContainer"
+        app:layout_constraintBottom_toTopOf="@id/dialogButtonsContainer"
         app:layout_constraintEnd_toEndOf="parent"
         app:layout_constraintStart_toStartOf="parent"
         app:layout_constraintTop_toBottomOf="@id/dateTimePickerDialogHeading">
@@ -71,20 +71,20 @@
     </RelativeLayout>
 
     <androidx.appcompat.widget.LinearLayoutCompat
-        android:id="@+id/buttonsContainer"
+        android:id="@+id/dialogButtonsContainer"
         style="@style/DialogButtonsContainer"
         app:layout_constraintBottom_toBottomOf="parent"
         app:layout_constraintEnd_toEndOf="parent"
         app:layout_constraintStart_toStartOf="parent">
 
         <Button
-            android:id="@+id/neg_button"
+            android:id="@+id/dialogNegativeButton"
             style="@style/DialogButton"
             tools:ignore="HardcodedText"
             tools:text="negative" />
 
         <Button
-            android:id="@+id/pos_button"
+            android:id="@+id/dialogPositiveButton"
             style="@style/DialogButton"
             android:layout_marginStart="8dp"
             tools:ignore="HardcodedText"

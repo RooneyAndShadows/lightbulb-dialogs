@@ -7,7 +7,7 @@
     tools:layout_width="match_parent">
 
     <androidx.appcompat.widget.LinearLayoutCompat
-        android:id="@+id/titleAndMessageContainer"
+        android:id="@+id/DialogtitleAndMessageContainer"
         style="@style/DialogTitleAndMessageContainer"
         app:layout_constraintBottom_toBottomOf="parent"
         app:layout_constraintEnd_toEndOf="parent"
@@ -15,12 +15,12 @@
         app:layout_constraintTop_toTopOf="parent">
 
         <TextView
-            android:id="@+id/title"
+            android:id="@+id/dialogTitleTextView"
             style="@style/DialogTitle"
             tools:text="Title" />
 
         <TextView
-            android:id="@+id/message"
+            android:id="@+id/dialogMessageTextView"
             style="@style/DialogSubtitle"
             tools:text="Message" />
 

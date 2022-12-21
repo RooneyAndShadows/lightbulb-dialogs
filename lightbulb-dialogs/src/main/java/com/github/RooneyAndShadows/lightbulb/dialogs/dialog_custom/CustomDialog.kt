@@ -12,7 +12,7 @@ import com.github.rooneyandshadows.lightbulb.dialogs.R
 import com.github.rooneyandshadows.lightbulb.dialogs.base.internal.*
 
 @Suppress("unused")
-class CustomDialog : BaseDialogFragment() {
+open class CustomDialog : BaseDialogFragment() {
     private var loadingIndicator: ProgressBar? = null
     private var titleView: AppCompatTextView? = null
     private var dialogInflater: CustomDialogInflater? = null
@@ -27,22 +27,22 @@ class CustomDialog : BaseDialogFragment() {
             negative: DialogButtonConfiguration?,
             cancelable: Boolean = true,
             loading: Boolean = false,
-            dialogType: DialogTypes? = null,
-            animationType: DialogAnimationTypes? = null
+            dialogType: DialogTypes = DialogTypes.NORMAL,
+            animationType: DialogAnimationTypes = DialogAnimationTypes.NO_ANIMATION
         ): CustomDialog {
             return CustomDialog().apply {
-                val bundle = DialogBundleHelper()
+                arguments = DialogBundleHelper()
                     .withTitle(title)
                     .withMessage(message)
                     .withPositiveButtonConfig(positive)
                     .withNegativeButtonConfig(negative)
                     .withCancelable(cancelable)
                     .withShowing(false)
-                    .withDialogType(dialogType ?: DialogTypes.NORMAL)
-                    .withAnimation(animationType ?: DialogAnimationTypes.NO_ANIMATION)
-                    .bundle
-                bundle.putBoolean(IS_LOADING_KEY, loading)
-                arguments = bundle
+                    .withDialogType(dialogType)
+                    .withAnimation(animationType)
+                    .bundle.apply {
+                        putBoolean(IS_LOADING_KEY, loading)
+                    }
             }
         }
     }
@@ -91,7 +91,7 @@ class CustomDialog : BaseDialogFragment() {
     private fun selectViews() {
         if (view == null) return
         loadingIndicator = requireView().findViewById(R.id.loadingIndicator)
-        titleView = requireView().findViewById(R.id.title)
+        titleView = requireView().findViewById(R.id.dialogTitleTextView)
     }
 
     private fun setupLoadingView() {

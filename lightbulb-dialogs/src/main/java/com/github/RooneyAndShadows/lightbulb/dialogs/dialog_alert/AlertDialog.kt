@@ -15,14 +15,15 @@ import com.github.rooneyandshadows.lightbulb.dialogs.base.internal.DialogTypes
 
 class AlertDialog : BaseDialogFragment() {
     companion object {
+        @JvmOverloads
         fun newInstance(
             title: String?,
             message: String?,
             positive: DialogButtonConfiguration?,
             negative: DialogButtonConfiguration?,
             cancelable: Boolean = true,
-            dialogType: DialogTypes? = null,
-            animationType: DialogAnimationTypes? = null
+            dialogType: DialogTypes = DialogTypes.NORMAL,
+            animationType: DialogAnimationTypes = DialogAnimationTypes.NO_ANIMATION
         ): AlertDialog {
             return AlertDialog().apply {
                 arguments = DialogBundleHelper()
@@ -32,8 +33,8 @@ class AlertDialog : BaseDialogFragment() {
                     .withNegativeButtonConfig(negative)
                     .withCancelable(cancelable)
                     .withShowing(false)
-                    .withDialogType(dialogType ?: DialogTypes.NORMAL)
-                    .withAnimation(animationType ?: DialogAnimationTypes.NO_ANIMATION)
+                    .withDialogType(dialogType)
+                    .withAnimation(animationType)
                     .bundle
             }
         }

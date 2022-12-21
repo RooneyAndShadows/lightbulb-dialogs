@@ -17,7 +17,6 @@ class CustomDialogBuilder<DialogType : CustomDialog> @JvmOverloads constructor(
 ) : BaseDialogBuilder<CustomDialog>(lifecycleOwner, dialogParentFragmentManager, dialogTag) {
     private var loading = false
 
-
     override fun withTitle(title: String): CustomDialogBuilder<CustomDialog> {
         return super.withTitle(title) as CustomDialogBuilder<CustomDialog>
     }
@@ -93,7 +92,7 @@ class CustomDialogBuilder<DialogType : CustomDialog> @JvmOverloads constructor(
                 title, message, positiveButtonConfiguration, negativeButtonConfiguration,
                 cancelableOnClickOutside, loading, dialogType, animation
             )
-        dialogFragment!!.setLifecycleOwner(dialogLifecycleOwner)
+        dialogFragment.setLifecycleOwner(dialogLifecycleOwner)
         dialogFragment.setDialogInflater(dialogInflater)
         dialogFragment.setDialogCallbacks(dialogListeners)
         dialogFragment.fragmentManager = dialogParentFragmentManager

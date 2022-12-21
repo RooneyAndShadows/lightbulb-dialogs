@@ -19,8 +19,8 @@ abstract class BaseDialogBuilder<DialogType : BaseDialogFragment?> @JvmOverloads
     protected var onShowListener: DialogShowListener? = null
     protected var onHideListener: DialogHideListener? = null
     protected var onCancelListener: DialogCancelListener? = null
-    protected var animation: DialogAnimationTypes? = null
-    protected var dialogType: DialogTypes? = null
+    protected var animation: DialogAnimationTypes = DialogAnimationTypes.NO_ANIMATION
+    protected var dialogType: DialogTypes = DialogTypes.NORMAL
     protected var dialogListeners: DialogListeners? = null
     protected var cancelableOnClickOutside = true
 

@@ -6,19 +6,19 @@
     tools:layout_width="300dp">
 
     <androidx.appcompat.widget.LinearLayoutCompat
-        android:id="@+id/titleAndMessageContainer"
+        android:id="@+id/DialogtitleAndMessageContainer"
         style="@style/DialogTitleAndMessageContainer"
         app:layout_constraintEnd_toEndOf="parent"
         app:layout_constraintStart_toStartOf="parent"
         app:layout_constraintTop_toTopOf="parent">
 
         <TextView
-            android:id="@+id/title"
+            android:id="@+id/dialogTitleTextView"
             style="@style/DialogTitle"
             tools:text="Title" />
 
         <TextView
-            android:id="@+id/message"
+            android:id="@+id/dialogMessageTextView"
             style="@style/DialogSubtitle"
             tools:text="Message" />
     </androidx.appcompat.widget.LinearLayoutCompat>
@@ -30,16 +30,16 @@
         android:layout_weight="1" />
 
     <androidx.appcompat.widget.LinearLayoutCompat
-        android:id="@+id/buttonsContainer"
+        android:id="@+id/dialogButtonsContainer"
         style="@style/DialogButtonsContainer">
 
         <Button
-            android:id="@+id/neg_button"
+            android:id="@+id/dialogNegativeButton"
             style="@style/DialogButton"
             tools:text="negative" />
 
         <Button
-            android:id="@+id/pos_button"
+            android:id="@+id/dialogPositiveButton"
             style="@style/DialogButton"
             android:layout_marginStart="@dimen/dialog_buttons_spacing"
             tools:text="positive" />
