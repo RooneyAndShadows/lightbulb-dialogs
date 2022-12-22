@@ -33,10 +33,12 @@ import com.google.android.material.bottomsheet.BottomSheetBehavior
 
 @Suppress("MemberVisibilityCanBePrivate")
 abstract class BaseDialogFragment : DialogFragment(), DefaultLifecycleObserver {
+    private lateinit var rootView: View
+    private lateinit var regularDialogConstraints: RegularDialogConstraints
+    private lateinit var bottomSheetDialogConstraints: BottomSheetDialogConstraints
+    private lateinit var parentFragManager: FragmentManager
     private var dialogTag: String = javaClass.name.plus("_TAG")
     private var cancelableOnClickOutside = true
-    private var positiveButtonConfig: DialogButtonConfiguration? = null
-    private var negativeButtonConfig: DialogButtonConfiguration? = null
     private var isLifecycleOwnerInStateAllowingShow = false
     private val onPositiveClickListeners: MutableList<DialogButtonClickListener> = mutableListOf()
     private val onNegativeClickListeners: MutableList<DialogButtonClickListener> = mutableListOf()
@@ -45,36 +47,20 @@ abstract class BaseDialogFragment : DialogFragment(), DefaultLifecycleObserver {
     private val onCancelListeners: MutableList<DialogCancelListener> = mutableListOf()
     private var dialogCallbacks: DialogListeners? = null
     private var dialogLifecycleOwner: LifecycleOwner? = null
-    private lateinit var rootView: View
-    private lateinit var regularDialogConstraints: RegularDialogConstraints
-    private lateinit var bottomSheetDialogConstraints: BottomSheetDialogConstraints
-    private lateinit var parentFragManager: FragmentManager
-    private lateinit var headerViewHierarchy: DialogLayoutHierarchyHeading
-    private lateinit var footerViewHierarchy: DialogLayoutHierarchyFooter
-    protected var title: String? = null
-        set(value) {
-            field = value
-            configureHeading()
-            measureDialogLayout()
-        }
-    protected var message: String? = null
-        set(value) {
-            field = value
-            configureHeading()
-            measureDialogLayout()
-        }
     protected val windowHeight: Int
         get() {
             val activity = context as Activity? ?: return -1
             return WindowUtils.getWindowHeight(activity)
         }
-
     protected val windowWidth: Int
         get() {
             val activity = context as Activity? ?: return -1
             return WindowUtils.getWindowWidth(activity)
         }
-
+    protected lateinit var headerViewHierarchy: DialogLayoutHierarchyHeading
+        private set
+    protected lateinit var footerViewHierarchy: DialogLayoutHierarchyFooter
+        private set
     lateinit var dialogType: DialogTypes
         private set
     lateinit var animationType: DialogAnimationTypes
@@ -83,6 +69,21 @@ abstract class BaseDialogFragment : DialogFragment(), DefaultLifecycleObserver {
         private set
     var isFullscreen = false
         private set
+    var title: String? = null
+        set(value) {
+            field = value
+            configureHeading()
+            measureDialogLayout()
+        }
+    var message: String? = null
+        set(value) {
+            field = value
+            configureHeading()
+            measureDialogLayout()
+        }
+    var positiveButtonConfig: DialogButtonConfiguration? = null
+    var negativeButtonConfig: DialogButtonConfiguration? = null
+
 
     /**
      * Used to create layout for the dialog.
@@ -96,14 +97,10 @@ abstract class BaseDialogFragment : DialogFragment(), DefaultLifecycleObserver {
      * Used to configure content if necessary. Dialog layout is remeasured after this method.
      *
      * @param view - layout of the dialog.
-     * @param headerViewHierarchy - View hierarchy of the dialog header
-     * @param footerViewHierarchy - View hierarchy of the dialog footer
      * @param savedInstanceState - If the fragment is being re-created from a previous saved state, this is the state.
      */
     protected abstract fun configureContent(
         view: View,
-        headerViewHierarchy: DialogLayoutHierarchyHeading,
-        footerViewHierarchy: DialogLayoutHierarchyFooter,
         savedInstanceState: Bundle?
     )
 
@@ -164,25 +161,25 @@ abstract class BaseDialogFragment : DialogFragment(), DefaultLifecycleObserver {
         val helper = DialogBundleHelper(bundle)
         val hasSavedState = savedInstanceState != null
         if (hasSavedState) {
-            title = helper.getTitle()
-            message = helper.getMessage()
-            positiveButtonConfig = helper.getPositiveButtonConfig()
-            negativeButtonConfig = helper.getNegativeButtonConfig()
+            title = helper.title
+            message = helper.message
+            positiveButtonConfig = helper.positiveButtonConfig
+            negativeButtonConfig = helper.negativeButtonConfig
             cancelableOnClickOutside = helper.cancelable
             isDialogShown = helper.showing
-            isFullscreen = helper.getFullscreen()
-            dialogType = helper.getDialogType()
-            animationType = helper.getAnimationType()
+            isFullscreen = helper.fullScreen
+            dialogType = helper.dialogType
+            animationType = helper.animationType
         } else {
-            dialogType = helper.getDialogType()
+            dialogType = helper.dialogType
             when (dialogType) {
                 DialogTypes.NORMAL -> {
                     isFullscreen = false
-                    animationType = helper.getAnimationType()
+                    animationType = helper.animationType
                 }
                 DialogTypes.FULLSCREEN -> {
                     isFullscreen = true
-                    animationType = helper.getAnimationType()
+                    animationType = helper.animationType
                 }
                 DialogTypes.BOTTOM_SHEET -> {
                     isFullscreen = false
@@ -190,13 +187,13 @@ abstract class BaseDialogFragment : DialogFragment(), DefaultLifecycleObserver {
                 }
             }
             if (title == null) //if not set outside of builder | otherwise ignore
-                title = helper.getTitle()
+                title = helper.title
             if (message == null) //if not set outside of builder | otherwise ignore
-                message = helper.getMessage()
+                message = helper.message
             if (positiveButtonConfig == null) //if not set outside of builder | otherwise ignore
-                positiveButtonConfig = helper.getPositiveButtonConfig()
+                positiveButtonConfig = helper.positiveButtonConfig
             if (negativeButtonConfig == null) //if not set outside of builder | otherwise ignore
-                negativeButtonConfig = helper.getNegativeButtonConfig()
+                negativeButtonConfig = helper.negativeButtonConfig
             cancelableOnClickOutside = helper.cancelable
         }
         isCancelable = cancelableOnClickOutside
@@ -241,8 +238,6 @@ abstract class BaseDialogFragment : DialogFragment(), DefaultLifecycleObserver {
         configureButtons()
         configureContent(
             rootView,
-            headerViewHierarchy,
-            footerViewHierarchy,
             savedInstanceState
         )
         measureDialogLayout()
@@ -444,12 +439,21 @@ abstract class BaseDialogFragment : DialogFragment(), DefaultLifecycleObserver {
                 window.setLayout(WindowManager.LayoutParams.MATCH_PARENT, WindowManager.LayoutParams.MATCH_PARENT)
                 setupFullScreenDialog(window, rootView)
             }
-            DialogTypes.NORMAL -> setupRegularDialog(regularDialogConstraints, window, rootView, fgPadding)
+            DialogTypes.NORMAL -> setupRegularDialog(
+                regularDialogConstraints,
+                window,
+                rootView,
+                fgPadding
+            )
             DialogTypes.BOTTOM_SHEET -> {
                 window.setGravity(Gravity.BOTTOM)
                 window.setLayout(WindowManager.LayoutParams.MATCH_PARENT, WindowManager.LayoutParams.WRAP_CONTENT)
                 window.setBackgroundDrawable(ColorDrawable(Color.TRANSPARENT)) // overrides background to remove insets
-                setupBottomSheetDialog(bottomSheetDialogConstraints, window, rootView)
+                setupBottomSheetDialog(
+                    bottomSheetDialogConstraints,
+                    window,
+                    rootView
+                )
             }
         }
     }
@@ -473,7 +477,11 @@ abstract class BaseDialogFragment : DialogFragment(), DefaultLifecycleObserver {
         dialogWindow.setLayout(desiredWidth + horPadding, desiredHeight + verPadding)
     }
 
-    protected open fun setupFullScreenDialog(dialogWindow: Window?, dialogLayout: View?) {}
+    protected open fun setupFullScreenDialog(
+        dialogWindow: Window?,
+        dialogLayout: View?
+    ) {
+    }
 
     protected open fun setupBottomSheetDialog(
         constraints: BottomSheetDialogConstraints,
@@ -505,7 +513,7 @@ abstract class BaseDialogFragment : DialogFragment(), DefaultLifecycleObserver {
 
     private fun configureHeading() {
         val dialogView = rootView
-        val titleAndMessageContainer = dialogView.findViewById<LinearLayoutCompat?>(R.id.DialogtitleAndMessageContainer)
+        val titleAndMessageContainer = dialogView.findViewById<LinearLayoutCompat?>(R.id.dialogTitleAndMessageContainer)
         val titleTextView = dialogView.findViewById<TextView?>(R.id.dialogTitleTextView)
         val messageTextView = dialogView.findViewById<TextView?>(R.id.dialogMessageTextView)
         headerViewHierarchy = DialogLayoutHierarchyHeading(titleAndMessageContainer, titleTextView, messageTextView)

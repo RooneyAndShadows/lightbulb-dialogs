@@ -6,7 +6,7 @@
     tools:layout_width="300dp">
 
     <androidx.appcompat.widget.LinearLayoutCompat
-        android:id="@+id/DialogtitleAndMessageContainer"
+        android:id="@+id/dialogTitleAndMessageContainer"
         style="@style/DialogTitleAndMessageContainer"
         app:layout_constraintEnd_toEndOf="parent"
         app:layout_constraintStart_toStartOf="parent"

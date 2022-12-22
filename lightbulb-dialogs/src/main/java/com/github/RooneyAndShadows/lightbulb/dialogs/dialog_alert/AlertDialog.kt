@@ -52,10 +52,11 @@ class AlertDialog : BaseDialogFragment() {
     @Override
     override fun setupFullScreenDialog(dialogWindow: Window?, dialogLayout: View?) {
         super.setupFullScreenDialog(dialogWindow, dialogLayout)
-        if (titleAndMessageContainer != null)
-            titleAndMessageContainer!!.layoutParams = ConstraintLayout.LayoutParams(
+        headerViewHierarchy.titleAndMessageContainer?.apply {
+            layoutParams = ConstraintLayout.LayoutParams(
                 ViewGroup.LayoutParams.MATCH_PARENT,
                 ViewGroup.LayoutParams.MATCH_PARENT
             )
+        }
     }
 }
