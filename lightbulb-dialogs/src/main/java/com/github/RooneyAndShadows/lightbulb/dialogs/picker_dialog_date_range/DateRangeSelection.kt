@@ -23,12 +23,12 @@ internal class DateRangeSelection(current: Array<OffsetDateTime?>?, draft: Array
     }
 
     override fun hasCurrentSelection(): Boolean {
-        val current = currentSelection
+        val current = getCurrentSelection()
         return current != null && current[0] != null && current[1] != null
     }
 
     override fun hasDraftSelection(): Boolean {
-        val draft = draftSelection
+        val draft = getDraftSelection()
         return draft != null && draft[0] != null && draft[1] != null
     }
 

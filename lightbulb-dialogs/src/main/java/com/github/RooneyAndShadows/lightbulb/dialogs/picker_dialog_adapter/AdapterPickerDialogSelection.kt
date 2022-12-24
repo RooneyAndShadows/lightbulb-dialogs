@@ -10,10 +10,12 @@ internal class AdapterPickerDialogSelection(current: IntArray?, draft: IntArray?
     }
 
     override fun hasCurrentSelection(): Boolean {
-        return getCurrentSelection() != null
+        val currentSelection = getCurrentSelection()
+        return currentSelection != null && currentSelection.isNotEmpty()
     }
 
     override fun hasDraftSelection(): Boolean {
-        return getDraftSelection() != null
+        val draftSelection = getDraftSelection()
+        return draftSelection != null && draftSelection.isNotEmpty()
     }
 }

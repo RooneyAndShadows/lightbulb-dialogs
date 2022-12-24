@@ -14,7 +14,7 @@ buildscript {
                 material                : "1.7.0",
                 lightbulb               : [
                         commons         : "1.0.18",
-                        recycleradapters: "2.0.0-RC1",
+                        recycleradapters: "2.0.0-RC2",
                         calendars       : "1.0.1",
                 ],
                 java                    : [
