@@ -478,8 +478,8 @@ abstract class BaseDialogFragment : DialogFragment(), DefaultLifecycleObserver {
     }
 
     protected open fun setupFullScreenDialog(
-        dialogWindow: Window?,
-        dialogLayout: View?
+        dialogWindow: Window,
+        dialogLayout: View
     ) {
     }
 

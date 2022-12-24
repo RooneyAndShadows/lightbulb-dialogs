@@ -10,10 +10,10 @@ internal class AdapterPickerDialogSelection(current: IntArray?, draft: IntArray?
     }
 
     override fun hasCurrentSelection(): Boolean {
-        return currentSelection != null
+        return getCurrentSelection() != null
     }
 
     override fun hasDraftSelection(): Boolean {
-        return draftSelection != null
+        return getDraftSelection() != null
     }
 }

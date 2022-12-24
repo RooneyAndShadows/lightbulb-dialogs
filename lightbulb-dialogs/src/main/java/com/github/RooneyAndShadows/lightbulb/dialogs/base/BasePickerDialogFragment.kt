@@ -29,7 +29,7 @@ abstract class BasePickerDialogFragment<SelectionType>(
     }
 
     fun getSelection(): SelectionType? {
-        return selection.currentSelection
+        return selection.getCurrentSelection()
     }
 
     fun hasSelection(): Boolean {

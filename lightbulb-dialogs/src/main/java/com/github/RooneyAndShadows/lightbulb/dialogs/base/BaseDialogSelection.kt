@@ -4,15 +4,26 @@ import java.util.ArrayList
 import java.util.HashMap
 
 abstract class BaseDialogSelection<SelectionType>(current: SelectionType?, draft: SelectionType?) {
+    private val selectionCurrentKey = "SELECTION_CURRENT"
+    private val selectionDraftKey = "SELECTION_DRAFT"
     private val selection = HashMap<String, SelectionType?>()
     private val selectionListeners = ArrayList<PickerSelectionListeners<SelectionType>>()
     abstract fun compareValues(v1: SelectionType?, v2: SelectionType?): Boolean
     abstract fun hasCurrentSelection(): Boolean
     abstract fun hasDraftSelection(): Boolean
-    val currentSelection: SelectionType?
-        get() = selection[SELECTION_CURRENT]
-    val draftSelection: SelectionType?
-        get() = selection[SELECTION_DRAFT]
+
+    init {
+        selection[selectionCurrentKey] = current
+        selection[selectionDraftKey] = draft
+    }
+
+    fun getCurrentSelection(): SelectionType? {
+        return selection[selectionCurrentKey]
+    }
+
+    fun getDraftSelection(): SelectionType? {
+        return selection[selectionDraftKey]
+    }
 
     fun addSelectionListeners(selectionListeners: PickerSelectionListeners<SelectionType>) {
         this.selectionListeners.add(selectionListeners)
@@ -27,20 +38,20 @@ abstract class BaseDialogSelection<SelectionType>(current: SelectionType?, draft
     }
 
     open fun setCurrentSelection(newValue: SelectionType?, notify: Boolean) {
-        val current = selection[SELECTION_CURRENT]
+        val current = selection[selectionCurrentKey]
         if (compareValues(current, newValue)) return
-        selection.remove(SELECTION_CURRENT)
-        selection[SELECTION_CURRENT] = newValue
+        selection.remove(selectionCurrentKey)
+        selection[selectionCurrentKey] = newValue
         if (!notify) return
         for (listener in selectionListeners)
             listener.onCurrentSelectionChangedListener(newValue, current)
     }
 
     open fun setDraftSelection(newValue: SelectionType?, notify: Boolean) {
-        val draft = selection[SELECTION_DRAFT]
+        val draft = selection[selectionDraftKey]
         if (compareValues(draft, newValue)) return
-        selection.remove(SELECTION_DRAFT)
-        selection[SELECTION_DRAFT] = newValue
+        selection.remove(selectionDraftKey)
+        selection[selectionDraftKey] = newValue
         if (!notify) return
         for (listener in selectionListeners)
             listener.onDraftSelectionChangedListener(newValue)
@@ -51,13 +62,13 @@ abstract class BaseDialogSelection<SelectionType>(current: SelectionType?, draft
     }
 
     fun startDraft() {
-        val current = currentSelection
+        val current = getCurrentSelection()
         setDraftSelection(current, false)
     }
 
     fun commitDraft() {
-        val beforeCommit = currentSelection
-        val draft = draftSelection
+        val beforeCommit = getCurrentSelection()
+        val draft = getDraftSelection()
         setCurrentSelection(draft, false)
         clearDraft()
         for (listener in selectionListeners) listener.onDraftCommit(draft, beforeCommit)
@@ -73,15 +84,5 @@ abstract class BaseDialogSelection<SelectionType>(current: SelectionType?, draft
         fun onDraftSelectionChangedListener(newValue: SelectionType?)
         fun onDraftCommit(newValue: SelectionType?, beforeCommit: SelectionType?)
         fun onDraftReverted()
-    }
-
-    companion object {
-        private const val SELECTION_CURRENT = "SELECTION_CURRENT"
-        private const val SELECTION_DRAFT = "SELECTION_DRAFT"
-    }
-
-    init {
-        selection[SELECTION_CURRENT] = current
-        selection[SELECTION_DRAFT] = draft
     }
 }

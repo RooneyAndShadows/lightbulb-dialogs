@@ -1,87 +1,89 @@
 package com.github.rooneyandshadows.lightbulb.dialogs.dialog_loading
 
 import androidx.lifecycle.LifecycleOwner
-import com.github.rooneyandshadows.lightbulb.dialogs.base.BaseDialogFragment.DialogButtonConfiguration
-import com.github.rooneyandshadows.lightbulb.dialogs.base.BaseDialogFragment.DialogButtonClickListener
-import com.github.rooneyandshadows.lightbulb.dialogs.base.BaseDialogFragment.DialogShowListener
-import com.github.rooneyandshadows.lightbulb.dialogs.base.BaseDialogFragment.DialogHideListener
-import com.github.rooneyandshadows.lightbulb.dialogs.base.BaseDialogFragment.DialogCancelListener
-import com.github.rooneyandshadows.lightbulb.dialogs.base.BaseDialogFragment.DialogAnimationTypes
-import com.github.rooneyandshadows.lightbulb.dialogs.base.BaseDialogFragment.DialogTypes
-import com.github.rooneyandshadows.lightbulb.dialogs.base.BaseDialogFragment.DialogCallbacks
 import com.github.rooneyandshadows.lightbulb.dialogs.base.BaseDialogBuilder
 import androidx.fragment.app.FragmentManager
+import com.github.rooneyandshadows.lightbulb.dialogs.base.internal.callbacks.*
+import com.github.rooneyandshadows.lightbulb.dialogs.base.internal.*
 
-class LoadingDialogBuilder : BaseDialogBuilder<LoadingDialog?> {
-    constructor(manager: FragmentManager?, dialogTag: String?) : super(manager, dialogTag) {}
-    constructor(lifecycleOwner: LifecycleOwner?, manager: FragmentManager?, dialogTag: String?) : super(
-        lifecycleOwner,
-        manager,
-        dialogTag
-    ) {
-    }
+class LoadingDialogBuilder @JvmOverloads constructor(
+    lifecycleOwner: LifecycleOwner? = null,
+    dialogParentFragmentManager: FragmentManager,
+    dialogTag: String,
+) : BaseDialogBuilder<LoadingDialog?>(lifecycleOwner, dialogParentFragmentManager, dialogTag) {
 
-    override fun withTitle(title: String?): LoadingDialogBuilder? {
+    @Override
+    override fun withTitle(title: String): LoadingDialogBuilder {
         return super.withTitle(title) as LoadingDialogBuilder
     }
 
-    override fun withMessage(message: String?): LoadingDialogBuilder? {
+    @Override
+    override fun withMessage(message: String): LoadingDialogBuilder {
         return super.withMessage(message) as LoadingDialogBuilder
     }
 
+    @Override
     override fun withPositiveButton(
-        configuration: DialogButtonConfiguration?,
-        onClickListener: DialogButtonClickListener?
-    ): LoadingDialogBuilder? {
+        configuration: DialogButtonConfiguration,
+        onClickListener: DialogButtonClickListener
+    ): LoadingDialogBuilder {
         return super.withPositiveButton(configuration, onClickListener) as LoadingDialogBuilder
     }
 
+    @Override
     override fun withNegativeButton(
-        configuration: DialogButtonConfiguration?,
-        onClickListener: DialogButtonClickListener?
-    ): LoadingDialogBuilder? {
+        configuration: DialogButtonConfiguration,
+        onClickListener: DialogButtonClickListener
+    ): LoadingDialogBuilder {
         return super.withNegativeButton(configuration, onClickListener) as LoadingDialogBuilder
     }
 
-    override fun withOnCancelListener(listener: DialogCancelListener?): LoadingDialogBuilder? {
+    @Override
+    override fun withOnCancelListener(listener: DialogCancelListener): LoadingDialogBuilder {
         return super.withOnCancelListener(listener) as LoadingDialogBuilder
     }
 
-    override fun withOnShowListener(listener: DialogShowListener?): LoadingDialogBuilder? {
+    @Override
+    override fun withOnShowListener(listener: DialogShowListener): LoadingDialogBuilder {
         return super.withOnShowListener(listener) as LoadingDialogBuilder
     }
 
-    override fun withOnHideListener(listener: DialogHideListener?): LoadingDialogBuilder? {
+    @Override
+    override fun withOnHideListener(listener: DialogHideListener): LoadingDialogBuilder {
         return super.withOnHideListener(listener) as LoadingDialogBuilder
     }
 
-    override fun withCancelOnClickOutside(closeOnClickOutside: Boolean): LoadingDialogBuilder? {
+    @Override
+    override fun withCancelOnClickOutside(closeOnClickOutside: Boolean): LoadingDialogBuilder {
         return super.withCancelOnClickOutside(closeOnClickOutside) as LoadingDialogBuilder
     }
 
-    override fun withDialogType(dialogType: DialogTypes?): LoadingDialogBuilder? {
+    @Override
+    override fun withDialogType(dialogType: DialogTypes): LoadingDialogBuilder {
         return super.withDialogType(dialogType) as LoadingDialogBuilder
     }
 
-    override fun withAnimations(animation: DialogAnimationTypes?): LoadingDialogBuilder? {
+    @Override
+    override fun withAnimations(animation: DialogAnimationTypes): LoadingDialogBuilder {
         return super.withAnimations(animation) as LoadingDialogBuilder
     }
 
-    override fun withDialogListeners(callbacks: DialogCallbacks?): LoadingDialogBuilder? {
-        return super.withDialogListeners(callbacks) as LoadingDialogBuilder
+    @Override
+    override fun withDialogListeners(listeners: DialogListeners): LoadingDialogBuilder {
+        return super.withDialogListeners(listeners) as LoadingDialogBuilder
     }
 
-    override fun buildDialog(): LoadingDialog? {
-        var dialogFragment = dialogParentFragmentManager!!.findFragmentByTag(dialogParentFragmentManager) as LoadingDialog?
-        if (dialogFragment == null) dialogFragment =
-            LoadingDialog.Companion.newInstance(title, message, dialogType, animation)
-        dialogFragment.setLifecycleOwner(dialogLifecycleOwner)
-        dialogFragment.setDialogCallbacks(dialogListeners)
-        dialogFragment.setParentFragManager(dialogParentFragmentManager)
-        dialogFragment.setDialogTag(dialogParentFragmentManager)
-        dialogFragment.addOnShowListener(onShowListener)
-        dialogFragment.addOnHideListener(onHideListener)
-        dialogFragment.addOnCancelListener(onCancelListener)
-        return dialogFragment
+    @Override
+    override fun buildDialog(): LoadingDialog {
+        val dialogFragment = dialogParentFragmentManager.findFragmentByTag(dialogTag) as LoadingDialog?
+        return dialogFragment ?: LoadingDialog.newInstance(title, message, dialogType, animation).apply {
+            setLifecycleOwner(dialogLifecycleOwner)
+            setDialogCallbacks(dialogListeners)
+            setParentFragManager(dialogParentFragmentManager)
+            setDialogTag(dialogTag)
+            onShowListener?.apply { addOnShowListener(this) }
+            onHideListener?.apply { addOnHideListener(this) }
+            onCancelListener?.apply { addOnCancelListener(this) }
+        }
     }
 }

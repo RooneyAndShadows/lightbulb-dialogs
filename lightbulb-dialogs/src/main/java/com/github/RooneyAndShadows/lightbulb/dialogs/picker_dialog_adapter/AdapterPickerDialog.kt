@@ -17,147 +17,30 @@ import androidx.recyclerview.widget.RecyclerView
 import com.github.rooneyandshadows.lightbulb.recycleradapters.abstraction.EasyAdapterDataModel
 import com.github.rooneyandshadows.lightbulb.dialogs.base.BasePickerDialogFragment
 import com.github.rooneyandshadows.lightbulb.dialogs.R
+import com.github.rooneyandshadows.lightbulb.dialogs.base.internal.DialogAnimationTypes
+import com.github.rooneyandshadows.lightbulb.dialogs.base.internal.DialogBundleHelper
+import com.github.rooneyandshadows.lightbulb.dialogs.base.internal.DialogButtonConfiguration
+import com.github.rooneyandshadows.lightbulb.dialogs.base.internal.DialogTypes
 import com.github.rooneyandshadows.lightbulb.recycleradapters.abstraction.callbacks.EasyAdapterSelectionChangedListener
-import java.util.ArrayList
 
-open class AdapterPickerDialog<ItemType : EasyAdapterDataModel?> :
+open class AdapterPickerDialog<ItemType : EasyAdapterDataModel> :
     BasePickerDialogFragment<IntArray?>(AdapterPickerDialogSelection(null, null)) {
-    protected var recyclerView: RecyclerView? = null
+    private val adapterSelectionTag = "ADAPTER_SELECTION_TAG"
+    private val adapterSelectionDraftTag = "ADAPTER_SELECTION_DRAFT_TAG"
+    private lateinit var recyclerView: RecyclerView
+    private var adapter: EasyRecyclerAdapter<ItemType>? = null
     private var itemDecoration: RecyclerView.ItemDecoration? = null
-    protected var adapter: EasyRecyclerAdapter<ItemType>? = null
     private val selectionListener: EasyAdapterSelectionChangedListener
-    override fun setDialogLayout(inflater: LayoutInflater?): View {
-        return View.inflate(context, R.layout.dialog_picker_normal, null)
-    }
-
-    override fun configureContent(view: View?, savedInstanceState: Bundle?) {
-        recyclerView = view!!.findViewById(R.id.dialogRecycler)
-        recyclerView.setItemAnimator(null)
-        adapter!!.addOrReplaceSelectionChangedListener(selectionListener)
-        configureRecyclerView(recyclerView)
-        recyclerView.setAdapter(adapter)
-    }
-
-    protected override val regularConstraints: RegularDialogConstraints?
-        protected get() {
-            val orientation = resources.configuration.orientation
-            return RegularDialogConstraintsBuilder(this)
-                .default()
-                .withMinWidth(getPercentOfWindowWidth(if (orientation == Configuration.ORIENTATION_PORTRAIT) 70 else 60))
-                .withMaxHeight(getPercentOfWindowHeight(if (orientation == Configuration.ORIENTATION_PORTRAIT) 70 else 85))
-                .build()
-        }
-
-    override fun synchronizeSelectUi() {
-        val newSelection = if (selection.hasDraftSelection()) selection.draftSelection else selection.currentSelection
-        if (adapter != null) adapter!!.selectPositions(newSelection, true, false)
-    }
-
-    protected open fun configureRecyclerView(recyclerView: RecyclerView?) {
-        recyclerView!!.layoutManager = LinearLayoutManager(context)
-        if (recyclerView.itemDecorationCount > 0) recyclerView.removeItemDecorationAt(0)
-        if (itemDecoration != null) recyclerView.addItemDecoration(itemDecoration!!, 0)
-    }
-
-    override fun setupRegularDialog(
-        constraints: RegularDialogConstraints?,
-        dialogWindow: Window?,
-        dialogLayout: View?,
-        fgPadding: Rect
-    ) {
-        val widthMeasureSpec = View.MeasureSpec.makeMeasureSpec(constraints!!.maxWidth, View.MeasureSpec.AT_MOST)
-        val heightMeasureSpec = View.MeasureSpec.makeMeasureSpec(constraints.maxHeight, View.MeasureSpec.AT_MOST)
-        dialogLayout!!.measure(widthMeasureSpec, heightMeasureSpec)
-        val desiredHeightForRecycler = recyclerView!!.measuredHeight
-        val horPadding = fgPadding.left + fgPadding.right
-        val verPadding = fgPadding.top + fgPadding.bottom
-        var desiredWidth = dialogLayout.measuredWidth
-        var desiredHeight = dialogLayout.measuredHeight
-        if (desiredHeight > constraints.maxHeight) {
-            desiredHeight -= desiredHeightForRecycler
-            val recyclerExactHeight = constraints.maxHeight - desiredHeight
-            recyclerView!!.layoutParams.height = recyclerExactHeight
-            desiredHeight += recyclerExactHeight
-        }
-        desiredWidth = constraints.resolveWidth(desiredWidth)
-        desiredHeight = constraints.resolveHeight(desiredHeight)
-        dialogWindow!!.setLayout(desiredWidth + horPadding, desiredHeight + verPadding)
-    }
-
-    override fun setupFullScreenDialog(dialogWindow: Window?, dialogLayout: View?) {
-        val parameters = recyclerView!!.layoutParams as LinearLayoutCompat.LayoutParams
-        parameters.weight = 1f
-        val maxHeight = windowHeight
-        var desiredHeight = dialogLayout!!.measuredHeight
-        val desiredHeightForRecycler = recyclerView!!.measuredHeight
-        if (desiredHeight > maxHeight) {
-            desiredHeight -= desiredHeightForRecycler
-            recyclerView!!.layoutParams.height = maxHeight - desiredHeight
-        }
-    }
-
-    override fun setupBottomSheetDialog(
-        constraints: BottomSheetDialogConstraints?,
-        dialogWindow: Window?,
-        dialogLayout: View?
-    ) {
-        val widthMeasureSpec = View.MeasureSpec.makeMeasureSpec(windowWidth, View.MeasureSpec.EXACTLY)
-        val heightMeasureSpec = View.MeasureSpec.makeMeasureSpec(0, View.MeasureSpec.UNSPECIFIED)
-        dialogLayout!!.measure(widthMeasureSpec, heightMeasureSpec)
-        var desiredHeight = dialogLayout.measuredHeight
-        val desiredHeightForRecycler = recyclerView!!.measuredHeight
-        if (desiredHeight > constraints!!.maxHeight) {
-            desiredHeight -= desiredHeightForRecycler
-            val recyclerExactHeight = constraints.maxHeight - desiredHeight
-            recyclerView!!.layoutParams.height = recyclerExactHeight
-            desiredHeight += recyclerExactHeight
-        }
-        desiredHeight = constraints.resolveHeight(desiredHeight)
-        dialogWindow!!.setLayout(WindowManager.LayoutParams.MATCH_PARENT, desiredHeight)
-    }
-
-    override fun doOnCreate(dialogArguments: Bundle?, savedInstanceState: Bundle?) {
-        if (savedInstanceState == null) {
-            requireNotNull(dialogArguments) { "Bundle args required" }
-            if (hasSelection()) selection.setCurrentSelection(selection.currentSelection) else selection.setCurrentSelection(
-                dialogArguments.getIntArray(
-                    ADAPTER_SELECTION_TAG
-                )
-            )
-        } else {
-            selection.setCurrentSelection(savedInstanceState.getIntArray(ADAPTER_SELECTION_TAG))
-            selection.setDraftSelection(savedInstanceState.getIntArray(ADAPTER_SELECTION_DRAFT_TAG))
-        }
-    }
-
-    override fun doOnSaveInstanceState(outState: Bundle?) {
-        super.doOnSaveInstanceState(outState)
-        if (selection.currentSelection != null) outState!!.putIntArray(ADAPTER_SELECTION_TAG, selection.currentSelection)
-        if (selection.draftSelection != null) outState!!.putIntArray(ADAPTER_SELECTION_DRAFT_TAG, selection.draftSelection)
-    }
-
-    fun setSelection(newSelection: Int) {
-        selection.currentSelection = intArrayOf(newSelection)
-    }
-
-    fun setAdapter(adapter: EasyRecyclerAdapter<ItemType>?) {
-        this.adapter = adapter
-    }
-
-    fun setItemDecoration(itemDecoration: RecyclerView.ItemDecoration?) {
-        this.itemDecoration = itemDecoration
-    }
-
-    fun setData(data: ArrayList<ItemType>?) {
-        adapter!!.setCollection(data!!)
-    }
 
     companion object {
-        private const val ADAPTER_SELECTION_TAG = "ADAPTER_SELECTION_TAG"
-        private const val ADAPTER_SELECTION_DRAFT_TAG = "ADAPTER_SELECTION_DRAFT_TAG"
-        fun <ItemType : EasyAdapterDataModel?> newInstance(
-            title: String?, message: String?, positive: DialogButtonConfiguration?, negative: DialogButtonConfiguration?,
-            cancelable: Boolean, dialogType: DialogTypes?, animationType: DialogAnimationTypes?
+        fun <ItemType : EasyAdapterDataModel> newInstance(
+            title: String?,
+            message: String?,
+            positive: DialogButtonConfiguration?,
+            negative: DialogButtonConfiguration?,
+            cancelable: Boolean = true,
+            dialogType: DialogTypes = DialogTypes.NORMAL,
+            animationType: DialogAnimationTypes = DialogAnimationTypes.NO_ANIMATION
         ): AdapterPickerDialog<ItemType> {
             val dialogFragment = AdapterPickerDialog<ItemType>()
             dialogFragment.arguments = DialogBundleHelper()
@@ -167,19 +50,178 @@ open class AdapterPickerDialog<ItemType : EasyAdapterDataModel?> :
                 .withNegativeButtonConfig(negative)
                 .withCancelable(cancelable)
                 .withShowing(false)
-                .withDialogType(dialogType ?: DialogTypes.NORMAL)
-                .withAnimation(animationType ?: DialogAnimationTypes.NO_ANIMATION)
+                .withDialogType(dialogType)
+                .withAnimation(animationType)
                 .bundle
             return dialogFragment
         }
     }
 
     init {
-        selectionListener = EasyAdapterSelectionChangedListener { newSelection: IntArray? ->
-            if (isDialogShown) selection.setDraftSelection(
-                newSelection,
-                false
-            ) else selection.setCurrentSelection(newSelection, false)
+        selectionListener = object : EasyAdapterSelectionChangedListener {
+            override fun onChanged(newSelection: IntArray?) {
+                if (isDialogShown) selection.setDraftSelection(
+                    newSelection,
+                    false
+                ) else selection.setCurrentSelection(newSelection, false)
+            }
         }
+    }
+
+    @Override
+    override fun getDialogLayout(layoutInflater: LayoutInflater): View {
+        return View.inflate(context, R.layout.dialog_picker_normal, null)
+    }
+
+    @Override
+    final override fun configureContent(view: View, savedInstanceState: Bundle?) {
+        requireAdapter { adapter ->
+            selectViews(view)
+            configureRecyclerView(adapter)
+            configureContent(view, recyclerView, savedInstanceState)
+        }
+    }
+
+    protected open fun configureContent(
+        view: View,
+        recyclerView: RecyclerView,
+        savedInstanceState: Bundle?
+    ) {
+    }
+
+    @Override
+    override fun getRegularConstraints(): RegularDialogConstraints {
+        val orientation = resources.configuration.orientation
+        return RegularDialogConstraintsBuilder(this)
+            .default()
+            .withMinWidth(getPercentOfWindowWidth(if (orientation == Configuration.ORIENTATION_PORTRAIT) 70 else 60))
+            .withMaxHeight(getPercentOfWindowHeight(if (orientation == Configuration.ORIENTATION_PORTRAIT) 70 else 85))
+            .build()
+    }
+
+    @Override
+    override fun synchronizeSelectUi() {
+        requireAdapter { adapter ->
+            val newSelection = if (selection.hasDraftSelection()) selection.getDraftSelection()
+            else selection.getCurrentSelection()
+            adapter.selectPositions(newSelection, newState = true, incremental = false)
+        }
+    }
+
+    @Override
+    override fun setupRegularDialog(
+        constraints: RegularDialogConstraints,
+        dialogWindow: Window,
+        dialogLayout: View,
+        fgPadding: Rect
+    ) {
+        val widthMeasureSpec = View.MeasureSpec.makeMeasureSpec(constraints.getMaxWidth(), View.MeasureSpec.AT_MOST)
+        val heightMeasureSpec = View.MeasureSpec.makeMeasureSpec(constraints.getMaxHeight(), View.MeasureSpec.AT_MOST)
+        dialogLayout.measure(widthMeasureSpec, heightMeasureSpec)
+        val desiredHeightForRecycler = recyclerView.measuredHeight
+        val horPadding = fgPadding.left + fgPadding.right
+        val verPadding = fgPadding.top + fgPadding.bottom
+        var desiredWidth = dialogLayout.measuredWidth
+        var desiredHeight = dialogLayout.measuredHeight
+        if (desiredHeight > constraints.getMaxHeight()) {
+            desiredHeight -= desiredHeightForRecycler
+            val recyclerExactHeight = constraints.getMaxHeight() - desiredHeight
+            recyclerView.layoutParams.height = recyclerExactHeight
+            desiredHeight += recyclerExactHeight
+        }
+        desiredWidth = constraints.resolveWidth(desiredWidth)
+        desiredHeight = constraints.resolveHeight(desiredHeight)
+        dialogWindow.setLayout(desiredWidth + horPadding, desiredHeight + verPadding)
+    }
+
+    @Override
+    override fun setupFullScreenDialog(dialogWindow: Window, dialogLayout: View) {
+        val parameters = recyclerView.layoutParams as LinearLayoutCompat.LayoutParams
+        parameters.weight = 1f
+        val maxHeight = windowHeight
+        var desiredHeight = dialogLayout.measuredHeight
+        val desiredHeightForRecycler = recyclerView.measuredHeight
+        if (desiredHeight > maxHeight) {
+            desiredHeight -= desiredHeightForRecycler
+            recyclerView.layoutParams.height = maxHeight - desiredHeight
+        }
+    }
+
+    @Override
+    override fun setupBottomSheetDialog(
+        constraints: BottomSheetDialogConstraints,
+        dialogWindow: Window,
+        dialogLayout: View
+    ) {
+        val widthMeasureSpec = View.MeasureSpec.makeMeasureSpec(windowWidth, View.MeasureSpec.EXACTLY)
+        val heightMeasureSpec = View.MeasureSpec.makeMeasureSpec(0, View.MeasureSpec.UNSPECIFIED)
+        dialogLayout.measure(widthMeasureSpec, heightMeasureSpec)
+        var desiredHeight = dialogLayout.measuredHeight
+        val desiredHeightForRecycler = recyclerView.measuredHeight
+        if (desiredHeight > constraints.getMaxHeight()) {
+            desiredHeight -= desiredHeightForRecycler
+            val recyclerExactHeight = constraints.getMaxHeight() - desiredHeight
+            recyclerView.layoutParams.height = recyclerExactHeight
+            desiredHeight += recyclerExactHeight
+        }
+        desiredHeight = constraints.resolveHeight(desiredHeight)
+        dialogWindow.setLayout(WindowManager.LayoutParams.MATCH_PARENT, desiredHeight)
+    }
+
+    @Override
+    override fun doOnCreate(dialogArguments: Bundle?, savedInstanceState: Bundle?) {
+        if (savedInstanceState != null) {
+            selection.setCurrentSelection(savedInstanceState.getIntArray(adapterSelectionTag))
+            selection.setDraftSelection(savedInstanceState.getIntArray(adapterSelectionDraftTag))
+        }
+    }
+
+    @Override
+    override fun doOnSaveInstanceState(outState: Bundle?) {
+        super.doOnSaveInstanceState(outState)
+        if (selection.getCurrentSelection() != null) outState!!.putIntArray(
+            adapterSelectionTag,
+            selection.getCurrentSelection()
+        )
+        if (selection.getDraftSelection() != null) outState!!.putIntArray(
+            adapterSelectionDraftTag,
+            selection.getDraftSelection()
+        )
+    }
+
+    fun setAdapter(adapter: EasyRecyclerAdapter<ItemType>) {
+        this.adapter = adapter
+    }
+
+    fun setSelection(newSelection: Int) {
+        setSelection(intArrayOf(newSelection))
+    }
+
+    fun setItemDecoration(itemDecoration: RecyclerView.ItemDecoration?) {
+        this.itemDecoration = itemDecoration
+    }
+
+    fun setData(data: MutableList<ItemType>?) {
+        requireAdapter { adapter ->
+            adapter.setCollection(data ?: mutableListOf())
+        }
+    }
+
+    private fun selectViews(rootView: View) {
+        recyclerView = rootView.findViewById(R.id.dialogRecycler)
+    }
+
+    private fun configureRecyclerView(adapter: EasyRecyclerAdapter<ItemType>) {
+        adapter.addOrReplaceSelectionChangedListener(selectionListener)
+        recyclerView.itemAnimator = null
+        recyclerView.layoutManager = LinearLayoutManager(context)
+        if (recyclerView.itemDecorationCount > 0) recyclerView.removeItemDecorationAt(0)
+        if (itemDecoration != null) recyclerView.addItemDecoration(itemDecoration!!, 0)
+        recyclerView.adapter = adapter
+    }
+
+    protected fun requireAdapter(run: (adapter: EasyRecyclerAdapter<ItemType>) -> Unit) {
+        if (adapter == null) throw Exception("Dialog picker adapter must not be null.")
+        run.invoke(adapter!!)
     }
 }
