@@ -27,7 +27,8 @@ open class AdapterPickerDialog<ItemType : EasyAdapterDataModel> :
     BasePickerDialogFragment<IntArray?>(AdapterPickerDialogSelection(null, null)) {
     private val adapterSelectionTag = "ADAPTER_SELECTION_TAG"
     private val adapterSelectionDraftTag = "ADAPTER_SELECTION_DRAFT_TAG"
-    private lateinit var recyclerView: RecyclerView
+    protected lateinit var recyclerView: RecyclerView
+        private set
     private var adapter: EasyRecyclerAdapter<ItemType>? = null
     private var itemDecoration: RecyclerView.ItemDecoration? = null
     private val selectionListener: EasyAdapterSelectionChangedListener
@@ -74,19 +75,11 @@ open class AdapterPickerDialog<ItemType : EasyAdapterDataModel> :
     }
 
     @Override
-    final override fun configureContent(view: View, savedInstanceState: Bundle?) {
+    override fun configureContent(view: View, savedInstanceState: Bundle?) {
         requireAdapter { adapter ->
             selectViews(view)
             configureRecyclerView(adapter)
-            configureContent(view, recyclerView, savedInstanceState)
         }
-    }
-
-    protected open fun configureContent(
-        view: View,
-        recyclerView: RecyclerView,
-        savedInstanceState: Bundle?
-    ) {
     }
 
     @Override
@@ -220,8 +213,9 @@ open class AdapterPickerDialog<ItemType : EasyAdapterDataModel> :
         recyclerView.adapter = adapter
     }
 
-    protected fun requireAdapter(run: (adapter: EasyRecyclerAdapter<ItemType>) -> Unit) {
+    @JvmOverloads
+    protected fun requireAdapter(run: ((adapter: EasyRecyclerAdapter<ItemType>) -> Unit)? = null) {
         if (adapter == null) throw Exception("Dialog picker adapter must not be null.")
-        run.invoke(adapter!!)
+        run?.invoke(adapter!!)
     }
 }

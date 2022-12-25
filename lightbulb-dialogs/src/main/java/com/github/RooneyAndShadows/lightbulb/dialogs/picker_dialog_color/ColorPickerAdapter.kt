@@ -18,6 +18,7 @@ import com.github.rooneyandshadows.lightbulb.recycleradapters.abstraction.EasyRe
 import java.lang.Exception
 import java.util.ArrayList
 
+@Suppress("unused")
 class ColorPickerAdapter(
     private val context: Context,
     selectableMode: EasyAdapterSelectableModes = EasyAdapterSelectableModes.SELECT_SINGLE
@@ -49,17 +50,38 @@ class ColorPickerAdapter(
     }
 
     @Override
-    override fun processPendingItems(collection: List<ColorModel>): List<ColorModel> {
-        val outputCollection: MutableList<ColorModel> = ArrayList()
-        for (colorInput in collection) {
-            try {
-                Color.parseColor(colorInput.colorHex)
-                outputCollection.add(colorInput)
-            } catch (e: Exception) {
-                //ignore
-            }
+    override fun setCollection(collection: List<ColorModel>) {
+        super.setCollection(validatePendingItems(collection))
+    }
+
+    @Override
+    override fun appendCollection(collection: List<ColorModel>) {
+        super.appendCollection(validatePendingItems(collection))
+    }
+
+    @Override
+    override fun addItem(item: ColorModel) {
+        validatePendingItem(item)?.apply {
+            super.addItem(this)
         }
+    }
+
+    private fun validatePendingItems(collection: List<ColorModel>): List<ColorModel> {
+        val outputCollection: MutableList<ColorModel> = ArrayList()
+        for (colorInput in collection)
+            validatePendingItem(colorInput)?.apply {
+                outputCollection.add(this)
+            }
         return outputCollection
+    }
+
+    private fun validatePendingItem(item: ColorModel): ColorModel? {
+        return try {
+            Color.parseColor(item.colorHex)
+            item
+        } catch (e: Exception) {
+            null
+        }
     }
 
     fun getColorDrawable(colorModel: ColorModel?): Drawable? {

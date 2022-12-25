@@ -236,10 +236,7 @@ abstract class BaseDialogFragment : DialogFragment(), DefaultLifecycleObserver {
         super.onViewCreated(view, savedInstanceState)
         configureHeading()
         configureButtons()
-        configureContent(
-            rootView,
-            savedInstanceState
-        )
+        configureContent(rootView, savedInstanceState)
         measureDialogLayout()
         doOnViewCreated(view, savedInstanceState)
         if (dialogCallbacks != null)
