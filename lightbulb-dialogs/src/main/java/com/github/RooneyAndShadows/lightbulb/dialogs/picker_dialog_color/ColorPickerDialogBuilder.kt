@@ -1,87 +1,86 @@
 package com.github.rooneyandshadows.lightbulb.dialogs.picker_dialog_color
 
 import androidx.lifecycle.LifecycleOwner
-import com.github.rooneyandshadows.lightbulb.dialogs.base.BaseDialogFragment.DialogButtonConfiguration
-import com.github.rooneyandshadows.lightbulb.dialogs.base.BaseDialogFragment.DialogButtonClickListener
-import com.github.rooneyandshadows.lightbulb.dialogs.base.BaseDialogFragment.DialogShowListener
-import com.github.rooneyandshadows.lightbulb.dialogs.base.BaseDialogFragment.DialogHideListener
-import com.github.rooneyandshadows.lightbulb.dialogs.base.BaseDialogFragment.DialogCancelListener
-import com.github.rooneyandshadows.lightbulb.dialogs.base.BaseDialogFragment.DialogAnimationTypes
-import com.github.rooneyandshadows.lightbulb.dialogs.base.BaseDialogFragment.DialogTypes
-import com.github.rooneyandshadows.lightbulb.dialogs.base.BaseDialogFragment.DialogCallbacks
 import com.github.rooneyandshadows.lightbulb.dialogs.base.BaseDialogBuilder
 import com.github.rooneyandshadows.lightbulb.dialogs.base.BasePickerDialogFragment.SelectionChangedListener
 import androidx.fragment.app.FragmentManager
+import com.github.rooneyandshadows.lightbulb.dialogs.base.internal.*
+import com.github.rooneyandshadows.lightbulb.dialogs.base.internal.callbacks.*
 
-class ColorPickerDialogBuilder : BaseDialogBuilder<ColorPickerDialog?> {
-    private var changedCallback: SelectionChangedListener<IntArray>? = null
-    private var selection: IntArray
-    private val adapter: ColorPickerAdapter
+@Suppress("unused")
+class ColorPickerDialogBuilder @JvmOverloads constructor(
+    lifecycleOwner: LifecycleOwner? = null,
+    manager: FragmentManager,
+    dialogTag: String,
+    private val adapter: ColorPickerAdapter,
+) :
+    BaseDialogBuilder<ColorPickerDialog>(lifecycleOwner, manager, dialogTag) {
+    private var changedCallback: SelectionChangedListener<IntArray?>? = null
+    private var selection: IntArray? = null
 
-    constructor(manager: FragmentManager?, dialogTag: String?, adapter: ColorPickerAdapter) : super(manager, dialogTag) {
-        this.adapter = adapter
-    }
 
-    constructor(
-        lifecycleOwner: LifecycleOwner?,
-        manager: FragmentManager?,
-        dialogTag: String?,
-        adapter: ColorPickerAdapter
-    ) : super(lifecycleOwner, manager, dialogTag) {
-        this.adapter = adapter
-    }
-
-    override fun withTitle(title: String?): ColorPickerDialogBuilder? {
+    @Override
+    override fun withTitle(title: String): ColorPickerDialogBuilder {
         return super.withTitle(title) as ColorPickerDialogBuilder
     }
 
-    override fun withMessage(message: String?): ColorPickerDialogBuilder? {
+    @Override
+    override fun withMessage(message: String): ColorPickerDialogBuilder {
         return super.withMessage(message) as ColorPickerDialogBuilder
     }
 
+    @Override
     override fun withPositiveButton(
-        configuration: DialogButtonConfiguration?,
-        onClickListener: DialogButtonClickListener?
-    ): ColorPickerDialogBuilder? {
+        configuration: DialogButtonConfiguration,
+        onClickListener: DialogButtonClickListener,
+    ): ColorPickerDialogBuilder {
         return super.withPositiveButton(configuration, onClickListener) as ColorPickerDialogBuilder
     }
 
+    @Override
     override fun withNegativeButton(
-        configuration: DialogButtonConfiguration?,
-        onClickListener: DialogButtonClickListener?
-    ): ColorPickerDialogBuilder? {
+        configuration: DialogButtonConfiguration,
+        onClickListener: DialogButtonClickListener,
+    ): ColorPickerDialogBuilder {
         return super.withNegativeButton(configuration, onClickListener) as ColorPickerDialogBuilder
     }
 
-    override fun withOnCancelListener(listener: DialogCancelListener?): ColorPickerDialogBuilder? {
+    @Override
+    override fun withOnCancelListener(listener: DialogCancelListener): ColorPickerDialogBuilder {
         return super.withOnCancelListener(listener) as ColorPickerDialogBuilder
     }
 
-    override fun withOnShowListener(listener: DialogShowListener?): ColorPickerDialogBuilder? {
+    @Override
+    override fun withOnShowListener(listener: DialogShowListener): ColorPickerDialogBuilder {
         return super.withOnShowListener(listener) as ColorPickerDialogBuilder
     }
 
-    override fun withOnHideListener(listener: DialogHideListener?): ColorPickerDialogBuilder? {
+    @Override
+    override fun withOnHideListener(listener: DialogHideListener): ColorPickerDialogBuilder {
         return super.withOnHideListener(listener) as ColorPickerDialogBuilder
     }
 
-    override fun withCancelOnClickOutside(closeOnClickOutside: Boolean): ColorPickerDialogBuilder? {
+    @Override
+    override fun withCancelOnClickOutside(closeOnClickOutside: Boolean): ColorPickerDialogBuilder {
         return super.withCancelOnClickOutside(closeOnClickOutside) as ColorPickerDialogBuilder
     }
 
-    override fun withDialogType(dialogType: DialogTypes?): ColorPickerDialogBuilder? {
+    @Override
+    override fun withDialogType(dialogType: DialogTypes): ColorPickerDialogBuilder {
         return super.withDialogType(dialogType) as ColorPickerDialogBuilder
     }
 
-    override fun withAnimations(animation: DialogAnimationTypes?): ColorPickerDialogBuilder? {
+    @Override
+    override fun withAnimations(animation: DialogAnimationTypes): ColorPickerDialogBuilder {
         return super.withAnimations(animation) as ColorPickerDialogBuilder
     }
 
-    override fun withDialogListeners(callbacks: DialogCallbacks?): ColorPickerDialogBuilder? {
-        return super.withDialogListeners(callbacks) as ColorPickerDialogBuilder
+    @Override
+    override fun withDialogListeners(listeners: DialogListeners): ColorPickerDialogBuilder {
+        return super.withDialogListeners(listeners) as ColorPickerDialogBuilder
     }
 
-    fun withSelectionCallback(listener: SelectionChangedListener<IntArray>?): ColorPickerDialogBuilder {
+    fun withSelectionCallback(listener: SelectionChangedListener<IntArray?>): ColorPickerDialogBuilder {
         changedCallback = listener
         return this
     }
@@ -91,28 +90,28 @@ class ColorPickerDialogBuilder : BaseDialogBuilder<ColorPickerDialog?> {
         return this
     }
 
-    override fun buildDialog(): ColorPickerDialog? {
-        var colorPickerDialog = dialogParentFragmentManager!!.findFragmentByTag(dialogParentFragmentManager) as ColorPickerDialog?
-        if (colorPickerDialog == null) colorPickerDialog = ColorPickerDialog.Companion.newInstance(
+    override fun buildDialog(): ColorPickerDialog {
+        val colorPickerDialog = dialogParentFragmentManager.findFragmentByTag(dialogTag) as ColorPickerDialog?
+        return colorPickerDialog ?: ColorPickerDialog.newInstance(
             title,
             message,
             positiveButtonConfiguration,
             negativeButtonConfiguration,
             cancelableOnClickOutside,
             animation
-        )
-        colorPickerDialog.setLifecycleOwner(dialogLifecycleOwner)
-        colorPickerDialog.setDialogCallbacks(dialogListeners)
-        colorPickerDialog.setParentFragManager(dialogParentFragmentManager)
-        colorPickerDialog.setDialogTag(dialogParentFragmentManager)
-        colorPickerDialog.addOnShowListener(onShowListener)
-        colorPickerDialog.addOnHideListener(onHideListener)
-        colorPickerDialog.addOnCancelListener(onCancelListener)
-        colorPickerDialog.addOnNegativeClickListeners(onNegativeClickListener)
-        colorPickerDialog.addOnPositiveClickListener(onPositiveClickListener)
-        colorPickerDialog.setAdapter(adapter)
-        colorPickerDialog.setOnSelectionChangedListener(changedCallback)
-        colorPickerDialog.selection = selection
-        return colorPickerDialog
+        ).apply {
+            setLifecycleOwner(dialogLifecycleOwner)
+            setDialogCallbacks(dialogListeners)
+            setParentFragManager(dialogParentFragmentManager)
+            setDialogTag(dialogTag)
+            onShowListener?.apply { addOnShowListener(this) }
+            onHideListener?.apply { addOnHideListener(this) }
+            onCancelListener?.apply { addOnCancelListener(this) }
+            onNegativeClickListener?.apply { addOnNegativeClickListeners(this) }
+            onPositiveClickListener?.apply { addOnPositiveClickListener(this) }
+            setAdapter(adapter)
+            changedCallback?.apply { setOnSelectionChangedListener(this) }
+            setSelection(selection)
+        }
     }
 }

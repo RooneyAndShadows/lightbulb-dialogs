@@ -28,15 +28,16 @@ import com.github.rooneyandshadows.lightbulb.dialogs.base.constraints.regular.Re
 import com.github.rooneyandshadows.lightbulb.dialogs.base.constraints.regular.RegularDialogConstraintsBuilder
 import com.github.rooneyandshadows.lightbulb.dialogs.base.internal.*
 import com.github.rooneyandshadows.lightbulb.dialogs.base.internal.DialogAnimationTypes.*
+import com.github.rooneyandshadows.lightbulb.dialogs.base.internal.DialogTypes.*
 import com.github.rooneyandshadows.lightbulb.dialogs.base.internal.callbacks.*
 import com.google.android.material.bottomsheet.BottomSheetBehavior
 
 @Suppress("MemberVisibilityCanBePrivate")
 abstract class BaseDialogFragment : DialogFragment(), DefaultLifecycleObserver {
     private lateinit var rootView: View
+    private lateinit var parentFragManager: FragmentManager
     private lateinit var regularDialogConstraints: RegularDialogConstraints
     private lateinit var bottomSheetDialogConstraints: BottomSheetDialogConstraints
-    private lateinit var parentFragManager: FragmentManager
     private var dialogTag: String = javaClass.name.plus("_TAG")
     private var cancelableOnClickOutside = true
     private var isLifecycleOwnerInStateAllowingShow = false
@@ -47,16 +48,6 @@ abstract class BaseDialogFragment : DialogFragment(), DefaultLifecycleObserver {
     private val onCancelListeners: MutableList<DialogCancelListener> = mutableListOf()
     private var dialogCallbacks: DialogListeners? = null
     private var dialogLifecycleOwner: LifecycleOwner? = null
-    protected val windowHeight: Int
-        get() {
-            val activity = context as Activity? ?: return -1
-            return WindowUtils.getWindowHeight(activity)
-        }
-    protected val windowWidth: Int
-        get() {
-            val activity = context as Activity? ?: return -1
-            return WindowUtils.getWindowWidth(activity)
-        }
     protected lateinit var headerViewHierarchy: DialogLayoutHierarchyHeading
         private set
     protected lateinit var footerViewHierarchy: DialogLayoutHierarchyFooter
@@ -84,7 +75,6 @@ abstract class BaseDialogFragment : DialogFragment(), DefaultLifecycleObserver {
     var positiveButtonConfig: DialogButtonConfiguration? = null
     var negativeButtonConfig: DialogButtonConfiguration? = null
 
-
     /**
      * Used to create layout for the dialog.
      *
@@ -101,7 +91,7 @@ abstract class BaseDialogFragment : DialogFragment(), DefaultLifecycleObserver {
      */
     protected abstract fun configureContent(
         view: View,
-        savedInstanceState: Bundle?
+        savedInstanceState: Bundle?,
     )
 
     /**
@@ -142,6 +132,57 @@ abstract class BaseDialogFragment : DialogFragment(), DefaultLifecycleObserver {
      */
     protected open fun doOnDismiss() {}
 
+    protected open fun getRegularConstraints(): RegularDialogConstraints {
+        return RegularDialogConstraintsBuilder(this)
+            .default()
+            .build()
+    }
+
+    protected open fun getBottomSheetConstraints(): BottomSheetDialogConstraints {
+        return BottomSheetDialogConstraintsBuilder(this)
+            .default()
+            .build()
+    }
+
+    protected open fun setupRegularDialog(
+        constraints: RegularDialogConstraints,
+        dialogWindow: Window,
+        dialogLayout: View,
+        fgPadding: Rect,
+    ) {
+        val widthMeasureSpec = View.MeasureSpec.makeMeasureSpec(constraints.getMaxWidth(), View.MeasureSpec.AT_MOST)
+        val heightMeasureSpec = View.MeasureSpec.makeMeasureSpec(0, View.MeasureSpec.UNSPECIFIED)
+        //val params = ViewGroup.LayoutParams(0, 0)
+        dialogLayout.measure(widthMeasureSpec, heightMeasureSpec)
+        val horPadding = fgPadding.left + fgPadding.right
+        val verPadding = fgPadding.top + fgPadding.bottom
+        var desiredWidth = dialogLayout.measuredWidth
+        var desiredHeight = dialogLayout.measuredHeight
+        desiredWidth = constraints.resolveWidth(desiredWidth)
+        desiredHeight = constraints.resolveHeight(desiredHeight)
+        dialogWindow.setLayout(desiredWidth + horPadding, desiredHeight + verPadding)
+    }
+
+    protected open fun setupFullScreenDialog(
+        dialogWindow: Window,
+        dialogLayout: View,
+    ) {
+    }
+
+    protected open fun setupBottomSheetDialog(
+        constraints: BottomSheetDialogConstraints,
+        dialogWindow: Window,
+        dialogLayout: View,
+    ) {
+        val windowWidth = getWindowWidth()
+        val widthMeasureSpec = View.MeasureSpec.makeMeasureSpec(windowWidth, View.MeasureSpec.EXACTLY)
+        val heightMeasureSpec = View.MeasureSpec.makeMeasureSpec(0, View.MeasureSpec.UNSPECIFIED)
+        dialogLayout.measure(widthMeasureSpec, heightMeasureSpec)
+        var desiredHeight = dialogLayout.measuredHeight
+        desiredHeight = constraints.resolveHeight(desiredHeight)
+        dialogWindow.setLayout(WindowManager.LayoutParams.MATCH_PARENT, desiredHeight)
+    }
+
     @Override
     override fun onResume(owner: LifecycleOwner) {
         super<DefaultLifecycleObserver>.onResume(owner)
@@ -173,15 +214,15 @@ abstract class BaseDialogFragment : DialogFragment(), DefaultLifecycleObserver {
         } else {
             dialogType = helper.dialogType
             when (dialogType) {
-                DialogTypes.NORMAL -> {
+                NORMAL -> {
                     isFullscreen = false
                     animationType = helper.animationType
                 }
-                DialogTypes.FULLSCREEN -> {
+                FULLSCREEN -> {
                     isFullscreen = true
                     animationType = helper.animationType
                 }
-                DialogTypes.BOTTOM_SHEET -> {
+                BOTTOM_SHEET -> {
                     isFullscreen = false
                     animationType = TRANSITION_FROM_BOTTOM_TO_BOTTOM
                 }
@@ -225,8 +266,8 @@ abstract class BaseDialogFragment : DialogFragment(), DefaultLifecycleObserver {
         regularDialogConstraints = getRegularConstraints()
         bottomSheetDialogConstraints = getBottomSheetConstraints()
         rootView = when (dialogType) {
-            DialogTypes.NORMAL, DialogTypes.FULLSCREEN -> getDialogLayout(LayoutInflater.from(requireContext()))
-            DialogTypes.BOTTOM_SHEET -> getBottomSheetDialogLayout()
+            NORMAL, FULLSCREEN -> getDialogLayout(LayoutInflater.from(requireContext()))
+            BOTTOM_SHEET -> getBottomSheetDialogLayout()
         }
         return rootView
     }
@@ -404,24 +445,47 @@ abstract class BaseDialogFragment : DialogFragment(), DefaultLifecycleObserver {
         dialogCallbacks = callbacks
     }
 
-    protected open fun getRegularConstraints(): RegularDialogConstraints {
-        return RegularDialogConstraintsBuilder(this)
-            .default()
-            .build()
+    /**
+     * Returns the maximum possible width according to the bounds given to the dialog.
+     *
+     * @return width in pixels
+     */
+    protected fun getMaxWidth(): Int {
+        return when (dialogType) {
+            NORMAL -> regularDialogConstraints.getMaxWidth()
+            FULLSCREEN, BOTTOM_SHEET -> getWindowWidth()
+        }
     }
 
-    protected open fun getBottomSheetConstraints(): BottomSheetDialogConstraints {
-        return BottomSheetDialogConstraintsBuilder(this)
-            .default()
-            .build()
+    /**
+     * Returns the maximum possible height according to the bounds given to the dialog.
+     *
+     * @return height in pixels
+     */
+    protected fun getMaxHeight(): Int {
+        return when (dialogType) {
+            NORMAL -> regularDialogConstraints.getMaxHeight()
+            FULLSCREEN -> getWindowHeight()
+            BOTTOM_SHEET -> bottomSheetDialogConstraints.getMaxHeight()
+        }
+    }
+
+    protected fun getWindowWidth(): Int {
+        val activity = requireActivity()
+        return WindowUtils.getWindowWidth(activity)
+    }
+
+    protected fun getWindowHeight(): Int {
+        val activity = requireActivity()
+        return WindowUtils.getWindowHeight(activity)
     }
 
     protected fun getPercentOfWindowHeight(heightInPercents: Int): Int {
-        return windowHeight * validatePercents(heightInPercents) / 100
+        return getWindowHeight() * validatePercents(heightInPercents) / 100
     }
 
     protected fun getPercentOfWindowWidth(widthInPercents: Int): Int {
-        return windowWidth * validatePercents(widthInPercents) / 100
+        return getWindowWidth() * validatePercents(widthInPercents) / 100
     }
 
     protected fun measureDialogLayout() {
@@ -431,18 +495,18 @@ abstract class BaseDialogFragment : DialogFragment(), DefaultLifecycleObserver {
         val fgPadding = Rect()
         window!!.decorView.background.getPadding(fgPadding)
         when (dialogType) {
-            DialogTypes.FULLSCREEN -> {
+            FULLSCREEN -> {
                 window.setBackgroundDrawable(ColorDrawable(Color.TRANSPARENT)) // overrides background to remove insets
                 window.setLayout(WindowManager.LayoutParams.MATCH_PARENT, WindowManager.LayoutParams.MATCH_PARENT)
                 setupFullScreenDialog(window, rootView)
             }
-            DialogTypes.NORMAL -> setupRegularDialog(
+            NORMAL -> setupRegularDialog(
                 regularDialogConstraints,
                 window,
                 rootView,
                 fgPadding
             )
-            DialogTypes.BOTTOM_SHEET -> {
+            BOTTOM_SHEET -> {
                 window.setGravity(Gravity.BOTTOM)
                 window.setLayout(WindowManager.LayoutParams.MATCH_PARENT, WindowManager.LayoutParams.WRAP_CONTENT)
                 window.setBackgroundDrawable(ColorDrawable(Color.TRANSPARENT)) // overrides background to remove insets
@@ -453,44 +517,6 @@ abstract class BaseDialogFragment : DialogFragment(), DefaultLifecycleObserver {
                 )
             }
         }
-    }
-
-    protected open fun setupRegularDialog(
-        constraints: RegularDialogConstraints,
-        dialogWindow: Window,
-        dialogLayout: View,
-        fgPadding: Rect
-    ) {
-        val widthMeasureSpec = View.MeasureSpec.makeMeasureSpec(constraints.getMaxWidth(), View.MeasureSpec.AT_MOST)
-        val heightMeasureSpec = View.MeasureSpec.makeMeasureSpec(0, View.MeasureSpec.UNSPECIFIED)
-        //val params = ViewGroup.LayoutParams(0, 0)
-        dialogLayout.measure(widthMeasureSpec, heightMeasureSpec)
-        val horPadding = fgPadding.left + fgPadding.right
-        val verPadding = fgPadding.top + fgPadding.bottom
-        var desiredWidth = dialogLayout.measuredWidth
-        var desiredHeight = dialogLayout.measuredHeight
-        desiredWidth = constraints.resolveWidth(desiredWidth)
-        desiredHeight = constraints.resolveHeight(desiredHeight)
-        dialogWindow.setLayout(desiredWidth + horPadding, desiredHeight + verPadding)
-    }
-
-    protected open fun setupFullScreenDialog(
-        dialogWindow: Window,
-        dialogLayout: View
-    ) {
-    }
-
-    protected open fun setupBottomSheetDialog(
-        constraints: BottomSheetDialogConstraints,
-        dialogWindow: Window,
-        dialogLayout: View
-    ) {
-        val widthMeasureSpec = View.MeasureSpec.makeMeasureSpec(windowWidth, View.MeasureSpec.EXACTLY)
-        val heightMeasureSpec = View.MeasureSpec.makeMeasureSpec(0, View.MeasureSpec.UNSPECIFIED)
-        dialogLayout.measure(widthMeasureSpec, heightMeasureSpec)
-        var desiredHeight = dialogLayout.measuredHeight
-        desiredHeight = constraints.resolveHeight(desiredHeight)
-        dialogWindow.setLayout(WindowManager.LayoutParams.MATCH_PARENT, desiredHeight)
     }
 
     private fun validatePercents(percentsValue: Int): Int {

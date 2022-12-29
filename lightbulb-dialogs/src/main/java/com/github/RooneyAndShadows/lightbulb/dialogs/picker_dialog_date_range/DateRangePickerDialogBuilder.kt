@@ -1,82 +1,84 @@
 package com.github.rooneyandshadows.lightbulb.dialogs.picker_dialog_date_range
 
 import androidx.lifecycle.LifecycleOwner
-import com.github.rooneyandshadows.lightbulb.dialogs.base.BaseDialogFragment.DialogButtonConfiguration
-import com.github.rooneyandshadows.lightbulb.dialogs.base.BaseDialogFragment.DialogButtonClickListener
-import com.github.rooneyandshadows.lightbulb.dialogs.base.BaseDialogFragment.DialogShowListener
-import com.github.rooneyandshadows.lightbulb.dialogs.base.BaseDialogFragment.DialogHideListener
-import com.github.rooneyandshadows.lightbulb.dialogs.base.BaseDialogFragment.DialogCancelListener
-import com.github.rooneyandshadows.lightbulb.dialogs.base.BaseDialogFragment.DialogAnimationTypes
-import com.github.rooneyandshadows.lightbulb.dialogs.base.BaseDialogFragment.DialogTypes
-import com.github.rooneyandshadows.lightbulb.dialogs.base.BaseDialogFragment.DialogCallbacks
 import com.github.rooneyandshadows.lightbulb.dialogs.base.BaseDialogBuilder
 import com.github.rooneyandshadows.lightbulb.dialogs.base.BasePickerDialogFragment.SelectionChangedListener
 import androidx.fragment.app.FragmentManager
+import com.github.rooneyandshadows.lightbulb.dialogs.base.internal.*
+import com.github.rooneyandshadows.lightbulb.dialogs.base.internal.callbacks.*
 import java.time.OffsetDateTime
 
-class DateRangePickerDialogBuilder : BaseDialogBuilder<DateRangePickerDialog?> {
-    private var dateSetListener: SelectionChangedListener<Array<OffsetDateTime>>? = null
+@Suppress("unused")
+class DateRangePickerDialogBuilder @JvmOverloads constructor(
+    lifecycleOwner: LifecycleOwner? = null,
+    manager: FragmentManager,
+    dialogTag: String,
+) : BaseDialogBuilder<DateRangePickerDialog>(lifecycleOwner, manager, dialogTag) {
+    private var dateSetListener: SelectionChangedListener<Array<OffsetDateTime?>?>? = null
     private var textFrom: String? = null
     private var textTo: String? = null
     private var dateFormat: String? = null
-    private var initialRange: Array<OffsetDateTime?>
+    private var initialRange: Array<OffsetDateTime?>? = null
 
-    constructor(manager: FragmentManager?, dialogTag: String?) : super(manager, dialogTag) {}
-    constructor(lifecycleOwner: LifecycleOwner?, manager: FragmentManager?, dialogTag: String?) : super(
-        lifecycleOwner,
-        manager,
-        dialogTag
-    ) {
-    }
-
-    override fun withTitle(title: String?): DateRangePickerDialogBuilder? {
+    @Override
+    override fun withTitle(title: String): DateRangePickerDialogBuilder {
         return super.withTitle(title) as DateRangePickerDialogBuilder
     }
 
-    override fun withMessage(message: String?): DateRangePickerDialogBuilder? {
+    @Override
+    override fun withMessage(message: String): DateRangePickerDialogBuilder {
         return super.withMessage(message) as DateRangePickerDialogBuilder
     }
 
+    @Override
     override fun withPositiveButton(
-        configuration: DialogButtonConfiguration?,
-        onClickListener: DialogButtonClickListener?
-    ): DateRangePickerDialogBuilder? {
+        configuration: DialogButtonConfiguration,
+        onClickListener: DialogButtonClickListener,
+    ): DateRangePickerDialogBuilder {
         return super.withPositiveButton(configuration, onClickListener) as DateRangePickerDialogBuilder
     }
 
+    @Override
     override fun withNegativeButton(
-        configuration: DialogButtonConfiguration?,
-        onClickListener: DialogButtonClickListener?
-    ): DateRangePickerDialogBuilder? {
+        configuration: DialogButtonConfiguration,
+        onClickListener: DialogButtonClickListener,
+    ): DateRangePickerDialogBuilder {
         return super.withNegativeButton(configuration, onClickListener) as DateRangePickerDialogBuilder
     }
 
-    override fun withOnCancelListener(listener: DialogCancelListener?): DateRangePickerDialogBuilder? {
+    @Override
+    override fun withOnCancelListener(listener: DialogCancelListener): DateRangePickerDialogBuilder {
         return super.withOnCancelListener(listener) as DateRangePickerDialogBuilder
     }
 
-    override fun withOnShowListener(listener: DialogShowListener?): DateRangePickerDialogBuilder? {
+    @Override
+    override fun withOnShowListener(listener: DialogShowListener): DateRangePickerDialogBuilder {
         return super.withOnShowListener(listener) as DateRangePickerDialogBuilder
     }
 
-    override fun withOnHideListener(listener: DialogHideListener?): DateRangePickerDialogBuilder? {
+    @Override
+    override fun withOnHideListener(listener: DialogHideListener): DateRangePickerDialogBuilder {
         return super.withOnHideListener(listener) as DateRangePickerDialogBuilder
     }
 
-    override fun withCancelOnClickOutside(closeOnClickOutside: Boolean): DateRangePickerDialogBuilder? {
+    @Override
+    override fun withCancelOnClickOutside(closeOnClickOutside: Boolean): DateRangePickerDialogBuilder {
         return super.withCancelOnClickOutside(closeOnClickOutside) as DateRangePickerDialogBuilder
     }
 
-    override fun withDialogType(dialogType: DialogTypes?): DateRangePickerDialogBuilder? {
+    @Override
+    override fun withDialogType(dialogType: DialogTypes): DateRangePickerDialogBuilder {
         return super.withDialogType(dialogType) as DateRangePickerDialogBuilder
     }
 
-    override fun withAnimations(animation: DialogAnimationTypes?): DateRangePickerDialogBuilder? {
+    @Override
+    override fun withAnimations(animation: DialogAnimationTypes): DateRangePickerDialogBuilder {
         return super.withAnimations(animation) as DateRangePickerDialogBuilder
     }
 
-    override fun withDialogListeners(callbacks: DialogCallbacks?): DateRangePickerDialogBuilder? {
-        return super.withDialogListeners(callbacks) as DateRangePickerDialogBuilder
+    @Override
+    override fun withDialogListeners(listeners: DialogListeners): DateRangePickerDialogBuilder {
+        return super.withDialogListeners(listeners) as DateRangePickerDialogBuilder
     }
 
     fun withTextFrom(textFrom: String?): DateRangePickerDialogBuilder {
@@ -89,7 +91,7 @@ class DateRangePickerDialogBuilder : BaseDialogBuilder<DateRangePickerDialog?> {
         return this
     }
 
-    fun withOnDateSelectedEvent(listener: SelectionChangedListener<Array<OffsetDateTime>>?): DateRangePickerDialogBuilder {
+    fun withOnDateSelectedEvent(listener: SelectionChangedListener<Array<OffsetDateTime?>?>?): DateRangePickerDialogBuilder {
         dateSetListener = listener
         return this
     }
@@ -104,9 +106,9 @@ class DateRangePickerDialogBuilder : BaseDialogBuilder<DateRangePickerDialog?> {
         return this
     }
 
-    override fun buildDialog(): DateRangePickerDialog? {
-        var dialogFragment = dialogParentFragmentManager!!.findFragmentByTag(dialogParentFragmentManager) as DateRangePickerDialog?
-        if (dialogFragment == null) dialogFragment = DateRangePickerDialog.Companion.newInstance(
+    override fun buildDialog(): DateRangePickerDialog {
+        val dialogFragment = dialogParentFragmentManager.findFragmentByTag(dialogTag) as DateRangePickerDialog?
+        return dialogFragment ?: DateRangePickerDialog.newInstance(
             positiveButtonConfiguration,
             negativeButtonConfiguration,
             dateFormat,
@@ -114,18 +116,18 @@ class DateRangePickerDialogBuilder : BaseDialogBuilder<DateRangePickerDialog?> {
             textTo,
             cancelableOnClickOutside,
             animation
-        )
-        dialogFragment.setLifecycleOwner(dialogLifecycleOwner)
-        dialogFragment.setDialogCallbacks(dialogListeners)
-        dialogFragment.setParentFragManager(dialogParentFragmentManager)
-        dialogFragment.setDialogTag(dialogParentFragmentManager)
-        dialogFragment.addOnNegativeClickListeners(onNegativeClickListener)
-        dialogFragment.addOnPositiveClickListener(onPositiveClickListener)
-        dialogFragment.setOnSelectionChangedListener(dateSetListener)
-        dialogFragment.selection = initialRange
-        dialogFragment.addOnShowListener(onShowListener)
-        dialogFragment.addOnHideListener(onHideListener)
-        dialogFragment.addOnCancelListener(onCancelListener)
-        return dialogFragment
+        ).apply {
+            setLifecycleOwner(dialogLifecycleOwner)
+            setDialogCallbacks(dialogListeners)
+            setParentFragManager(dialogParentFragmentManager)
+            setDialogTag(dialogTag)
+            onNegativeClickListener?.apply { addOnNegativeClickListeners(this) }
+            onPositiveClickListener?.apply { addOnPositiveClickListener(this) }
+            dateSetListener?.apply { setOnSelectionChangedListener(this) }
+            setSelection(initialRange)
+            onShowListener?.apply { addOnShowListener(this) }
+            onHideListener?.apply { addOnHideListener(this) }
+            onCancelListener?.apply { addOnCancelListener(this) }
+        }
     }
 }

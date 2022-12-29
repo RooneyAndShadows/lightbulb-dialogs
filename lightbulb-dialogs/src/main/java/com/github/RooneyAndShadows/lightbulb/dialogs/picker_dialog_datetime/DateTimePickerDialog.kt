@@ -12,8 +12,11 @@ import com.github.rooneyandshadows.lightbulb.dialogs.base.BasePickerDialogFragme
 import com.github.rooneyandshadows.java.commons.date.DateUtilsOffsetDate
 import com.github.rooneyandshadows.java.commons.string.StringUtils
 import com.github.rooneyandshadows.lightbulb.dialogs.R
+import com.github.rooneyandshadows.lightbulb.dialogs.base.internal.DialogAnimationTypes
+import com.github.rooneyandshadows.lightbulb.dialogs.base.internal.DialogBundleHelper
+import com.github.rooneyandshadows.lightbulb.dialogs.base.internal.DialogButtonConfiguration
+import com.github.rooneyandshadows.lightbulb.dialogs.base.internal.DialogTypes
 import com.prolificinteractive.materialcalendarview.MaterialCalendarView
-import com.prolificinteractive.materialcalendarview.OnDateSelectedListener
 import com.prolificinteractive.materialcalendarview.CalendarDay
 import java.time.OffsetDateTime
 import java.time.ZoneOffset
@@ -22,95 +25,96 @@ import java.util.*
 class DateTimePickerDialog : BasePickerDialogFragment<OffsetDateTime?>(DateTimeSelection(null, null)) {
     private var dateFormat = "dd MMM HH:mm, yyyy"
     private var showingTimePicker = false
-    private var calendarView: MaterialCalendarView? = null
-    private var timePickerView: TimePicker? = null
-    private var selectionTextValue: AppCompatTextView? = null
-    private var modeChangeButton: AppCompatImageButton? = null
+    private lateinit var calendarView: MaterialCalendarView
+    private lateinit var timePickerView: TimePicker
+    private lateinit var selectionTextValue: AppCompatTextView
+    private lateinit var modeChangeButton: AppCompatImageButton
     private var zoneOffset = ZoneOffset.of(DateUtilsOffsetDate.getLocalTimeZone())
+
+    companion object {
+        private const val SHOWING_TIME_PICKER_TAG = "SHOWING_TIME_PICKER_TAG"
+        private const val DATE_FORMAT_TAG = "DATE_FORMAT_TEXT"
+        private const val DATE_SELECTION_TAG = "DATE_PICKER_SELECTION_TAG"
+        private const val DATE_SELECTION_DRAFT_TAG = "DATE_PICKER_SELECTION_DRAFT_TAG"
+        private const val DATE_OFFSET_TAG = "DATE_OFFSET_TAG"
+        fun newInstance(
+            positive: DialogButtonConfiguration?,
+            negative: DialogButtonConfiguration?,
+            dateFormat: String?,
+            cancelable: Boolean,
+            animationType: DialogAnimationTypes = DialogAnimationTypes.NO_ANIMATION,
+        ): DateTimePickerDialog {
+            return DateTimePickerDialog().apply {
+                this.arguments = DialogBundleHelper().apply {
+                    withPositiveButtonConfig(positive)
+                    withNegativeButtonConfig(negative)
+                    withCancelable(cancelable)
+                    withShowing(false)
+                    withDialogType(DialogTypes.NORMAL)
+                    withAnimation(animationType)
+                    bundle.putString(DATE_FORMAT_TAG, dateFormat)
+                }.bundle
+            }
+        }
+    }
+
+    @Override
     override fun doOnCreate(dialogArguments: Bundle?, savedInstanceState: Bundle?) {
         if (savedInstanceState == null) {
             requireNotNull(dialogArguments) { "Bundle args required" }
             dateFormat = StringUtils.getOrDefault(dialogArguments.getString(DATE_FORMAT_TAG), dateFormat)
             showingTimePicker = false
-            if (hasSelection()) {
-                selection.setCurrentSelection(selection.currentSelection)
-            } else {
-                val selectedDateFromArguments = DateUtilsOffsetDate.getDateFromString(
-                    DateUtilsOffsetDate.defaultFormatWithTimeZone, dialogArguments.getString(
-                        DATE_SELECTION_TAG
-                    )
-                )
-                selection.setCurrentSelection(selectedDateFromArguments)
+            if (hasSelection()) selection.setCurrentSelection(selection.getCurrentSelection())
+            else {
+                val dateFromArguments = getDateFromString(dialogArguments.getString(DATE_SELECTION_TAG))
+                selection.setCurrentSelection(dateFromArguments)
             }
         } else {
             showingTimePicker = savedInstanceState.getBoolean(SHOWING_TIME_PICKER_TAG)
-            selection.setCurrentSelection(
-                DateUtilsOffsetDate.getDateFromString(
-                    DateUtilsOffsetDate.defaultFormatWithTimeZone, savedInstanceState.getString(
-                        DATE_SELECTION_TAG
-                    )
-                ), false
-            )
-            selection.setDraftSelection(
-                DateUtilsOffsetDate.getDateFromString(
-                    DateUtilsOffsetDate.defaultFormatWithTimeZone, savedInstanceState.getString(
-                        DATE_SELECTION_DRAFT_TAG
-                    )
-                ), false
-            )
+            val selectionFromState = getDateFromString(savedInstanceState.getString(DATE_SELECTION_TAG))
+            val selectionDraftFromState = getDateFromString(savedInstanceState.getString(DATE_SELECTION_DRAFT_TAG))
+            selection.setCurrentSelection(selectionFromState, false)
+            selection.setDraftSelection(selectionDraftFromState, false)
             zoneOffset = ZoneOffset.of(savedInstanceState.getString(DATE_OFFSET_TAG))
         }
     }
 
+    @Override
     override fun doOnSaveInstanceState(outState: Bundle?) {
         super.doOnSaveInstanceState(outState)
-        if (selection.currentSelection != null) outState!!.putString(
-            DATE_SELECTION_TAG,
-            DateUtilsOffsetDate.getDateString(DateUtilsOffsetDate.defaultFormatWithTimeZone, selection.currentSelection)
-        )
-        if (selection.draftSelection != null) outState!!.putString(
-            DATE_SELECTION_DRAFT_TAG,
-            DateUtilsOffsetDate.getDateString(DateUtilsOffsetDate.defaultFormatWithTimeZone, selection.draftSelection)
-        )
+        selection.getCurrentSelection().apply {
+            outState!!.putString(DATE_SELECTION_TAG, getDateString(this))
+        }
+        selection.getDraftSelection().apply {
+            outState!!.putString(DATE_SELECTION_DRAFT_TAG, getDateString(this))
+        }
         outState!!.putString(DATE_OFFSET_TAG, zoneOffset.toString())
         outState.putBoolean(SHOWING_TIME_PICKER_TAG, showingTimePicker)
     }
 
-    override fun setDialogLayout(inflater: LayoutInflater?): View {
+    @Override
+    override fun getDialogLayout(layoutInflater: LayoutInflater): View {
         val orientation = resources.configuration.orientation
-        return if (orientation == Configuration.ORIENTATION_PORTRAIT) View.inflate(
-            context,
-            R.layout.dialog_picker_datetime_vertical,
-            null
-        ) else View.inflate(
-            context,
-            R.layout.dialog_picker_datetime_horizontal,
-            null
-        )
+        return if (orientation == Configuration.ORIENTATION_PORTRAIT)
+            layoutInflater.inflate(R.layout.dialog_picker_datetime_vertical, null)
+        else layoutInflater.inflate(R.layout.dialog_picker_datetime_horizontal, null)
     }
 
-    override fun configureContent(view: View?, savedInstanceState: Bundle?) {
-        selectionTextValue = view!!.findViewById(R.id.dateSelectionValue)
-        timePickerView = view.findViewById(R.id.timePickerView)
-        modeChangeButton = view.findViewById(R.id.datePickerModeChangeButton)
-        calendarView = view.findViewById(R.id.dateCalendarView)
-        val ctx = modeChangeButton.getContext()
-        modeChangeButton.setBackgroundDrawable(
-            ResourceUtils.getDrawable(
-                ctx,
-                R.drawable.background_round_corners_transparent
-            )
-        )
-        modeChangeButton.setOnClickListener(View.OnClickListener { v: View? ->
+    @Override
+    override fun configureContent(view: View, savedInstanceState: Bundle?) {
+        selectViews(view)
+        val context = requireContext()
+        modeChangeButton.background = ResourceUtils.getDrawable(context, R.drawable.background_round_corners_transparent)
+        modeChangeButton.setOnClickListener {
             showingTimePicker = !showingTimePicker
             syncPickerMode()
-        })
-        modeChangeButton.setVisibility(if (selection.draftSelection != null) View.VISIBLE else View.GONE)
-        calendarView.getLeftArrow().setTint(ResourceUtils.getColorByAttribute(ctx, R.attr.colorAccent))
-        calendarView.getRightArrow().setTint(ResourceUtils.getColorByAttribute(ctx, R.attr.colorAccent))
-        calendarView.setOnDateChangedListener(OnDateSelectedListener { widget: MaterialCalendarView?, date: CalendarDay, selected: Boolean ->
+        }
+        modeChangeButton.visibility = if (selection.getDraftSelection() != null) View.VISIBLE else View.GONE
+        calendarView.leftArrow.setTint(ResourceUtils.getColorByAttribute(context, R.attr.colorAccent))
+        calendarView.rightArrow.setTint(ResourceUtils.getColorByAttribute(context, R.attr.colorAccent))
+        calendarView.setOnDateChangedListener { _: MaterialCalendarView?, date: CalendarDay, _: Boolean ->
             if (isDialogShown) {
-                val draftDate = selection.draftSelection
+                val draftDate = selection.getDraftSelection()
                 var hour = 0
                 var minute = 0
                 val second = 0
@@ -130,7 +134,7 @@ class DateTimePickerDialog : BasePickerDialogFragment<OffsetDateTime?>(DateTimeS
                     )
                 )
             } else {
-                val currentDate = selection.currentSelection
+                val currentDate = selection.getCurrentSelection()
                 var hour = 0
                 var minute = 0
                 val second = 0
@@ -150,32 +154,29 @@ class DateTimePickerDialog : BasePickerDialogFragment<OffsetDateTime?>(DateTimeS
                     )
                 )
             }
-        })
-        timePickerView.setOnTimeChangedListener(TimePicker.OnTimeChangedListener { view1: TimePicker?, hourOfDay: Int, minute: Int ->
-            val date = DateUtilsOffsetDate.setTimeToDate(selection.draftSelection, hourOfDay, minute, 0)
+        }
+        timePickerView.setOnTimeChangedListener { _: TimePicker?, hourOfDay: Int, minute: Int ->
+            val date = DateUtilsOffsetDate.setTimeToDate(selection.getDraftSelection(), hourOfDay, minute, 0)
             if (isDialogShown) selection.setDraftSelection(date) else selection.setCurrentSelection(date)
-        })
+        }
         syncPickerMode()
         synchronizeSelectUi()
     }
 
+    @Override
     override fun synchronizeSelectUi() {
-        val newDate = if (selection.hasDraftSelection()) selection.draftSelection else selection.currentSelection
+        val newDate = if (selection.hasDraftSelection()) selection.getDraftSelection() else selection.getCurrentSelection()
         if (newDate != null) {
-            if (calendarView != null) {
-                modeChangeButton!!.visibility = View.VISIBLE
-                val selectedDate = dateToCalendarDay(newDate)
-                calendarView!!.clearSelection()
-                calendarView!!.setDateSelected(selectedDate, true)
-                calendarView!!.setCurrentDate(selectedDate, false)
-                timePickerView!!.hour = DateUtilsOffsetDate.getHourOfDay(newDate)
-                timePickerView!!.minute = DateUtilsOffsetDate.getMinuteOfHour(newDate)
-            }
+            modeChangeButton.visibility = View.VISIBLE
+            val selectedDate = dateToCalendarDay(newDate)
+            calendarView.clearSelection()
+            calendarView.setDateSelected(selectedDate, true)
+            calendarView.setCurrentDate(selectedDate, false)
+            timePickerView.hour = DateUtilsOffsetDate.getHourOfDay(newDate)
+            timePickerView.minute = DateUtilsOffsetDate.getMinuteOfHour(newDate)
         } else {
-            if (calendarView != null) {
-                modeChangeButton!!.visibility = View.GONE
-                calendarView!!.clearSelection()
-            }
+            modeChangeButton.visibility = View.GONE
+            calendarView.clearSelection()
         }
         updateHeader(newDate)
     }
@@ -185,14 +186,27 @@ class DateTimePickerDialog : BasePickerDialogFragment<OffsetDateTime?>(DateTimeS
         if (newSelection != null) zoneOffset = newSelection.offset
     }
 
+    private fun selectViews(view: View) {
+        selectionTextValue = view.findViewById(R.id.dateSelectionValue)
+        timePickerView = view.findViewById(R.id.timePickerView)
+        modeChangeButton = view.findViewById(R.id.datePickerModeChangeButton)
+        calendarView = view.findViewById(R.id.dateCalendarView)
+    }
+
+    private fun getDateFromString(dateString: String?): OffsetDateTime? {
+        return DateUtilsOffsetDate.getDateFromString(DateUtilsOffsetDate.defaultFormatWithTimeZone, dateString)
+    }
+
+    private fun getDateString(date: OffsetDateTime?): String? {
+        return DateUtilsOffsetDate.getDateString(DateUtilsOffsetDate.defaultFormatWithTimeZone, date)
+    }
+
     private fun updateHeader(newDate: OffsetDateTime?) {
-        if (selectionTextValue != null) {
-            val ctx = selectionTextValue!!.context
-            var dateString = DateUtilsOffsetDate.getDateString(dateFormat, newDate, Locale.getDefault())
-            if (dateString == null || dateString == "") dateString =
-                ResourceUtils.getPhrase(ctx, R.string.dialog_month_picker_empty_text)
-            selectionTextValue!!.text = dateString
-        }
+        val ctx = selectionTextValue.context
+        var dateString = DateUtilsOffsetDate.getDateString(dateFormat, newDate, Locale.getDefault())
+        if (dateString == null || dateString == "") dateString =
+            ResourceUtils.getPhrase(ctx, R.string.dialog_month_picker_empty_text)
+        selectionTextValue.text = dateString
     }
 
     private fun dateToCalendarDay(date: OffsetDateTime?): CalendarDay? {
@@ -204,43 +218,18 @@ class DateTimePickerDialog : BasePickerDialogFragment<OffsetDateTime?>(DateTimeS
     }
 
     private fun syncPickerMode() {
-        val modeIcon = ResourceUtils.getDrawable(
-            modeChangeButton!!.context,
-            if (showingTimePicker) R.drawable.calendar_icon else R.drawable.time_icon
-        )
-        modeIcon!!.setTint(ResourceUtils.getColorByAttribute(modeChangeButton!!.context, R.attr.colorOnPrimary))
-        modeChangeButton!!.setImageDrawable(modeIcon)
+        val modeIconRes = if (showingTimePicker) R.drawable.calendar_icon else R.drawable.time_icon
+        val modeIcon = ResourceUtils.getDrawable(modeChangeButton.context, modeIconRes).apply {
+            this!!.setTint(ResourceUtils.getColorByAttribute(modeChangeButton.context, R.attr.colorOnPrimary))
+        }
+        modeChangeButton.setImageDrawable(modeIcon)
         if (showingTimePicker) {
-            timePickerView!!.visibility = View.VISIBLE
-            calendarView!!.visibility = View.GONE
+            timePickerView.visibility = View.VISIBLE
+            calendarView.visibility = View.GONE
         } else {
-            timePickerView!!.visibility = View.GONE
-            calendarView!!.visibility = View.VISIBLE
+            timePickerView.visibility = View.GONE
+            calendarView.visibility = View.VISIBLE
         }
         measureDialogLayout()
-    }
-
-    companion object {
-        private const val SHOWING_TIME_PICKER_TAG = "SHOWING_TIME_PICKER_TAG"
-        private const val DATE_FORMAT_TAG = "DATE_FORMAT_TEXT"
-        private const val DATE_SELECTION_TAG = "DATE_PICKER_SELECTION_TAG"
-        private const val DATE_SELECTION_DRAFT_TAG = "DATE_PICKER_SELECTION_DRAFT_TAG"
-        private const val DATE_OFFSET_TAG = "DATE_OFFSET_TAG"
-        fun newInstance(
-            positive: DialogButtonConfiguration?, negative: DialogButtonConfiguration?,
-            dateFormat: String?, cancelable: Boolean, animationType: DialogAnimationTypes?
-        ): DateTimePickerDialog {
-            val dialogFragment = DateTimePickerDialog()
-            val bundleHelper = DialogBundleHelper()
-                .withPositiveButtonConfig(positive)
-                .withNegativeButtonConfig(negative)
-                .withCancelable(cancelable)
-                .withShowing(false)
-                .withDialogType(DialogTypes.NORMAL)
-                .withAnimation(animationType ?: DialogAnimationTypes.NO_ANIMATION)
-            bundleHelper.bundle.putString(DATE_FORMAT_TAG, dateFormat)
-            dialogFragment.arguments = bundleHelper.bundle
-            return dialogFragment
-        }
     }
 }

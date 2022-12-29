@@ -2,4 +2,6 @@
 <resources>
     <string name="dialog_date_picker_empty_text">---- / -- / --</string>
     <string name="dialog_month_picker_empty_text">---- / --</string>
+    <string name="dialog_range_picker_from_text">FROM</string>
+    <string name="dialog_range_picker_to_text">TO</string>
 </resources>

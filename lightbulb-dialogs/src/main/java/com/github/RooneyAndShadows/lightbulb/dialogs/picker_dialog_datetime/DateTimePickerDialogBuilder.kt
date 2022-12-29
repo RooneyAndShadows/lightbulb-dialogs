@@ -1,83 +1,85 @@
 package com.github.rooneyandshadows.lightbulb.dialogs.picker_dialog_datetime
 
 import androidx.lifecycle.LifecycleOwner
-import com.github.rooneyandshadows.lightbulb.dialogs.base.BaseDialogFragment.DialogButtonConfiguration
-import com.github.rooneyandshadows.lightbulb.dialogs.base.BaseDialogFragment.DialogButtonClickListener
-import com.github.rooneyandshadows.lightbulb.dialogs.base.BaseDialogFragment.DialogShowListener
-import com.github.rooneyandshadows.lightbulb.dialogs.base.BaseDialogFragment.DialogHideListener
-import com.github.rooneyandshadows.lightbulb.dialogs.base.BaseDialogFragment.DialogCancelListener
-import com.github.rooneyandshadows.lightbulb.dialogs.base.BaseDialogFragment.DialogAnimationTypes
-import com.github.rooneyandshadows.lightbulb.dialogs.base.BaseDialogFragment.DialogTypes
-import com.github.rooneyandshadows.lightbulb.dialogs.base.BaseDialogFragment.DialogCallbacks
 import com.github.rooneyandshadows.lightbulb.dialogs.base.BaseDialogBuilder
 import com.github.rooneyandshadows.lightbulb.dialogs.base.BasePickerDialogFragment.SelectionChangedListener
 import androidx.fragment.app.FragmentManager
+import com.github.rooneyandshadows.lightbulb.dialogs.base.internal.*
+import com.github.rooneyandshadows.lightbulb.dialogs.base.internal.callbacks.*
 import java.time.OffsetDateTime
 
-class DateTimePickerDialogBuilder : BaseDialogBuilder<DateTimePickerDialog?> {
-    private var dateSetListener: SelectionChangedListener<OffsetDateTime>? = null
+@Suppress("unused")
+class DateTimePickerDialogBuilder @JvmOverloads constructor(
+    lifecycleOwner: LifecycleOwner? = null,
+    manager: FragmentManager,
+    dialogTag: String,
+) : BaseDialogBuilder<DateTimePickerDialog>(lifecycleOwner, manager, dialogTag) {
+    private var dateSetListener: SelectionChangedListener<OffsetDateTime?>? = null
     private var initialDate: OffsetDateTime? = null
     private var dateFormat: String? = null
 
-    constructor(manager: FragmentManager?, dialogTag: String?) : super(manager, dialogTag) {}
-    constructor(lifecycleOwner: LifecycleOwner?, manager: FragmentManager?, dialogTag: String?) : super(
-        lifecycleOwner,
-        manager,
-        dialogTag
-    ) {
-    }
-
-    override fun withTitle(title: String?): DateTimePickerDialogBuilder? {
+    @Override
+    override fun withTitle(title: String): DateTimePickerDialogBuilder {
         return super.withTitle(title) as DateTimePickerDialogBuilder
     }
 
-    override fun withMessage(message: String?): DateTimePickerDialogBuilder? {
+    @Override
+    override fun withMessage(message: String): DateTimePickerDialogBuilder {
         return super.withMessage(message) as DateTimePickerDialogBuilder
     }
 
+    @Override
     override fun withPositiveButton(
-        configuration: DialogButtonConfiguration?,
-        onClickListener: DialogButtonClickListener?
-    ): DateTimePickerDialogBuilder? {
+        configuration: DialogButtonConfiguration,
+        onClickListener: DialogButtonClickListener,
+    ): DateTimePickerDialogBuilder {
         return super.withPositiveButton(configuration, onClickListener) as DateTimePickerDialogBuilder
     }
 
+    @Override
     override fun withNegativeButton(
-        configuration: DialogButtonConfiguration?,
-        onClickListener: DialogButtonClickListener?
-    ): DateTimePickerDialogBuilder? {
+        configuration: DialogButtonConfiguration,
+        onClickListener: DialogButtonClickListener,
+    ): DateTimePickerDialogBuilder {
         return super.withNegativeButton(configuration, onClickListener) as DateTimePickerDialogBuilder
     }
 
-    override fun withOnCancelListener(listener: DialogCancelListener?): DateTimePickerDialogBuilder? {
+    @Override
+    override fun withOnCancelListener(listener: DialogCancelListener): DateTimePickerDialogBuilder {
         return super.withOnCancelListener(listener) as DateTimePickerDialogBuilder
     }
 
-    override fun withOnShowListener(listener: DialogShowListener?): DateTimePickerDialogBuilder? {
+    @Override
+    override fun withOnShowListener(listener: DialogShowListener): DateTimePickerDialogBuilder {
         return super.withOnShowListener(listener) as DateTimePickerDialogBuilder
     }
 
-    override fun withOnHideListener(listener: DialogHideListener?): DateTimePickerDialogBuilder? {
+    @Override
+    override fun withOnHideListener(listener: DialogHideListener): DateTimePickerDialogBuilder {
         return super.withOnHideListener(listener) as DateTimePickerDialogBuilder
     }
 
-    override fun withCancelOnClickOutside(closeOnClickOutside: Boolean): DateTimePickerDialogBuilder? {
+    @Override
+    override fun withCancelOnClickOutside(closeOnClickOutside: Boolean): DateTimePickerDialogBuilder {
         return super.withCancelOnClickOutside(closeOnClickOutside) as DateTimePickerDialogBuilder
     }
 
-    override fun withDialogType(dialogType: DialogTypes?): DateTimePickerDialogBuilder? {
+    @Override
+    override fun withDialogType(dialogType: DialogTypes): DateTimePickerDialogBuilder {
         return super.withDialogType(dialogType) as DateTimePickerDialogBuilder
     }
 
-    override fun withAnimations(animation: DialogAnimationTypes?): DateTimePickerDialogBuilder? {
+    @Override
+    override fun withAnimations(animation: DialogAnimationTypes): DateTimePickerDialogBuilder {
         return super.withAnimations(animation) as DateTimePickerDialogBuilder
     }
 
-    override fun withDialogListeners(callbacks: DialogCallbacks?): DateTimePickerDialogBuilder? {
-        return super.withDialogListeners(callbacks) as DateTimePickerDialogBuilder
+    @Override
+    override fun withDialogListeners(listeners: DialogListeners): DateTimePickerDialogBuilder {
+        return super.withDialogListeners(listeners) as DateTimePickerDialogBuilder
     }
 
-    fun withOnDateSelectedEvent(listener: SelectionChangedListener<OffsetDateTime>?): DateTimePickerDialogBuilder {
+    fun withOnDateSelectedEvent(listener: SelectionChangedListener<OffsetDateTime?>): DateTimePickerDialogBuilder {
         dateSetListener = listener
         return this
     }
@@ -92,26 +94,26 @@ class DateTimePickerDialogBuilder : BaseDialogBuilder<DateTimePickerDialog?> {
         return this
     }
 
-    override fun buildDialog(): DateTimePickerDialog? {
-        var dialogFragment = dialogParentFragmentManager!!.findFragmentByTag(dialogParentFragmentManager) as DateTimePickerDialog?
-        if (dialogFragment == null) dialogFragment = DateTimePickerDialog.Companion.newInstance(
+    override fun buildDialog(): DateTimePickerDialog {
+        val dialogFragment = dialogParentFragmentManager.findFragmentByTag(dialogTag) as DateTimePickerDialog?
+        return dialogFragment ?: DateTimePickerDialog.newInstance(
             positiveButtonConfiguration,
             negativeButtonConfiguration,
             dateFormat,
             cancelableOnClickOutside,
             animation
-        )
-        dialogFragment.setLifecycleOwner(dialogLifecycleOwner)
-        dialogFragment.setDialogCallbacks(dialogListeners)
-        dialogFragment.setParentFragManager(dialogParentFragmentManager)
-        dialogFragment.setDialogTag(dialogParentFragmentManager)
-        dialogFragment.addOnNegativeClickListeners(onNegativeClickListener)
-        dialogFragment.addOnPositiveClickListener(onPositiveClickListener)
-        dialogFragment.setOnSelectionChangedListener(dateSetListener)
-        dialogFragment.selection = initialDate
-        dialogFragment.addOnShowListener(onShowListener)
-        dialogFragment.addOnHideListener(onHideListener)
-        dialogFragment.addOnCancelListener(onCancelListener)
-        return dialogFragment
+        ).apply {
+            setLifecycleOwner(dialogLifecycleOwner)
+            setDialogCallbacks(dialogListeners)
+            setParentFragManager(dialogParentFragmentManager)
+            setDialogTag(dialogTag)
+            onNegativeClickListener?.apply { addOnNegativeClickListeners(this) }
+            onPositiveClickListener?.apply { addOnPositiveClickListener(this) }
+            dateSetListener?.apply { setOnSelectionChangedListener(this) }
+            setSelection(initialDate)
+            onShowListener?.apply { addOnShowListener(this) }
+            onHideListener?.apply { addOnHideListener(this) }
+            onCancelListener?.apply { addOnCancelListener(this) }
+        }
     }
 }

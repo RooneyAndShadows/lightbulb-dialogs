@@ -24,18 +24,18 @@ class LoadingDialog : BaseDialogFragment() {
             title: String?,
             message: String?,
             dialogType: DialogTypes = DialogTypes.NORMAL,
-            animationType: DialogAnimationTypes = DialogAnimationTypes.NO_ANIMATION
+            animationType: DialogAnimationTypes = DialogAnimationTypes.NO_ANIMATION,
         ): LoadingDialog {
-            val dialogFragment = LoadingDialog()
-            dialogFragment.arguments = DialogBundleHelper()
-                .withTitle(title)
-                .withMessage(message)
-                .withCancelable(false)
-                .withShowing(false)
-                .withDialogType(dialogType)
-                .withAnimation(animationType)
-                .bundle
-            return dialogFragment
+            return LoadingDialog().apply {
+                this.arguments = DialogBundleHelper().apply {
+                    withTitle(title)
+                    withMessage(message)
+                    withCancelable(false)
+                    withShowing(false)
+                    withDialogType(dialogType)
+                    withAnimation(animationType)
+                }.bundle
+            }
         }
     }
 }

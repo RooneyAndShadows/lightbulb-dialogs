@@ -28,21 +28,21 @@ open class CustomDialog : BaseDialogFragment() {
             cancelable: Boolean = true,
             loading: Boolean = false,
             dialogType: DialogTypes = DialogTypes.NORMAL,
-            animationType: DialogAnimationTypes = DialogAnimationTypes.NO_ANIMATION
+            animationType: DialogAnimationTypes = DialogAnimationTypes.NO_ANIMATION,
         ): CustomDialog {
             return CustomDialog().apply {
-                arguments = DialogBundleHelper()
-                    .withTitle(title)
-                    .withMessage(message)
-                    .withPositiveButtonConfig(positive)
-                    .withNegativeButtonConfig(negative)
-                    .withCancelable(cancelable)
-                    .withShowing(false)
-                    .withDialogType(dialogType)
-                    .withAnimation(animationType)
-                    .bundle.apply {
-                        putBoolean(IS_LOADING_KEY, loading)
-                    }
+                arguments = DialogBundleHelper().apply {
+                    withTitle(title)
+                    withMessage(message)
+                    withPositiveButtonConfig(positive)
+                    withNegativeButtonConfig(negative)
+                    withCancelable(cancelable)
+                    withShowing(false)
+                    withDialogType(dialogType)
+                    withAnimation(animationType)
+                }.bundle.apply {
+                    putBoolean(IS_LOADING_KEY, loading)
+                }
             }
         }
     }

@@ -6,15 +6,18 @@ import java.time.OffsetDateTime
 
 internal class DateTimeSelection(current: OffsetDateTime?, draft: OffsetDateTime?) :
     BaseDialogSelection<OffsetDateTime?>(current, draft) {
+    @Override
     override fun compareValues(v1: OffsetDateTime?, v2: OffsetDateTime?): Boolean {
         return DateUtilsOffsetDate.isDateEqual(v1, v2, true)
     }
 
+    @Override
     override fun hasCurrentSelection(): Boolean {
-        return currentSelection != null
+        return getCurrentSelection() != null
     }
 
+    @Override
     override fun hasDraftSelection(): Boolean {
-        return draftSelection != null
+        return getDraftSelection() != null
     }
 }

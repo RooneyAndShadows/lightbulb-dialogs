@@ -23,19 +23,19 @@ class AlertDialog : BaseDialogFragment() {
             negative: DialogButtonConfiguration?,
             cancelable: Boolean = true,
             dialogType: DialogTypes = DialogTypes.NORMAL,
-            animationType: DialogAnimationTypes = DialogAnimationTypes.NO_ANIMATION
+            animationType: DialogAnimationTypes = DialogAnimationTypes.NO_ANIMATION,
         ): AlertDialog {
             return AlertDialog().apply {
-                arguments = DialogBundleHelper()
-                    .withTitle(title)
-                    .withMessage(message)
-                    .withPositiveButtonConfig(positive)
-                    .withNegativeButtonConfig(negative)
-                    .withCancelable(cancelable)
-                    .withShowing(false)
-                    .withDialogType(dialogType)
-                    .withAnimation(animationType)
-                    .bundle
+                arguments = DialogBundleHelper().apply {
+                    withTitle(title)
+                    withMessage(message)
+                    withPositiveButtonConfig(positive)
+                    withNegativeButtonConfig(negative)
+                    withCancelable(cancelable)
+                    withShowing(false)
+                    withDialogType(dialogType)
+                    withAnimation(animationType)
+                }.bundle
             }
         }
     }
@@ -50,7 +50,7 @@ class AlertDialog : BaseDialogFragment() {
     }
 
     @Override
-    override fun setupFullScreenDialog(dialogWindow: Window?, dialogLayout: View?) {
+    override fun setupFullScreenDialog(dialogWindow: Window, dialogLayout: View) {
         super.setupFullScreenDialog(dialogWindow, dialogLayout)
         headerViewHierarchy.titleAndMessageContainer?.apply {
             layoutParams = ConstraintLayout.LayoutParams(

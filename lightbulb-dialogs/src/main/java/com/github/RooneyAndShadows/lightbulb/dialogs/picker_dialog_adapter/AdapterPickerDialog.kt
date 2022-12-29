@@ -23,6 +23,7 @@ import com.github.rooneyandshadows.lightbulb.dialogs.base.internal.DialogButtonC
 import com.github.rooneyandshadows.lightbulb.dialogs.base.internal.DialogTypes
 import com.github.rooneyandshadows.lightbulb.recycleradapters.abstraction.callbacks.EasyAdapterSelectionChangedListener
 
+@Suppress("unused")
 open class AdapterPickerDialog<ItemType : EasyAdapterDataModel> :
     BasePickerDialogFragment<IntArray?>(AdapterPickerDialogSelection(null, null)) {
     private val adapterSelectionTag = "ADAPTER_SELECTION_TAG"
@@ -41,20 +42,20 @@ open class AdapterPickerDialog<ItemType : EasyAdapterDataModel> :
             negative: DialogButtonConfiguration?,
             cancelable: Boolean = true,
             dialogType: DialogTypes = DialogTypes.NORMAL,
-            animationType: DialogAnimationTypes = DialogAnimationTypes.NO_ANIMATION
+            animationType: DialogAnimationTypes = DialogAnimationTypes.NO_ANIMATION,
         ): AdapterPickerDialog<ItemType> {
-            val dialogFragment = AdapterPickerDialog<ItemType>()
-            dialogFragment.arguments = DialogBundleHelper()
-                .withTitle(title)
-                .withMessage(message)
-                .withPositiveButtonConfig(positive)
-                .withNegativeButtonConfig(negative)
-                .withCancelable(cancelable)
-                .withShowing(false)
-                .withDialogType(dialogType)
-                .withAnimation(animationType)
-                .bundle
-            return dialogFragment
+            return AdapterPickerDialog<ItemType>().apply {
+                this.arguments = DialogBundleHelper().apply {
+                    withTitle(title)
+                    withMessage(message)
+                    withPositiveButtonConfig(positive)
+                    withNegativeButtonConfig(negative)
+                    withCancelable(cancelable)
+                    withShowing(false)
+                    withDialogType(dialogType)
+                    withAnimation(animationType)
+                }.bundle
+            }
         }
     }
 
@@ -106,7 +107,7 @@ open class AdapterPickerDialog<ItemType : EasyAdapterDataModel> :
         constraints: RegularDialogConstraints,
         dialogWindow: Window,
         dialogLayout: View,
-        fgPadding: Rect
+        fgPadding: Rect,
     ) {
         val widthMeasureSpec = View.MeasureSpec.makeMeasureSpec(constraints.getMaxWidth(), View.MeasureSpec.AT_MOST)
         val heightMeasureSpec = View.MeasureSpec.makeMeasureSpec(constraints.getMaxHeight(), View.MeasureSpec.AT_MOST)
@@ -131,7 +132,7 @@ open class AdapterPickerDialog<ItemType : EasyAdapterDataModel> :
     override fun setupFullScreenDialog(dialogWindow: Window, dialogLayout: View) {
         val parameters = recyclerView.layoutParams as LinearLayoutCompat.LayoutParams
         parameters.weight = 1f
-        val maxHeight = windowHeight
+        val maxHeight = getWindowHeight()
         var desiredHeight = dialogLayout.measuredHeight
         val desiredHeightForRecycler = recyclerView.measuredHeight
         if (desiredHeight > maxHeight) {
@@ -144,9 +145,9 @@ open class AdapterPickerDialog<ItemType : EasyAdapterDataModel> :
     override fun setupBottomSheetDialog(
         constraints: BottomSheetDialogConstraints,
         dialogWindow: Window,
-        dialogLayout: View
+        dialogLayout: View,
     ) {
-        val widthMeasureSpec = View.MeasureSpec.makeMeasureSpec(windowWidth, View.MeasureSpec.EXACTLY)
+        val widthMeasureSpec = View.MeasureSpec.makeMeasureSpec(getWindowWidth(), View.MeasureSpec.EXACTLY)
         val heightMeasureSpec = View.MeasureSpec.makeMeasureSpec(0, View.MeasureSpec.UNSPECIFIED)
         dialogLayout.measure(widthMeasureSpec, heightMeasureSpec)
         var desiredHeight = dialogLayout.measuredHeight
@@ -214,8 +215,9 @@ open class AdapterPickerDialog<ItemType : EasyAdapterDataModel> :
     }
 
     @JvmOverloads
-    protected fun requireAdapter(run: ((adapter: EasyRecyclerAdapter<ItemType>) -> Unit)? = null) {
+    protected fun requireAdapter(run: ((adapter: EasyRecyclerAdapter<ItemType>) -> Unit)? = null): EasyRecyclerAdapter<ItemType> {
         if (adapter == null) throw Exception("Dialog picker adapter must not be null.")
         run?.invoke(adapter!!)
+        return adapter!!
     }
 }
