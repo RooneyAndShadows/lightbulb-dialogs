@@ -104,7 +104,6 @@ class DateRangePickerDialog : BasePickerDialogFragment<Array<OffsetDateTime?>?>(
         }
     }
 
-
     @Override
     override fun doOnSaveInstanceState(outState: Bundle?) {
         super.doOnSaveInstanceState(outState)

@@ -1,87 +1,84 @@
 package com.github.rooneyandshadows.lightbulb.dialogs.picker_dialog_icon
 
 import androidx.lifecycle.LifecycleOwner
-import com.github.rooneyandshadows.lightbulb.dialogs.base.BaseDialogFragment.DialogButtonConfiguration
-import com.github.rooneyandshadows.lightbulb.dialogs.base.BaseDialogFragment.DialogButtonClickListener
-import com.github.rooneyandshadows.lightbulb.dialogs.base.BaseDialogFragment.DialogShowListener
-import com.github.rooneyandshadows.lightbulb.dialogs.base.BaseDialogFragment.DialogHideListener
-import com.github.rooneyandshadows.lightbulb.dialogs.base.BaseDialogFragment.DialogCancelListener
-import com.github.rooneyandshadows.lightbulb.dialogs.base.BaseDialogFragment.DialogAnimationTypes
-import com.github.rooneyandshadows.lightbulb.dialogs.base.BaseDialogFragment.DialogTypes
-import com.github.rooneyandshadows.lightbulb.dialogs.base.BaseDialogFragment.DialogCallbacks
 import com.github.rooneyandshadows.lightbulb.dialogs.base.BaseDialogBuilder
 import com.github.rooneyandshadows.lightbulb.dialogs.base.BasePickerDialogFragment.SelectionChangedListener
 import androidx.fragment.app.FragmentManager
+import com.github.rooneyandshadows.lightbulb.dialogs.base.internal.*
+import com.github.rooneyandshadows.lightbulb.dialogs.base.internal.callbacks.*
 
-class IconPickerDialogBuilder : BaseDialogBuilder<IconPickerDialog?> {
-    private var changedCallback: SelectionChangedListener<IntArray>? = null
-    private var selection: IntArray
-    private val adapter: IconPickerAdapter
+@Suppress("unused")
+class IconPickerDialogBuilder @JvmOverloads constructor(
+    lifecycleOwner: LifecycleOwner? = null,
+    manager: FragmentManager,
+    dialogTag: String,
+    private val adapter: IconPickerAdapter,
+) : BaseDialogBuilder<IconPickerDialog>(lifecycleOwner, manager, dialogTag) {
+    private var changedCallback: SelectionChangedListener<IntArray?>? = null
+    private var selection: IntArray? = null
 
-    constructor(manager: FragmentManager?, dialogTag: String?, adapter: IconPickerAdapter) : super(manager, dialogTag) {
-        this.adapter = adapter
-    }
-
-    constructor(
-        lifecycleOwner: LifecycleOwner?,
-        manager: FragmentManager?,
-        dialogTag: String?,
-        adapter: IconPickerAdapter
-    ) : super(lifecycleOwner, manager, dialogTag) {
-        this.adapter = adapter
-    }
-
-    override fun withTitle(title: String?): IconPickerDialogBuilder? {
+    @Override
+    override fun withTitle(title: String): IconPickerDialogBuilder {
         return super.withTitle(title) as IconPickerDialogBuilder
     }
 
-    override fun withMessage(message: String?): IconPickerDialogBuilder? {
+    @Override
+    override fun withMessage(message: String): IconPickerDialogBuilder {
         return super.withMessage(message) as IconPickerDialogBuilder
     }
 
+    @Override
     override fun withPositiveButton(
-        configuration: DialogButtonConfiguration?,
-        onClickListener: DialogButtonClickListener?
-    ): IconPickerDialogBuilder? {
+        configuration: DialogButtonConfiguration,
+        onClickListener: DialogButtonClickListener,
+    ): IconPickerDialogBuilder {
         return super.withPositiveButton(configuration, onClickListener) as IconPickerDialogBuilder
     }
 
+    @Override
     override fun withNegativeButton(
-        configuration: DialogButtonConfiguration?,
-        onClickListener: DialogButtonClickListener?
-    ): IconPickerDialogBuilder? {
+        configuration: DialogButtonConfiguration,
+        onClickListener: DialogButtonClickListener,
+    ): IconPickerDialogBuilder {
         return super.withNegativeButton(configuration, onClickListener) as IconPickerDialogBuilder
     }
 
-    override fun withOnCancelListener(listener: DialogCancelListener?): IconPickerDialogBuilder? {
+    @Override
+    override fun withOnCancelListener(listener: DialogCancelListener): IconPickerDialogBuilder {
         return super.withOnCancelListener(listener) as IconPickerDialogBuilder
     }
 
-    override fun withOnShowListener(listener: DialogShowListener?): IconPickerDialogBuilder? {
+    @Override
+    override fun withOnShowListener(listener: DialogShowListener): IconPickerDialogBuilder {
         return super.withOnShowListener(listener) as IconPickerDialogBuilder
     }
 
-    override fun withOnHideListener(listener: DialogHideListener?): IconPickerDialogBuilder? {
+    @Override
+    override fun withOnHideListener(listener: DialogHideListener): IconPickerDialogBuilder {
         return super.withOnHideListener(listener) as IconPickerDialogBuilder
     }
 
-    override fun withCancelOnClickOutside(closeOnClickOutside: Boolean): IconPickerDialogBuilder? {
+    @Override
+    override fun withCancelOnClickOutside(closeOnClickOutside: Boolean): IconPickerDialogBuilder {
         return super.withCancelOnClickOutside(closeOnClickOutside) as IconPickerDialogBuilder
     }
 
-    override fun withDialogType(dialogType: DialogTypes?): IconPickerDialogBuilder? {
+    @Override
+    override fun withDialogType(dialogType: DialogTypes): IconPickerDialogBuilder {
         return super.withDialogType(dialogType) as IconPickerDialogBuilder
     }
 
-    override fun withAnimations(animation: DialogAnimationTypes?): IconPickerDialogBuilder? {
+    @Override
+    override fun withAnimations(animation: DialogAnimationTypes): IconPickerDialogBuilder {
         return super.withAnimations(animation) as IconPickerDialogBuilder
     }
 
-    override fun withDialogListeners(callbacks: DialogCallbacks?): IconPickerDialogBuilder? {
-        return super.withDialogListeners(callbacks) as IconPickerDialogBuilder
+    @Override
+    override fun withDialogListeners(listeners: DialogListeners): IconPickerDialogBuilder {
+        return super.withDialogListeners(listeners) as IconPickerDialogBuilder
     }
 
-    fun withSelectionCallback(listener: SelectionChangedListener<IntArray>?): IconPickerDialogBuilder {
+    fun withSelectionCallback(listener: SelectionChangedListener<IntArray?>): IconPickerDialogBuilder {
         changedCallback = listener
         return this
     }
@@ -91,28 +88,28 @@ class IconPickerDialogBuilder : BaseDialogBuilder<IconPickerDialog?> {
         return this
     }
 
-    override fun buildDialog(): IconPickerDialog? {
-        var iconPickerDialog = dialogParentFragmentManager!!.findFragmentByTag(dialogParentFragmentManager) as IconPickerDialog?
-        if (iconPickerDialog == null) iconPickerDialog = IconPickerDialog.Companion.newInstance(
+    override fun buildDialog(): IconPickerDialog {
+        val iconPickerDialog = dialogParentFragmentManager.findFragmentByTag(dialogTag) as IconPickerDialog?
+        return iconPickerDialog ?: IconPickerDialog.newInstance(
             title,
             message,
             positiveButtonConfiguration,
             negativeButtonConfiguration,
             cancelableOnClickOutside,
             animation
-        )
-        iconPickerDialog.setLifecycleOwner(dialogLifecycleOwner)
-        iconPickerDialog.setDialogCallbacks(dialogListeners)
-        iconPickerDialog.setParentFragManager(dialogParentFragmentManager)
-        iconPickerDialog.setDialogTag(dialogParentFragmentManager)
-        iconPickerDialog.addOnShowListener(onShowListener)
-        iconPickerDialog.addOnHideListener(onHideListener)
-        iconPickerDialog.addOnCancelListener(onCancelListener)
-        iconPickerDialog.addOnNegativeClickListeners(onNegativeClickListener)
-        iconPickerDialog.addOnPositiveClickListener(onPositiveClickListener)
-        iconPickerDialog.setAdapter(adapter)
-        iconPickerDialog.setOnSelectionChangedListener(changedCallback)
-        iconPickerDialog.selection = selection
-        return iconPickerDialog
+        ).apply {
+            setLifecycleOwner(dialogLifecycleOwner)
+            setDialogCallbacks(dialogListeners)
+            setParentFragManager(dialogParentFragmentManager)
+            setDialogTag(dialogTag)
+            onShowListener?.apply { addOnShowListener(this) }
+            onHideListener?.apply { addOnHideListener(this) }
+            onCancelListener?.apply { addOnCancelListener(this) }
+            onNegativeClickListener?.apply { addOnNegativeClickListeners(this) }
+            onPositiveClickListener?.apply { addOnPositiveClickListener(this) }
+            setAdapter(adapter)
+            setOnSelectionChangedListener(changedCallback)
+            setSelection(selection)
+        }
     }
 }

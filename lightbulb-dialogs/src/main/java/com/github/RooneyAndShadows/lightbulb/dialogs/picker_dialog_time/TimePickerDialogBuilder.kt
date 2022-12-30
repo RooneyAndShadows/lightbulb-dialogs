@@ -1,114 +1,121 @@
 package com.github.rooneyandshadows.lightbulb.dialogs.picker_dialog_time
 
 import androidx.lifecycle.LifecycleOwner
-import com.github.rooneyandshadows.lightbulb.dialogs.base.BaseDialogFragment.DialogButtonConfiguration
-import com.github.rooneyandshadows.lightbulb.dialogs.base.BaseDialogFragment.DialogButtonClickListener
-import com.github.rooneyandshadows.lightbulb.dialogs.base.BaseDialogFragment.DialogShowListener
-import com.github.rooneyandshadows.lightbulb.dialogs.base.BaseDialogFragment.DialogHideListener
-import com.github.rooneyandshadows.lightbulb.dialogs.base.BaseDialogFragment.DialogCancelListener
-import com.github.rooneyandshadows.lightbulb.dialogs.base.BaseDialogFragment.DialogAnimationTypes
-import com.github.rooneyandshadows.lightbulb.dialogs.base.BaseDialogFragment.DialogTypes
-import com.github.rooneyandshadows.lightbulb.dialogs.base.BaseDialogFragment.DialogCallbacks
 import com.github.rooneyandshadows.lightbulb.dialogs.base.BaseDialogBuilder
 import com.github.rooneyandshadows.lightbulb.dialogs.base.BasePickerDialogFragment.SelectionChangedListener
 import androidx.fragment.app.FragmentManager
+import com.github.rooneyandshadows.lightbulb.dialogs.base.internal.DialogButtonConfiguration
+import com.github.rooneyandshadows.lightbulb.dialogs.base.internal.callbacks.*
+import com.github.rooneyandshadows.lightbulb.dialogs.base.internal.*
 
-class TimePickerDialogBuilder : BaseDialogBuilder<TimePickerDialog?> {
-    private var timeSetListener: SelectionChangedListener<IntArray>? = null
-    private var initialTime: IntArray
+@Suppress("unused")
+class TimePickerDialogBuilder @JvmOverloads constructor(
+    lifecycleOwner: LifecycleOwner? = null,
+    manager: FragmentManager,
+    dialogTag: String,
+) : BaseDialogBuilder<TimePickerDialog>(lifecycleOwner, manager, dialogTag) {
+    private var timeSetListener: SelectionChangedListener<IntArray?>? = null
+    private var initialTime: IntArray? = null
 
-    constructor(manager: FragmentManager?, dialogTag: String?) : super(manager, dialogTag) {}
-    constructor(lifecycleOwner: LifecycleOwner?, manager: FragmentManager?, dialogTag: String?) : super(
-        lifecycleOwner,
-        manager,
-        dialogTag
-    ) {
-    }
-
-    override fun withTitle(title: String?): TimePickerDialogBuilder? {
+    @Override
+    override fun withTitle(title: String): TimePickerDialogBuilder {
         return super.withTitle(title) as TimePickerDialogBuilder
     }
 
-    override fun withMessage(message: String?): TimePickerDialogBuilder? {
+    @Override
+    override fun withMessage(message: String): TimePickerDialogBuilder {
         return super.withMessage(message) as TimePickerDialogBuilder
     }
 
+    @Override
     override fun withPositiveButton(
-        configuration: DialogButtonConfiguration?,
-        onClickListener: DialogButtonClickListener?
-    ): TimePickerDialogBuilder? {
+        configuration: DialogButtonConfiguration,
+        onClickListener: DialogButtonClickListener,
+    ): TimePickerDialogBuilder {
         return super.withPositiveButton(configuration, onClickListener) as TimePickerDialogBuilder
     }
 
+    @Override
     override fun withNegativeButton(
-        configuration: DialogButtonConfiguration?,
-        onClickListener: DialogButtonClickListener?
-    ): TimePickerDialogBuilder? {
+        configuration: DialogButtonConfiguration,
+        onClickListener: DialogButtonClickListener,
+    ): TimePickerDialogBuilder {
         return super.withNegativeButton(configuration, onClickListener) as TimePickerDialogBuilder
     }
 
-    override fun withOnCancelListener(listener: DialogCancelListener?): TimePickerDialogBuilder? {
+    @Override
+    override fun withOnCancelListener(listener: DialogCancelListener): TimePickerDialogBuilder {
         return super.withOnCancelListener(listener) as TimePickerDialogBuilder
     }
 
-    override fun withOnShowListener(listener: DialogShowListener?): TimePickerDialogBuilder? {
+    @Override
+    override fun withOnShowListener(listener: DialogShowListener): TimePickerDialogBuilder {
         return super.withOnShowListener(listener) as TimePickerDialogBuilder
     }
 
-    override fun withOnHideListener(listener: DialogHideListener?): TimePickerDialogBuilder? {
+    @Override
+    override fun withOnHideListener(listener: DialogHideListener): TimePickerDialogBuilder {
         return super.withOnHideListener(listener) as TimePickerDialogBuilder
     }
 
-    override fun withCancelOnClickOutside(closeOnClickOutside: Boolean): TimePickerDialogBuilder? {
+    @Override
+    override fun withCancelOnClickOutside(closeOnClickOutside: Boolean): TimePickerDialogBuilder {
         return super.withCancelOnClickOutside(closeOnClickOutside) as TimePickerDialogBuilder
     }
 
-    override fun withDialogType(dialogType: DialogTypes?): TimePickerDialogBuilder? {
+    @Override
+    override fun withDialogType(dialogType: DialogTypes): TimePickerDialogBuilder {
         return super.withDialogType(dialogType) as TimePickerDialogBuilder
     }
 
-    override fun withAnimations(animation: DialogAnimationTypes?): TimePickerDialogBuilder? {
+    @Override
+    override fun withAnimations(animation: DialogAnimationTypes): TimePickerDialogBuilder {
         return super.withAnimations(animation) as TimePickerDialogBuilder
     }
 
-    override fun withDialogListeners(callbacks: DialogCallbacks?): TimePickerDialogBuilder? {
-        return super.withDialogListeners(callbacks) as TimePickerDialogBuilder
+    @Override
+    override fun withDialogListeners(listeners: DialogListeners): TimePickerDialogBuilder {
+        return super.withDialogListeners(listeners) as TimePickerDialogBuilder
     }
 
-    fun withOnDateSelectedEvent(listener: SelectionChangedListener<IntArray>?): TimePickerDialogBuilder {
+    @Override
+    fun withOnDateSelectedEvent(listener: SelectionChangedListener<IntArray?>): TimePickerDialogBuilder {
         timeSetListener = listener
         return this
     }
 
+    @Override
     fun withInitialTime(hour: Int, minute: Int): TimePickerDialogBuilder {
         initialTime = intArrayOf(hour, minute)
         return this
     }
 
+    @Override
     fun withInitialTime(time: IntArray): TimePickerDialogBuilder {
         initialTime = time
         return this
     }
 
-    override fun buildDialog(): TimePickerDialog? {
-        var dialogFragment = dialogParentFragmentManager!!.findFragmentByTag(dialogParentFragmentManager) as TimePickerDialog?
-        if (dialogFragment == null) dialogFragment = TimePickerDialog.Companion.newInstance(
+    @Override
+    override fun buildDialog(): TimePickerDialog {
+        val dialogFragment = dialogParentFragmentManager.findFragmentByTag(dialogTag) as TimePickerDialog?
+        return dialogFragment ?: TimePickerDialog.newInstance(
             positiveButtonConfiguration,
             negativeButtonConfiguration,
             cancelableOnClickOutside,
             animation
-        )
-        dialogFragment.setLifecycleOwner(dialogLifecycleOwner)
-        dialogFragment.setDialogCallbacks(dialogListeners)
-        dialogFragment.setParentFragManager(dialogParentFragmentManager)
-        dialogFragment.setDialogTag(dialogParentFragmentManager)
-        dialogFragment.addOnNegativeClickListeners(onNegativeClickListener)
-        dialogFragment.addOnPositiveClickListener(onPositiveClickListener)
-        dialogFragment.selection = initialTime
-        dialogFragment.addOnShowListener(onShowListener)
-        dialogFragment.addOnHideListener(onHideListener)
-        dialogFragment.addOnCancelListener(onCancelListener)
-        dialogFragment.setOnSelectionChangedListener(timeSetListener)
-        return dialogFragment
+        ).apply {
+            setLifecycleOwner(dialogLifecycleOwner)
+            setDialogCallbacks(dialogListeners)
+            setParentFragManager(dialogParentFragmentManager)
+            setDialogTag(dialogTag)
+            setSelection(initialTime)
+            setOnSelectionChangedListener(timeSetListener)
+            onNegativeClickListener?.apply { addOnNegativeClickListeners(this) }
+            onPositiveClickListener?.apply { addOnPositiveClickListener(this) }
+            onShowListener?.apply { addOnShowListener(this) }
+            onHideListener?.apply { addOnHideListener(this) }
+            onCancelListener?.apply { addOnCancelListener(this) }
+        }
     }
 }

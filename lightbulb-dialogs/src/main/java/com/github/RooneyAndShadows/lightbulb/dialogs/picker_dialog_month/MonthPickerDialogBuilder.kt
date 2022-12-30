@@ -1,84 +1,86 @@
 package com.github.rooneyandshadows.lightbulb.dialogs.picker_dialog_month
 
 import androidx.lifecycle.LifecycleOwner
-import com.github.rooneyandshadows.lightbulb.dialogs.base.BaseDialogFragment.DialogButtonConfiguration
-import com.github.rooneyandshadows.lightbulb.dialogs.base.BaseDialogFragment.DialogButtonClickListener
-import com.github.rooneyandshadows.lightbulb.dialogs.base.BaseDialogFragment.DialogShowListener
-import com.github.rooneyandshadows.lightbulb.dialogs.base.BaseDialogFragment.DialogHideListener
-import com.github.rooneyandshadows.lightbulb.dialogs.base.BaseDialogFragment.DialogCancelListener
-import com.github.rooneyandshadows.lightbulb.dialogs.base.BaseDialogFragment.DialogAnimationTypes
-import com.github.rooneyandshadows.lightbulb.dialogs.base.BaseDialogFragment.DialogTypes
-import com.github.rooneyandshadows.lightbulb.dialogs.base.BaseDialogFragment.DialogCallbacks
 import com.github.rooneyandshadows.lightbulb.dialogs.base.BaseDialogBuilder
 import com.github.rooneyandshadows.lightbulb.dialogs.base.BasePickerDialogFragment.SelectionChangedListener
 import androidx.fragment.app.FragmentManager
+import com.github.rooneyandshadows.lightbulb.dialogs.base.internal.*
+import com.github.rooneyandshadows.lightbulb.dialogs.base.internal.callbacks.*
 import java.util.ArrayList
 
-class MonthPickerDialogBuilder : BaseDialogBuilder<MonthPickerDialog?> {
-    private var monthSetListener: SelectionChangedListener<IntArray>? = null
+@Suppress("unused")
+class MonthPickerDialogBuilder @JvmOverloads constructor(
+    lifecycleOwner: LifecycleOwner? = null,
+    manager: FragmentManager,
+    dialogTag: String,
+) : BaseDialogBuilder<MonthPickerDialog>(lifecycleOwner, manager, dialogTag) {
+    private var monthSetListener: SelectionChangedListener<IntArray?>? = null
     private var disabledMonths: ArrayList<IntArray>? = null
     private var enabledMonths: ArrayList<IntArray>? = null
     private var dateFormat: String? = null
-    private var initialSelection: IntArray?
+    private var initialSelection: IntArray? = null
     private var minYear = 1970
     private var maxYear = 2100
 
-    constructor(manager: FragmentManager?, dialogTag: String?) : super(manager, dialogTag) {}
-    constructor(lifecycleOwner: LifecycleOwner?, manager: FragmentManager?, dialogTag: String?) : super(
-        lifecycleOwner,
-        manager,
-        dialogTag
-    ) {
-    }
-
-    override fun withTitle(title: String?): MonthPickerDialogBuilder? {
+    @Override
+    override fun withTitle(title: String): MonthPickerDialogBuilder {
         return super.withTitle(title) as MonthPickerDialogBuilder
     }
 
-    override fun withMessage(message: String?): MonthPickerDialogBuilder? {
+    @Override
+    override fun withMessage(message: String): MonthPickerDialogBuilder {
         return super.withMessage(message) as MonthPickerDialogBuilder
     }
 
+    @Override
     override fun withPositiveButton(
-        configuration: DialogButtonConfiguration?,
-        onClickListener: DialogButtonClickListener?
-    ): MonthPickerDialogBuilder? {
+        configuration: DialogButtonConfiguration,
+        onClickListener: DialogButtonClickListener,
+    ): MonthPickerDialogBuilder {
         return super.withPositiveButton(configuration, onClickListener) as MonthPickerDialogBuilder
     }
 
+    @Override
     override fun withNegativeButton(
-        configuration: DialogButtonConfiguration?,
-        onClickListener: DialogButtonClickListener?
-    ): MonthPickerDialogBuilder? {
+        configuration: DialogButtonConfiguration,
+        onClickListener: DialogButtonClickListener,
+    ): MonthPickerDialogBuilder {
         return super.withNegativeButton(configuration, onClickListener) as MonthPickerDialogBuilder
     }
 
-    override fun withOnCancelListener(listener: DialogCancelListener?): MonthPickerDialogBuilder? {
+    @Override
+    override fun withOnCancelListener(listener: DialogCancelListener): MonthPickerDialogBuilder {
         return super.withOnCancelListener(listener) as MonthPickerDialogBuilder
     }
 
-    override fun withOnShowListener(listener: DialogShowListener?): MonthPickerDialogBuilder? {
+    @Override
+    override fun withOnShowListener(listener: DialogShowListener): MonthPickerDialogBuilder {
         return super.withOnShowListener(listener) as MonthPickerDialogBuilder
     }
 
-    override fun withOnHideListener(listener: DialogHideListener?): MonthPickerDialogBuilder? {
+    @Override
+    override fun withOnHideListener(listener: DialogHideListener): MonthPickerDialogBuilder {
         return super.withOnHideListener(listener) as MonthPickerDialogBuilder
     }
 
-    override fun withCancelOnClickOutside(closeOnClickOutside: Boolean): MonthPickerDialogBuilder? {
+    @Override
+    override fun withCancelOnClickOutside(closeOnClickOutside: Boolean): MonthPickerDialogBuilder {
         return super.withCancelOnClickOutside(closeOnClickOutside) as MonthPickerDialogBuilder
     }
 
-    override fun withDialogType(dialogType: DialogTypes?): MonthPickerDialogBuilder? {
+    @Override
+    override fun withDialogType(dialogType: DialogTypes): MonthPickerDialogBuilder {
         return super.withDialogType(dialogType) as MonthPickerDialogBuilder
     }
 
-    override fun withAnimations(animation: DialogAnimationTypes?): MonthPickerDialogBuilder? {
+    @Override
+    override fun withAnimations(animation: DialogAnimationTypes): MonthPickerDialogBuilder {
         return super.withAnimations(animation) as MonthPickerDialogBuilder
     }
 
-    override fun withDialogListeners(callbacks: DialogCallbacks?): MonthPickerDialogBuilder? {
-        return super.withDialogListeners(callbacks) as MonthPickerDialogBuilder
+    @Override
+    override fun withDialogListeners(listeners: DialogListeners): MonthPickerDialogBuilder {
+        return super.withDialogListeners(listeners) as MonthPickerDialogBuilder
     }
 
     fun withDisabledMonths(disabledMonths: ArrayList<IntArray>?): MonthPickerDialogBuilder {
@@ -91,7 +93,7 @@ class MonthPickerDialogBuilder : BaseDialogBuilder<MonthPickerDialog?> {
         return this
     }
 
-    fun withOnDateSelectedEvent(listener: SelectionChangedListener<IntArray>?): MonthPickerDialogBuilder {
+    fun withOnDateSelectedEvent(listener: SelectionChangedListener<IntArray?>): MonthPickerDialogBuilder {
         monthSetListener = listener
         return this
     }
@@ -116,29 +118,30 @@ class MonthPickerDialogBuilder : BaseDialogBuilder<MonthPickerDialog?> {
         return this
     }
 
-    override fun buildDialog(): MonthPickerDialog? {
-        var dialogFragment = dialogParentFragmentManager!!.findFragmentByTag(dialogParentFragmentManager) as MonthPickerDialog?
-        if (dialogFragment == null) dialogFragment = MonthPickerDialog.Companion.newInstance(
+    @Override
+    override fun buildDialog(): MonthPickerDialog {
+        val dialogFragment = dialogParentFragmentManager.findFragmentByTag(dialogTag) as MonthPickerDialog?
+        return dialogFragment ?: MonthPickerDialog.newInstance(
             positiveButtonConfiguration,
             negativeButtonConfiguration,
             dateFormat,
             cancelableOnClickOutside,
             animation
-        )
-        dialogFragment.setLifecycleOwner(dialogLifecycleOwner)
-        dialogFragment.setDialogCallbacks(dialogListeners)
-        dialogFragment.setParentFragManager(dialogParentFragmentManager)
-        dialogFragment.setDialogTag(dialogParentFragmentManager)
-        dialogFragment.addOnNegativeClickListeners(onNegativeClickListener)
-        dialogFragment.addOnPositiveClickListener(onPositiveClickListener)
-        dialogFragment.addOnShowListener(onShowListener)
-        dialogFragment.addOnHideListener(onHideListener)
-        dialogFragment.addOnCancelListener(onCancelListener)
-        dialogFragment.setOnSelectionChangedListener(monthSetListener)
-        dialogFragment.setDisabledMonths(disabledMonths)
-        dialogFragment.setEnabledMonths(enabledMonths)
-        dialogFragment.setCalendarBounds(minYear, maxYear)
-        if (initialSelection != null) dialogFragment.setSelection(initialSelection!![0], initialSelection!![1])
-        return dialogFragment
+        ).apply {
+            setLifecycleOwner(dialogLifecycleOwner)
+            setDialogCallbacks(dialogListeners)
+            setParentFragManager(dialogParentFragmentManager)
+            setDialogTag(dialogTag)
+            onNegativeClickListener?.apply { addOnNegativeClickListeners(this) }
+            onPositiveClickListener?.apply { addOnPositiveClickListener(this) }
+            onShowListener?.apply { addOnShowListener(this) }
+            onHideListener?.apply { addOnHideListener(this) }
+            onCancelListener?.apply { addOnCancelListener(this) }
+            monthSetListener?.apply { setOnSelectionChangedListener(this) }
+            setDisabledMonths(disabledMonths)
+            setEnabledMonths(enabledMonths)
+            setCalendarBounds(minYear, maxYear)
+            setSelection(initialSelection)
+        }
     }
 }

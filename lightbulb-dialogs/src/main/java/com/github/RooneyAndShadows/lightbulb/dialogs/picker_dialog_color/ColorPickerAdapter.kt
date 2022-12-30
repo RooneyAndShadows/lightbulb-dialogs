@@ -21,7 +21,7 @@ import java.util.ArrayList
 @Suppress("unused")
 class ColorPickerAdapter(
     private val context: Context,
-    selectableMode: EasyAdapterSelectableModes = EasyAdapterSelectableModes.SELECT_SINGLE
+    selectableMode: EasyAdapterSelectableModes = EasyAdapterSelectableModes.SELECT_SINGLE,
 ) : EasyRecyclerAdapter<ColorModel>(selectableMode) {
     @Override
     override fun onCreateViewHolder(parent: ViewGroup, viewType: Int): RecyclerView.ViewHolder {
@@ -91,7 +91,7 @@ class ColorPickerAdapter(
         return colorDrawable
     }
 
-    class ColorVH internal constructor(view: AppCompatImageButton) : RecyclerView.ViewHolder(view) {
+    inner class ColorVH internal constructor(view: AppCompatImageButton) : RecyclerView.ViewHolder(view) {
         private var colorView: AppCompatImageButton = itemView as AppCompatImageButton
         private var item: ColorModel? = null
 

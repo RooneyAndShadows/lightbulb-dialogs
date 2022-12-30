@@ -66,16 +66,11 @@ class ColorPickerDialog : AdapterPickerDialog<ColorModel>() {
 
     @Override
     override fun configureContent(view: View, savedInstanceState: Bundle?) {
+        recyclerView.layoutParams.height = 1 //Fixes rendering all possible icons (later will be resized)
         super.configureContent(view, savedInstanceState)
         val maxWidth = getMaxWidth()
         spans = min(7, maxWidth / iconSize)
-        recyclerView.layoutParams.height = 1 //Fixes rendering all possible icons (later will be resized)
-        recyclerView.layoutManager = GridLayoutManager(
-            context,
-            spans,
-            RecyclerView.VERTICAL,
-            false
-        )
+        recyclerView.layoutManager = GridLayoutManager(context, spans, RecyclerView.VERTICAL, false)
         recyclerView.clipToPadding = false
         recyclerView.setPadding(ResourceUtils.dpToPx(8), 0, ResourceUtils.dpToPx(8), 0)
     }

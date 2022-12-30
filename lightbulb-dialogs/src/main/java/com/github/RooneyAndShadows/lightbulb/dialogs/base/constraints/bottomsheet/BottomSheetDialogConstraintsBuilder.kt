@@ -10,7 +10,7 @@ class BottomSheetDialogConstraintsBuilder(dialogFragment: BaseDialogFragment) : 
     private var maxHeight = 0
 
     fun default(): BottomSheetDialogConstraintsBuilder {
-        val orientation = dialogFragment.resources.configuration.orientation
+        //val orientation = dialogFragment.resources.configuration.orientation
         minHeight = getPercentOfWindowHeight(defaultMinHeightPercents)
         maxHeight = getPercentOfWindowHeight(defaultMaxHeightPercents)
         return this
