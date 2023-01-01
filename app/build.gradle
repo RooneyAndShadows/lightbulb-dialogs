@@ -13,7 +13,7 @@ repositories {
 android {
     compileSdk 33
     defaultConfig {
-        applicationId "com.github.rooneyandshadows.lightbulb.dialogs"
+        applicationId "com.github.rooneyandshadows.lightbulb.dialogsdemo"
         minSdk 24
         targetSdk 33
         versionCode 1

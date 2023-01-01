@@ -15,8 +15,7 @@ import com.github.rooneyandshadows.lightbulb.dialogsdemo.activity.MenuConfigurat
 
 @FragmentScreen(screenName = "Alert", screenGroup = "Demo")
 @FragmentConfiguration(layoutName = "fragment_demo_dialog_alert", hasLeftDrawer = true)
-class RegularDemoFragment : BaseFragment() {
-
+class AlertDialogFragment : BaseFragment() {
 
     @Override
     override fun configureActionBar(): ActionBarConfiguration {
