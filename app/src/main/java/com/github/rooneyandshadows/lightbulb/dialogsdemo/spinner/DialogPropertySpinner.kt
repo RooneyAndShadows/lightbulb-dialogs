@@ -8,6 +8,9 @@ import android.os.Parcelable
 import android.util.AttributeSet
 import android.util.SparseArray
 import androidx.appcompat.widget.AppCompatSpinner
+import androidx.appcompat.widget.ListPopupWindow
+import androidx.lifecycle.DefaultLifecycleObserver
+import androidx.lifecycle.LifecycleOwner
 import com.github.rooneyandshadows.lightbulb.dialogs.R
 import com.github.rooneyandshadows.lightbulb.dialogsdemo.spinner.adapter.DialogPropertyAdapter
 import com.github.rooneyandshadows.lightbulb.dialogsdemo.spinner.adapter.DialogPropertyItem
@@ -18,13 +21,15 @@ class DialogPropertySpinner @JvmOverloads constructor(
     defStyleAttr: Int = R.attr.spinnerStyle,
     mode: Int = MODE_DROPDOWN,
     popupTheme: Resources.Theme? = null,
-) : AppCompatSpinner(context, attrs, defStyleAttr, mode, popupTheme) {
+) : AppCompatSpinner(context, attrs, defStyleAttr, mode, popupTheme), DefaultLifecycleObserver {
     private var adapter: DialogPropertyAdapter?
     private var selectedPosition: Int = -1
+    private var lifecycleOwner: LifecycleOwner? = null
 
     init {
         isSaveEnabled = true
         adapter = DialogPropertyAdapter(context, arrayOf())
+        setAdapter(adapter)
     }
 
     @Override
@@ -57,6 +62,32 @@ class DialogPropertySpinner @JvmOverloads constructor(
         }
         selectedPosition = savedState.selectedPosition
         setSelection(selectedPosition)
+    }
+
+    override fun onDestroy(owner: LifecycleOwner) {
+        super.onDestroy(owner)
+        dismiss()
+    }
+
+    @Override
+    override fun onPause(owner: LifecycleOwner) {
+        super.onPause(owner)
+        dismiss()
+    }
+
+    fun dismiss() {
+        val popup = AppCompatSpinner::class.java.getDeclaredField("mPopup")
+        popup.isAccessible = true
+        val listPopupWindow = popup.get(this) as ListPopupWindow
+        listPopupWindow.animationStyle = android.R.style.Animation
+        listPopupWindow.dismiss()
+    }
+
+    fun setLifecycleOwner(owner: LifecycleOwner?) {
+        lifecycleOwner = owner
+        if (lifecycleOwner == null) return
+        lifecycleOwner!!.lifecycle.removeObserver(this)
+        lifecycleOwner!!.lifecycle.addObserver(this)
     }
 
     fun setProperties(options: Array<DialogPropertyItem>) {

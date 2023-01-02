@@ -2,6 +2,7 @@ package com.github.rooneyandshadows.lightbulb.dialogsdemo.fragments
 
 import android.os.Bundle
 import android.view.View
+import android.widget.AdapterView
 import android.widget.Spinner
 import com.github.rooneyandshadows.lightbulb.annotation_processors.annotations.BindView
 import com.github.rooneyandshadows.lightbulb.annotation_processors.annotations.FragmentConfiguration
@@ -18,15 +19,16 @@ import com.github.rooneyandshadows.lightbulb.dialogsdemo.activity.MainActivity
 import com.github.rooneyandshadows.lightbulb.dialogsdemo.activity.MenuConfigurations
 import com.github.rooneyandshadows.lightbulb.dialogsdemo.spinner.adapter.DialogPropertyAdapter
 import com.github.rooneyandshadows.lightbulb.dialogsdemo.getAllAsDialogPropertyItems
+import com.github.rooneyandshadows.lightbulb.dialogsdemo.spinner.DialogPropertySpinner
 
 @FragmentScreen(screenName = "Alert", screenGroup = "Demo")
 @FragmentConfiguration(layoutName = "fragment_demo_dialog_alert", hasLeftDrawer = true)
 class AlertDialogFragment : BaseFragment() {
     @BindView(name = "dialog_type_dropdown")
-    lateinit var dialogTypeSpinner: Spinner
+    lateinit var dialogTypeSpinner: DialogPropertySpinner
 
     @BindView(name = "dialog_animation_type_dropdown")
-    lateinit var dialogAnimationTypeSpinner: Spinner
+    lateinit var dialogAnimationTypeSpinner: DialogPropertySpinner
 
     @Override
     override fun configureActionBar(): ActionBarConfiguration {
@@ -39,10 +41,7 @@ class AlertDialogFragment : BaseFragment() {
 
     @Override
     override fun doOnViewCreated(fragmentView: View, savedInstanceState: Bundle?) {
-        val dialogTypes = DialogTypes.getAllAsDialogPropertyItems()
-        val dialogAnimationTypes = DialogAnimationTypes.getAllAsDialogPropertyItems()
-        dialogTypeSpinner.adapter = DialogPropertyAdapter(requireContext(), dialogTypes)
-        dialogAnimationTypeSpinner.adapter = DialogPropertyAdapter(requireContext(), dialogAnimationTypes)
+        initSpinners()
         if (getFragmentState() === FragmentStates.CREATED) {
             BaseActivity.updateMenuConfiguration(
                 requireContext(),
@@ -50,6 +49,36 @@ class AlertDialogFragment : BaseFragment() {
             ) { activity: BaseActivity -> MenuConfigurations.getConfiguration(activity) }
         }
         setupDrawerButton()
+    }
+
+    fun initSpinners() {
+        dialogTypeSpinner.apply {
+            setLifecycleOwner(this@AlertDialogFragment)
+            setProperties(DialogTypes.getAllAsDialogPropertyItems())
+            onItemSelectedListener = object : AdapterView.OnItemSelectedListener {
+                override fun onItemSelected(parent: AdapterView<*>?, view: View?, position: Int, id: Long) {
+
+                }
+
+                override fun onNothingSelected(parent: AdapterView<*>?) {
+
+                }
+            }
+        }
+
+        dialogAnimationTypeSpinner.apply {
+            setLifecycleOwner(this@AlertDialogFragment)
+            setProperties(DialogAnimationTypes.getAllAsDialogPropertyItems())
+            onItemSelectedListener = object : AdapterView.OnItemSelectedListener {
+                override fun onItemSelected(parent: AdapterView<*>?, view: View?, position: Int, id: Long) {
+
+                }
+
+                override fun onNothingSelected(parent: AdapterView<*>?) {
+
+                }
+            }
+        }
     }
 
     private fun setupDrawerButton() {

@@ -38,7 +38,6 @@ class DialogPropertyAdapter(
         return label
     }
 
-
     @Override
     override fun getDropDownView(position: Int, convertView: View?, parent: ViewGroup): View {
         val label = super.getDropDownView(position, convertView, parent) as TextView
@@ -60,9 +59,10 @@ class DialogPropertyAdapter(
 
     @Suppress("UNCHECKED_CAST", "DEPRECATION")
     fun restoreInstanceState(state: Bundle) {
-        return if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.TIRAMISU)
-            values = state.getParcelableArray("adapter_items", DialogPropertyItem::class.java)!!
+        values = if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.TIRAMISU)
+            state.getParcelableArray("adapter_items", DialogPropertyItem::class.java)!!
         else
-            values = state.getParcelableArray("adapter_items") as Array<DialogPropertyItem>
+            state.getParcelableArray("adapter_items") as Array<DialogPropertyItem>
+        notifyDataSetChanged()
     }
 }

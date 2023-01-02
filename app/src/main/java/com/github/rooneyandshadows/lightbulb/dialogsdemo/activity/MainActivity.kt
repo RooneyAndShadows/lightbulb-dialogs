@@ -15,7 +15,7 @@ class MainActivity : BaseActivity() {
 
     @Override
     override fun doOnCreate(savedInstanceState: Bundle?) {
-       // if (savedInstanceState == null)
-       //     MainActivityNavigator.route().toDemoRegular().newRootScreen()
+        if (savedInstanceState == null)
+            MainActivityNavigator.route().toDemoAlert().newRootScreen()
     }
 }
