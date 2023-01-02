@@ -55,5 +55,6 @@ dependencies {
     implementation 'com.github.rooneyandshadows:lightbulb-application:1.2.8'
     implementation 'com.github.rooneyandshadows:lightbulb-recycleradapters:2.0.0-RC3'
     implementation "com.github.rooneyandshadows:lightbulb-annotation-processors:1.0.6-RC2"
+    implementation project(path: ':lightbulb-dialogs')
     kapt "com.github.rooneyandshadows:lightbulb-annotation-processors:1.0.6-RC2"
 }

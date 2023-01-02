@@ -10,4 +10,6 @@
     <string name="demo_date_time_title">Date&amp;time picker dialog</string>
     <string name="demo_month_title">Month picker dialog</string>
     <string name="demo_time_title">Time picker dialog</string>
+    <string name="demo_dialog_type_text">DIALOG TYPE</string>
+    <string name="demo_dialog_animation_type_text">DIALOG ANIMATION</string>
 </resources>

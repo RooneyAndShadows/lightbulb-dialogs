@@ -56,7 +56,7 @@
                         android:layout_height="wrap_content"
                         android:layout_marginStart="10dp"
                         android:layout_marginEnd="10dp"
-                        android:text="----" />
+                        android:text="@string/demo_dialog_type_text" />
 
                     <View
                         style="@style/HorizontalDelimiter"
@@ -64,13 +64,48 @@
                         android:layout_weight="0.5" />
 
                 </androidx.appcompat.widget.LinearLayoutCompat>
-                <!--https://stackoverflow.com/questions/1625249/android-how-to-bind-spinner-to-custom-object-list-->
-                <Spinner
-                    android:id="@+id/planets_spinner"
+
+                <com.github.rooneyandshadows.lightbulb.dialogsdemo.spinner.DialogPropertySpinner
+                    android:id="@+id/dialog_type_dropdown"
                     android:layout_width="match_parent"
-
                     android:layout_height="wrap_content" />
+            </androidx.appcompat.widget.LinearLayoutCompat>
 
+            <androidx.appcompat.widget.LinearLayoutCompat
+                android:layout_width="match_parent"
+                android:layout_height="wrap_content"
+                android:layout_marginBottom="15dp"
+                android:orientation="vertical">
+
+                <androidx.appcompat.widget.LinearLayoutCompat
+                    android:layout_width="match_parent"
+                    android:layout_height="wrap_content"
+                    android:layout_marginBottom="10dp"
+                    android:gravity="center">
+
+                    <View
+                        style="@style/HorizontalDelimiter"
+                        android:layout_width="wrap_content"
+                        android:layout_weight="0.5" />
+
+                    <TextView
+                        android:layout_width="wrap_content"
+                        android:layout_height="wrap_content"
+                        android:layout_marginStart="10dp"
+                        android:layout_marginEnd="10dp"
+                        android:text="@string/demo_dialog_animation_type_text" />
+
+                    <View
+                        style="@style/HorizontalDelimiter"
+                        android:layout_width="wrap_content"
+                        android:layout_weight="0.5" />
+
+                </androidx.appcompat.widget.LinearLayoutCompat>
+
+                <com.github.rooneyandshadows.lightbulb.dialogsdemo.spinner.DialogPropertySpinner
+                    android:id="@+id/dialog_animation_type_dropdown"
+                    android:layout_width="match_parent"
+                    android:layout_height="wrap_content" />
 
             </androidx.appcompat.widget.LinearLayoutCompat>
         </androidx.appcompat.widget.LinearLayoutCompat>
