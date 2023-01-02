@@ -12,4 +12,5 @@
     <string name="demo_time_title">Time picker dialog</string>
     <string name="demo_dialog_type_text">DIALOG TYPE</string>
     <string name="demo_dialog_animation_type_text">DIALOG ANIMATION</string>
+    <string name="demo_dialog_show_button_text">SHOW DIALOG</string>
 </resources>

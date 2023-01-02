@@ -3,16 +3,25 @@ package com.github.rooneyandshadows.lightbulb.dialogs.base.internal
 import android.os.Bundle
 import com.github.rooneyandshadows.lightbulb.commons.utils.BundleUtils
 
-class DialogBundleHelper(val bundle: Bundle = Bundle()) {
-    private val dialogTitleTextTag = "DIALOG_TITLE_TEXT_TAG"
-    private val dialogMessageTextTag = "DIALOG_MESSAGE_TEXT_TAG"
-    private val dialogCancelableTag = "DIALOG_CANCELABLE_TAG"
-    private val dialogShowingTag = "DIALOG_SHOWING_TAG"
-    private val dialogTypeTag = "DIALOG_TYPE_TAG"
-    private val dialogAnimationTag = "DIALOG_ANIMATION_TAG"
-    private val dialogFullscreenTag = "DIALOG_FULLSCREEN_TAG"
-    private val dialogPositiveButtonConfigTag = "DIALOG_POSITIVE_BUTTON_CONFIG_TAG"
-    private val dialogNegativeButtonConfigTag = "DIALOG_NEGATIVE_BUTTON_CONFIG_TAG"
+class DialogBundleHelper(val bundle: Bundle = defaultBundle()) {
+    companion object {
+        private const val dialogTitleTextTag = "DIALOG_TITLE_TEXT_TAG"
+        private const val dialogMessageTextTag = "DIALOG_MESSAGE_TEXT_TAG"
+        private const val dialogCancelableTag = "DIALOG_CANCELABLE_TAG"
+        private const val dialogShowingTag = "DIALOG_SHOWING_TAG"
+        private const val dialogTypeTag = "DIALOG_TYPE_TAG"
+        private const val dialogAnimationTag = "DIALOG_ANIMATION_TAG"
+        private const val dialogPositiveButtonConfigTag = "DIALOG_POSITIVE_BUTTON_CONFIG_TAG"
+        private const val dialogNegativeButtonConfigTag = "DIALOG_NEGATIVE_BUTTON_CONFIG_TAG"
+
+        private fun defaultBundle(): Bundle {
+            return Bundle().apply {
+                putInt(dialogTypeTag, DialogTypes.NORMAL.value)
+                putInt(dialogAnimationTag, DialogAnimationTypes.NO_ANIMATION.value)
+            }
+        }
+    }
+
     val title: String?
         get() = bundle.getString(dialogTitleTextTag)
     val message: String?
@@ -25,8 +34,6 @@ class DialogBundleHelper(val bundle: Bundle = Bundle()) {
         get() = DialogTypes.valueOf(bundle.getInt(dialogTypeTag))
     val animationType: DialogAnimationTypes
         get() = DialogAnimationTypes.valueOf(bundle.getInt(dialogAnimationTag))
-    val fullScreen: Boolean
-        get() = bundle.getBoolean(dialogFullscreenTag)
     val positiveButtonConfig: DialogButtonConfiguration?
         get() = BundleUtils.getParcelable(
             dialogPositiveButtonConfigTag,
@@ -39,11 +46,6 @@ class DialogBundleHelper(val bundle: Bundle = Bundle()) {
             bundle,
             DialogButtonConfiguration::class.java
         )
-
-    init {
-        bundle.putInt(dialogTypeTag, DialogTypes.NORMAL.value)
-        bundle.putInt(dialogAnimationTag, DialogAnimationTypes.NO_ANIMATION.value)
-    }
 
     fun withTitle(dialogTitle: String?): DialogBundleHelper {
         bundle.putString(dialogTitleTextTag, dialogTitle)
@@ -72,11 +74,6 @@ class DialogBundleHelper(val bundle: Bundle = Bundle()) {
 
     fun withAnimation(animationType: DialogAnimationTypes): DialogBundleHelper {
         bundle.putInt(dialogAnimationTag, animationType.value)
-        return this
-    }
-
-    fun withFullScreen(fullScreen: Boolean): DialogBundleHelper {
-        bundle.putBoolean(dialogFullscreenTag, fullScreen)
         return this
     }
 

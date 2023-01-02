@@ -65,7 +65,7 @@
 
                 </androidx.appcompat.widget.LinearLayoutCompat>
 
-                <com.github.rooneyandshadows.lightbulb.dialogsdemo.spinner.DialogPropertySpinner
+                <com.github.rooneyandshadows.lightbulb.dialogsdemo.spinner.DialogTypeSpinner
                     android:id="@+id/dialog_type_dropdown"
                     android:layout_width="match_parent"
                     android:layout_height="wrap_content" />
@@ -102,10 +102,17 @@
 
                 </androidx.appcompat.widget.LinearLayoutCompat>
 
-                <com.github.rooneyandshadows.lightbulb.dialogsdemo.spinner.DialogPropertySpinner
+                <com.github.rooneyandshadows.lightbulb.dialogsdemo.spinner.DialogAnimationTypeSpinner
                     android:id="@+id/dialog_animation_type_dropdown"
                     android:layout_width="match_parent"
                     android:layout_height="wrap_content" />
+
+                <com.google.android.material.button.MaterialButton
+                    android:id="@+id/show_button"
+                    android:layout_width="wrap_content"
+                    android:layout_height="wrap_content"
+                    android:layout_gravity="center"
+                    android:text="@string/demo_dialog_show_button_text" />
 
             </androidx.appcompat.widget.LinearLayoutCompat>
         </androidx.appcompat.widget.LinearLayoutCompat>

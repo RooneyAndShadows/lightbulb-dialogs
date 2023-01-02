@@ -1,4 +1,4 @@
-package com.github.rooneyandshadows.lightbulb.dialogsdemo.spinner.adapter
+package com.github.rooneyandshadows.lightbulb.dialogsdemo.spinner.base.adapter
 
 import android.os.Parcel
 import android.os.Parcelable

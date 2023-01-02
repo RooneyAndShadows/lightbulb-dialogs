@@ -1,4 +1,4 @@
-package com.github.rooneyandshadows.lightbulb.dialogsdemo.spinner.adapter
+package com.github.rooneyandshadows.lightbulb.dialogsdemo.spinner.base.adapter
 
 import android.content.Context
 import android.graphics.Color
@@ -8,6 +8,7 @@ import android.view.View
 import android.view.ViewGroup
 import android.widget.ArrayAdapter
 import android.widget.TextView
+import com.github.rooneyandshadows.lightbulb.commons.utils.ResourceUtils
 
 class DialogPropertyAdapter(
     context: Context,
@@ -41,8 +42,10 @@ class DialogPropertyAdapter(
     @Override
     override fun getDropDownView(position: Int, convertView: View?, parent: ViewGroup): View {
         val label = super.getDropDownView(position, convertView, parent) as TextView
+        val padding = ResourceUtils.dpToPx(10)
         label.setTextColor(Color.BLACK)
         label.text = values[position].name
+        label.setPadding(padding, padding, padding, padding)
         return label
     }
 

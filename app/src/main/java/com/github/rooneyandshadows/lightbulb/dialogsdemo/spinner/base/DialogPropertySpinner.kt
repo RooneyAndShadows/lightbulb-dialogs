@@ -1,4 +1,4 @@
-package com.github.rooneyandshadows.lightbulb.dialogsdemo.spinner
+package com.github.rooneyandshadows.lightbulb.dialogsdemo.spinner.base
 
 import android.content.Context
 import android.content.res.Resources
@@ -7,29 +7,37 @@ import android.os.Parcel
 import android.os.Parcelable
 import android.util.AttributeSet
 import android.util.SparseArray
+import android.widget.PopupWindow
 import androidx.appcompat.widget.AppCompatSpinner
 import androidx.appcompat.widget.ListPopupWindow
 import androidx.lifecycle.DefaultLifecycleObserver
 import androidx.lifecycle.LifecycleOwner
 import com.github.rooneyandshadows.lightbulb.dialogs.R
-import com.github.rooneyandshadows.lightbulb.dialogsdemo.spinner.adapter.DialogPropertyAdapter
-import com.github.rooneyandshadows.lightbulb.dialogsdemo.spinner.adapter.DialogPropertyItem
+import com.github.rooneyandshadows.lightbulb.dialogs.base.BaseDialogFragment
+import com.github.rooneyandshadows.lightbulb.dialogsdemo.spinner.base.adapter.DialogPropertyAdapter
+import com.github.rooneyandshadows.lightbulb.dialogsdemo.spinner.base.adapter.DialogPropertyItem
 
-class DialogPropertySpinner @JvmOverloads constructor(
+abstract class DialogPropertySpinner @JvmOverloads constructor(
     context: Context,
     attrs: AttributeSet? = null,
     defStyleAttr: Int = R.attr.spinnerStyle,
     mode: Int = MODE_DROPDOWN,
     popupTheme: Resources.Theme? = null,
 ) : AppCompatSpinner(context, attrs, defStyleAttr, mode, popupTheme), DefaultLifecycleObserver {
-    private var adapter: DialogPropertyAdapter?
+    private var localAdapter: DialogPropertyAdapter?
     private var selectedPosition: Int = -1
     private var lifecycleOwner: LifecycleOwner? = null
+    var dialog: BaseDialogFragment? = null
 
     init {
         isSaveEnabled = true
-        adapter = DialogPropertyAdapter(context, arrayOf())
-        setAdapter(adapter)
+        localAdapter = DialogPropertyAdapter(context, arrayOf())
+    }
+
+    @Override
+    override fun onAttachedToWindow() {
+        super.onAttachedToWindow()
+        adapter = localAdapter
     }
 
     @Override
@@ -64,23 +72,27 @@ class DialogPropertySpinner @JvmOverloads constructor(
         setSelection(selectedPosition)
     }
 
-    override fun onDestroy(owner: LifecycleOwner) {
-        super.onDestroy(owner)
-        dismiss()
-    }
-
     @Override
     override fun onPause(owner: LifecycleOwner) {
         super.onPause(owner)
         dismiss()
     }
 
-    fun dismiss() {
-        val popup = AppCompatSpinner::class.java.getDeclaredField("mPopup")
-        popup.isAccessible = true
-        val listPopupWindow = popup.get(this) as ListPopupWindow
-        listPopupWindow.animationStyle = android.R.style.Animation
-        listPopupWindow.dismiss()
+    private fun dismiss() {
+        getPopupWindow().apply {
+            enterTransition = null
+            exitTransition = null
+            dismiss()
+        }
+    }
+
+    private fun getPopupWindow(): PopupWindow {
+        val listPopupWindowField = AppCompatSpinner::class.java.getDeclaredField("mPopup")
+        listPopupWindowField.isAccessible = true
+        val listPopupWindow = listPopupWindowField.get(this) as ListPopupWindow
+        val popupWindowField = ListPopupWindow::class.java.getDeclaredField("mPopup")
+        popupWindowField.isAccessible = true
+        return popupWindowField.get(listPopupWindow) as PopupWindow
     }
 
     fun setLifecycleOwner(owner: LifecycleOwner?) {
@@ -97,9 +109,9 @@ class DialogPropertySpinner @JvmOverloads constructor(
     }
 
     private fun requireAdapter(run: ((adapter: DialogPropertyAdapter) -> Unit)? = null): DialogPropertyAdapter {
-        if (adapter == null) throw Exception("Dialog picker adapter must not be null.")
-        run?.invoke(adapter!!)
-        return adapter!!
+        if (localAdapter == null) throw Exception("Dialog picker adapter must not be null.")
+        run?.invoke(localAdapter!!)
+        return localAdapter!!
     }
 
     private class SavedState : BaseSavedState {

@@ -15,4 +15,12 @@
         <item name="android:layout_width">1dp</item>
         <item name="android:layout_height">match_parent</item>
     </style>
+
+
+    <style name="no_animation">
+        <item name="android:popupEnterTransition">@null</item>
+        <item name="android:popupExitTransition">@null</item>
+        <item name="android:windowEnterAnimation">@null</item>
+        <item name="android:windowExitAnimation">@null</item>
+    </style>
 </resources>

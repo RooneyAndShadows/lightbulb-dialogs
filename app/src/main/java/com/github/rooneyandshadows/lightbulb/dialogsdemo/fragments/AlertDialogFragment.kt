@@ -2,8 +2,6 @@ package com.github.rooneyandshadows.lightbulb.dialogsdemo.fragments
 
 import android.os.Bundle
 import android.view.View
-import android.widget.AdapterView
-import android.widget.Spinner
 import com.github.rooneyandshadows.lightbulb.annotation_processors.annotations.BindView
 import com.github.rooneyandshadows.lightbulb.annotation_processors.annotations.FragmentConfiguration
 import com.github.rooneyandshadows.lightbulb.annotation_processors.annotations.FragmentScreen
@@ -15,20 +13,27 @@ import com.github.rooneyandshadows.lightbulb.commons.utils.ResourceUtils
 import com.github.rooneyandshadows.lightbulb.dialogs.R
 import com.github.rooneyandshadows.lightbulb.dialogs.base.internal.DialogAnimationTypes
 import com.github.rooneyandshadows.lightbulb.dialogs.base.internal.DialogTypes
+import com.github.rooneyandshadows.lightbulb.dialogs.dialog_alert.AlertDialog
+import com.github.rooneyandshadows.lightbulb.dialogs.dialog_alert.AlertDialogBuilder
 import com.github.rooneyandshadows.lightbulb.dialogsdemo.activity.MainActivity
 import com.github.rooneyandshadows.lightbulb.dialogsdemo.activity.MenuConfigurations
-import com.github.rooneyandshadows.lightbulb.dialogsdemo.spinner.adapter.DialogPropertyAdapter
-import com.github.rooneyandshadows.lightbulb.dialogsdemo.getAllAsDialogPropertyItems
-import com.github.rooneyandshadows.lightbulb.dialogsdemo.spinner.DialogPropertySpinner
+import com.github.rooneyandshadows.lightbulb.dialogsdemo.spinner.DialogAnimationTypeSpinner
+import com.github.rooneyandshadows.lightbulb.dialogsdemo.spinner.DialogTypeSpinner
+import com.google.android.material.button.MaterialButton
 
 @FragmentScreen(screenName = "Alert", screenGroup = "Demo")
 @FragmentConfiguration(layoutName = "fragment_demo_dialog_alert", hasLeftDrawer = true)
 class AlertDialogFragment : BaseFragment() {
     @BindView(name = "dialog_type_dropdown")
-    lateinit var dialogTypeSpinner: DialogPropertySpinner
+    lateinit var dialogTypeSpinner: DialogTypeSpinner
 
     @BindView(name = "dialog_animation_type_dropdown")
-    lateinit var dialogAnimationTypeSpinner: DialogPropertySpinner
+    lateinit var dialogAnimationTypeSpinner: DialogAnimationTypeSpinner
+
+    @BindView(name = "show_button")
+    lateinit var showButton: MaterialButton
+
+    lateinit var alertDialog: AlertDialog
 
     @Override
     override fun configureActionBar(): ActionBarConfiguration {
@@ -41,7 +46,8 @@ class AlertDialogFragment : BaseFragment() {
 
     @Override
     override fun doOnViewCreated(fragmentView: View, savedInstanceState: Bundle?) {
-        initSpinners()
+        initializeDialog()
+        initializeSpinners()
         if (getFragmentState() === FragmentStates.CREATED) {
             BaseActivity.updateMenuConfiguration(
                 requireContext(),
@@ -51,33 +57,24 @@ class AlertDialogFragment : BaseFragment() {
         setupDrawerButton()
     }
 
-    fun initSpinners() {
+    fun initializeDialog() {
+        alertDialog = AlertDialogBuilder(this, childFragmentManager, "ALERT_DIALOG_TAG")
+            .withTitle("fsafas")
+            .withMessage("fasfasfsssss")
+            .buildDialog()
+    }
+
+    fun initializeSpinners() {
         dialogTypeSpinner.apply {
             setLifecycleOwner(this@AlertDialogFragment)
-            setProperties(DialogTypes.getAllAsDialogPropertyItems())
-            onItemSelectedListener = object : AdapterView.OnItemSelectedListener {
-                override fun onItemSelected(parent: AdapterView<*>?, view: View?, position: Int, id: Long) {
-
-                }
-
-                override fun onNothingSelected(parent: AdapterView<*>?) {
-
-                }
-            }
+            dialog = alertDialog
         }
-
         dialogAnimationTypeSpinner.apply {
             setLifecycleOwner(this@AlertDialogFragment)
-            setProperties(DialogAnimationTypes.getAllAsDialogPropertyItems())
-            onItemSelectedListener = object : AdapterView.OnItemSelectedListener {
-                override fun onItemSelected(parent: AdapterView<*>?, view: View?, position: Int, id: Long) {
-
-                }
-
-                override fun onNothingSelected(parent: AdapterView<*>?) {
-
-                }
-            }
+            dialog = alertDialog
+        }
+        showButton.setOnClickListener {
+            alertDialog.show()
         }
     }
 
