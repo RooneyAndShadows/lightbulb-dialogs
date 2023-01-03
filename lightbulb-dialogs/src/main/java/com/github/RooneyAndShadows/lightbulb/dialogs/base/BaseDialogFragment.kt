@@ -52,8 +52,14 @@ abstract class BaseDialogFragment : DialogFragment(), DefaultLifecycleObserver {
         private set
     protected lateinit var footerViewHierarchy: DialogLayoutHierarchyFooter
         private set
-    lateinit var dialogType: DialogTypes
-    lateinit var animationType: DialogAnimationTypes
+    var dialogType: DialogTypes = NORMAL
+        set(value) {
+            field = value
+        }
+    var animationType: DialogAnimationTypes = NO_ANIMATION
+        set(value) {
+            field = value
+        }
     var isDialogShown = false
         private set
     var title: String? = null
@@ -213,12 +219,8 @@ abstract class BaseDialogFragment : DialogFragment(), DefaultLifecycleObserver {
                 dialogType = helper.dialogType
             if (!this::animationType.isInitialized) //if not set outside of builder | otherwise ignore
                 animationType = when (dialogType) {
-                    NORMAL, FULLSCREEN -> {
-                        helper.animationType
-                    }
-                    BOTTOM_SHEET -> {
-                        TRANSITION_FROM_BOTTOM_TO_BOTTOM
-                    }
+                    NORMAL, FULLSCREEN -> helper.animationType
+                    BOTTOM_SHEET -> TRANSITION_FROM_BOTTOM_TO_BOTTOM
                 }
             if (title == null) //if not set outside of builder | otherwise ignore
                 title = helper.title
@@ -492,21 +494,12 @@ abstract class BaseDialogFragment : DialogFragment(), DefaultLifecycleObserver {
                 window.setLayout(WindowManager.LayoutParams.MATCH_PARENT, WindowManager.LayoutParams.MATCH_PARENT)
                 setupFullScreenDialog(window, rootView!!)
             }
-            NORMAL -> setupRegularDialog(
-                regularDialogConstraints,
-                window,
-                rootView!!,
-                fgPadding
-            )
+            NORMAL -> setupRegularDialog(regularDialogConstraints, window, rootView!!, fgPadding)
             BOTTOM_SHEET -> {
                 window.setGravity(Gravity.BOTTOM)
                 window.setLayout(WindowManager.LayoutParams.MATCH_PARENT, WindowManager.LayoutParams.WRAP_CONTENT)
                 window.setBackgroundDrawable(ColorDrawable(Color.TRANSPARENT)) // overrides background to remove insets
-                setupBottomSheetDialog(
-                    bottomSheetDialogConstraints,
-                    window,
-                    rootView!!
-                )
+                setupBottomSheetDialog(bottomSheetDialogConstraints, window, rootView!!)
             }
         }
     }
