@@ -8,7 +8,6 @@ import android.widget.AdapterView
 import androidx.lifecycle.DefaultLifecycleObserver
 import com.github.rooneyandshadows.lightbulb.dialogs.R
 import com.github.rooneyandshadows.lightbulb.dialogs.base.internal.DialogAnimationTypes
-import com.github.rooneyandshadows.lightbulb.dialogs.base.internal.DialogTypes
 import com.github.rooneyandshadows.lightbulb.dialogsdemo.getAllAsDialogPropertyItems
 import com.github.rooneyandshadows.lightbulb.dialogsdemo.spinner.base.DialogPropertySpinner
 import com.github.rooneyandshadows.lightbulb.dialogsdemo.spinner.base.adapter.DialogPropertyAdapter
@@ -26,7 +25,7 @@ class DialogAnimationTypeSpinner @JvmOverloads constructor(
             override fun onItemSelected(parent: AdapterView<*>?, view: View?, position: Int, id: Long) {
                 val adapter = adapter as DialogPropertyAdapter
                 val dialogAnimationType = DialogAnimationTypes.valueOf(adapter.getItem(position).value)
-                dialog?.animationType = dialogAnimationType
+                dialog?.setAnimationType(dialogAnimationType)
             }
 
             override fun onNothingSelected(parent: AdapterView<*>?) {

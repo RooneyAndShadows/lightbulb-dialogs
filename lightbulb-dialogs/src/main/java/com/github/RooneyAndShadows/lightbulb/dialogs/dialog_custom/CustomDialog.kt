@@ -51,9 +51,13 @@ open class CustomDialog : BaseDialogFragment() {
     override fun getDialogLayout(layoutInflater: LayoutInflater): View {
         val view = View.inflate(context, R.layout.dialog_custom, null)
         val contentContainer = view.findViewById<LinearLayoutCompat>(R.id.customDialogContentContainer)
+        val dialogType = getDialogType()
         contentContainer.removeAllViews()
         if (dialogType == DialogTypes.FULLSCREEN) contentContainer.layoutParams.height = 0
-        if (dialogInflater != null) contentContainer.addView(dialogInflater!!.inflateView(this, layoutInflater))
+        dialogInflater?.apply {
+            val content = inflateView(this@CustomDialog, layoutInflater)
+            contentContainer.addView(content)
+        }
         return view
     }
 

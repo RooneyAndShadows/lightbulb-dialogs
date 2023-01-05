@@ -25,7 +25,7 @@ class DialogTypeSpinner @JvmOverloads constructor(
             override fun onItemSelected(parent: AdapterView<*>?, view: View?, position: Int, id: Long) {
                 val adapter = adapter as DialogPropertyAdapter
                 val dialogType = DialogTypes.valueOf(adapter.getItem(position).value)
-                dialog?.dialogType = dialogType
+                dialog?.setDialogType(dialogType)
             }
 
             override fun onNothingSelected(parent: AdapterView<*>?) {

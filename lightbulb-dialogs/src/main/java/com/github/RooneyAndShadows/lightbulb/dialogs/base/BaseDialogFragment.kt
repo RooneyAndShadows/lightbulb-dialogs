@@ -1,7 +1,6 @@
 package com.github.rooneyandshadows.lightbulb.dialogs.base
 
 import android.annotation.SuppressLint
-import android.app.Activity
 import android.app.Dialog
 import android.content.DialogInterface
 import android.graphics.Color
@@ -52,13 +51,17 @@ abstract class BaseDialogFragment : DialogFragment(), DefaultLifecycleObserver {
         private set
     protected lateinit var footerViewHierarchy: DialogLayoutHierarchyFooter
         private set
-    var dialogType: DialogTypes = NORMAL
+    private var type: DialogTypes? = null
         set(value) {
             field = value
+            if (value == BOTTOM_SHEET && animation != TRANSITION_FROM_BOTTOM_TO_BOTTOM)
+                animation = TRANSITION_FROM_BOTTOM_TO_BOTTOM
         }
-    var animationType: DialogAnimationTypes = NO_ANIMATION
+    private var animation: DialogAnimationTypes? = null
         set(value) {
-            field = value
+            field = if (type == BOTTOM_SHEET && value != TRANSITION_FROM_BOTTOM_TO_BOTTOM)
+                TRANSITION_FROM_BOTTOM_TO_BOTTOM
+            else value
         }
     var isDialogShown = false
         private set
@@ -212,13 +215,13 @@ abstract class BaseDialogFragment : DialogFragment(), DefaultLifecycleObserver {
             negativeButtonConfig = helper.negativeButtonConfig
             cancelableOnClickOutside = helper.cancelable
             isDialogShown = helper.showing
-            dialogType = helper.dialogType
-            animationType = helper.animationType
+            type = helper.dialogType
+            animation = helper.animationType
         } else {
-            if (!this::dialogType.isInitialized) //if not set outside of builder | otherwise ignore
-                dialogType = helper.dialogType
-            if (!this::animationType.isInitialized) //if not set outside of builder | otherwise ignore
-                animationType = when (dialogType) {
+            if (type == null) //if not set outside of builder | otherwise ignore
+                type = helper.dialogType
+            if (animation == null) //if not set outside of builder | otherwise ignore
+                animation = when (type!!) {
                     NORMAL, FULLSCREEN -> helper.animationType
                     BOTTOM_SHEET -> TRANSITION_FROM_BOTTOM_TO_BOTTOM
                 }
@@ -248,8 +251,8 @@ abstract class BaseDialogFragment : DialogFragment(), DefaultLifecycleObserver {
             .withNegativeButtonConfig(negativeButtonConfig)
             .withCancelable(cancelableOnClickOutside)
             .withShowing(isDialogShown)
-            .withDialogType(dialogType)
-            .withAnimation(animationType)
+            .withDialogType(type!!)
+            .withAnimation(animation!!)
         doOnSaveInstanceState(helper.bundle)
         if (dialogCallbacks != null)
             dialogCallbacks!!.doOnSaveInstanceState(this, view, outState)
@@ -259,7 +262,7 @@ abstract class BaseDialogFragment : DialogFragment(), DefaultLifecycleObserver {
     final override fun onCreateView(inflater: LayoutInflater, container: ViewGroup?, savedInstanceState: Bundle?): View {
         regularDialogConstraints = getRegularConstraints()
         bottomSheetDialogConstraints = getBottomSheetConstraints()
-        rootView = when (dialogType) {
+        rootView = when (type!!) {
             NORMAL, FULLSCREEN -> getDialogLayout(LayoutInflater.from(requireContext()))
             BOTTOM_SHEET -> getBottomSheetDialogLayout()
         }
@@ -301,7 +304,7 @@ abstract class BaseDialogFragment : DialogFragment(), DefaultLifecycleObserver {
     final override fun onStart() {
         super<DialogFragment>.onStart()
         val dialogWindow = dialog?.window ?: return
-        when (animationType) {
+        when (animation!!) {
             NO_ANIMATION -> dialogWindow.setWindowAnimations(R.style.NoAnimation)
             FADE -> dialogWindow.setWindowAnimations(R.style.Animation_Fade)
             TRANSITION_FROM_BOTTOM_TO_BOTTOM -> dialogWindow.setWindowAnimations(R.style.Animation_FromBottomToBottom)
@@ -367,6 +370,22 @@ abstract class BaseDialogFragment : DialogFragment(), DefaultLifecycleObserver {
 
     fun setParentFragManager(fragmentManager: FragmentManager) {
         this.parentFragManager = fragmentManager
+    }
+
+    fun getDialogType(): DialogTypes {
+        return type ?: NORMAL
+    }
+
+    fun getAnimationType(): DialogAnimationTypes {
+        return animation ?: NO_ANIMATION
+    }
+
+    fun setDialogType(dialogType: DialogTypes) {
+        type = dialogType
+    }
+
+    fun setAnimationType(animationType: DialogAnimationTypes) {
+        animation = animationType
     }
 
     fun setDialogTag(dialogTag: String) {
@@ -445,7 +464,7 @@ abstract class BaseDialogFragment : DialogFragment(), DefaultLifecycleObserver {
      * @return width in pixels
      */
     protected fun getMaxWidth(): Int {
-        return when (dialogType) {
+        return when (type!!) {
             NORMAL -> regularDialogConstraints.getMaxWidth()
             FULLSCREEN, BOTTOM_SHEET -> getWindowWidth()
         }
@@ -457,7 +476,7 @@ abstract class BaseDialogFragment : DialogFragment(), DefaultLifecycleObserver {
      * @return height in pixels
      */
     protected fun getMaxHeight(): Int {
-        return when (dialogType) {
+        return when (type!!) {
             NORMAL -> regularDialogConstraints.getMaxHeight()
             FULLSCREEN -> getWindowHeight()
             BOTTOM_SHEET -> bottomSheetDialogConstraints.getMaxHeight()
@@ -488,7 +507,7 @@ abstract class BaseDialogFragment : DialogFragment(), DefaultLifecycleObserver {
         val window = dialog.window
         val fgPadding = Rect()
         window!!.decorView.background.getPadding(fgPadding)
-        when (dialogType) {
+        when (type!!) {
             FULLSCREEN -> {
                 window.setBackgroundDrawable(ColorDrawable(Color.TRANSPARENT)) // overrides background to remove insets
                 window.setLayout(WindowManager.LayoutParams.MATCH_PARENT, WindowManager.LayoutParams.MATCH_PARENT)

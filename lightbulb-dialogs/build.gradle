@@ -1,14 +1,7 @@
-plugins {
-    id 'com.android.library'
-    id 'kotlin-android'
-    id 'kotlin-kapt'
-    id 'maven-publish'
-}
+apply plugin: 'com.android.library'
 apply plugin: 'kotlin-android'
-
-repositories {
-    mavenCentral()
-}
+apply plugin: 'kotlin-kapt'
+apply plugin: 'maven-publish'
 
 android {
     compileSdkVersion 33
@@ -17,6 +10,7 @@ android {
         targetSdkVersion 33
         testInstrumentationRunner "androidx.test.runner.AndroidJUnitRunner"
         consumerProguardFiles "consumer-rules.pro"
+        versionName "2.0.0-RC1"
     }
     buildFeatures {
         dataBinding true
@@ -39,11 +33,12 @@ tasks.withType(JavaCompile) {
     options.deprecation = true
 }
 
+task sourceJar(type: Jar) {
+    from android.sourceSets.main.java.srcDirs
+    classifier "sources"
+}
+
 afterEvaluate {
-    task sourceJar(type: Jar) {
-        from android.sourceSets.main.java.srcDirs
-        classifier "sources"
-    }
     publishing {
         repositories {
             mavenLocal()
@@ -54,9 +49,6 @@ afterEvaluate {
                 groupId "$environment.group_id"
                 version android.defaultConfig.versionName
                 artifactId project.name
-                artifact sourceJar {
-                    classifier "sources"
-                }
             }
         }
     }
