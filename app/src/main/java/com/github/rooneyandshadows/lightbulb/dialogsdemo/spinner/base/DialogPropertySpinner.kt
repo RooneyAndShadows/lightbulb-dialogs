@@ -25,7 +25,6 @@ abstract class DialogPropertySpinner @JvmOverloads constructor(
     popupTheme: Resources.Theme? = null,
 ) : AppCompatSpinner(context, attrs, defStyleAttr, mode, popupTheme), DefaultLifecycleObserver {
     private var localAdapter: DialogPropertyAdapter?
-    private var selectedPosition: Int = -1
     private var lifecycleOwner: LifecycleOwner? = null
     var dialog: BaseDialogFragment? = null
 
@@ -57,7 +56,7 @@ abstract class DialogPropertySpinner @JvmOverloads constructor(
         requireAdapter { adapter ->
             myState.adapterState = adapter.saveInstanceState()
         }
-        myState.selectedPosition = selectedPosition
+        myState.selectedPosition = selectedItemPosition
         return myState
     }
 
@@ -65,11 +64,12 @@ abstract class DialogPropertySpinner @JvmOverloads constructor(
     override fun onRestoreInstanceState(state: Parcelable) {
         val savedState = state as SavedState
         super.onRestoreInstanceState(savedState.superState)
-        requireAdapter { adapter ->
-            adapter.restoreInstanceState(savedState.adapterState!!)
+        post {
+            requireAdapter { adapter ->
+                adapter.restoreInstanceState(savedState.adapterState!!)
+            }
+            setSelection(savedState.selectedPosition, false)
         }
-        selectedPosition = savedState.selectedPosition
-        setSelection(selectedPosition)
     }
 
     @Override

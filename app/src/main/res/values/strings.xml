@@ -13,4 +13,5 @@
     <string name="demo_dialog_type_text">DIALOG TYPE</string>
     <string name="demo_dialog_animation_type_text">DIALOG ANIMATION</string>
     <string name="demo_dialog_show_button_text">SHOW DIALOG</string>
+    <string name="demo_dialog_animation_must_be_bottomsheet_text">Invalid animation. Animation switched to TRANSITION_FROM_BOTTOM_TO_BOTTOM.</string>
 </resources>

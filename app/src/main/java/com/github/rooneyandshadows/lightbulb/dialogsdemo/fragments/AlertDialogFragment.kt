@@ -11,8 +11,6 @@ import com.github.rooneyandshadows.lightbulb.application.fragment.base.BaseFragm
 import com.github.rooneyandshadows.lightbulb.application.fragment.cofiguration.ActionBarConfiguration
 import com.github.rooneyandshadows.lightbulb.commons.utils.ResourceUtils
 import com.github.rooneyandshadows.lightbulb.dialogs.R
-import com.github.rooneyandshadows.lightbulb.dialogs.base.internal.DialogAnimationTypes
-import com.github.rooneyandshadows.lightbulb.dialogs.base.internal.DialogTypes
 import com.github.rooneyandshadows.lightbulb.dialogs.dialog_alert.AlertDialog
 import com.github.rooneyandshadows.lightbulb.dialogs.dialog_alert.AlertDialogBuilder
 import com.github.rooneyandshadows.lightbulb.dialogsdemo.activity.MainActivity
@@ -68,10 +66,12 @@ class AlertDialogFragment : BaseFragment() {
         dialogTypeSpinner.apply {
             setLifecycleOwner(this@AlertDialogFragment)
             dialog = alertDialog
+            animationTypeSpinner = dialogAnimationTypeSpinner
         }
         dialogAnimationTypeSpinner.apply {
             setLifecycleOwner(this@AlertDialogFragment)
             dialog = alertDialog
+            typeSpinner = dialogTypeSpinner
         }
         showButton.setOnClickListener {
             alertDialog.show()
