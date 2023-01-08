@@ -1,0 +1,26 @@
+<layer-list xmlns:android="http://schemas.android.com/apk/res/android">
+    <item
+        android:height="@dimen/spacing_size_medium"
+        android:gravity="center"
+        android:top="@dimen/spacing_size_medium">
+        <shape android:shape="rectangle">
+            <solid android:color="@android:color/transparent" />
+        </shape>
+    </item>
+    <item
+        android:height="@dimen/spacing_size_medium"
+        android:bottom="@dimen/spacing_size_medium"
+        android:gravity="center">
+        <shape android:shape="rectangle">
+            <solid android:color="@android:color/transparent" />
+        </shape>
+    </item>
+    <item
+        android:height="1dp"
+        android:gravity="center"
+        android:top="1dp">
+        <shape android:shape="rectangle">
+            <solid android:color="?colorOnBackground" />
+        </shape>
+    </item>
+</layer-list>

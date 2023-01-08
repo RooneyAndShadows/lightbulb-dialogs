@@ -7,7 +7,7 @@ import com.github.rooneyandshadows.lightbulb.application.activity.slidermenu.Sli
 import com.github.rooneyandshadows.lightbulb.application.activity.slidermenu.config.SliderMenuConfiguration
 import com.github.rooneyandshadows.lightbulb.application.activity.slidermenu.items.PrimaryMenuItem
 import com.github.rooneyandshadows.lightbulb.commons.utils.ResourceUtils
-import com.github.rooneyandshadows.lightbulb.dialogs.R
+import com.github.rooneyandshadows.lightbulb.dialogsdemo.R
 
 object MenuConfigurations {
     @SuppressLint("InflateParams")

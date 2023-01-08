@@ -8,7 +8,7 @@ import android.widget.AdapterView
 import androidx.lifecycle.DefaultLifecycleObserver
 import com.github.rooneyandshadows.lightbulb.commons.utils.InteractionUtils
 import com.github.rooneyandshadows.lightbulb.commons.utils.ResourceUtils
-import com.github.rooneyandshadows.lightbulb.dialogs.R
+import com.github.rooneyandshadows.lightbulb.dialogsdemo.R
 import com.github.rooneyandshadows.lightbulb.dialogs.base.internal.DialogAnimationTypes
 import com.github.rooneyandshadows.lightbulb.dialogs.base.internal.DialogAnimationTypes.TRANSITION_FROM_BOTTOM_TO_BOTTOM
 import com.github.rooneyandshadows.lightbulb.dialogs.base.internal.DialogTypes

@@ -1,0 +1,7 @@
+<?xml version="1.0" encoding="utf-8"?>
+<resources xmlns:tools="http://schemas.android.com/tools" tools:ignore="MissingDefaultResource">
+    <dimen name="spacing_size_tiny">5dp</dimen>
+    <dimen name="spacing_size_small">10dp</dimen>
+    <dimen name="spacing_size_medium">15dp</dimen>
+    <dimen name="spacing_size_big">20dp</dimen>
+</resources>

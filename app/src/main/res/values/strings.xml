@@ -10,8 +10,16 @@
     <string name="demo_date_time_title">Date&amp;time picker dialog</string>
     <string name="demo_month_title">Month picker dialog</string>
     <string name="demo_time_title">Time picker dialog</string>
-    <string name="demo_dialog_type_text">DIALOG TYPE</string>
-    <string name="demo_dialog_animation_type_text">DIALOG ANIMATION</string>
+
+    <string name="demo_dialog_title_option_text">Title</string>
+    <string name="demo_dialog_message_type_option_text">Message</string>
+    <string name="demo_dialog_type_option_text">DIALOG TYPE</string>
+    <string name="demo_dialog_animation_type_option_text">DIALOG ANIMATION</string>
     <string name="demo_dialog_show_button_text">SHOW DIALOG</string>
+    <string name="demo_dialog_default_title_text">Dialog title…</string>
+    <string name="demo_dialog_default_message_text">Dialog message…</string>
+    <string name="demo_dialog_positive_button">OK</string>
+    <string name="demo_dialog_negative_button">CLOSE</string>
+
     <string name="demo_dialog_animation_must_be_bottomsheet_text">Invalid animation. Animation switched to TRANSITION_FROM_BOTTOM_TO_BOTTOM.</string>
 </resources>
