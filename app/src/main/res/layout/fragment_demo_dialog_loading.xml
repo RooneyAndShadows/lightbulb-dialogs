@@ -6,7 +6,7 @@
 
         <variable
             name="dialog"
-            type="com.github.rooneyandshadows.lightbulb.dialogs.dialog_alert.AlertDialog" />
+            type="com.github.rooneyandshadows.lightbulb.dialogs.dialog_loading.LoadingDialog" />
     </data>
 
     <RelativeLayout
@@ -62,33 +62,6 @@
                 <androidx.appcompat.widget.LinearLayoutCompat
                     android:layout_width="match_parent"
                     android:layout_height="wrap_content"
-                    android:layout_marginBottom="@dimen/spacing_size_medium"
-                    android:orientation="horizontal"
-                    app:divider="@drawable/divider_horizontal_space_medium"
-                    app:showDividers="middle">
-
-                    <com.github.rooneyandshadows.lightbulb.textinputview.TextInputView
-                        android:id="@+id/dialog_positive_button_textview"
-                        android:layout_width="wrap_content"
-                        android:layout_height="wrap_content"
-                        android:layout_weight="1"
-                        app:dialogButtonText="@={dialog.dialogPositiveButton}"
-                        app:textInputHintText="@string/demo_dialog_positive_button_option_text" />
-
-                    <com.github.rooneyandshadows.lightbulb.textinputview.TextInputView
-                        android:id="@+id/dialog_negative_button_textview"
-                        android:layout_width="wrap_content"
-                        android:layout_height="wrap_content"
-                        android:layout_weight="1"
-                        app:dialogButtonText="@={dialog.dialogNegativeButton}"
-                        app:textInputHintText="@string/demo_dialog_negative_button_option_text" />
-
-                </androidx.appcompat.widget.LinearLayoutCompat>
-
-
-                <androidx.appcompat.widget.LinearLayoutCompat
-                    android:layout_width="match_parent"
-                    android:layout_height="wrap_content"
                     android:layout_marginBottom="15dp"
                     android:orientation="vertical">
 
@@ -116,26 +89,6 @@
                         android:id="@+id/dialog_animation_type_dropdown"
                         android:layout_width="match_parent"
                         android:layout_height="wrap_content" />
-
-                </androidx.appcompat.widget.LinearLayoutCompat>
-
-                <androidx.appcompat.widget.LinearLayoutCompat
-                    android:layout_width="match_parent"
-                    android:layout_height="wrap_content"
-                    android:layout_marginBottom="15dp"
-                    android:orientation="vertical">
-
-                    <include
-                        layout="@layout/layout_option_title"
-                        app:optionTitle="@{@string/demo_dialog_other_options_text}" />
-
-                    <com.google.android.material.switchmaterial.SwitchMaterial
-                        android:id="@+id/dialog_cancelable_dropdown"
-                        android:layout_width="match_parent"
-                        android:layout_height="wrap_content"
-                        android:checked="@={dialog.cancelable}"
-                        android:text="@string/demo_dialog_cancelable_option_text"
-                        android:textSize="@dimen/text_size_checkbox" />
 
                 </androidx.appcompat.widget.LinearLayoutCompat>
 

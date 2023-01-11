@@ -15,7 +15,11 @@ class MainActivity : BaseActivity() {
 
     @Override
     override fun doOnCreate(savedInstanceState: Bundle?) {
-        if (savedInstanceState == null)
+        if (savedInstanceState == null) {
+            updateMenuConfiguration(this, MainActivity::class.java) { activity: BaseActivity ->
+                MenuConfigurations.getConfiguration(activity)
+            }
             MainActivityNavigator.route().toDemoAlert().newRootScreen()
+        }
     }
 }

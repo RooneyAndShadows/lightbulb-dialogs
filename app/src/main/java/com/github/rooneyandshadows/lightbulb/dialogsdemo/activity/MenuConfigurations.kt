@@ -1,6 +1,8 @@
 package com.github.rooneyandshadows.lightbulb.dialogsdemo.activity
 
 import android.annotation.SuppressLint
+import android.os.Handler
+import android.os.Looper
 import android.view.View
 import com.github.rooneyandshadows.lightbulb.application.activity.BaseActivity
 import com.github.rooneyandshadows.lightbulb.application.activity.slidermenu.SliderMenu
@@ -23,8 +25,8 @@ object MenuConfigurations {
                 null,
                 1
             ) { slider: SliderMenu ->
-                // route().back()
-                //slider.closeSlider()
+                slider.closeSlider()
+                MainActivityNavigator.route().toDemoAlert().replace()
             }
         ).addMenuItem(
             PrimaryMenuItem(
@@ -34,8 +36,8 @@ object MenuConfigurations {
                 null,
                 1
             ) { slider: SliderMenu ->
-                // route().back()
-                //slider.closeSlider()
+                slider.closeSlider()
+                MainActivityNavigator.route().toDemoLoading().forward()
             }
         ).addMenuItem(
             PrimaryMenuItem(

@@ -1,0 +1,40 @@
+<?xml version="1.0" encoding="utf-8"?>
+<layout xmlns:android="http://schemas.android.com/apk/res/android"
+    xmlns:app="http://schemas.android.com/apk/res-auto">
+
+    <data>
+
+        <variable
+            name="dialog"
+            type="com.github.rooneyandshadows.lightbulb.dialogs.base.BaseDialogFragment" />
+
+    </data>
+
+    <androidx.appcompat.widget.LinearLayoutCompat
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content"
+        android:gravity="center"
+        app:divider="@drawable/divider_horizontal_space_small">
+
+        <View
+            style="@style/HorizontalDelimiter"
+            android:layout_width="wrap_content"
+            android:layout_weight="0.5" />
+
+        <com.google.android.material.button.MaterialButton
+            android:id="@+id/show_button"
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:layout_marginEnd="@dimen/spacing_size_medium"
+            android:layout_marginStart="@dimen/spacing_size_medium"
+            android:layout_gravity="center"
+            android:onClick="@{()-> dialog.show()}"
+            android:text="@string/demo_dialog_show_button_text" />
+
+        <View
+            style="@style/HorizontalDelimiter"
+            android:layout_width="wrap_content"
+            android:layout_weight="0.5" />
+
+    </androidx.appcompat.widget.LinearLayoutCompat>
+</layout>

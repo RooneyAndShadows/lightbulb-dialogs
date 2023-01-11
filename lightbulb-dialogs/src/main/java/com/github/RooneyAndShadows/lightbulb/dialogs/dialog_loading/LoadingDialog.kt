@@ -17,6 +17,16 @@ class LoadingDialog : BaseDialogFragment() {
     }
 
     @Override
+    override fun doOnCreate(dialogArguments: Bundle?, savedInstanceState: Bundle?) {
+        isCancelable = false
+    }
+
+    @Override
+    override fun setCancelable(cancelable: Boolean) {
+        super.setCancelable(false)
+    }
+
+    @Override
     override fun isCancelable(): Boolean {
         return false
     }

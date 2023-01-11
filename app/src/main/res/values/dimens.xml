@@ -4,4 +4,5 @@
     <dimen name="spacing_size_small">10dp</dimen>
     <dimen name="spacing_size_medium">15dp</dimen>
     <dimen name="spacing_size_big">20dp</dimen>
+    <dimen name="text_size_checkbox">16sp</dimen>
 </resources>

@@ -1,0 +1,126 @@
+<?xml version="1.0" encoding="utf-8"?>
+<layout xmlns:android="http://schemas.android.com/apk/res/android"
+    xmlns:app="http://schemas.android.com/apk/res-auto">
+
+    <data>
+
+        <variable
+            name="dialog"
+            type="com.github.rooneyandshadows.lightbulb.dialogs.dialog_loading.LoadingDialog" />
+    </data>
+
+    <RelativeLayout
+        android:layout_width="match_parent"
+        android:layout_height="match_parent">
+
+        <com.google.android.material.appbar.AppBarLayout
+            android:id="@+id/app_bar_layout"
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content"
+            android:background="?colorActionBarBackground"
+            app:contentInsetStart="0dp">
+
+            <com.google.android.material.appbar.MaterialToolbar
+                android:id="@+id/toolbar"
+                android:layout_width="match_parent"
+                android:layout_height="wrap_content" />
+
+        </com.google.android.material.appbar.AppBarLayout>
+
+        <androidx.core.widget.NestedScrollView
+            android:layout_width="match_parent"
+            android:layout_height="match_parent"
+            android:layout_below="@id/app_bar_layout"
+            android:clipChildren="false"
+            android:clipToPadding="false"
+            android:fillViewport="true"
+            android:padding="15dp">
+
+            <androidx.appcompat.widget.LinearLayoutCompat
+                android:layout_width="match_parent"
+                android:layout_height="match_parent"
+                android:clipChildren="false"
+                android:clipToPadding="false"
+                android:orientation="vertical">
+
+                <androidx.appcompat.widget.LinearLayoutCompat
+                    android:layout_width="match_parent"
+                    android:layout_height="wrap_content"
+                    android:layout_marginBottom="@dimen/spacing_size_medium"
+                    android:orientation="horizontal"
+                    app:divider="@drawable/divider_horizontal_space_medium"
+                    app:showDividers="middle">
+
+                    <com.github.rooneyandshadows.lightbulb.textinputview.TextInputView
+                        android:id="@+id/dialog_title_textview"
+                        android:layout_width="match_parent"
+                        android:layout_height="wrap_content"
+                        android:layout_marginBottom="@dimen/spacing_size_medium"
+                        android:layout_weight="1"
+                        app:textInputHintText="@string/demo_dialog_title_option_text"
+                        app:textInputText="@={dialog.dialogTitle}" />
+
+                    <com.github.rooneyandshadows.lightbulb.textinputview.TextInputView
+                        android:id="@+id/dialog_message_textview"
+                        android:layout_width="match_parent"
+                        android:layout_height="wrap_content"
+                        android:layout_marginBottom="@dimen/spacing_size_medium"
+                        android:layout_weight="1"
+                        app:textInputHintText="@string/demo_dialog_message_option_text"
+                        app:textInputText="@={dialog.dialogMessage}" />
+
+                </androidx.appcompat.widget.LinearLayoutCompat>
+
+                <androidx.appcompat.widget.LinearLayoutCompat
+                    android:layout_width="match_parent"
+                    android:layout_height="wrap_content"
+                    android:layout_marginBottom="@dimen/spacing_size_medium"
+                    android:orientation="horizontal"
+                    app:divider="@drawable/divider_horizontal_space_medium"
+                    app:showDividers="middle">
+
+
+                    <androidx.appcompat.widget.LinearLayoutCompat
+                        android:layout_width="match_parent"
+                        android:layout_height="wrap_content"
+                        android:layout_marginBottom="15dp"
+                        android:layout_weight="1"
+                        android:orientation="vertical">
+
+                        <include
+                            layout="@layout/layout_option_title"
+                            app:optionTitle="@{@string/demo_dialog_type_option_text}" />
+
+                        <com.github.rooneyandshadows.lightbulb.dialogsdemo.spinner.DialogTypeSpinner
+                            android:id="@+id/dialog_type_dropdown"
+                            android:layout_width="match_parent"
+                            android:layout_height="wrap_content" />
+                    </androidx.appcompat.widget.LinearLayoutCompat>
+
+                    <androidx.appcompat.widget.LinearLayoutCompat
+                        android:layout_width="match_parent"
+                        android:layout_height="wrap_content"
+                        android:layout_marginBottom="15dp"
+                        android:layout_weight="1"
+                        android:orientation="vertical">
+
+                        <include
+                            layout="@layout/layout_option_title"
+                            app:optionTitle="@{@string/demo_dialog_animation_type_option_text}" />
+
+                        <com.github.rooneyandshadows.lightbulb.dialogsdemo.spinner.DialogAnimationTypeSpinner
+                            android:id="@+id/dialog_animation_type_dropdown"
+                            android:layout_width="match_parent"
+                            android:layout_height="wrap_content" />
+
+                    </androidx.appcompat.widget.LinearLayoutCompat>
+                </androidx.appcompat.widget.LinearLayoutCompat>
+
+                <include
+                    layout="@layout/layout_dialog_show_button"
+                    app:dialog="@{dialog}" />
+
+            </androidx.appcompat.widget.LinearLayoutCompat>
+        </androidx.core.widget.NestedScrollView>
+    </RelativeLayout>
+</layout>
