@@ -1,3 +1,5 @@
+@file:Suppress("UNUSED_PARAMETER")
+
 package com.github.rooneyandshadows.lightbulb.dialogs.picker_dialog_color
 
 import android.content.res.Configuration
@@ -10,10 +12,8 @@ import androidx.recyclerview.widget.RecyclerView
 import com.github.rooneyandshadows.lightbulb.commons.utils.ResourceUtils
 import com.github.rooneyandshadows.lightbulb.dialogs.base.constraints.regular.RegularDialogConstraints
 import com.github.rooneyandshadows.lightbulb.dialogs.base.constraints.regular.RegularDialogConstraintsBuilder
-import com.github.rooneyandshadows.lightbulb.dialogs.base.internal.DialogAnimationTypes
-import com.github.rooneyandshadows.lightbulb.dialogs.base.internal.DialogBundleHelper
-import com.github.rooneyandshadows.lightbulb.dialogs.base.internal.DialogButtonConfiguration
 import com.github.rooneyandshadows.lightbulb.dialogs.base.internal.DialogTypes
+import com.github.rooneyandshadows.lightbulb.dialogs.base.internal.DialogTypes.*
 import com.github.rooneyandshadows.lightbulb.dialogs.picker_dialog_adapter.AdapterPickerDialog
 import com.github.rooneyandshadows.lightbulb.dialogs.picker_dialog_color.ColorPickerAdapter.ColorModel
 import java.util.function.Predicate
@@ -25,29 +25,14 @@ import kotlin.math.min
 class ColorPickerDialog : AdapterPickerDialog<ColorModel>() {
     private var spans = 0
     private var lastVisibleItemPosition = -1
+    override var dialogType: DialogTypes
+        get() = NORMAL
+        set(value) {}
 
     companion object {
         private val iconSize = ResourceUtils.dpToPx(50)
-        fun newInstance(
-            title: String?,
-            message: String?,
-            positive: DialogButtonConfiguration?,
-            negative: DialogButtonConfiguration?,
-            cancelable: Boolean,
-            animationType: DialogAnimationTypes = DialogAnimationTypes.NO_ANIMATION,
-        ): ColorPickerDialog {
-            return ColorPickerDialog().apply {
-                this.arguments = DialogBundleHelper().apply {
-                    withTitle(title)
-                    withMessage(message)
-                    withPositiveButtonConfig(positive)
-                    withNegativeButtonConfig(negative)
-                    withCancelable(cancelable)
-                    withShowing(false)
-                    withDialogType(DialogTypes.NORMAL)
-                    withAnimation(animationType)
-                }.bundle
-            }
+        fun newInstance(): ColorPickerDialog {
+            return ColorPickerDialog()
         }
     }
 

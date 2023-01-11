@@ -16,34 +16,16 @@ open class CustomDialog : BaseDialogFragment() {
     private var loadingIndicator: ProgressBar? = null
     private var titleView: AppCompatTextView? = null
     private var dialogInflater: CustomDialogInflater? = null
-    private var loading = false
+    var isLoading = false
+        set(value) {
+            field = value
+            setupLoadingView()
+        }
 
     companion object {
         private const val IS_LOADING_KEY = "IS_LOADING_KEY"
-        fun newCustomDialogInstance(
-            title: String?,
-            message: String?,
-            positive: DialogButtonConfiguration?,
-            negative: DialogButtonConfiguration?,
-            cancelable: Boolean = true,
-            loading: Boolean = false,
-            dialogType: DialogTypes = DialogTypes.NORMAL,
-            animationType: DialogAnimationTypes = DialogAnimationTypes.NO_ANIMATION,
-        ): CustomDialog {
-            return CustomDialog().apply {
-                arguments = DialogBundleHelper().apply {
-                    withTitle(title)
-                    withMessage(message)
-                    withPositiveButtonConfig(positive)
-                    withNegativeButtonConfig(negative)
-                    withCancelable(cancelable)
-                    withShowing(false)
-                    withDialogType(dialogType)
-                    withAnimation(animationType)
-                }.bundle.apply {
-                    putBoolean(IS_LOADING_KEY, loading)
-                }
-            }
+        fun newCustomDialogInstance(): CustomDialog {
+            return CustomDialog()
         }
     }
 
@@ -51,7 +33,6 @@ open class CustomDialog : BaseDialogFragment() {
     override fun getDialogLayout(layoutInflater: LayoutInflater): View {
         val view = View.inflate(context, R.layout.dialog_custom, null)
         val contentContainer = view.findViewById<LinearLayoutCompat>(R.id.customDialogContentContainer)
-        val dialogType = getDialogType()
         contentContainer.removeAllViews()
         if (dialogType == DialogTypes.FULLSCREEN) contentContainer.layoutParams.height = 0
         dialogInflater?.apply {
@@ -63,7 +44,7 @@ open class CustomDialog : BaseDialogFragment() {
 
     @Override
     override fun doOnCreate(dialogArguments: Bundle?, savedInstanceState: Bundle?) {
-        loading = savedInstanceState?.getBoolean(IS_LOADING_KEY)
+        isLoading = savedInstanceState?.getBoolean(IS_LOADING_KEY)
             ?: dialogArguments!!.getBoolean(IS_LOADING_KEY)
     }
 
@@ -76,12 +57,7 @@ open class CustomDialog : BaseDialogFragment() {
     @Override
     override fun doOnSaveInstanceState(outState: Bundle?) {
         super.doOnSaveInstanceState(outState)
-        outState!!.putBoolean(IS_LOADING_KEY, loading)
-    }
-
-    fun setLoading(isLoading: Boolean) {
-        loading = isLoading
-        setupLoadingView()
+        outState!!.putBoolean(IS_LOADING_KEY, isLoading)
     }
 
     fun setDialogInflater(dialogInflater: CustomDialogInflater?) {
@@ -100,9 +76,9 @@ open class CustomDialog : BaseDialogFragment() {
 
     private fun setupLoadingView() {
         if (loadingIndicator == null) return
-        loadingIndicator!!.visibility = if (loading) View.VISIBLE else View.GONE
+        loadingIndicator!!.visibility = if (isLoading) View.VISIBLE else View.GONE
         val endPadding =
-            if (loading) ResourceUtils.getDimenPxById(loadingIndicator!!.context, R.dimen.dialog_spacing_size_small) else 0
+            if (isLoading) ResourceUtils.getDimenPxById(loadingIndicator!!.context, R.dimen.dialog_spacing_size_small) else 0
         titleView!!.setPadding(titleView!!.paddingLeft, titleView!!.paddingTop, endPadding, titleView!!.paddingBottom)
     }
 }

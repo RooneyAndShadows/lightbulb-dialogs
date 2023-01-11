@@ -1,12 +1,11 @@
 package com.github.rooneyandshadows.lightbulb.dialogs.picker_dialog_time
 
+import androidx.fragment.app.FragmentManager
 import androidx.lifecycle.LifecycleOwner
 import com.github.rooneyandshadows.lightbulb.dialogs.base.BaseDialogBuilder
 import com.github.rooneyandshadows.lightbulb.dialogs.base.BasePickerDialogFragment.SelectionChangedListener
-import androidx.fragment.app.FragmentManager
-import com.github.rooneyandshadows.lightbulb.dialogs.base.internal.DialogButtonConfiguration
-import com.github.rooneyandshadows.lightbulb.dialogs.base.internal.callbacks.*
 import com.github.rooneyandshadows.lightbulb.dialogs.base.internal.*
+import com.github.rooneyandshadows.lightbulb.dialogs.base.internal.callbacks.*
 
 @Suppress("unused")
 class TimePickerDialogBuilder @JvmOverloads constructor(
@@ -98,13 +97,7 @@ class TimePickerDialogBuilder @JvmOverloads constructor(
 
     @Override
     override fun buildDialog(): TimePickerDialog {
-        val dialogFragment = dialogParentFragmentManager.findFragmentByTag(dialogTag) as TimePickerDialog?
-        return dialogFragment ?: TimePickerDialog.newInstance(
-            positiveButtonConfiguration,
-            negativeButtonConfiguration,
-            cancelableOnClickOutside,
-            animation
-        ).apply {
+        return getExistingDialogOrCreate().apply {
             setLifecycleOwner(dialogLifecycleOwner)
             setDialogCallbacks(dialogListeners)
             setParentFragManager(dialogParentFragmentManager)
@@ -116,6 +109,16 @@ class TimePickerDialogBuilder @JvmOverloads constructor(
             onShowListener?.apply { addOnShowListener(this) }
             onHideListener?.apply { addOnHideListener(this) }
             onCancelListener?.apply { addOnCancelListener(this) }
+        }
+    }
+
+    private fun getExistingDialogOrCreate(): TimePickerDialog {
+        val dialog = dialogParentFragmentManager.findFragmentByTag(dialogTag) as TimePickerDialog?
+        return dialog ?: TimePickerDialog.newInstance().apply {
+            dialogPositiveButton = positiveButtonConfiguration
+            dialogNegativeButton = negativeButtonConfiguration
+            isCancelable = cancelableOnClickOutside
+            dialogAnimationType = animation
         }
     }
 }

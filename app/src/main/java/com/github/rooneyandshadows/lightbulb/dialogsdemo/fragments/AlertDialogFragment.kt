@@ -2,7 +2,6 @@ package com.github.rooneyandshadows.lightbulb.dialogsdemo.fragments
 
 import android.os.Bundle
 import android.view.View
-import com.github.rooneyandshadows.lightbulb.annotation_processors.annotations.BindView
 import com.github.rooneyandshadows.lightbulb.annotation_processors.annotations.FragmentConfiguration
 import com.github.rooneyandshadows.lightbulb.annotation_processors.annotations.FragmentScreen
 import com.github.rooneyandshadows.lightbulb.application.activity.BaseActivity
@@ -21,32 +20,32 @@ import com.github.rooneyandshadows.lightbulb.dialogsdemo.activity.MenuConfigurat
 import com.github.rooneyandshadows.lightbulb.dialogsdemo.databinding.FragmentDemoDialogAlertBinding
 import com.github.rooneyandshadows.lightbulb.dialogsdemo.spinner.DialogAnimationTypeSpinner
 import com.github.rooneyandshadows.lightbulb.dialogsdemo.spinner.DialogTypeSpinner
-import com.github.rooneyandshadows.lightbulb.textinputview.TextInputView
-import com.google.android.material.button.MaterialButton
 
 @FragmentScreen(screenName = "Alert", screenGroup = "Demo")
 @FragmentConfiguration(layoutName = "fragment_demo_dialog_alert", hasLeftDrawer = true)
 class AlertDialogFragment : BaseFragmentWithViewDataBinding<FragmentDemoDialogAlertBinding>() {
-    @BindView(name = "dialog_type_dropdown")
-    lateinit var dialogTypeSpinner: DialogTypeSpinner
-
-    @BindView(name = "dialog_animation_type_dropdown")
-    lateinit var dialogAnimationTypeSpinner: DialogAnimationTypeSpinner
-
-    @BindView(name = "dialog_title_textview")
-    lateinit var titleTextInputView: TextInputView
-
-    @BindView(name = "dialog_message_textview")
-    lateinit var messageTextInputView: TextInputView
-
-    @BindView(name = "show_button")
-    lateinit var showButton: MaterialButton
-
-    private var alertDialog: AlertDialog? = null
+    private lateinit var alertDialog: AlertDialog
 
     companion object {
         private const val DIALOG_TAG = "ALERT_DIALOG_TAG"
     }
+
+    @Override
+    override fun onViewBound(viewBinding: FragmentDemoDialogAlertBinding) {
+        val typeSpinner = viewBinding.dialogTypeDropdown
+        val animationTypeSpinner = viewBinding.dialogAnimationTypeDropdown
+        initializeDialog(typeSpinner, animationTypeSpinner)
+        typeSpinner.apply {
+            setLifecycleOwner(this@AlertDialogFragment)
+            this.animationTypeSpinner = viewBinding.dialogAnimationTypeDropdown
+        }
+        animationTypeSpinner.apply {
+            setLifecycleOwner(this@AlertDialogFragment)
+            this.typeSpinner = viewBinding.dialogTypeDropdown
+        }
+        viewBinding.dialog = alertDialog
+    }
+
 
     @Override
     override fun configureActionBar(): ActionBarConfiguration {
@@ -61,8 +60,6 @@ class AlertDialogFragment : BaseFragmentWithViewDataBinding<FragmentDemoDialogAl
 
     @Override
     override fun doOnViewCreated(fragmentView: View, savedInstanceState: Bundle?) {
-        initializeViews()
-        initializeDialog()
         if (getFragmentState() === FragmentStates.CREATED) {
             BaseActivity.updateMenuConfiguration(
                 requireContext(),
@@ -72,40 +69,25 @@ class AlertDialogFragment : BaseFragmentWithViewDataBinding<FragmentDemoDialogAl
         setupDrawerButton()
     }
 
-    fun initializeDialog() {
+    fun initializeDialog(typeSpinner: DialogTypeSpinner, animationTypeSpinner: DialogAnimationTypeSpinner) {
+        val ctx = requireContext()
+        val title = ResourceUtils.getPhrase(ctx, R.string.demo_dialog_default_title_text)
+        val message = ResourceUtils.getPhrase(ctx, R.string.demo_dialog_default_message_text)
         val positiveText = ResourceUtils.getPhrase(requireContext(), R.string.demo_dialog_positive_button)
         val negativeText = ResourceUtils.getPhrase(requireContext(), R.string.demo_dialog_negative_button)
         alertDialog = AlertDialogBuilder(this, childFragmentManager, DIALOG_TAG)
-            .withTitle(titleTextInputView.text)
-            .withMessage(messageTextInputView.text)
+            .withTitle(title)
+            .withMessage(message)
             .withPositiveButton(DialogButtonConfiguration(positiveText), object : DialogButtonClickListener {
-                override fun doOnClick(buttonView: View?, dialogFragment: BaseDialogFragment) {
-                }
+                override fun doOnClick(buttonView: View?, dialogFragment: BaseDialogFragment) {}
             })
             .withNegativeButton(DialogButtonConfiguration(negativeText), object : DialogButtonClickListener {
-                override fun doOnClick(buttonView: View?, dialogFragment: BaseDialogFragment) {
-                }
+                override fun doOnClick(buttonView: View?, dialogFragment: BaseDialogFragment) {}
             })
             .buildDialog().apply {
-                dialogTypeSpinner.dialog = this
-                dialogAnimationTypeSpinner.dialog = this
+                typeSpinner.dialog = this
+                animationTypeSpinner.dialog = this
             }
-    }
-
-    fun initializeViews() {
-        titleTextInputView.addTextChangedCallback { new, _ -> alertDialog!!.title = new }
-        messageTextInputView.addTextChangedCallback { new, _ -> alertDialog!!.message = new }
-        dialogTypeSpinner.apply {
-            setLifecycleOwner(this@AlertDialogFragment)
-            animationTypeSpinner = dialogAnimationTypeSpinner
-        }
-        dialogAnimationTypeSpinner.apply {
-            setLifecycleOwner(this@AlertDialogFragment)
-            typeSpinner = dialogTypeSpinner
-        }
-        showButton.setOnClickListener {
-            alertDialog!!.show()
-        }
     }
 
     private fun setupDrawerButton() {

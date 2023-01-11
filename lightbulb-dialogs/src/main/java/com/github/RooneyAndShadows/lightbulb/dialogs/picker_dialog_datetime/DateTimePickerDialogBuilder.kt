@@ -94,15 +94,9 @@ class DateTimePickerDialogBuilder @JvmOverloads constructor(
         return this
     }
 
+    @Override
     override fun buildDialog(): DateTimePickerDialog {
-        val dialogFragment = dialogParentFragmentManager.findFragmentByTag(dialogTag) as DateTimePickerDialog?
-        return dialogFragment ?: DateTimePickerDialog.newInstance(
-            positiveButtonConfiguration,
-            negativeButtonConfiguration,
-            dateFormat,
-            cancelableOnClickOutside,
-            animation
-        ).apply {
+        return getExistingDialogOrCreate().apply {
             setLifecycleOwner(dialogLifecycleOwner)
             setDialogCallbacks(dialogListeners)
             setParentFragManager(dialogParentFragmentManager)
@@ -110,10 +104,21 @@ class DateTimePickerDialogBuilder @JvmOverloads constructor(
             onNegativeClickListener?.apply { addOnNegativeClickListeners(this) }
             onPositiveClickListener?.apply { addOnPositiveClickListener(this) }
             dateSetListener?.apply { setOnSelectionChangedListener(this) }
-            setSelection(initialDate)
             onShowListener?.apply { addOnShowListener(this) }
             onHideListener?.apply { addOnHideListener(this) }
             onCancelListener?.apply { addOnCancelListener(this) }
+            setSelection(initialDate)
+        }
+    }
+
+    private fun getExistingDialogOrCreate(): DateTimePickerDialog {
+        val dialog = dialogParentFragmentManager.findFragmentByTag(dialogTag) as DateTimePickerDialog?
+        return dialog ?: DateTimePickerDialog.newInstance().apply {
+            dialogAnimationType = animation
+            isCancelable = cancelableOnClickOutside
+            dialogNegativeButton = negativeButtonConfiguration
+            dialogPositiveButton = positiveButtonConfiguration
+            dateFormat?.apply { dialogDateFormat = this }
         }
     }
 }

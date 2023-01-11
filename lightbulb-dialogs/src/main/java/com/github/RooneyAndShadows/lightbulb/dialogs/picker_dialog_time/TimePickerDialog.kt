@@ -10,11 +10,10 @@ import com.github.rooneyandshadows.java.commons.date.DateUtilsOffsetDate
 import com.github.rooneyandshadows.lightbulb.dialogs.R
 import com.github.rooneyandshadows.lightbulb.dialogs.base.internal.DialogAnimationTypes
 import com.github.rooneyandshadows.lightbulb.dialogs.base.internal.DialogBundleHelper
-import com.github.rooneyandshadows.lightbulb.dialogs.base.internal.DialogButtonConfiguration
 import com.github.rooneyandshadows.lightbulb.dialogs.base.internal.DialogTypes
 import java.time.OffsetDateTime
 
-@Suppress("unused")
+@Suppress("unused", "UNUSED_PARAMETER")
 class TimePickerDialog : BasePickerDialogFragment<IntArray?>(
     TimeSelection(
         intArrayOf(
@@ -25,35 +24,23 @@ class TimePickerDialog : BasePickerDialogFragment<IntArray?>(
 ) {
     private lateinit var picker: TimePicker
     private val ignorePickerEvent = false
+    override var dialogType: DialogTypes
+        get() = DialogTypes.NORMAL
+        set(value) {}
 
     companion object {
         private const val TIME_SELECTION_TAG = "TIME_SELECTION_TAG"
         private const val TIME_SELECTION_DRAFT_TAG = "TIME_SELECTION_DRAFT_TAG"
-        fun newInstance(
-            positive: DialogButtonConfiguration?,
-            negative: DialogButtonConfiguration?,
-            cancelable: Boolean,
-            animationType: DialogAnimationTypes = DialogAnimationTypes.NO_ANIMATION,
-        ): TimePickerDialog {
-            return TimePickerDialog().apply {
-                this.arguments = DialogBundleHelper().apply {
-                    withPositiveButtonConfig(positive)
-                    withNegativeButtonConfig(negative)
-                    withCancelable(cancelable)
-                    withShowing(false)
-                    withDialogType(DialogTypes.NORMAL)
-                    withAnimation(animationType)
-                }.bundle
-            }
+        fun newInstance(): TimePickerDialog {
+            return TimePickerDialog()
         }
     }
 
     @Override
     override fun doOnCreate(dialogArguments: Bundle?, savedInstanceState: Bundle?) {
         if (savedInstanceState == null) {
-            requireNotNull(dialogArguments) { "Bundle args required" }
-            if (hasSelection()) selection.setCurrentSelection(selection.getCurrentSelection())
-            else selection.setCurrentSelection(dialogArguments.getIntArray(TIME_SELECTION_TAG))
+            if (hasSelection())
+                selection.setCurrentSelection(selection.getCurrentSelection())
         } else {
             selection.setCurrentSelection(savedInstanceState.getIntArray(TIME_SELECTION_TAG), false)
             selection.setDraftSelection(savedInstanceState.getIntArray(TIME_SELECTION_DRAFT_TAG), false)

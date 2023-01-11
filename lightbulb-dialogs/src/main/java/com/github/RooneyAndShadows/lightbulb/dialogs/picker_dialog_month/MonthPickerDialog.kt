@@ -5,29 +5,27 @@ import android.os.Bundle
 import android.view.LayoutInflater
 import android.view.View
 import android.widget.TextView
-import com.github.rooneyandshadows.lightbulb.commons.utils.ResourceUtils
-import com.github.rooneyandshadows.lightbulb.dialogs.base.BasePickerDialogFragment
 import com.github.rooneyandshadows.java.commons.date.DateUtilsOffsetDate
-import com.github.rooneyandshadows.java.commons.string.StringUtils
 import com.github.rooneyandshadows.lightbulb.calendars.month.MonthCalendarView
+import com.github.rooneyandshadows.lightbulb.commons.utils.ResourceUtils
 import com.github.rooneyandshadows.lightbulb.dialogs.R
-import com.github.rooneyandshadows.lightbulb.dialogs.base.internal.DialogAnimationTypes
-import com.github.rooneyandshadows.lightbulb.dialogs.base.internal.DialogBundleHelper
-import com.github.rooneyandshadows.lightbulb.dialogs.base.internal.DialogButtonConfiguration
+import com.github.rooneyandshadows.lightbulb.dialogs.base.BasePickerDialogFragment
 import com.github.rooneyandshadows.lightbulb.dialogs.base.internal.DialogTypes
 import java.time.OffsetDateTime
 import java.util.*
-import kotlin.collections.ArrayList
 
-@Suppress("unused", "MemberVisibilityCanBePrivate")
+@Suppress("unused", "MemberVisibilityCanBePrivate", "UNUSED_PARAMETER")
 class MonthPickerDialog : BasePickerDialogFragment<IntArray?>(MonthSelection(null, null)) {
-    private var dateFormat = "MMMM YYYY"
     private var minYear = 1970
     private var maxYear = 2100
     private var disabledMonths: MutableList<IntArray>? = null
     private var enabledMonths: MutableList<IntArray>? = null
     private lateinit var monthCalendar: MonthCalendarView
     private lateinit var pickerHeadingSelectionTextView: TextView
+    var dialogDateFormat = "MMMM YYYY"
+    override var dialogType: DialogTypes
+        get() = DialogTypes.NORMAL
+        set(value) {}
 
     companion object {
         private const val DATE_FORMAT_TAG = "DATE_FORMAT_TEXT"
@@ -38,40 +36,22 @@ class MonthPickerDialog : BasePickerDialogFragment<IntArray?>(MonthSelection(nul
         private const val PICKER_DISABLED_MONTHS = "PICKER_DISABLED_MONTHS"
         private const val PICKER_ENABLED_MONTHS = "PICKER_ENABLED_MONTHS"
         private const val MONTH_CALENDAR_SHOWN_YEAR = "MONTH_PICKER_SHOWN_YEAR"
-        fun newInstance(
-            positive: DialogButtonConfiguration?,
-            negative: DialogButtonConfiguration?,
-            dateFormat: String?,
-            cancelable: Boolean,
-            animationType: DialogAnimationTypes = DialogAnimationTypes.NO_ANIMATION,
-        ): MonthPickerDialog {
-            return MonthPickerDialog().apply {
-                this.arguments = DialogBundleHelper().apply {
-                    withPositiveButtonConfig(positive)
-                    withNegativeButtonConfig(negative)
-                    withCancelable(cancelable)
-                    withShowing(false)
-                    withDialogType(DialogTypes.NORMAL)
-                    withAnimation(animationType)
-                }.bundle.apply {
-                    putString(DATE_FORMAT_TAG, dateFormat)
-                }
-            }
+        fun newInstance(): MonthPickerDialog {
+            return MonthPickerDialog()
         }
     }
 
     @Override
     override fun doOnCreate(dialogArguments: Bundle?, savedInstanceState: Bundle?) {
         if (savedInstanceState == null) {
-            requireNotNull(dialogArguments) { "Bundle args required" }
-            dateFormat = StringUtils.getOrDefault(dialogArguments.getString(DATE_FORMAT_TAG), dateFormat)
-            if (hasSelection()) selection.setCurrentSelection(selection.getCurrentSelection())
-            else selection.setCurrentSelection(dialogArguments.getIntArray(MONTH_SELECTION_TAG))
+            if (hasSelection())
+                selection.setCurrentSelection(selection.getCurrentSelection())
         } else {
             selection.setCurrentSelection(savedInstanceState.getIntArray(MONTH_SELECTION_TAG), false)
             selection.setDraftSelection(savedInstanceState.getIntArray(MONTH_SELECTION_DRAFT_TAG), false)
             minYear = savedInstanceState.getInt(PICKER_MIN_YEAR)
             maxYear = savedInstanceState.getInt(PICKER_MAX_YEAR)
+            dialogDateFormat = savedInstanceState.getString(DATE_FORMAT_TAG, dialogDateFormat)
             val previouslyEnabled = savedInstanceState.getStringArrayList(PICKER_ENABLED_MONTHS)
             val previouslyDisabled = savedInstanceState.getStringArrayList(PICKER_DISABLED_MONTHS)
             if (previouslyEnabled == null && previouslyDisabled == null)
@@ -127,6 +107,7 @@ class MonthPickerDialog : BasePickerDialogFragment<IntArray?>(MonthSelection(nul
                 putStringArrayList(PICKER_DISABLED_MONTHS, ArrayList(disabled))
             }
             putInt(MONTH_CALENDAR_SHOWN_YEAR, monthCalendar.currentShownYear)
+            putString(DATE_FORMAT_TAG, dialogDateFormat)
         }
     }
 
@@ -159,7 +140,7 @@ class MonthPickerDialog : BasePickerDialogFragment<IntArray?>(MonthSelection(nul
         else monthCalendar.setSelectedMonthAndScrollToYear(newValue[0], newValue[1])
         val date = if (newValue == null) null else DateUtilsOffsetDate.date(newValue[0], newValue[1])
         val ctx = pickerHeadingSelectionTextView.context
-        var dateString = DateUtilsOffsetDate.getDateString(dateFormat, date, Locale.getDefault())
+        var dateString = DateUtilsOffsetDate.getDateString(dialogDateFormat, date, Locale.getDefault())
         if (dateString.isNullOrBlank()) dateString = ResourceUtils.getPhrase(ctx, R.string.dialog_month_picker_empty_text)
         pickerHeadingSelectionTextView.text = dateString
     }

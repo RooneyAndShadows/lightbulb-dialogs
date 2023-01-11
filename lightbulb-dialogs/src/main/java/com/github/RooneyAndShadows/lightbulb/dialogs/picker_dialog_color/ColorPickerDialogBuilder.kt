@@ -1,9 +1,9 @@
 package com.github.rooneyandshadows.lightbulb.dialogs.picker_dialog_color
 
+import androidx.fragment.app.FragmentManager
 import androidx.lifecycle.LifecycleOwner
 import com.github.rooneyandshadows.lightbulb.dialogs.base.BaseDialogBuilder
 import com.github.rooneyandshadows.lightbulb.dialogs.base.BasePickerDialogFragment.SelectionChangedListener
-import androidx.fragment.app.FragmentManager
 import com.github.rooneyandshadows.lightbulb.dialogs.base.internal.*
 import com.github.rooneyandshadows.lightbulb.dialogs.base.internal.callbacks.*
 
@@ -90,27 +90,31 @@ class ColorPickerDialogBuilder @JvmOverloads constructor(
     }
 
     override fun buildDialog(): ColorPickerDialog {
-        val colorPickerDialog = dialogParentFragmentManager.findFragmentByTag(dialogTag) as ColorPickerDialog?
-        return colorPickerDialog ?: ColorPickerDialog.newInstance(
-            title,
-            message,
-            positiveButtonConfiguration,
-            negativeButtonConfiguration,
-            cancelableOnClickOutside,
-            animation
-        ).apply {
+        return getExistingDialogOrCreate().apply {
             setLifecycleOwner(dialogLifecycleOwner)
             setDialogCallbacks(dialogListeners)
             setParentFragManager(dialogParentFragmentManager)
             setDialogTag(dialogTag)
+            setAdapter(adapter)
             onShowListener?.apply { addOnShowListener(this) }
             onHideListener?.apply { addOnHideListener(this) }
             onCancelListener?.apply { addOnCancelListener(this) }
             onNegativeClickListener?.apply { addOnNegativeClickListeners(this) }
             onPositiveClickListener?.apply { addOnPositiveClickListener(this) }
-            setAdapter(adapter)
             changedCallback?.apply { setOnSelectionChangedListener(this) }
             setSelection(selection)
+        }
+    }
+
+    private fun getExistingDialogOrCreate(): ColorPickerDialog {
+        val dialog = dialogParentFragmentManager.findFragmentByTag(dialogTag) as ColorPickerDialog?
+        return dialog ?: ColorPickerDialog.newInstance().apply {
+            dialogTitle = title
+            dialogMessage = message
+            dialogAnimationType = animation
+            isCancelable = cancelableOnClickOutside
+            dialogNegativeButton = negativeButtonConfiguration
+            dialogPositiveButton = positiveButtonConfiguration
         }
     }
 }

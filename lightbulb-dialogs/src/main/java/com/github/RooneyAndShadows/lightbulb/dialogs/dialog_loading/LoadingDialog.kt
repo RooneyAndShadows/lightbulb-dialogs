@@ -10,6 +10,17 @@ import com.github.rooneyandshadows.lightbulb.dialogs.base.internal.DialogBundleH
 import com.github.rooneyandshadows.lightbulb.dialogs.base.internal.DialogTypes
 
 class LoadingDialog : BaseDialogFragment() {
+    companion object {
+        fun newInstance(): LoadingDialog {
+            return LoadingDialog()
+        }
+    }
+
+    @Override
+    override fun isCancelable(): Boolean {
+        return false
+    }
+
     @Override
     override fun getDialogLayout(layoutInflater: LayoutInflater): View {
         return View.inflate(context, R.layout.dialog_loading_normal, null)
@@ -17,25 +28,5 @@ class LoadingDialog : BaseDialogFragment() {
 
     @Override
     override fun configureContent(view: View, savedInstanceState: Bundle?) {
-    }
-
-    companion object {
-        fun newInstance(
-            title: String?,
-            message: String?,
-            dialogType: DialogTypes = DialogTypes.NORMAL,
-            animationType: DialogAnimationTypes = DialogAnimationTypes.NO_ANIMATION,
-        ): LoadingDialog {
-            return LoadingDialog().apply {
-                this.arguments = DialogBundleHelper().apply {
-                    withTitle(title)
-                    withMessage(message)
-                    withCancelable(false)
-                    withShowing(false)
-                    withDialogType(dialogType)
-                    withAnimation(animationType)
-                }.bundle
-            }
-        }
     }
 }

@@ -20,7 +20,7 @@ abstract class BaseDialogBuilder<DialogType : BaseDialogFragment?> @JvmOverloads
     protected var onHideListener: DialogHideListener? = null
     protected var onCancelListener: DialogCancelListener? = null
     protected var animation: DialogAnimationTypes = DialogAnimationTypes.NO_ANIMATION
-    protected var dialogType: DialogTypes = DialogTypes.NORMAL
+    protected var type: DialogTypes = DialogTypes.NORMAL
     protected var dialogListeners: DialogListeners? = null
     protected var cancelableOnClickOutside = true
 
@@ -73,7 +73,7 @@ abstract class BaseDialogBuilder<DialogType : BaseDialogFragment?> @JvmOverloads
     }
 
     open fun withDialogType(dialogType: DialogTypes): BaseDialogBuilder<DialogType> {
-        this.dialogType = dialogType
+        this.type = dialogType
         return this
     }
 

@@ -105,29 +105,33 @@ class AdapterPickerDialogBuilder<ModelType : EasyAdapterDataModel> @JvmOverloads
     }
 
     override fun buildDialog(): AdapterPickerDialog<ModelType> {
-        val dialogFragment = dialogParentFragmentManager.findFragmentByTag(dialogTag) as AdapterPickerDialog<ModelType>?
-        return dialogFragment ?: AdapterPickerDialog.newInstance<ModelType>(
-            title,
-            message,
-            positiveButtonConfiguration,
-            negativeButtonConfiguration,
-            cancelableOnClickOutside,
-            dialogType,
-            animation
-        ).apply {
+        return getExistingDialogOrCreate().apply {
             setLifecycleOwner(dialogLifecycleOwner)
             setDialogCallbacks(dialogListeners)
             setParentFragManager(dialogParentFragmentManager)
             setDialogTag(dialogTag)
+            setAdapter(adapter)
             onNegativeClickListener?.apply { addOnNegativeClickListeners(this) }
             onPositiveClickListener?.apply { addOnPositiveClickListener(this) }
             onShowListener?.apply { addOnShowListener(this) }
             onHideListener?.apply { addOnHideListener(this) }
             onCancelListener?.apply { addOnCancelListener(this) }
-            setAdapter(adapter)
             changedCallback?.apply { setOnSelectionChangedListener(this) }
             setSelection(selection)
             setItemDecoration(itemDecoration)
+        }
+    }
+
+    private fun getExistingDialogOrCreate(): AdapterPickerDialog<ModelType> {
+        val dialog = dialogParentFragmentManager.findFragmentByTag(dialogTag) as AdapterPickerDialog<ModelType>?
+        return dialog ?: AdapterPickerDialog.newInstance<ModelType>().apply {
+            dialogTitle = title
+            dialogMessage = message
+            dialogType = type
+            dialogAnimationType = animation
+            isCancelable = cancelableOnClickOutside
+            dialogNegativeButton = negativeButtonConfiguration
+            dialogPositiveButton = positiveButtonConfiguration
         }
     }
 }

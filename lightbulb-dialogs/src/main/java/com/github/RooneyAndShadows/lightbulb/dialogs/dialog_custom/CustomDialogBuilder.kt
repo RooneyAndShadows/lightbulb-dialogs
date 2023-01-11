@@ -6,6 +6,7 @@ import com.github.rooneyandshadows.lightbulb.dialogs.dialog_custom.CustomDialog.
 import androidx.fragment.app.FragmentManager
 import com.github.rooneyandshadows.lightbulb.dialogs.base.internal.*
 import com.github.rooneyandshadows.lightbulb.dialogs.base.internal.callbacks.*
+import com.github.rooneyandshadows.lightbulb.dialogs.dialog_alert.AlertDialog
 
 @Suppress("UNCHECKED_CAST")
 class CustomDialogBuilder<DialogType : CustomDialog> @JvmOverloads constructor(
@@ -85,11 +86,7 @@ class CustomDialogBuilder<DialogType : CustomDialog> @JvmOverloads constructor(
 
     @Override
     override fun buildDialog(): CustomDialog {
-        val dialogFragment = dialogParentFragmentManager.findFragmentByTag(dialogTag) as DialogType?
-        return dialogFragment ?: dialogInitializer.initialize(
-            title, message, positiveButtonConfiguration, negativeButtonConfiguration,
-            cancelableOnClickOutside, loading, dialogType, animation
-        ).apply {
+        return getExistingDialogOrCreate().apply {
             setLifecycleOwner(dialogLifecycleOwner)
             setDialogInflater(dialogInflater)
             setDialogCallbacks(dialogListeners)
@@ -103,16 +100,21 @@ class CustomDialogBuilder<DialogType : CustomDialog> @JvmOverloads constructor(
         }
     }
 
+    private fun getExistingDialogOrCreate(): DialogType {
+        val dialog = dialogParentFragmentManager.findFragmentByTag(dialogTag) as DialogType?
+        return dialog ?: dialogInitializer.initialize().apply {
+            dialogTitle = title
+            dialogMessage = message
+            dialogType = type
+            dialogAnimationType = animation
+            isCancelable = cancelableOnClickOutside
+            dialogNegativeButton = negativeButtonConfiguration
+            dialogPositiveButton = positiveButtonConfiguration
+            isLoading = loading
+        }
+    }
+
     interface CustomDialogInitializer<DialogType : CustomDialog> {
-        fun initialize(
-            title: String?,
-            message: String?,
-            positiveButtonConfiguration: DialogButtonConfiguration?,
-            negativeButtonConfiguration: DialogButtonConfiguration?,
-            cancelable: Boolean,
-            loading: Boolean,
-            dialogType: DialogTypes?,
-            animationType: DialogAnimationTypes?
-        ): DialogType
+        fun initialize(): DialogType
     }
 }

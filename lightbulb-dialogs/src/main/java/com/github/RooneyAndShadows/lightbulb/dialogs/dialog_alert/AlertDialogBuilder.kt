@@ -3,7 +3,6 @@ package com.github.rooneyandshadows.lightbulb.dialogs.dialog_alert
 import androidx.lifecycle.LifecycleOwner
 import com.github.rooneyandshadows.lightbulb.dialogs.base.BaseDialogBuilder
 import androidx.fragment.app.FragmentManager
-import com.github.rooneyandshadows.lightbulb.dialogs.base.internal.DialogButtonConfiguration
 import com.github.rooneyandshadows.lightbulb.dialogs.base.internal.callbacks.*
 import com.github.rooneyandshadows.lightbulb.dialogs.base.internal.*
 
@@ -76,16 +75,7 @@ class AlertDialogBuilder @JvmOverloads constructor(
 
     @Override
     override fun buildDialog(): AlertDialog {
-        val alertDialog = dialogParentFragmentManager.findFragmentByTag(dialogTag) as AlertDialog?
-        return alertDialog ?: AlertDialog.newInstance(
-            title,
-            message,
-            positiveButtonConfiguration,
-            negativeButtonConfiguration,
-            cancelableOnClickOutside,
-            dialogType,
-            animation
-        ).apply {
+        return getExistingDialogOrCreate().apply {
             setLifecycleOwner(dialogLifecycleOwner)
             setParentFragManager(dialogParentFragmentManager)
             setDialogTag(dialogTag)
@@ -94,6 +84,19 @@ class AlertDialogBuilder @JvmOverloads constructor(
             onCancelListener?.apply { addOnCancelListener(this) }
             onNegativeClickListener?.apply { addOnNegativeClickListeners(this) }
             onPositiveClickListener?.apply { addOnPositiveClickListener(this) }
+        }
+    }
+
+    private fun getExistingDialogOrCreate(): AlertDialog {
+        val dialog = dialogParentFragmentManager.findFragmentByTag(dialogTag) as AlertDialog?
+        return dialog ?: AlertDialog.newInstance().apply {
+            dialogTitle = title
+            dialogMessage = message
+            dialogType = type
+            dialogAnimationType = animation
+            isCancelable = cancelableOnClickOutside
+            dialogNegativeButton = negativeButtonConfiguration
+            dialogPositiveButton = positiveButtonConfiguration
         }
     }
 }

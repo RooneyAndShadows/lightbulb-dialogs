@@ -38,7 +38,7 @@ class DialogTypeSpinner @JvmOverloads constructor(
             override fun onItemSelected(parent: AdapterView<*>?, view: View?, position: Int, id: Long) {
                 val adapter = adapter as DialogPropertyAdapter
                 val dialogType = DialogTypes.valueOf(adapter.getItem(position).value)
-                dialog?.setDialogType(dialogType)
+                dialog?.dialogType = dialogType
                 (animationTypeSpinner?.selectedItem as DialogPropertyItem?)?.apply {
                     val currentAnimation = DialogAnimationTypes.valueOf(value)
                     if (dialogType == DialogTypes.BOTTOM_SHEET && currentAnimation != TRANSITION_FROM_BOTTOM_TO_BOTTOM) {

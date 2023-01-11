@@ -5,51 +5,31 @@ import android.graphics.Rect
 import android.os.Bundle
 import android.view.View
 import android.view.Window
-import com.github.rooneyandshadows.lightbulb.dialogs.base.constraints.regular.RegularDialogConstraintsBuilder
-import com.github.rooneyandshadows.lightbulb.dialogs.base.constraints.regular.RegularDialogConstraints
-import com.github.rooneyandshadows.lightbulb.commons.utils.ResourceUtils
-import com.github.rooneyandshadows.lightbulb.dialogs.picker_dialog_adapter.AdapterPickerDialog
-import com.github.rooneyandshadows.lightbulb.dialogs.picker_dialog_icon.IconPickerAdapter.IconModel
 import androidx.recyclerview.widget.GridLayoutManager
 import androidx.recyclerview.widget.RecyclerView
-import com.github.rooneyandshadows.lightbulb.dialogs.base.internal.DialogAnimationTypes
-import com.github.rooneyandshadows.lightbulb.dialogs.base.internal.DialogBundleHelper
-import com.github.rooneyandshadows.lightbulb.dialogs.base.internal.DialogButtonConfiguration
+import com.github.rooneyandshadows.lightbulb.commons.utils.ResourceUtils
+import com.github.rooneyandshadows.lightbulb.dialogs.base.constraints.regular.RegularDialogConstraints
+import com.github.rooneyandshadows.lightbulb.dialogs.base.constraints.regular.RegularDialogConstraintsBuilder
 import com.github.rooneyandshadows.lightbulb.dialogs.base.internal.DialogTypes
-import com.github.rooneyandshadows.lightbulb.dialogs.picker_dialog_color.ColorPickerAdapter
-import java.util.ArrayList
+import com.github.rooneyandshadows.lightbulb.dialogs.picker_dialog_adapter.AdapterPickerDialog
+import com.github.rooneyandshadows.lightbulb.dialogs.picker_dialog_icon.IconPickerAdapter.IconModel
 import java.util.function.Predicate
 import kotlin.math.ceil
 import kotlin.math.max
 import kotlin.math.min
 
-@Suppress("unused")
+@Suppress("unused", "UNUSED_PARAMETER")
 class IconPickerDialog : AdapterPickerDialog<IconModel>() {
     private var spans = 0
     private var lastVisibleItemPosition = -1
+    override var dialogType: DialogTypes
+        get() = DialogTypes.NORMAL
+        set(value) {}
 
     companion object {
         private val iconSize = ResourceUtils.dpToPx(50)
-        fun newInstance(
-            title: String?,
-            message: String?,
-            positive: DialogButtonConfiguration?,
-            negative: DialogButtonConfiguration?,
-            cancelable: Boolean,
-            animationType: DialogAnimationTypes = DialogAnimationTypes.NO_ANIMATION,
-        ): IconPickerDialog {
-            return IconPickerDialog().apply {
-                this.arguments = DialogBundleHelper().apply {
-                    withTitle(title)
-                    withMessage(message)
-                    withPositiveButtonConfig(positive)
-                    withNegativeButtonConfig(negative)
-                    withCancelable(cancelable)
-                    withShowing(false)
-                    withDialogType(DialogTypes.NORMAL)
-                    withAnimation(animationType)
-                }.bundle
-            }
+        fun newInstance(): IconPickerDialog {
+            return IconPickerDialog()
         }
     }
 

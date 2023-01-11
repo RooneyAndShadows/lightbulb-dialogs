@@ -17,10 +17,6 @@ import androidx.recyclerview.widget.RecyclerView
 import com.github.rooneyandshadows.lightbulb.recycleradapters.abstraction.EasyAdapterDataModel
 import com.github.rooneyandshadows.lightbulb.dialogs.base.BasePickerDialogFragment
 import com.github.rooneyandshadows.lightbulb.dialogs.R
-import com.github.rooneyandshadows.lightbulb.dialogs.base.internal.DialogAnimationTypes
-import com.github.rooneyandshadows.lightbulb.dialogs.base.internal.DialogBundleHelper
-import com.github.rooneyandshadows.lightbulb.dialogs.base.internal.DialogButtonConfiguration
-import com.github.rooneyandshadows.lightbulb.dialogs.base.internal.DialogTypes
 import com.github.rooneyandshadows.lightbulb.recycleradapters.abstraction.callbacks.EasyAdapterSelectionChangedListener
 
 @Suppress("unused")
@@ -35,27 +31,8 @@ open class AdapterPickerDialog<ItemType : EasyAdapterDataModel> :
     private val selectionListener: EasyAdapterSelectionChangedListener
 
     companion object {
-        fun <ItemType : EasyAdapterDataModel> newInstance(
-            title: String?,
-            message: String?,
-            positive: DialogButtonConfiguration?,
-            negative: DialogButtonConfiguration?,
-            cancelable: Boolean = true,
-            dialogType: DialogTypes = DialogTypes.NORMAL,
-            animationType: DialogAnimationTypes = DialogAnimationTypes.NO_ANIMATION,
-        ): AdapterPickerDialog<ItemType> {
-            return AdapterPickerDialog<ItemType>().apply {
-                this.arguments = DialogBundleHelper().apply {
-                    withTitle(title)
-                    withMessage(message)
-                    withPositiveButtonConfig(positive)
-                    withNegativeButtonConfig(negative)
-                    withCancelable(cancelable)
-                    withShowing(false)
-                    withDialogType(dialogType)
-                    withAnimation(animationType)
-                }.bundle
-            }
+        fun <ItemType : EasyAdapterDataModel> newInstance(): AdapterPickerDialog<ItemType> {
+            return AdapterPickerDialog()
         }
     }
 

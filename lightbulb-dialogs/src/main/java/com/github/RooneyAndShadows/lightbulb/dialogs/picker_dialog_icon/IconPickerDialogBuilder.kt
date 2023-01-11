@@ -6,6 +6,7 @@ import com.github.rooneyandshadows.lightbulb.dialogs.base.BasePickerDialogFragme
 import androidx.fragment.app.FragmentManager
 import com.github.rooneyandshadows.lightbulb.dialogs.base.internal.*
 import com.github.rooneyandshadows.lightbulb.dialogs.base.internal.callbacks.*
+import com.github.rooneyandshadows.lightbulb.dialogs.picker_dialog_datetime.DateTimePickerDialog
 
 @Suppress("unused")
 class IconPickerDialogBuilder @JvmOverloads constructor(
@@ -88,16 +89,9 @@ class IconPickerDialogBuilder @JvmOverloads constructor(
         return this
     }
 
+    @Override
     override fun buildDialog(): IconPickerDialog {
-        val iconPickerDialog = dialogParentFragmentManager.findFragmentByTag(dialogTag) as IconPickerDialog?
-        return iconPickerDialog ?: IconPickerDialog.newInstance(
-            title,
-            message,
-            positiveButtonConfiguration,
-            negativeButtonConfiguration,
-            cancelableOnClickOutside,
-            animation
-        ).apply {
+        return getExistingDialogOrCreate().apply {
             setLifecycleOwner(dialogLifecycleOwner)
             setDialogCallbacks(dialogListeners)
             setParentFragManager(dialogParentFragmentManager)
@@ -110,6 +104,18 @@ class IconPickerDialogBuilder @JvmOverloads constructor(
             setAdapter(adapter)
             setOnSelectionChangedListener(changedCallback)
             setSelection(selection)
+        }
+    }
+
+    private fun getExistingDialogOrCreate(): IconPickerDialog {
+        val dialog = dialogParentFragmentManager.findFragmentByTag(dialogTag) as IconPickerDialog?
+        return dialog ?: IconPickerDialog.newInstance().apply {
+            dialogTitle = title
+            dialogMessage = message
+            dialogPositiveButton = positiveButtonConfiguration
+            dialogNegativeButton = negativeButtonConfiguration
+            isCancelable = cancelableOnClickOutside
+            dialogAnimationType = animation
         }
     }
 }

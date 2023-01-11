@@ -40,7 +40,7 @@ class DialogAnimationTypeSpinner @JvmOverloads constructor(
                 (typeSpinner?.selectedItem as DialogPropertyItem?)?.apply {
                     val selectedType = DialogTypes.valueOf(value)
                     if (selectedType != DialogTypes.BOTTOM_SHEET || desiredAnimation == TRANSITION_FROM_BOTTOM_TO_BOTTOM) {
-                        dialog?.setAnimationType(desiredAnimation)
+                        dialog?.dialogAnimationType = desiredAnimation
                     } else {
                         val message = ResourceUtils.getPhrase(
                             context,

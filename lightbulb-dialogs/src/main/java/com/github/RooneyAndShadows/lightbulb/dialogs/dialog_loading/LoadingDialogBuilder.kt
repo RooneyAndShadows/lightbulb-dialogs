@@ -1,10 +1,12 @@
 package com.github.rooneyandshadows.lightbulb.dialogs.dialog_loading
 
+import androidx.fragment.app.FragmentManager
 import androidx.lifecycle.LifecycleOwner
 import com.github.rooneyandshadows.lightbulb.dialogs.base.BaseDialogBuilder
-import androidx.fragment.app.FragmentManager
+import com.github.rooneyandshadows.lightbulb.dialogs.base.internal.DialogAnimationTypes
+import com.github.rooneyandshadows.lightbulb.dialogs.base.internal.DialogButtonConfiguration
+import com.github.rooneyandshadows.lightbulb.dialogs.base.internal.DialogTypes
 import com.github.rooneyandshadows.lightbulb.dialogs.base.internal.callbacks.*
-import com.github.rooneyandshadows.lightbulb.dialogs.base.internal.*
 
 class LoadingDialogBuilder @JvmOverloads constructor(
     lifecycleOwner: LifecycleOwner? = null,
@@ -75,8 +77,7 @@ class LoadingDialogBuilder @JvmOverloads constructor(
 
     @Override
     override fun buildDialog(): LoadingDialog {
-        val dialogFragment = dialogParentFragmentManager.findFragmentByTag(dialogTag) as LoadingDialog?
-        return dialogFragment ?: LoadingDialog.newInstance(title, message, dialogType, animation).apply {
+        return getExistingDialogOrCreate().apply {
             setLifecycleOwner(dialogLifecycleOwner)
             setDialogCallbacks(dialogListeners)
             setParentFragManager(dialogParentFragmentManager)
@@ -84,6 +85,16 @@ class LoadingDialogBuilder @JvmOverloads constructor(
             onShowListener?.apply { addOnShowListener(this) }
             onHideListener?.apply { addOnHideListener(this) }
             onCancelListener?.apply { addOnCancelListener(this) }
+        }
+    }
+
+    private fun getExistingDialogOrCreate(): LoadingDialog {
+        val dialog = dialogParentFragmentManager.findFragmentByTag(dialogTag) as LoadingDialog?
+        return dialog ?: LoadingDialog.newInstance().apply {
+            dialogTitle = title
+            dialogMessage = message
+            dialogType = type
+            dialogAnimationType = animation
         }
     }
 }

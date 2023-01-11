@@ -10,11 +10,7 @@ import com.github.rooneyandshadows.lightbulb.commons.utils.ResourceUtils
 import androidx.appcompat.widget.AppCompatImageButton
 import com.github.rooneyandshadows.lightbulb.dialogs.base.BasePickerDialogFragment
 import com.github.rooneyandshadows.java.commons.date.DateUtilsOffsetDate
-import com.github.rooneyandshadows.java.commons.string.StringUtils
 import com.github.rooneyandshadows.lightbulb.dialogs.R
-import com.github.rooneyandshadows.lightbulb.dialogs.base.internal.DialogAnimationTypes
-import com.github.rooneyandshadows.lightbulb.dialogs.base.internal.DialogBundleHelper
-import com.github.rooneyandshadows.lightbulb.dialogs.base.internal.DialogButtonConfiguration
 import com.github.rooneyandshadows.lightbulb.dialogs.base.internal.DialogTypes
 import com.prolificinteractive.materialcalendarview.MaterialCalendarView
 import com.prolificinteractive.materialcalendarview.CalendarDay
@@ -22,14 +18,18 @@ import java.time.OffsetDateTime
 import java.time.ZoneOffset
 import java.util.*
 
+@Suppress("UNUSED_PARAMETER")
 class DateTimePickerDialog : BasePickerDialogFragment<OffsetDateTime?>(DateTimeSelection(null, null)) {
-    private var dateFormat = "dd MMM HH:mm, yyyy"
     private var showingTimePicker = false
     private lateinit var calendarView: MaterialCalendarView
     private lateinit var timePickerView: TimePicker
     private lateinit var selectionTextValue: AppCompatTextView
     private lateinit var modeChangeButton: AppCompatImageButton
     private var zoneOffset = ZoneOffset.of(DateUtilsOffsetDate.getLocalTimeZone())
+    var dialogDateFormat = "dd MMM HH:mm, yyyy"
+    override var dialogType: DialogTypes
+        get() = DialogTypes.NORMAL
+        set(value) {}
 
     companion object {
         private const val SHOWING_TIME_PICKER_TAG = "SHOWING_TIME_PICKER_TAG"
@@ -37,44 +37,24 @@ class DateTimePickerDialog : BasePickerDialogFragment<OffsetDateTime?>(DateTimeS
         private const val DATE_SELECTION_TAG = "DATE_PICKER_SELECTION_TAG"
         private const val DATE_SELECTION_DRAFT_TAG = "DATE_PICKER_SELECTION_DRAFT_TAG"
         private const val DATE_OFFSET_TAG = "DATE_OFFSET_TAG"
-        fun newInstance(
-            positive: DialogButtonConfiguration?,
-            negative: DialogButtonConfiguration?,
-            dateFormat: String?,
-            cancelable: Boolean,
-            animationType: DialogAnimationTypes = DialogAnimationTypes.NO_ANIMATION,
-        ): DateTimePickerDialog {
-            return DateTimePickerDialog().apply {
-                this.arguments = DialogBundleHelper().apply {
-                    withPositiveButtonConfig(positive)
-                    withNegativeButtonConfig(negative)
-                    withCancelable(cancelable)
-                    withShowing(false)
-                    withDialogType(DialogTypes.NORMAL)
-                    withAnimation(animationType)
-                    bundle.putString(DATE_FORMAT_TAG, dateFormat)
-                }.bundle
-            }
+        fun newInstance(): DateTimePickerDialog {
+            return DateTimePickerDialog()
         }
     }
 
     @Override
     override fun doOnCreate(dialogArguments: Bundle?, savedInstanceState: Bundle?) {
         if (savedInstanceState == null) {
-            requireNotNull(dialogArguments) { "Bundle args required" }
-            dateFormat = StringUtils.getOrDefault(dialogArguments.getString(DATE_FORMAT_TAG), dateFormat)
             showingTimePicker = false
-            if (hasSelection()) selection.setCurrentSelection(selection.getCurrentSelection())
-            else {
-                val dateFromArguments = getDateFromString(dialogArguments.getString(DATE_SELECTION_TAG))
-                selection.setCurrentSelection(dateFromArguments)
-            }
+            if (hasSelection())
+                selection.setCurrentSelection(selection.getCurrentSelection())
         } else {
             showingTimePicker = savedInstanceState.getBoolean(SHOWING_TIME_PICKER_TAG)
             val selectionFromState = getDateFromString(savedInstanceState.getString(DATE_SELECTION_TAG))
             val selectionDraftFromState = getDateFromString(savedInstanceState.getString(DATE_SELECTION_DRAFT_TAG))
             selection.setCurrentSelection(selectionFromState, false)
             selection.setDraftSelection(selectionDraftFromState, false)
+            dialogDateFormat = savedInstanceState.getString(DATE_FORMAT_TAG, dialogDateFormat)
             zoneOffset = ZoneOffset.of(savedInstanceState.getString(DATE_OFFSET_TAG))
         }
     }
@@ -82,14 +62,19 @@ class DateTimePickerDialog : BasePickerDialogFragment<OffsetDateTime?>(DateTimeS
     @Override
     override fun doOnSaveInstanceState(outState: Bundle?) {
         super.doOnSaveInstanceState(outState)
-        selection.getCurrentSelection().apply {
-            outState!!.putString(DATE_SELECTION_TAG, getDateString(this))
+        outState?.apply {
+            selection.getCurrentSelection().apply {
+                putString(DATE_SELECTION_TAG, getDateString(this))
+            }
+            selection.getDraftSelection().apply {
+                putString(DATE_SELECTION_DRAFT_TAG, getDateString(this))
+            }
+            putString(DATE_OFFSET_TAG, zoneOffset.toString())
+            putBoolean(SHOWING_TIME_PICKER_TAG, showingTimePicker)
+            putString(DATE_FORMAT_TAG, dialogDateFormat)
         }
-        selection.getDraftSelection().apply {
-            outState!!.putString(DATE_SELECTION_DRAFT_TAG, getDateString(this))
-        }
-        outState!!.putString(DATE_OFFSET_TAG, zoneOffset.toString())
-        outState.putBoolean(SHOWING_TIME_PICKER_TAG, showingTimePicker)
+
+
     }
 
     @Override
@@ -203,7 +188,7 @@ class DateTimePickerDialog : BasePickerDialogFragment<OffsetDateTime?>(DateTimeS
 
     private fun updateHeader(newDate: OffsetDateTime?) {
         val ctx = selectionTextValue.context
-        var dateString = DateUtilsOffsetDate.getDateString(dateFormat, newDate, Locale.getDefault())
+        var dateString = DateUtilsOffsetDate.getDateString(dialogDateFormat, newDate, Locale.getDefault())
         if (dateString == null || dateString == "") dateString =
             ResourceUtils.getPhrase(ctx, R.string.dialog_month_picker_empty_text)
         selectionTextValue.text = dateString

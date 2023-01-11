@@ -36,9 +36,8 @@ abstract class BaseDialogFragment : DialogFragment(), DefaultLifecycleObserver {
     private lateinit var parentFragManager: FragmentManager
     private lateinit var regularDialogConstraints: RegularDialogConstraints
     private lateinit var bottomSheetDialogConstraints: BottomSheetDialogConstraints
-    private var rootView: View? = null
+    private lateinit var rootView: View
     private var dialogTag: String = javaClass.name.plus("_TAG")
-    private var cancelableOnClickOutside = true
     private var isLifecycleOwnerInStateAllowingShow = false
     private val onPositiveClickListeners: MutableList<DialogButtonClickListener> = mutableListOf()
     private val onNegativeClickListeners: MutableList<DialogButtonClickListener> = mutableListOf()
@@ -51,36 +50,42 @@ abstract class BaseDialogFragment : DialogFragment(), DefaultLifecycleObserver {
         private set
     protected lateinit var footerViewHierarchy: DialogLayoutHierarchyFooter
         private set
-    private var type: DialogTypes? = null
+    var isDialogShown = false
+        private set
+    open var dialogType: DialogTypes = NORMAL
         set(value) {
             field = value
-            if (value == BOTTOM_SHEET && animation != TRANSITION_FROM_BOTTOM_TO_BOTTOM)
-                animation = TRANSITION_FROM_BOTTOM_TO_BOTTOM
+            if (value == BOTTOM_SHEET && dialogAnimationType != TRANSITION_FROM_BOTTOM_TO_BOTTOM)
+                dialogAnimationType = TRANSITION_FROM_BOTTOM_TO_BOTTOM
         }
-    private var animation: DialogAnimationTypes? = null
+    open var dialogAnimationType: DialogAnimationTypes = NO_ANIMATION
         set(value) {
-            field = if (type == BOTTOM_SHEET && value != TRANSITION_FROM_BOTTOM_TO_BOTTOM)
+            field = if (dialogType == BOTTOM_SHEET && value != TRANSITION_FROM_BOTTOM_TO_BOTTOM)
                 TRANSITION_FROM_BOTTOM_TO_BOTTOM
             else value
         }
-    var isDialogShown = false
-        private set
-    var title: String? = null
+    var dialogTitle: String? = null
         set(value) {
             field = value
-            if (rootView == null) return
             configureHeading()
             measureDialogLayout()
         }
-    var message: String? = null
+    var dialogMessage: String? = null
         set(value) {
             field = value
-            if (rootView == null) return
             configureHeading()
             measureDialogLayout()
         }
-    var positiveButtonConfig: DialogButtonConfiguration? = null
-    var negativeButtonConfig: DialogButtonConfiguration? = null
+    var dialogPositiveButton: DialogButtonConfiguration? = null
+        set(value) {
+            field = value
+            configureButtons()
+        }
+    var dialogNegativeButton: DialogButtonConfiguration? = null
+        set(value) {
+            field = value
+            configureButtons()
+        }
 
     /**
      * Used to create layout for the dialog.
@@ -205,37 +210,17 @@ abstract class BaseDialogFragment : DialogFragment(), DefaultLifecycleObserver {
     @Override
     final override fun onCreate(savedInstanceState: Bundle?) {
         super<DialogFragment>.onCreate(savedInstanceState)
-        val bundle = savedInstanceState ?: requireArguments()
-        val helper = DialogBundleHelper(bundle)
-        val hasSavedState = savedInstanceState != null
-        if (hasSavedState) {
-            title = helper.title
-            message = helper.message
-            positiveButtonConfig = helper.positiveButtonConfig
-            negativeButtonConfig = helper.negativeButtonConfig
-            cancelableOnClickOutside = helper.cancelable
+        savedInstanceState?.apply {
+            val helper = DialogBundleHelper(savedInstanceState)
+            dialogTitle = helper.title
+            dialogMessage = helper.message
+            dialogPositiveButton = helper.positiveButtonConfig
+            dialogNegativeButton = helper.negativeButtonConfig
+            isCancelable = helper.cancelable
             isDialogShown = helper.showing
-            type = helper.dialogType
-            animation = helper.animationType
-        } else {
-            if (type == null) //if not set outside of builder | otherwise ignore
-                type = helper.dialogType
-            if (animation == null) //if not set outside of builder | otherwise ignore
-                animation = when (type!!) {
-                    NORMAL, FULLSCREEN -> helper.animationType
-                    BOTTOM_SHEET -> TRANSITION_FROM_BOTTOM_TO_BOTTOM
-                }
-            if (title == null) //if not set outside of builder | otherwise ignore
-                title = helper.title
-            if (message == null) //if not set outside of builder | otherwise ignore
-                message = helper.message
-            if (positiveButtonConfig == null) //if not set outside of builder | otherwise ignore
-                positiveButtonConfig = helper.positiveButtonConfig
-            if (negativeButtonConfig == null) //if not set outside of builder | otherwise ignore
-                negativeButtonConfig = helper.negativeButtonConfig
-            cancelableOnClickOutside = helper.cancelable
+            dialogType = helper.dialogType
+            dialogAnimationType = helper.animationType
         }
-        isCancelable = cancelableOnClickOutside
         doOnCreate(arguments, savedInstanceState)
         if (dialogCallbacks != null)
             dialogCallbacks!!.doOnCreate(this, arguments, savedInstanceState)
@@ -245,14 +230,14 @@ abstract class BaseDialogFragment : DialogFragment(), DefaultLifecycleObserver {
     final override fun onSaveInstanceState(outState: Bundle) {
         super.onSaveInstanceState(outState)
         val helper = DialogBundleHelper(outState)
-            .withTitle(title)
-            .withMessage(message)
-            .withPositiveButtonConfig(positiveButtonConfig)
-            .withNegativeButtonConfig(negativeButtonConfig)
-            .withCancelable(cancelableOnClickOutside)
+            .withTitle(dialogTitle)
+            .withMessage(dialogMessage)
+            .withPositiveButtonConfig(dialogPositiveButton)
+            .withNegativeButtonConfig(dialogNegativeButton)
+            .withCancelable(isCancelable)
             .withShowing(isDialogShown)
-            .withDialogType(type!!)
-            .withAnimation(animation!!)
+            .withDialogType(dialogType)
+            .withAnimation(dialogAnimationType)
         doOnSaveInstanceState(helper.bundle)
         if (dialogCallbacks != null)
             dialogCallbacks!!.doOnSaveInstanceState(this, view, outState)
@@ -262,11 +247,11 @@ abstract class BaseDialogFragment : DialogFragment(), DefaultLifecycleObserver {
     final override fun onCreateView(inflater: LayoutInflater, container: ViewGroup?, savedInstanceState: Bundle?): View {
         regularDialogConstraints = getRegularConstraints()
         bottomSheetDialogConstraints = getBottomSheetConstraints()
-        rootView = when (type!!) {
+        rootView = when (dialogType) {
             NORMAL, FULLSCREEN -> getDialogLayout(LayoutInflater.from(requireContext()))
             BOTTOM_SHEET -> getBottomSheetDialogLayout()
         }
-        return rootView!!
+        return rootView
     }
 
     @Override
@@ -274,7 +259,7 @@ abstract class BaseDialogFragment : DialogFragment(), DefaultLifecycleObserver {
         super.onViewCreated(view, savedInstanceState)
         configureHeading()
         configureButtons()
-        configureContent(rootView!!, savedInstanceState)
+        configureContent(rootView, savedInstanceState)
         measureDialogLayout()
         doOnViewCreated(view, savedInstanceState)
         if (dialogCallbacks != null)
@@ -304,7 +289,7 @@ abstract class BaseDialogFragment : DialogFragment(), DefaultLifecycleObserver {
     final override fun onStart() {
         super<DialogFragment>.onStart()
         val dialogWindow = dialog?.window ?: return
-        when (animation!!) {
+        when (dialogAnimationType) {
             NO_ANIMATION -> dialogWindow.setWindowAnimations(R.style.NoAnimation)
             FADE -> dialogWindow.setWindowAnimations(R.style.Animation_Fade)
             TRANSITION_FROM_BOTTOM_TO_BOTTOM -> dialogWindow.setWindowAnimations(R.style.Animation_FromBottomToBottom)
@@ -372,40 +357,24 @@ abstract class BaseDialogFragment : DialogFragment(), DefaultLifecycleObserver {
         this.parentFragManager = fragmentManager
     }
 
-    fun getDialogType(): DialogTypes {
-        return type ?: NORMAL
-    }
-
-    fun getAnimationType(): DialogAnimationTypes {
-        return animation ?: NO_ANIMATION
-    }
-
-    fun setDialogType(dialogType: DialogTypes) {
-        type = dialogType
-    }
-
-    fun setAnimationType(animationType: DialogAnimationTypes) {
-        animation = animationType
-    }
-
     fun setDialogTag(dialogTag: String) {
         this.dialogTag = dialogTag
     }
 
     fun setTitleAndMessage(title: String?, message: String?) {
-        this.title = title
-        this.message = message
+        this.dialogTitle = title
+        this.dialogMessage = message
         configureHeading()
         measureDialogLayout()
     }
 
     fun configurePositiveButton(configurationCreator: DialogButtonConfigurationCreator) {
-        positiveButtonConfig = configurationCreator.create(positiveButtonConfig)
+        dialogPositiveButton = configurationCreator.create(dialogPositiveButton)
         configureButtons()
     }
 
     fun configureNegativeButton(configurationCreator: DialogButtonConfigurationCreator) {
-        negativeButtonConfig = configurationCreator.create(negativeButtonConfig)
+        dialogNegativeButton = configurationCreator.create(dialogNegativeButton)
         configureButtons()
     }
 
@@ -464,7 +433,7 @@ abstract class BaseDialogFragment : DialogFragment(), DefaultLifecycleObserver {
      * @return width in pixels
      */
     protected fun getMaxWidth(): Int {
-        return when (type!!) {
+        return when (dialogType) {
             NORMAL -> regularDialogConstraints.getMaxWidth()
             FULLSCREEN, BOTTOM_SHEET -> getWindowWidth()
         }
@@ -476,7 +445,7 @@ abstract class BaseDialogFragment : DialogFragment(), DefaultLifecycleObserver {
      * @return height in pixels
      */
     protected fun getMaxHeight(): Int {
-        return when (type!!) {
+        return when (dialogType) {
             NORMAL -> regularDialogConstraints.getMaxHeight()
             FULLSCREEN -> getWindowHeight()
             BOTTOM_SHEET -> bottomSheetDialogConstraints.getMaxHeight()
@@ -502,23 +471,24 @@ abstract class BaseDialogFragment : DialogFragment(), DefaultLifecycleObserver {
     }
 
     protected fun measureDialogLayout() {
-        val dialog = dialog
-        if (dialog == null || dialog.window == null) return
-        val window = dialog.window
+        if (!this::rootView.isInitialized) return
+        val dialog = dialog ?: return
+        val window = dialog.window ?: return
+        val dialogView = rootView
         val fgPadding = Rect()
-        window!!.decorView.background.getPadding(fgPadding)
-        when (type!!) {
+        window.decorView.background.getPadding(fgPadding)
+        when (dialogType) {
             FULLSCREEN -> {
                 window.setBackgroundDrawable(ColorDrawable(Color.TRANSPARENT)) // overrides background to remove insets
                 window.setLayout(WindowManager.LayoutParams.MATCH_PARENT, WindowManager.LayoutParams.MATCH_PARENT)
-                setupFullScreenDialog(window, rootView!!)
+                setupFullScreenDialog(window, dialogView)
             }
-            NORMAL -> setupRegularDialog(regularDialogConstraints, window, rootView!!, fgPadding)
+            NORMAL -> setupRegularDialog(regularDialogConstraints, window, dialogView, fgPadding)
             BOTTOM_SHEET -> {
                 window.setGravity(Gravity.BOTTOM)
                 window.setLayout(WindowManager.LayoutParams.MATCH_PARENT, WindowManager.LayoutParams.WRAP_CONTENT)
                 window.setBackgroundDrawable(ColorDrawable(Color.TRANSPARENT)) // overrides background to remove insets
-                setupBottomSheetDialog(bottomSheetDialogConstraints, window, rootView!!)
+                setupBottomSheetDialog(bottomSheetDialogConstraints, window, dialogView)
             }
         }
     }
@@ -539,70 +509,71 @@ abstract class BaseDialogFragment : DialogFragment(), DefaultLifecycleObserver {
     }
 
     private fun configureHeading() {
-        val dialogView = rootView!!
+        if (!this::rootView.isInitialized) return
+        val dialogView = rootView
         val titleAndMessageContainer = dialogView.findViewById<LinearLayoutCompat?>(R.id.dialogTitleAndMessageContainer)
         val titleTextView = dialogView.findViewById<TextView?>(R.id.dialogTitleTextView)
         val messageTextView = dialogView.findViewById<TextView?>(R.id.dialogMessageTextView)
         headerViewHierarchy = DialogLayoutHierarchyHeading(titleAndMessageContainer, titleTextView, messageTextView)
         if (titleAndMessageContainer == null) return
-        if (titleTextView == null && messageTextView == null || title.isNullOrBlank() && message.isNullOrBlank())
+        if (titleTextView == null && messageTextView == null || dialogTitle.isNullOrBlank() && dialogMessage.isNullOrBlank())
             titleAndMessageContainer.visibility = GONE
         else
             titleAndMessageContainer.visibility = View.VISIBLE
         if (titleTextView != null) {
-            if (title.isNullOrBlank()) titleTextView.visibility = GONE
+            if (dialogTitle.isNullOrBlank()) titleTextView.visibility = GONE
             else {
                 titleTextView.visibility = View.VISIBLE
-                titleTextView.text = title
+                titleTextView.text = dialogTitle
             }
         }
         if (messageTextView != null) {
-            if (message.isNullOrBlank()) messageTextView.visibility = GONE
+            if (dialogMessage.isNullOrBlank()) messageTextView.visibility = GONE
             else {
                 messageTextView.visibility = View.VISIBLE
-                messageTextView.text = message
+                messageTextView.text = dialogMessage
             }
         }
     }
 
     private fun configureButtons() {
-        val dialogView = rootView!!
+        if (!this::rootView.isInitialized) return
+        val dialogView = rootView
         val buttonsContainer = dialogView.findViewById<LinearLayoutCompat?>(R.id.dialogButtonsContainer)
         val buttonPositive = dialogView.findViewById<Button?>(R.id.dialogPositiveButton)
         val buttonNegative = dialogView.findViewById<Button?>(R.id.dialogNegativeButton)
         footerViewHierarchy = DialogLayoutHierarchyFooter(buttonsContainer, buttonPositive, buttonNegative)
-        if (buttonsContainer == null)
-            return
-        if (buttonPositive == null && buttonNegative == null || positiveButtonConfig == null && negativeButtonConfig == null)
+        if (buttonsContainer == null) return
+        if (buttonPositive == null && buttonNegative == null || dialogPositiveButton == null && dialogNegativeButton == null)
             buttonsContainer.visibility = GONE
-        if (buttonPositive != null && positiveButtonConfig == null)
+        if (buttonPositive != null && dialogPositiveButton == null)
             buttonPositive.visibility = GONE
-        if (buttonNegative != null && negativeButtonConfig == null)
+        if (buttonNegative != null && dialogNegativeButton == null)
             buttonNegative.visibility = GONE
-        if (buttonPositive != null && positiveButtonConfig != null) {
-            buttonPositive.isEnabled = positiveButtonConfig!!.buttonEnabled
-            buttonPositive.setTextColor(buttonPositive.textColors.withAlpha(if (positiveButtonConfig!!.buttonEnabled) 255 else 140))
-            if (positiveButtonConfig!!.buttonTitle.isBlank()) buttonPositive.visibility = GONE
+        if (buttonPositive != null && dialogPositiveButton != null) {
+            buttonPositive.isEnabled = dialogPositiveButton!!.buttonEnabled
+            buttonPositive.setTextColor(buttonPositive.textColors.withAlpha(if (dialogPositiveButton!!.buttonEnabled) 255 else 140))
+            if (dialogPositiveButton!!.buttonTitle.isBlank()) buttonPositive.visibility = GONE
             else {
-                buttonPositive.text = positiveButtonConfig!!.buttonTitle
+                buttonPositive.text = dialogPositiveButton!!.buttonTitle
                 buttonPositive.setOnClickListener { view: View? ->
                     for (listener in onPositiveClickListeners)
                         listener.doOnClick(view, this)
-                    if (positiveButtonConfig!!.closeDialogOnClick)
+                    if (dialogPositiveButton!!.closeDialogOnClick)
                         handleDismiss()
                 }
             }
         }
-        if (buttonNegative != null && negativeButtonConfig != null) {
-            buttonNegative.isEnabled = negativeButtonConfig!!.buttonEnabled
-            buttonNegative.setTextColor(buttonNegative.textColors.withAlpha(if (negativeButtonConfig!!.buttonEnabled) 255 else 140))
-            if (negativeButtonConfig!!.buttonTitle.isBlank()) buttonNegative.visibility = GONE
+        if (buttonNegative != null && dialogNegativeButton != null) {
+            buttonNegative.isEnabled = dialogNegativeButton!!.buttonEnabled
+            buttonNegative.setTextColor(buttonNegative.textColors.withAlpha(if (dialogNegativeButton!!.buttonEnabled) 255 else 140))
+            if (dialogNegativeButton!!.buttonTitle.isBlank()) buttonNegative.visibility = GONE
             else {
-                buttonNegative.text = negativeButtonConfig!!.buttonTitle
+                buttonNegative.text = dialogNegativeButton!!.buttonTitle
                 buttonNegative.setOnClickListener { view: View? ->
                     for (listener in onNegativeClickListeners)
                         listener.doOnClick(view, this)
-                    if (negativeButtonConfig!!.closeDialogOnClick)
+                    if (dialogNegativeButton!!.closeDialogOnClick)
                         handleDismiss()
                 }
             }
@@ -612,7 +583,7 @@ abstract class BaseDialogFragment : DialogFragment(), DefaultLifecycleObserver {
     @SuppressLint("ClickableViewAccessibility")
     private fun getBottomSheetDialogLayout(): View {
         val context = requireContext()
-        if (!cancelableOnClickOutside) return getDialogLayout(LayoutInflater.from(context))
+        if (!isCancelable) return getDialogLayout(LayoutInflater.from(context))
         val parent = CoordinatorLayout(context)
         val params: CoordinatorLayout.LayoutParams = CoordinatorLayout.LayoutParams(
             ViewGroup.LayoutParams.MATCH_PARENT,
