@@ -1,5 +1,3 @@
-@file:Suppress("UNUSED_PARAMETER")
-
 package com.github.rooneyandshadows.lightbulb.dialogs.picker_dialog_color
 
 import android.content.res.Configuration
@@ -21,7 +19,7 @@ import kotlin.math.ceil
 import kotlin.math.max
 import kotlin.math.min
 
-@Suppress("unused")
+@Suppress("unused", "UNUSED_PARAMETER")
 class ColorPickerDialog : AdapterPickerDialog<ColorModel>() {
     private var spans = 0
     private var lastVisibleItemPosition = -1

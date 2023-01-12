@@ -16,8 +16,7 @@ class AdapterPickerDialogBuilder<ModelType : EasyAdapterDataModel> @JvmOverloads
     manager: FragmentManager,
     dialogTag: String,
     private val adapter: EasyRecyclerAdapter<ModelType>
-) :
-    BaseDialogBuilder<AdapterPickerDialog<ModelType>>(lifecycleOwner, manager, dialogTag) {
+) : BaseDialogBuilder<AdapterPickerDialog<ModelType>>(lifecycleOwner, manager, dialogTag) {
     private var changedCallback: SelectionChangedListener<IntArray?>? = null
     private var itemDecoration: RecyclerView.ItemDecoration? = null
     private var selection: IntArray? = null

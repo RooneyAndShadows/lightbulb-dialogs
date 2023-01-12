@@ -5,4 +5,6 @@
     <dimen name="spacing_size_medium">15dp</dimen>
     <dimen name="spacing_size_big">20dp</dimen>
     <dimen name="text_size_checkbox">16sp</dimen>
+    <dimen name="ICON_SIZE_RECYCLER_ITEM">22dp</dimen>
+    <dimen name="ICON_SIZE_MEDIUM">18dp</dimen>
 </resources>
