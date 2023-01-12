@@ -52,10 +52,10 @@ dependencies {
     implementation 'androidx.constraintlayout:constraintlayout:2.1.4'
     implementation "androidx.core:core-ktx:$versions.ktx.core"
     implementation "org.jetbrains.kotlin:kotlin-stdlib-jdk7:$versions.kotlin"
-    implementation 'com.github.rooneyandshadows:lightbulb-application:1.2.8'
-    implementation 'com.github.rooneyandshadows:lightbulb-textinputview:1.0.11'
-    implementation 'com.github.rooneyandshadows:lightbulb-recycleradapters:2.0.0-RC4'
-    implementation "com.github.rooneyandshadows:lightbulb-annotation-processors:1.0.6-RC2"
+    implementation "com.github.rooneyandshadows:lightbulb-application:$versions.lightbulb.application"
+    implementation "com.github.rooneyandshadows:lightbulb-textinputview:$versions.lightbulb.textinputview"
+    implementation "com.github.rooneyandshadows:lightbulb-recycleradapters:$versions.lightbulb.recycleradapters"
+    implementation "com.github.rooneyandshadows:lightbulb-annotation-processors:$versions.lightbulb.annotation_processors"
     implementation project(path: ':lightbulb-dialogs')
-    kapt "com.github.rooneyandshadows:lightbulb-annotation-processors:1.0.6-RC2"
+    kapt "com.github.rooneyandshadows:lightbulb-annotation-processors:$versions.lightbulb.annotation_processors"
 }

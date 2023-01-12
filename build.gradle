@@ -12,10 +12,14 @@ buildscript {
                 android_recyclerview    : "1.2.1",
                 android_dynamicanimation: "1.0.0",
                 material                : "1.7.0",
+                material_calendarview   : "2.0.1",
                 lightbulb               : [
-                        commons         : "1.0.18",
-                        recycleradapters: "2.0.0-RC3",
-                        calendars       : "1.0.1",
+                        commons              : "1.0.18",
+                        application          : "1.2.8",
+                        recycleradapters     : "2.0.0-RC5",
+                        textinputview        : "1.0.11",
+                        calendars            : "1.0.1",
+                        annotation_processors: "1.0.6-RC2"
                 ],
                 java                    : [
                         commons: "1.0.6"

@@ -55,15 +55,14 @@ fun bindPickerEvent(view: TextInputView, bindingListener: InverseBindingListener
 }
 
 fun getRadioButtonAdapter(context: Context): RadioButtonSelectableAdapter<DemoModel> {
-    return object : RadioButtonSelectableAdapter<DemoModel> {
+    return object : RadioButtonSelectableAdapter<DemoModel>() {
         @Override
         override fun getItemIcon(item: DemoModel): Drawable {
             return AppIconUtils.getIconWithAttributeColor(
                 context,
                 item.icon,
                 R.attr.colorOnSurface,
-                R.dimen.ICON_SIZE_RECYCLER_ITEM
-            )
+                R.dimen.ICON_SIZE_RECYCLER_ITEM)
         }
 
         @Override
@@ -77,7 +76,7 @@ fun getRadioButtonAdapter(context: Context): RadioButtonSelectableAdapter<DemoMo
 }
 
 fun getCheckboxAdapter(context: Context): CheckBoxSelectableAdapter<DemoModel> {
-    return object : CheckBoxSelectableAdapter<DemoModel?>() {
+    return object : CheckBoxSelectableAdapter<DemoModel>() {
         override fun getItemIcon(item: DemoModel): Drawable {
             return AppIconUtils.getIconWithAttributeColor(
                 context,
