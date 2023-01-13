@@ -22,6 +22,7 @@ import com.github.rooneyandshadows.lightbulb.dialogsdemo.getRadioButtonAdapter
 import com.github.rooneyandshadows.lightbulb.dialogsdemo.models.DemoModel
 import com.github.rooneyandshadows.lightbulb.dialogsdemo.spinner.DialogAnimationTypeSpinner
 import com.github.rooneyandshadows.lightbulb.dialogsdemo.spinner.DialogTypeSpinner
+import com.github.rooneyandshadows.lightbulb.recycleradapters.abstraction.EasyRecyclerAdapter
 import com.github.rooneyandshadows.lightbulb.recycleradapters.implementation.RadioButtonSelectableAdapter
 
 @FragmentScreen(screenName = "Adapter", screenGroup = "Demo")
@@ -108,7 +109,11 @@ class FragmentDialogAdapterPicker : BaseFragmentWithViewDataBinding<FragmentDemo
             this,
             childFragmentManager,
             DIALOG_TAG,
-            getRadioButtonAdapter(ctx)
+            object : AdapterPickerDialog.AdapterCreator<DemoModel> {
+                override fun createAdapter(): EasyRecyclerAdapter<DemoModel> {
+                    return getRadioButtonAdapter(ctx)
+                }
+            }
         ).apply {
             withTitle(title)
             withMessage(message)

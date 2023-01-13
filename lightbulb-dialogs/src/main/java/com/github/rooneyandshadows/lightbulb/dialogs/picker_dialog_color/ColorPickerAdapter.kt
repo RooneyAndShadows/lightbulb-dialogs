@@ -20,7 +20,6 @@ import java.util.ArrayList
 
 @Suppress("unused")
 class ColorPickerAdapter(
-    private val context: Context,
     selectableMode: EasyAdapterSelectableModes = EasyAdapterSelectableModes.SELECT_SINGLE,
 ) : EasyRecyclerAdapter<ColorModel>(selectableMode) {
     @Override
@@ -84,7 +83,7 @@ class ColorPickerAdapter(
         }
     }
 
-    fun getColorDrawable(colorModel: ColorModel?): Drawable? {
+    fun getColorDrawable(context: Context, colorModel: ColorModel?): Drawable? {
         if (colorModel == null) return null
         val colorDrawable: Drawable = ResourceUtils.getDrawable(context, R.drawable.color_icon)!!.mutate()
         colorDrawable.setTint(Color.parseColor(colorModel.colorHex))

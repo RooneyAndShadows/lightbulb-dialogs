@@ -18,7 +18,7 @@ import com.mikepenz.iconics.typeface.IIcon
 import com.mikepenz.iconics.typeface.library.fontawesome.FontAwesome
 
 @Suppress("unused")
-class IconPickerAdapter(private val context: Context, selectableMode: EasyAdapterSelectableModes) :
+class IconPickerAdapter(selectableMode: EasyAdapterSelectableModes) :
     EasyRecyclerAdapter<IconPickerAdapter.IconModel>(selectableMode) {
 
     @Override
@@ -64,7 +64,7 @@ class IconPickerAdapter(private val context: Context, selectableMode: EasyAdapte
         }
     }
 
-    fun getDrawable(iconModel: IconModel, drawableSize: Int): Drawable? {
+    fun getDrawable(context: Context, iconModel: IconModel, drawableSize: Int): Drawable? {
         var size = drawableSize
         if (size < 0)
             size = 0
@@ -114,6 +114,7 @@ class IconPickerAdapter(private val context: Context, selectableMode: EasyAdapte
         private var item: IconModel? = null
 
         fun setItem(item: IconModel, position: Int, adapter: IconPickerAdapter) {
+            val context = iconView.context
             this.item = item
             val isItemSelected: Boolean = adapter.isItemSelected(position)
             val colorAttribute = if (isItemSelected) R.attr.colorAccent else R.attr.colorOnSurface

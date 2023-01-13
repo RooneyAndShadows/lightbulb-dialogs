@@ -2,12 +2,12 @@ package com.github.rooneyandshadows.lightbulb.dialogs.picker_dialog_adapter
 
 import androidx.lifecycle.LifecycleOwner
 import com.github.rooneyandshadows.lightbulb.dialogs.base.BasePickerDialogFragment.SelectionChangedListener
-import com.github.rooneyandshadows.lightbulb.recycleradapters.abstraction.EasyRecyclerAdapter
 import androidx.fragment.app.FragmentManager
 import androidx.recyclerview.widget.RecyclerView
 import com.github.rooneyandshadows.lightbulb.dialogs.base.BaseDialogBuilder
 import com.github.rooneyandshadows.lightbulb.dialogs.base.internal.*
 import com.github.rooneyandshadows.lightbulb.dialogs.base.internal.callbacks.*
+import com.github.rooneyandshadows.lightbulb.dialogs.picker_dialog_adapter.AdapterPickerDialog.AdapterCreator
 import com.github.rooneyandshadows.lightbulb.recycleradapters.abstraction.EasyAdapterDataModel
 
 @Suppress("UNCHECKED_CAST", "unused")
@@ -15,7 +15,7 @@ class AdapterPickerDialogBuilder<ModelType : EasyAdapterDataModel> @JvmOverloads
     lifecycleOwner: LifecycleOwner? = null,
     manager: FragmentManager,
     dialogTag: String,
-    private val adapter: EasyRecyclerAdapter<ModelType>
+    private val adapterCreator: AdapterCreator<ModelType>,
 ) : BaseDialogBuilder<AdapterPickerDialog<ModelType>>(lifecycleOwner, manager, dialogTag) {
     private var changedCallback: SelectionChangedListener<IntArray?>? = null
     private var itemDecoration: RecyclerView.ItemDecoration? = null
@@ -34,7 +34,7 @@ class AdapterPickerDialogBuilder<ModelType : EasyAdapterDataModel> @JvmOverloads
     @Override
     override fun withPositiveButton(
         configuration: DialogButtonConfiguration,
-        onClickListener: DialogButtonClickListener
+        onClickListener: DialogButtonClickListener,
     ): AdapterPickerDialogBuilder<ModelType> {
         return super.withPositiveButton(
             configuration,
@@ -45,7 +45,7 @@ class AdapterPickerDialogBuilder<ModelType : EasyAdapterDataModel> @JvmOverloads
     @Override
     override fun withNegativeButton(
         configuration: DialogButtonConfiguration,
-        onClickListener: DialogButtonClickListener
+        onClickListener: DialogButtonClickListener,
     ): AdapterPickerDialogBuilder<ModelType> {
         return super.withNegativeButton(
             configuration,
@@ -109,7 +109,6 @@ class AdapterPickerDialogBuilder<ModelType : EasyAdapterDataModel> @JvmOverloads
             setDialogCallbacks(dialogListeners)
             setParentFragManager(dialogParentFragmentManager)
             setDialogTag(dialogTag)
-            setAdapter(adapter)
             onNegativeClickListener?.apply { addOnNegativeClickListeners(this) }
             onPositiveClickListener?.apply { addOnPositiveClickListener(this) }
             onShowListener?.apply { addOnShowListener(this) }
@@ -123,7 +122,7 @@ class AdapterPickerDialogBuilder<ModelType : EasyAdapterDataModel> @JvmOverloads
 
     private fun getExistingDialogOrCreate(): AdapterPickerDialog<ModelType> {
         val dialog = dialogParentFragmentManager.findFragmentByTag(dialogTag) as AdapterPickerDialog<ModelType>?
-        return dialog ?: AdapterPickerDialog.newInstance<ModelType>().apply {
+        return dialog ?: AdapterPickerDialog.newInstance<ModelType>(adapterCreator).apply {
             dialogTitle = title
             dialogMessage = message
             dialogType = type

@@ -7,34 +7,40 @@ import android.view.LayoutInflater
 import android.view.View
 import android.view.Window
 import android.view.WindowManager
-import com.github.rooneyandshadows.lightbulb.dialogs.base.constraints.regular.RegularDialogConstraintsBuilder
-import com.github.rooneyandshadows.lightbulb.dialogs.base.constraints.regular.RegularDialogConstraints
-import com.github.rooneyandshadows.lightbulb.dialogs.base.constraints.bottomsheet.BottomSheetDialogConstraints
 import androidx.appcompat.widget.LinearLayoutCompat
-import com.github.rooneyandshadows.lightbulb.recycleradapters.abstraction.EasyRecyclerAdapter
 import androidx.recyclerview.widget.LinearLayoutManager
 import androidx.recyclerview.widget.RecyclerView
-import com.github.rooneyandshadows.lightbulb.commons.utils.BundleUtils
-import com.github.rooneyandshadows.lightbulb.recycleradapters.abstraction.EasyAdapterDataModel
-import com.github.rooneyandshadows.lightbulb.dialogs.base.BasePickerDialogFragment
 import com.github.rooneyandshadows.lightbulb.dialogs.R
+import com.github.rooneyandshadows.lightbulb.dialogs.base.BasePickerDialogFragment
+import com.github.rooneyandshadows.lightbulb.dialogs.base.constraints.bottomsheet.BottomSheetDialogConstraints
+import com.github.rooneyandshadows.lightbulb.dialogs.base.constraints.regular.RegularDialogConstraints
+import com.github.rooneyandshadows.lightbulb.dialogs.base.constraints.regular.RegularDialogConstraintsBuilder
+import com.github.rooneyandshadows.lightbulb.recycleradapters.abstraction.EasyAdapterDataModel
+import com.github.rooneyandshadows.lightbulb.recycleradapters.abstraction.EasyRecyclerAdapter
 import com.github.rooneyandshadows.lightbulb.recycleradapters.abstraction.callbacks.EasyAdapterSelectionChangedListener
 
 @Suppress("unused")
-open class AdapterPickerDialog<ItemType : EasyAdapterDataModel> :
+abstract class AdapterPickerDialog<ItemType : EasyAdapterDataModel> :
     BasePickerDialogFragment<IntArray?>(AdapterPickerDialogSelection(null, null)) {
     private val adapterStateTag = "ADAPTER_STATE_TAG"
     private val adapterSelectionTag = "ADAPTER_SELECTION_TAG"
     private val adapterSelectionDraftTag = "ADAPTER_SELECTION_DRAFT_TAG"
     protected lateinit var recyclerView: RecyclerView
         private set
-    private var adapter: EasyRecyclerAdapter<ItemType>? = null
+    protected val adapter: EasyRecyclerAdapter<ItemType> by lazy {
+        return@lazy adapterCreator.createAdapter()
+    }
     private var itemDecoration: RecyclerView.ItemDecoration? = null
     private val selectionListener: EasyAdapterSelectionChangedListener
 
+    protected abstract val adapterCreator: AdapterCreator<ItemType>
+
     companion object {
-        fun <ItemType : EasyAdapterDataModel> newInstance(): AdapterPickerDialog<ItemType> {
-            return AdapterPickerDialog()
+        fun <ItemType : EasyAdapterDataModel> newInstance(adapterCreator: AdapterCreator<ItemType>): AdapterPickerDialog<ItemType> {
+            return object : AdapterPickerDialog<ItemType>() {
+                override val adapterCreator: AdapterCreator<ItemType>
+                    get() = adapterCreator
+            }
         }
     }
 
@@ -56,10 +62,8 @@ open class AdapterPickerDialog<ItemType : EasyAdapterDataModel> :
 
     @Override
     override fun configureContent(view: View, savedInstanceState: Bundle?) {
-        requireAdapter { adapter ->
-            selectViews(view)
-            configureRecyclerView(adapter)
-        }
+        selectViews(view)
+        configureRecyclerView(adapter)
     }
 
     @Override
@@ -74,11 +78,9 @@ open class AdapterPickerDialog<ItemType : EasyAdapterDataModel> :
 
     @Override
     override fun synchronizeSelectUi() {
-        requireAdapter { adapter ->
-            val newSelection = if (selection.hasDraftSelection()) selection.getDraftSelection()
-            else selection.getCurrentSelection()
-            adapter.selectPositions(newSelection, newState = true, incremental = false)
-        }
+        val newSelection = if (selection.hasDraftSelection()) selection.getDraftSelection()
+        else selection.getCurrentSelection()
+        adapter.selectPositions(newSelection, newState = true, incremental = false)
     }
 
     @Override
@@ -164,10 +166,6 @@ open class AdapterPickerDialog<ItemType : EasyAdapterDataModel> :
         }
     }
 
-    fun setAdapter(adapter: EasyRecyclerAdapter<ItemType>) {
-        this.adapter = adapter
-    }
-
     fun setSelection(newSelection: Int) {
         setSelection(intArrayOf(newSelection))
     }
@@ -177,9 +175,7 @@ open class AdapterPickerDialog<ItemType : EasyAdapterDataModel> :
     }
 
     fun setData(data: MutableList<ItemType>?) {
-        requireAdapter { adapter ->
-            adapter.setCollection(data ?: mutableListOf())
-        }
+        adapter.setCollection(data ?: mutableListOf())
     }
 
     private fun selectViews(rootView: View) {
@@ -195,10 +191,7 @@ open class AdapterPickerDialog<ItemType : EasyAdapterDataModel> :
         recyclerView.adapter = adapter
     }
 
-    @JvmOverloads
-    protected fun requireAdapter(run: ((adapter: EasyRecyclerAdapter<ItemType>) -> Unit)? = null): EasyRecyclerAdapter<ItemType> {
-        if (adapter == null) throw Exception("Dialog picker adapter must not be null.")
-        run?.invoke(adapter!!)
-        return adapter!!
+    interface AdapterCreator<ItemType : EasyAdapterDataModel> {
+        fun createAdapter(): EasyRecyclerAdapter<ItemType>
     }
 }

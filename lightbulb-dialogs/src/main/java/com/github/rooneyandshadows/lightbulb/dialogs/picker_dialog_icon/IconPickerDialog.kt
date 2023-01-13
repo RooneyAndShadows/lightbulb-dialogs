@@ -12,7 +12,10 @@ import com.github.rooneyandshadows.lightbulb.dialogs.base.constraints.regular.Re
 import com.github.rooneyandshadows.lightbulb.dialogs.base.constraints.regular.RegularDialogConstraintsBuilder
 import com.github.rooneyandshadows.lightbulb.dialogs.base.internal.DialogTypes
 import com.github.rooneyandshadows.lightbulb.dialogs.picker_dialog_adapter.AdapterPickerDialog
+import com.github.rooneyandshadows.lightbulb.dialogs.picker_dialog_color.ColorPickerAdapter
 import com.github.rooneyandshadows.lightbulb.dialogs.picker_dialog_icon.IconPickerAdapter.IconModel
+import com.github.rooneyandshadows.lightbulb.recycleradapters.abstraction.EasyAdapterSelectableModes
+import com.github.rooneyandshadows.lightbulb.recycleradapters.abstraction.EasyRecyclerAdapter
 import java.util.function.Predicate
 import kotlin.math.ceil
 import kotlin.math.max
@@ -25,6 +28,12 @@ class IconPickerDialog : AdapterPickerDialog<IconModel>() {
     override var dialogType: DialogTypes
         get() = DialogTypes.NORMAL
         set(value) {}
+    override val adapterCreator: AdapterCreator<IconModel>
+        get() = object : AdapterCreator<IconModel> {
+            override fun createAdapter(): EasyRecyclerAdapter<IconModel> {
+                return IconPickerAdapter(EasyAdapterSelectableModes.SELECT_SINGLE)
+            }
+        }
 
     companion object {
         private val iconSize = ResourceUtils.dpToPx(50)
@@ -85,47 +94,45 @@ class IconPickerDialog : AdapterPickerDialog<IconModel>() {
         dialogLayout: View,
         fgPadding: Rect,
     ) {
-        requireAdapter { adapter ->
-            val widthMeasureSpec = View.MeasureSpec.makeMeasureSpec(0, View.MeasureSpec.UNSPECIFIED)
-            val heightMeasureSpec = View.MeasureSpec.makeMeasureSpec(0, View.MeasureSpec.UNSPECIFIED)
-            dialogLayout.measure(widthMeasureSpec, heightMeasureSpec)
-            val horPadding = fgPadding.left + fgPadding.right
-            val verPadding = fgPadding.top + fgPadding.bottom
-            val items = adapter.getItems().size
-            val rows = ceil(items.toDouble() / spans).toInt()
-            var dialogLayoutHeight = dialogLayout.measuredHeight
-            val recyclerRequiredHeight = rows * iconSize + recyclerView.paddingBottom + recyclerView.paddingTop
-            val recyclerRequiredWidth = spans * iconSize + recyclerView.paddingRight + recyclerView.paddingLeft
-            var recyclerWidth = recyclerView.measuredWidth
-            var recyclerHeight = recyclerView.measuredHeight
-            val maxHeight = constraints.getMaxHeight()
-            dialogLayoutHeight -= recyclerHeight
-            if (recyclerWidth > recyclerRequiredWidth) recyclerWidth =
-                recyclerRequiredWidth else if (recyclerWidth < recyclerRequiredWidth) recyclerWidth = spans * iconSize
-            if (recyclerHeight > recyclerRequiredHeight) recyclerHeight =
-                recyclerRequiredHeight else if (recyclerHeight < recyclerRequiredHeight) recyclerHeight = iconSize * rows
-            val desiredWidth = max(recyclerWidth, dialogLayout.measuredWidth)
-            var desiredHeight = dialogLayoutHeight + recyclerHeight
-            if (desiredHeight > maxHeight) {
-                desiredHeight -= recyclerHeight
-                recyclerHeight = maxHeight - desiredHeight
-                desiredHeight += recyclerHeight
-            }
-            val newWidth = constraints.resolveWidth(desiredWidth)
-            val newHeight = constraints.resolveHeight(desiredHeight)
-            recyclerView.layoutParams.height = recyclerHeight
-            dialogWindow.setLayout(newWidth + horPadding, newHeight + verPadding)
-            //dialogLayout.setLayoutParams(new ViewGroup.LayoutParams(newWidth, newHeight));
-            if (lastVisibleItemPosition != -1) recyclerView.scrollToPosition(lastVisibleItemPosition)
+        val widthMeasureSpec = View.MeasureSpec.makeMeasureSpec(0, View.MeasureSpec.UNSPECIFIED)
+        val heightMeasureSpec = View.MeasureSpec.makeMeasureSpec(0, View.MeasureSpec.UNSPECIFIED)
+        dialogLayout.measure(widthMeasureSpec, heightMeasureSpec)
+        val horPadding = fgPadding.left + fgPadding.right
+        val verPadding = fgPadding.top + fgPadding.bottom
+        val items = adapter.getItems().size
+        val rows = ceil(items.toDouble() / spans).toInt()
+        var dialogLayoutHeight = dialogLayout.measuredHeight
+        val recyclerRequiredHeight = rows * iconSize + recyclerView.paddingBottom + recyclerView.paddingTop
+        val recyclerRequiredWidth = spans * iconSize + recyclerView.paddingRight + recyclerView.paddingLeft
+        var recyclerWidth = recyclerView.measuredWidth
+        var recyclerHeight = recyclerView.measuredHeight
+        val maxHeight = constraints.getMaxHeight()
+        dialogLayoutHeight -= recyclerHeight
+        if (recyclerWidth > recyclerRequiredWidth) recyclerWidth =
+            recyclerRequiredWidth else if (recyclerWidth < recyclerRequiredWidth) recyclerWidth = spans * iconSize
+        if (recyclerHeight > recyclerRequiredHeight) recyclerHeight =
+            recyclerRequiredHeight else if (recyclerHeight < recyclerRequiredHeight) recyclerHeight = iconSize * rows
+        val desiredWidth = max(recyclerWidth, dialogLayout.measuredWidth)
+        var desiredHeight = dialogLayoutHeight + recyclerHeight
+        if (desiredHeight > maxHeight) {
+            desiredHeight -= recyclerHeight
+            recyclerHeight = maxHeight - desiredHeight
+            desiredHeight += recyclerHeight
         }
+        val newWidth = constraints.resolveWidth(desiredWidth)
+        val newHeight = constraints.resolveHeight(desiredHeight)
+        recyclerView.layoutParams.height = recyclerHeight
+        dialogWindow.setLayout(newWidth + horPadding, newHeight + verPadding)
+        //dialogLayout.setLayoutParams(new ViewGroup.LayoutParams(newWidth, newHeight));
+        if (lastVisibleItemPosition != -1) recyclerView.scrollToPosition(lastVisibleItemPosition)
     }
 
     fun getIcons(predicate: Predicate<IconModel>): List<IconModel> {
-        return requireAdapter().getItems(predicate)
+        return adapter.getItems(predicate)
     }
 
     private fun getIconsByNames(iconNames: List<String>): List<IconModel> {
-        return requireAdapter().getItems(Predicate { iconModel ->
+        return adapter.getItems(Predicate { iconModel ->
             return@Predicate iconNames.contains(iconModel.iconName)
         })
     }

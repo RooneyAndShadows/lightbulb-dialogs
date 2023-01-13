@@ -11,8 +11,9 @@ class IconPickerDialogBuilder @JvmOverloads constructor(
     lifecycleOwner: LifecycleOwner? = null,
     manager: FragmentManager,
     dialogTag: String,
-    private val adapter: IconPickerAdapter,
-) : com.github.rooneyandshadows.lightbulb.dialogs.base.BaseDialogBuilder<IconPickerDialog>(lifecycleOwner, manager, dialogTag) {
+) : com.github.rooneyandshadows.lightbulb.dialogs.base.BaseDialogBuilder<IconPickerDialog>(lifecycleOwner,
+    manager,
+    dialogTag) {
     private var changedCallback: SelectionChangedListener<IntArray?>? = null
     private var selection: IntArray? = null
 
@@ -99,7 +100,6 @@ class IconPickerDialogBuilder @JvmOverloads constructor(
             onCancelListener?.apply { addOnCancelListener(this) }
             onNegativeClickListener?.apply { addOnNegativeClickListeners(this) }
             onPositiveClickListener?.apply { addOnPositiveClickListener(this) }
-            setAdapter(adapter)
             setOnSelectionChangedListener(changedCallback)
             setSelection(selection)
         }

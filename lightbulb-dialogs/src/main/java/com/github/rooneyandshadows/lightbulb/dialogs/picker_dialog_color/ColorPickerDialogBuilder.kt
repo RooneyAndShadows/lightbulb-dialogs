@@ -11,8 +11,7 @@ import com.github.rooneyandshadows.lightbulb.dialogs.base.internal.callbacks.*
 class ColorPickerDialogBuilder @JvmOverloads constructor(
     lifecycleOwner: LifecycleOwner? = null,
     manager: FragmentManager,
-    dialogTag: String,
-    private val adapter: ColorPickerAdapter,
+    dialogTag: String
 ) : BaseDialogBuilder<ColorPickerDialog>(lifecycleOwner, manager, dialogTag) {
     private var changedCallback: SelectionChangedListener<IntArray?>? = null
     private var selection: IntArray? = null
@@ -95,7 +94,6 @@ class ColorPickerDialogBuilder @JvmOverloads constructor(
             setDialogCallbacks(dialogListeners)
             setParentFragManager(dialogParentFragmentManager)
             setDialogTag(dialogTag)
-            setAdapter(adapter)
             onShowListener?.apply { addOnShowListener(this) }
             onHideListener?.apply { addOnHideListener(this) }
             onCancelListener?.apply { addOnCancelListener(this) }
