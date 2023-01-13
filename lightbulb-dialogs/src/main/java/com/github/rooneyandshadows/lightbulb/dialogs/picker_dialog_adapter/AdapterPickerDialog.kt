@@ -144,10 +144,8 @@ open class AdapterPickerDialog<ItemType : EasyAdapterDataModel> :
     @Override
     override fun doOnCreate(dialogArguments: Bundle?, savedInstanceState: Bundle?) {
         savedInstanceState?.apply {
-            val adapterSavedState = BundleUtils.getParcelable(adapterStateTag, savedInstanceState, Bundle::class.java)!!
             val currentSelection = savedInstanceState.getIntArray(adapterSelectionTag)
             val draftSelection = savedInstanceState.getIntArray(adapterSelectionDraftTag)
-            requireAdapter().restoreAdapterState(adapterSavedState)
             selection.setCurrentSelection(currentSelection)
             selection.setDraftSelection(draftSelection)
         }
@@ -157,9 +155,6 @@ open class AdapterPickerDialog<ItemType : EasyAdapterDataModel> :
     override fun doOnSaveInstanceState(outState: Bundle?) {
         super.doOnSaveInstanceState(outState)
         outState?.apply {
-            requireAdapter().apply {
-                putParcelable(adapterStateTag, saveAdapterState())
-            }
             selection.getCurrentSelection()?.apply {
                 putIntArray(adapterSelectionTag, this)
             }

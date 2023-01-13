@@ -7,6 +7,7 @@ import com.github.rooneyandshadows.lightbulb.annotation_processors.annotations.F
 import com.github.rooneyandshadows.lightbulb.application.activity.slidermenu.drawable.NavigateBackDrawable
 import com.github.rooneyandshadows.lightbulb.application.fragment.base.BaseFragmentWithViewDataBinding
 import com.github.rooneyandshadows.lightbulb.application.fragment.cofiguration.ActionBarConfiguration
+import com.github.rooneyandshadows.lightbulb.commons.utils.BundleUtils
 import com.github.rooneyandshadows.lightbulb.commons.utils.InteractionUtils
 import com.github.rooneyandshadows.lightbulb.commons.utils.ResourceUtils
 import com.github.rooneyandshadows.lightbulb.dialogs.base.BaseDialogFragment
@@ -21,11 +22,13 @@ import com.github.rooneyandshadows.lightbulb.dialogsdemo.getRadioButtonAdapter
 import com.github.rooneyandshadows.lightbulb.dialogsdemo.models.DemoModel
 import com.github.rooneyandshadows.lightbulb.dialogsdemo.spinner.DialogAnimationTypeSpinner
 import com.github.rooneyandshadows.lightbulb.dialogsdemo.spinner.DialogTypeSpinner
+import com.github.rooneyandshadows.lightbulb.recycleradapters.implementation.RadioButtonSelectableAdapter
 
 @FragmentScreen(screenName = "Adapter", screenGroup = "Demo")
 @FragmentConfiguration(layoutName = "fragment_demo_dialog_adapter_picker")
 class FragmentDialogAdapterPicker : BaseFragmentWithViewDataBinding<FragmentDemoDialogAdapterPickerBinding>() {
     private lateinit var adapterPickerDialog: AdapterPickerDialog<DemoModel>
+    private lateinit var adapter: RadioButtonSelectableAdapter<DemoModel>
 
     companion object {
         private const val DIALOG_TAG = "ADAPTER_PICKER_DIALOG_TAG"
@@ -45,6 +48,22 @@ class FragmentDialogAdapterPicker : BaseFragmentWithViewDataBinding<FragmentDemo
             this.typeSpinner = viewBinding.dialogTypeDropdown
         }
         viewBinding.dialog = adapterPickerDialog
+    }
+
+    @Override
+    override fun doOnCreate(savedInstanceState: Bundle?) {
+        super.doOnCreate(savedInstanceState)
+        adapter = getRadioButtonAdapter(requireContext())
+        savedInstanceState?.apply {
+            val adapterState = BundleUtils.getParcelable("ADAPTER_STATE", this, Bundle::class.java)!!
+            adapter.restoreAdapterState(adapterState)
+        }
+    }
+
+    @Override
+    override fun doOnSaveInstanceState(outState: Bundle) {
+        super.doOnSaveInstanceState(outState)
+        outState.putParcelable("ADAPTER_STATE", adapter.saveAdapterState())
     }
 
     @Override

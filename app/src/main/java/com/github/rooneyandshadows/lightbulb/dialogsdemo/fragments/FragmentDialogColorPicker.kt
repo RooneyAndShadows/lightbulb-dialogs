@@ -7,6 +7,7 @@ import com.github.rooneyandshadows.lightbulb.annotation_processors.annotations.F
 import com.github.rooneyandshadows.lightbulb.application.activity.slidermenu.drawable.ShowMenuDrawable
 import com.github.rooneyandshadows.lightbulb.application.fragment.base.BaseFragmentWithViewDataBinding
 import com.github.rooneyandshadows.lightbulb.application.fragment.cofiguration.ActionBarConfiguration
+import com.github.rooneyandshadows.lightbulb.commons.utils.BundleUtils
 import com.github.rooneyandshadows.lightbulb.commons.utils.InteractionUtils
 import com.github.rooneyandshadows.lightbulb.commons.utils.ResourceUtils
 import com.github.rooneyandshadows.lightbulb.dialogs.base.BaseDialogFragment
@@ -35,9 +36,20 @@ class FragmentDialogColorPicker : BaseFragmentWithViewDataBinding<FragmentDemoDi
 
     @Override
     override fun doOnCreate(savedInstanceState: Bundle?) {
+        super.doOnCreate(savedInstanceState)
         adapter = ColorPickerAdapter(requireContext(), SELECT_SINGLE).apply {
             if (savedInstanceState == null) setCollection(AppColorUtils.allForPicker)
         }
+        savedInstanceState?.apply {
+            val adapterState = BundleUtils.getParcelable("ADAPTER_STATE", this, Bundle::class.java)!!
+            adapter.restoreAdapterState(adapterState)
+        }
+    }
+
+    @Override
+    override fun doOnSaveInstanceState(outState: Bundle) {
+        super.doOnSaveInstanceState(outState)
+        outState.putParcelable("ADAPTER_STATE", adapter.saveAdapterState())
     }
 
     @Override
