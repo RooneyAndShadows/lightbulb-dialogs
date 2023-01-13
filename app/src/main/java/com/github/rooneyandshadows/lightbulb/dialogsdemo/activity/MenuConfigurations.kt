@@ -47,6 +47,8 @@ object MenuConfigurations {
                 null,
                 1
             ) { slider: SliderMenu ->
+                slider.closeSlider()
+                MainActivityNavigator.route().toDemoAdapter().forward()
                 // route().back()
                 //slider.closeSlider()
             }
@@ -58,6 +60,8 @@ object MenuConfigurations {
                 null,
                 1
             ) { slider: SliderMenu ->
+                slider.closeSlider()
+                MainActivityNavigator.route().toDemoColorPicker().forward()
                 // route().back()
                 //slider.closeSlider()
             }
@@ -69,6 +73,8 @@ object MenuConfigurations {
                 null,
                 1
             ) { slider: SliderMenu ->
+                slider.closeSlider()
+                MainActivityNavigator.route().toDemoIconPicker().forward()
                 // route().back()
                 //slider.closeSlider()
             }
@@ -80,6 +86,8 @@ object MenuConfigurations {
                 null,
                 1
             ) { slider: SliderMenu ->
+                slider.closeSlider()
+                MainActivityNavigator.route().toDemoDateRange().forward()
                 // route().back()
                 //slider.closeSlider()
             }

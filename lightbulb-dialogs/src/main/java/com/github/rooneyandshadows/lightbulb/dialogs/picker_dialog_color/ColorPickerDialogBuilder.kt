@@ -2,6 +2,7 @@ package com.github.rooneyandshadows.lightbulb.dialogs.picker_dialog_color
 
 import androidx.fragment.app.FragmentManager
 import androidx.lifecycle.LifecycleOwner
+import com.github.rooneyandshadows.lightbulb.dialogs.base.BaseDialogBuilder
 import com.github.rooneyandshadows.lightbulb.dialogs.base.BasePickerDialogFragment.SelectionChangedListener
 import com.github.rooneyandshadows.lightbulb.dialogs.base.internal.*
 import com.github.rooneyandshadows.lightbulb.dialogs.base.internal.callbacks.*
@@ -12,7 +13,7 @@ class ColorPickerDialogBuilder @JvmOverloads constructor(
     manager: FragmentManager,
     dialogTag: String,
     private val adapter: ColorPickerAdapter,
-) : com.github.rooneyandshadows.lightbulb.dialogs.base.BaseDialogBuilder<ColorPickerDialog>(lifecycleOwner, manager, dialogTag) {
+) : BaseDialogBuilder<ColorPickerDialog>(lifecycleOwner, manager, dialogTag) {
     private var changedCallback: SelectionChangedListener<IntArray?>? = null
     private var selection: IntArray? = null
 

@@ -10,6 +10,7 @@ import com.github.rooneyandshadows.lightbulb.application.fragment.cofiguration.A
 import com.github.rooneyandshadows.lightbulb.commons.utils.InteractionUtils
 import com.github.rooneyandshadows.lightbulb.commons.utils.ResourceUtils
 import com.github.rooneyandshadows.lightbulb.dialogs.base.BaseDialogFragment
+import com.github.rooneyandshadows.lightbulb.dialogs.base.BasePickerDialogFragment.SelectionChangedListener
 import com.github.rooneyandshadows.lightbulb.dialogs.base.internal.DialogButtonConfiguration
 import com.github.rooneyandshadows.lightbulb.dialogs.base.internal.callbacks.DialogButtonClickListener
 import com.github.rooneyandshadows.lightbulb.dialogs.picker_dialog_color.ColorPickerAdapter
@@ -89,11 +90,17 @@ class FragmentDialogColorPicker : BaseFragmentWithViewDataBinding<FragmentDemoDi
                 InteractionUtils.showMessage(ctx, toastMessage)
             }
         }
+        val onSelectionChanged = object : SelectionChangedListener<IntArray?> {
+            override fun onSelectionChanged(oldValue: IntArray?, newValue: IntArray?) {
+                //TODO write logic
+            }
+        }
         dialog = ColorPickerDialogBuilder(this, childFragmentManager, DIALOG_TAG, adapter).apply {
             withTitle(title)
             withMessage(message)
             withPositiveButton(DialogButtonConfiguration(positiveText), onPositiveButtonClick)
             withNegativeButton(DialogButtonConfiguration(negativeText), onNegativeButtonClick)
+            withSelectionCallback(onSelectionChanged)
         }.buildDialog().apply {
             typeSpinner.dialog = this
             animationSpinner.dialog = this

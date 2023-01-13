@@ -48,8 +48,8 @@ class IconPickerDialog : AdapterPickerDialog<IconModel>() {
 
     @Override
     override fun configureContent(view: View, savedInstanceState: Bundle?) {
-        recyclerView.layoutParams.height = 1 //Fixes rendering all possible icons (later will be resized)
         super.configureContent(view, savedInstanceState)
+        recyclerView.layoutParams.height = 1 //Fixes rendering all possible icons (later will be resized)
         spans = min(7, getMaxWidth() / iconSize)
         recyclerView.layoutManager = GridLayoutManager(context, spans, RecyclerView.VERTICAL, false)
         recyclerView.clipToPadding = false

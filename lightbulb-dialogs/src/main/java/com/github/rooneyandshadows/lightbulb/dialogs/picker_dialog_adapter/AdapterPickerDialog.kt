@@ -14,6 +14,7 @@ import androidx.appcompat.widget.LinearLayoutCompat
 import com.github.rooneyandshadows.lightbulb.recycleradapters.abstraction.EasyRecyclerAdapter
 import androidx.recyclerview.widget.LinearLayoutManager
 import androidx.recyclerview.widget.RecyclerView
+import com.github.rooneyandshadows.lightbulb.commons.utils.BundleUtils
 import com.github.rooneyandshadows.lightbulb.recycleradapters.abstraction.EasyAdapterDataModel
 import com.github.rooneyandshadows.lightbulb.dialogs.base.BasePickerDialogFragment
 import com.github.rooneyandshadows.lightbulb.dialogs.R
@@ -22,6 +23,7 @@ import com.github.rooneyandshadows.lightbulb.recycleradapters.abstraction.callba
 @Suppress("unused")
 open class AdapterPickerDialog<ItemType : EasyAdapterDataModel> :
     BasePickerDialogFragment<IntArray?>(AdapterPickerDialogSelection(null, null)) {
+    private val adapterStateTag = "ADAPTER_STATE_TAG"
     private val adapterSelectionTag = "ADAPTER_SELECTION_TAG"
     private val adapterSelectionDraftTag = "ADAPTER_SELECTION_DRAFT_TAG"
     protected lateinit var recyclerView: RecyclerView
@@ -141,23 +143,30 @@ open class AdapterPickerDialog<ItemType : EasyAdapterDataModel> :
 
     @Override
     override fun doOnCreate(dialogArguments: Bundle?, savedInstanceState: Bundle?) {
-        if (savedInstanceState != null) {
-            selection.setCurrentSelection(savedInstanceState.getIntArray(adapterSelectionTag))
-            selection.setDraftSelection(savedInstanceState.getIntArray(adapterSelectionDraftTag))
+        savedInstanceState?.apply {
+            val adapterSavedState = BundleUtils.getParcelable(adapterStateTag, savedInstanceState, Bundle::class.java)!!
+            val currentSelection = savedInstanceState.getIntArray(adapterSelectionTag)
+            val draftSelection = savedInstanceState.getIntArray(adapterSelectionDraftTag)
+            requireAdapter().restoreAdapterState(adapterSavedState)
+            selection.setCurrentSelection(currentSelection)
+            selection.setDraftSelection(draftSelection)
         }
     }
 
     @Override
     override fun doOnSaveInstanceState(outState: Bundle?) {
         super.doOnSaveInstanceState(outState)
-        if (selection.getCurrentSelection() != null) outState!!.putIntArray(
-            adapterSelectionTag,
-            selection.getCurrentSelection()
-        )
-        if (selection.getDraftSelection() != null) outState!!.putIntArray(
-            adapterSelectionDraftTag,
-            selection.getDraftSelection()
-        )
+        outState?.apply {
+            requireAdapter().apply {
+                putParcelable(adapterStateTag, saveAdapterState())
+            }
+            selection.getCurrentSelection()?.apply {
+                putIntArray(adapterSelectionTag, this)
+            }
+            selection.getDraftSelection()?.apply {
+                putIntArray(adapterSelectionDraftTag, this)
+            }
+        }
     }
 
     fun setAdapter(adapter: EasyRecyclerAdapter<ItemType>) {

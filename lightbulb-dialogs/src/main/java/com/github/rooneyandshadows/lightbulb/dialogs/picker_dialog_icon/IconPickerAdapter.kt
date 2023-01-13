@@ -90,7 +90,7 @@ class IconPickerAdapter(private val context: Context, selectableMode: EasyAdapte
     }
 
     private fun validatePendingItem(iconModel: IconModel): IconModel? {
-        val isValid = getIconValue(iconModel) == null
+        val isValid = getIconValue(iconModel) != null
         return if (isValid) iconModel else null
     }
 

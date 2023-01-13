@@ -10,6 +10,7 @@ import com.github.rooneyandshadows.lightbulb.application.fragment.cofiguration.A
 import com.github.rooneyandshadows.lightbulb.commons.utils.InteractionUtils
 import com.github.rooneyandshadows.lightbulb.commons.utils.ResourceUtils
 import com.github.rooneyandshadows.lightbulb.dialogs.base.BaseDialogFragment
+import com.github.rooneyandshadows.lightbulb.dialogs.base.BasePickerDialogFragment.SelectionChangedListener
 import com.github.rooneyandshadows.lightbulb.dialogs.base.internal.DialogButtonConfiguration
 import com.github.rooneyandshadows.lightbulb.dialogs.base.internal.callbacks.DialogButtonClickListener
 import com.github.rooneyandshadows.lightbulb.dialogs.picker_dialog_date_range.DateRangePickerDialog
@@ -18,8 +19,9 @@ import com.github.rooneyandshadows.lightbulb.dialogsdemo.R
 import com.github.rooneyandshadows.lightbulb.dialogsdemo.databinding.FragmentDemoDialogDateRangePickerBinding
 import com.github.rooneyandshadows.lightbulb.dialogsdemo.spinner.DialogAnimationTypeSpinner
 import com.github.rooneyandshadows.lightbulb.dialogsdemo.spinner.DialogTypeSpinner
+import java.time.OffsetDateTime
 
-@FragmentScreen(screenName = "IconPicker", screenGroup = "Demo")
+@FragmentScreen(screenName = "DateRange", screenGroup = "Demo")
 @FragmentConfiguration(layoutName = "fragment_demo_dialog_icon_picker", hasLeftDrawer = true)
 class FragmentDialogDateRangePicker : BaseFragmentWithViewDataBinding<FragmentDemoDialogDateRangePickerBinding>() {
     private lateinit var dialog: DateRangePickerDialog
@@ -46,7 +48,7 @@ class FragmentDialogDateRangePicker : BaseFragmentWithViewDataBinding<FragmentDe
 
     @Override
     override fun configureActionBar(): ActionBarConfiguration {
-        val title = ResourceUtils.getPhrase(requireContext(), R.string.demo_icon_title)
+        val title = ResourceUtils.getPhrase(requireContext(), R.string.demo_date_range_title)
         val subTitle = ResourceUtils.getPhrase(requireContext(), R.string.app_name)
         return ActionBarConfiguration(R.id.toolbar)
             .withActionButtons(true)
@@ -76,13 +78,15 @@ class FragmentDialogDateRangePicker : BaseFragmentWithViewDataBinding<FragmentDe
                 InteractionUtils.showMessage(ctx, toastMessage)
             }
         }
-        dialog = DateRangePickerDialogBuilder(
-            this,
-            childFragmentManager,
-            DIALOG_TAG
-        ).apply {
+        val onSelectionChanged = object : SelectionChangedListener<Array<OffsetDateTime?>?> {
+            override fun onSelectionChanged(oldValue: Array<OffsetDateTime?>?, newValue: Array<OffsetDateTime?>?) {
+                //TODO write logic
+            }
+        }
+        dialog = DateRangePickerDialogBuilder(this, childFragmentManager, DIALOG_TAG).apply {
             withPositiveButton(DialogButtonConfiguration(positiveText), onPositiveButtonClick)
             withNegativeButton(DialogButtonConfiguration(negativeText), onNegativeButtonClick)
+            withOnDateSelectedEvent(onSelectionChanged)
         }.buildDialog().apply {
             typeSpinner.dialog = this
             animationSpinner.dialog = this

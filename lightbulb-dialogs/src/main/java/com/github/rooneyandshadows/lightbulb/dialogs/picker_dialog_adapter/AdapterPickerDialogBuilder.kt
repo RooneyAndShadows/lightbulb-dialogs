@@ -5,6 +5,7 @@ import com.github.rooneyandshadows.lightbulb.dialogs.base.BasePickerDialogFragme
 import com.github.rooneyandshadows.lightbulb.recycleradapters.abstraction.EasyRecyclerAdapter
 import androidx.fragment.app.FragmentManager
 import androidx.recyclerview.widget.RecyclerView
+import com.github.rooneyandshadows.lightbulb.dialogs.base.BaseDialogBuilder
 import com.github.rooneyandshadows.lightbulb.dialogs.base.internal.*
 import com.github.rooneyandshadows.lightbulb.dialogs.base.internal.callbacks.*
 import com.github.rooneyandshadows.lightbulb.recycleradapters.abstraction.EasyAdapterDataModel
@@ -15,7 +16,7 @@ class AdapterPickerDialogBuilder<ModelType : EasyAdapterDataModel> @JvmOverloads
     manager: FragmentManager,
     dialogTag: String,
     private val adapter: EasyRecyclerAdapter<ModelType>
-) : com.github.rooneyandshadows.lightbulb.dialogs.base.BaseDialogBuilder<AdapterPickerDialog<ModelType>>(lifecycleOwner, manager, dialogTag) {
+) : BaseDialogBuilder<AdapterPickerDialog<ModelType>>(lifecycleOwner, manager, dialogTag) {
     private var changedCallback: SelectionChangedListener<IntArray?>? = null
     private var itemDecoration: RecyclerView.ItemDecoration? = null
     private var selection: IntArray? = null

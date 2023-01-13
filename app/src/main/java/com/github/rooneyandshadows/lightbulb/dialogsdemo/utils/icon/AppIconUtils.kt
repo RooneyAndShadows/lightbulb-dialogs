@@ -62,8 +62,8 @@ object AppIconUtils {
     val allForPicker: List<IconModel>
         get() {
             val result: MutableList<IconModel> = mutableListOf()
-            for (icon in DemoIcons.values())
-                result.add(IconModel(icon.iconName, IconSet.FONTAWESOME))
+            for (demoIcon in DemoIcons.values())
+                result.add(IconModel(demoIcon.icon.name, IconSet.FONTAWESOME))
             return result
         }
 }

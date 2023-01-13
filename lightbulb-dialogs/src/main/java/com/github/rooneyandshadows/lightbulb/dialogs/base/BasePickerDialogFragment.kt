@@ -82,7 +82,7 @@ abstract class BasePickerDialogFragment<SelectionType>(
         })
     }
 
-    interface SelectionChangedListener<SType> {
-        fun onSelectionChanged(oldValue: SType?, newValue: SType?)
+    interface SelectionChangedListener<SelectionType> {
+        fun onSelectionChanged(oldValue: SelectionType?, newValue: SelectionType?)
     }
 }

@@ -10,6 +10,7 @@ import com.github.rooneyandshadows.lightbulb.application.fragment.cofiguration.A
 import com.github.rooneyandshadows.lightbulb.commons.utils.InteractionUtils
 import com.github.rooneyandshadows.lightbulb.commons.utils.ResourceUtils
 import com.github.rooneyandshadows.lightbulb.dialogs.base.BaseDialogFragment
+import com.github.rooneyandshadows.lightbulb.dialogs.base.BasePickerDialogFragment
 import com.github.rooneyandshadows.lightbulb.dialogs.base.internal.DialogButtonConfiguration
 import com.github.rooneyandshadows.lightbulb.dialogs.base.internal.callbacks.DialogButtonClickListener
 import com.github.rooneyandshadows.lightbulb.dialogs.picker_dialog_icon.IconPickerAdapter
@@ -35,7 +36,8 @@ class FragmentDialogIconPicker : BaseFragmentWithViewDataBinding<FragmentDemoDia
     @Override
     override fun doOnCreate(savedInstanceState: Bundle?) {
         adapter = IconPickerAdapter(requireContext(), SELECT_SINGLE).apply {
-            if (savedInstanceState == null) setCollection(AppIconUtils.allForPicker)
+            if (savedInstanceState == null)
+                setCollection(AppIconUtils.allForPicker)
         }
     }
 
@@ -89,20 +91,17 @@ class FragmentDialogIconPicker : BaseFragmentWithViewDataBinding<FragmentDemoDia
                 InteractionUtils.showMessage(ctx, toastMessage)
             }
         }
-
-        dialog = IconPickerDialogBuilder(
-            this,
-            childFragmentManager,
-            DIALOG_TAG,
-            IconPickerAdapter(
-                requireContext(),
-                SELECT_SINGLE
-            )
-        ).apply {
+        val onSelectionChanged = object : BasePickerDialogFragment.SelectionChangedListener<IntArray?> {
+            override fun onSelectionChanged(oldValue: IntArray?, newValue: IntArray?) {
+                //TODO write logic
+            }
+        }
+        dialog = IconPickerDialogBuilder(this, childFragmentManager, DIALOG_TAG, adapter).apply {
             withTitle(title)
             withMessage(message)
             withPositiveButton(DialogButtonConfiguration(positiveText), onPositiveButtonClick)
             withNegativeButton(DialogButtonConfiguration(negativeText), onNegativeButtonClick)
+            withSelectionCallback(onSelectionChanged)
         }.buildDialog().apply {
             typeSpinner.dialog = this
             animationSpinner.dialog = this

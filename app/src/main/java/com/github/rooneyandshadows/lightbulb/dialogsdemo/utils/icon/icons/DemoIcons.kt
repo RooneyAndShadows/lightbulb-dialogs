@@ -1,6 +1,5 @@
 package com.github.rooneyandshadows.lightbulb.dialogsdemo.utils.icon.icons
 
-import com.github.rooneyandshadows.lightbulb.dialogsdemo.utils.color.colors.DemoColors
 import com.github.rooneyandshadows.lightbulb.dialogsdemo.utils.icon.IDemoIcon
 import com.mikepenz.iconics.typeface.IIcon
 import com.mikepenz.iconics.typeface.library.fontawesome.FontAwesome
@@ -82,7 +81,7 @@ enum class DemoIcons(val iconName: String, val iconValue: IIcon) : IDemoIcon {
     ICON_PHOTOS("ICON_PHOTOS", FontAwesome.Icon.faw_camera),
     ICON_PET("ICON_PET", FontAwesome.Icon.faw_cat);
 
-    override val icon: IIcon?
+    override val icon: IIcon
         get() = iconValue
 
     companion object {

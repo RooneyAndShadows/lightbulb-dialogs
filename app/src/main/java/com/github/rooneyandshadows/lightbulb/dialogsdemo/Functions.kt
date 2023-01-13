@@ -49,7 +49,7 @@ fun setPickerSelection(view: TextInputView, newButtonConfiguration: DialogButton
 
 @BindingAdapter(value = ["dialogButtonTextChanged"], requireAll = false)
 fun bindPickerEvent(view: TextInputView, bindingListener: InverseBindingListener) {
-    view.addTextChangedCallback { newValue, oldValue ->
+    view.addTextChangedCallback { _, _ ->
         bindingListener.onChange()
     }
 }
