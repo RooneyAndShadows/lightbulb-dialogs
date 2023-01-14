@@ -1,15 +1,25 @@
 package com.github.rooneyandshadows.lightbulb.dialogs.dialog_alert
 
+import android.os.Bundle
 import androidx.lifecycle.LifecycleOwner
 import androidx.fragment.app.FragmentManager
+import com.github.rooneyandshadows.lightbulb.dialogs.base.BaseDialogBuilder
 import com.github.rooneyandshadows.lightbulb.dialogs.base.internal.callbacks.*
 import com.github.rooneyandshadows.lightbulb.dialogs.base.internal.*
+import com.github.rooneyandshadows.lightbulb.dialogs.picker_dialog_adapter.AdapterPickerDialogBuilder
 
 class AlertDialogBuilder @JvmOverloads constructor(
     lifecycleOwner: LifecycleOwner? = null,
     dialogParentFragmentManager: FragmentManager,
-    dialogTag: String
-) : com.github.rooneyandshadows.lightbulb.dialogs.base.BaseDialogBuilder<AlertDialog>(lifecycleOwner, dialogParentFragmentManager, dialogTag) {
+    dialogTag: String,
+) : BaseDialogBuilder<AlertDialog>(lifecycleOwner,
+    dialogParentFragmentManager,
+    dialogTag) {
+
+    @Override
+    override fun withSavedState(savedState: Bundle): AlertDialogBuilder {
+        return super.withSavedState(savedState) as AlertDialogBuilder
+    }
 
     @Override
     override fun withTitle(title: String): AlertDialogBuilder {
@@ -24,7 +34,7 @@ class AlertDialogBuilder @JvmOverloads constructor(
     @Override
     override fun withPositiveButton(
         configuration: DialogButtonConfiguration,
-        onClickListener: DialogButtonClickListener
+        onClickListener: DialogButtonClickListener,
     ): AlertDialogBuilder {
         return super.withPositiveButton(configuration, onClickListener) as AlertDialogBuilder
     }
@@ -32,7 +42,7 @@ class AlertDialogBuilder @JvmOverloads constructor(
     @Override
     override fun withNegativeButton(
         configuration: DialogButtonConfiguration,
-        onClickListener: DialogButtonClickListener
+        onClickListener: DialogButtonClickListener,
     ): AlertDialogBuilder {
         return super.withNegativeButton(configuration, onClickListener) as AlertDialogBuilder
     }
@@ -89,6 +99,8 @@ class AlertDialogBuilder @JvmOverloads constructor(
     private fun getExistingDialogOrCreate(): AlertDialog {
         val dialog = dialogParentFragmentManager.findFragmentByTag(dialogTag) as AlertDialog?
         return dialog ?: AlertDialog.newInstance().apply {
+            restoreDialogState(savedState)
+            if (savedState != null) return@apply
             dialogTitle = title
             dialogMessage = message
             dialogType = type

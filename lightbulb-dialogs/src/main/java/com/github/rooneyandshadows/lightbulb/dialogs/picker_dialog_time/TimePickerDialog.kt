@@ -36,13 +36,8 @@ class TimePickerDialog : BasePickerDialogFragment<IntArray?>(
 
     @Override
     override fun doOnCreate(dialogArguments: Bundle?, savedInstanceState: Bundle?) {
-        if (savedInstanceState == null) {
-            if (hasSelection())
-                selection.setCurrentSelection(selection.getCurrentSelection())
-        } else {
-            selection.setCurrentSelection(savedInstanceState.getIntArray(TIME_SELECTION_TAG), false)
-            selection.setDraftSelection(savedInstanceState.getIntArray(TIME_SELECTION_DRAFT_TAG), false)
-        }
+        if (savedInstanceState != null) return
+        if (hasSelection()) selection.setCurrentSelection(selection.getCurrentSelection())
     }
 
     @Override
@@ -55,6 +50,13 @@ class TimePickerDialog : BasePickerDialogFragment<IntArray?>(
                 putIntArray(TIME_SELECTION_DRAFT_TAG, selection.getDraftSelection())
             }
         }
+    }
+
+    @Override
+    override fun doOnRestoreInstanceState(savedState: Bundle) {
+        super.doOnRestoreInstanceState(savedState)
+        selection.setCurrentSelection(savedState.getIntArray(TIME_SELECTION_TAG), false)
+        selection.setDraftSelection(savedState.getIntArray(TIME_SELECTION_DRAFT_TAG), false)
     }
 
     @Override

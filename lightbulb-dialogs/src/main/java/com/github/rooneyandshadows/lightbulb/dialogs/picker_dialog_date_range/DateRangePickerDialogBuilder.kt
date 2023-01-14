@@ -1,10 +1,13 @@
 package com.github.rooneyandshadows.lightbulb.dialogs.picker_dialog_date_range
 
+import android.os.Bundle
 import androidx.lifecycle.LifecycleOwner
 import com.github.rooneyandshadows.lightbulb.dialogs.base.BasePickerDialogFragment.SelectionChangedListener
 import androidx.fragment.app.FragmentManager
+import com.github.rooneyandshadows.lightbulb.dialogs.base.BaseDialogBuilder
 import com.github.rooneyandshadows.lightbulb.dialogs.base.internal.*
 import com.github.rooneyandshadows.lightbulb.dialogs.base.internal.callbacks.*
+import com.github.rooneyandshadows.lightbulb.dialogs.picker_dialog_color.ColorPickerDialogBuilder
 import java.time.OffsetDateTime
 
 @Suppress("unused")
@@ -12,12 +15,17 @@ class DateRangePickerDialogBuilder @JvmOverloads constructor(
     lifecycleOwner: LifecycleOwner? = null,
     manager: FragmentManager,
     dialogTag: String,
-) : com.github.rooneyandshadows.lightbulb.dialogs.base.BaseDialogBuilder<DateRangePickerDialog>(lifecycleOwner, manager, dialogTag) {
+) : BaseDialogBuilder<DateRangePickerDialog>(lifecycleOwner, manager, dialogTag) {
     private var dateSetListener: SelectionChangedListener<Array<OffsetDateTime?>?>? = null
     private var textFrom: String? = null
     private var textTo: String? = null
     private var dateFormat: String? = null
     private var initialRange: Array<OffsetDateTime?>? = null
+
+    @Override
+    override fun withSavedState(savedState: Bundle): DateRangePickerDialogBuilder {
+        return super.withSavedState(savedState) as DateRangePickerDialogBuilder
+    }
 
     @Override
     override fun withTitle(title: String): DateRangePickerDialogBuilder {
@@ -126,6 +134,8 @@ class DateRangePickerDialogBuilder @JvmOverloads constructor(
     private fun getExistingDialogOrCreate(): DateRangePickerDialog {
         val dialog = dialogParentFragmentManager.findFragmentByTag(dialogTag) as DateRangePickerDialog?
         return dialog ?: DateRangePickerDialog.newInstance().apply {
+            restoreDialogState(savedState)
+            if (savedState != null) return@apply
             dialogAnimationType = animation
             isCancelable = cancelableOnClickOutside
             dialogNegativeButton = negativeButtonConfiguration

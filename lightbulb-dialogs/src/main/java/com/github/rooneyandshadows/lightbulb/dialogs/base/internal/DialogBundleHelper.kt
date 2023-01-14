@@ -29,8 +29,8 @@ class DialogBundleHelper(val bundle: Bundle = defaultBundle()) {
     val cancelable: Boolean
         get() = bundle.getBoolean(dialogCancelableTag)
     val showing: Boolean
-        get() = bundle.getBoolean(dialogCancelableTag)
-    val dialogType: DialogTypes
+        get() = bundle.getBoolean(dialogShowingTag)
+    val type: DialogTypes
         get() = DialogTypes.valueOf(bundle.getInt(dialogTypeTag))
     val animationType: DialogAnimationTypes
         get() = DialogAnimationTypes.valueOf(bundle.getInt(dialogAnimationTag))

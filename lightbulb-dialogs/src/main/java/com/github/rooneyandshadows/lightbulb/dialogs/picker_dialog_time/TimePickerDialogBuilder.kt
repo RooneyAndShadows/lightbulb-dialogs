@@ -1,19 +1,27 @@
 package com.github.rooneyandshadows.lightbulb.dialogs.picker_dialog_time
 
+import android.os.Bundle
 import androidx.fragment.app.FragmentManager
 import androidx.lifecycle.LifecycleOwner
+import com.github.rooneyandshadows.lightbulb.dialogs.base.BaseDialogBuilder
 import com.github.rooneyandshadows.lightbulb.dialogs.base.BasePickerDialogFragment.SelectionChangedListener
 import com.github.rooneyandshadows.lightbulb.dialogs.base.internal.*
 import com.github.rooneyandshadows.lightbulb.dialogs.base.internal.callbacks.*
+import com.github.rooneyandshadows.lightbulb.dialogs.picker_dialog_month.MonthPickerDialogBuilder
 
 @Suppress("unused")
 class TimePickerDialogBuilder @JvmOverloads constructor(
     lifecycleOwner: LifecycleOwner? = null,
     manager: FragmentManager,
     dialogTag: String,
-) : com.github.rooneyandshadows.lightbulb.dialogs.base.BaseDialogBuilder<TimePickerDialog>(lifecycleOwner, manager, dialogTag) {
+) : BaseDialogBuilder<TimePickerDialog>(lifecycleOwner, manager, dialogTag) {
     private var timeSetListener: SelectionChangedListener<IntArray?>? = null
     private var initialTime: IntArray? = null
+
+    @Override
+    override fun withSavedState(savedState: Bundle): TimePickerDialogBuilder {
+        return super.withSavedState(savedState) as TimePickerDialogBuilder
+    }
 
     @Override
     override fun withTitle(title: String): TimePickerDialogBuilder {
@@ -114,6 +122,8 @@ class TimePickerDialogBuilder @JvmOverloads constructor(
     private fun getExistingDialogOrCreate(): TimePickerDialog {
         val dialog = dialogParentFragmentManager.findFragmentByTag(dialogTag) as TimePickerDialog?
         return dialog ?: TimePickerDialog.newInstance().apply {
+            restoreDialogState(savedState)
+            if (savedState != null) return@apply
             dialogPositiveButton = positiveButtonConfiguration
             dialogNegativeButton = negativeButtonConfiguration
             isCancelable = cancelableOnClickOutside

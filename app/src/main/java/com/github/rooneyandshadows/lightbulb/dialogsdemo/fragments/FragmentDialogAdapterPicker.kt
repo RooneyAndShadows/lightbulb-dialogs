@@ -20,6 +20,7 @@ import com.github.rooneyandshadows.lightbulb.dialogsdemo.R
 import com.github.rooneyandshadows.lightbulb.dialogsdemo.databinding.FragmentDemoDialogAdapterPickerBinding
 import com.github.rooneyandshadows.lightbulb.dialogsdemo.getRadioButtonAdapter
 import com.github.rooneyandshadows.lightbulb.dialogsdemo.models.DemoModel
+import com.github.rooneyandshadows.lightbulb.dialogsdemo.routing.screens.Screens.Demo
 import com.github.rooneyandshadows.lightbulb.dialogsdemo.spinner.DialogAnimationTypeSpinner
 import com.github.rooneyandshadows.lightbulb.dialogsdemo.spinner.DialogTypeSpinner
 import com.github.rooneyandshadows.lightbulb.recycleradapters.abstraction.EasyRecyclerAdapter
@@ -29,17 +30,24 @@ import com.github.rooneyandshadows.lightbulb.recycleradapters.implementation.Rad
 @FragmentConfiguration(layoutName = "fragment_demo_dialog_adapter_picker")
 class FragmentDialogAdapterPicker : BaseFragmentWithViewDataBinding<FragmentDemoDialogAdapterPickerBinding>() {
     private lateinit var adapterPickerDialog: AdapterPickerDialog<DemoModel>
-    private lateinit var adapter: RadioButtonSelectableAdapter<DemoModel>
 
     companion object {
         private const val DIALOG_TAG = "ADAPTER_PICKER_DIALOG_TAG"
+        private const val DIALOG_STATE_TAG = "ADAPTER_PICKER_DIALOG_STATE"
+    }
+
+    @Override
+    override fun doOnCreate(savedInstanceState: Bundle?) {
+        super.doOnCreate(savedInstanceState)
+        createDialog(savedInstanceState)
+        if (savedInstanceState == null)
+            adapterPickerDialog.setData(DemoModel.generateDemoCollection())
     }
 
     @Override
     override fun onViewBound(viewBinding: FragmentDemoDialogAdapterPickerBinding) {
         val typeSpinner = viewBinding.dialogTypeDropdown
         val animationTypeSpinner = viewBinding.dialogAnimationTypeDropdown
-        createDialog(typeSpinner, animationTypeSpinner)
         typeSpinner.apply {
             setLifecycleOwner(this@FragmentDialogAdapterPicker)
             this.animationTypeSpinner = viewBinding.dialogAnimationTypeDropdown
@@ -52,19 +60,9 @@ class FragmentDialogAdapterPicker : BaseFragmentWithViewDataBinding<FragmentDemo
     }
 
     @Override
-    override fun doOnCreate(savedInstanceState: Bundle?) {
-        super.doOnCreate(savedInstanceState)
-        adapter = getRadioButtonAdapter(requireContext())
-        savedInstanceState?.apply {
-            val adapterState = BundleUtils.getParcelable("ADAPTER_STATE", this, Bundle::class.java)!!
-            adapter.restoreAdapterState(adapterState)
-        }
-    }
-
-    @Override
     override fun doOnSaveInstanceState(outState: Bundle) {
         super.doOnSaveInstanceState(outState)
-        outState.putParcelable("ADAPTER_STATE", adapter.saveAdapterState())
+        BundleUtils.putParcelable(DIALOG_STATE_TAG, outState, adapterPickerDialog.saveDialogState())
     }
 
     @Override
@@ -82,7 +80,7 @@ class FragmentDialogAdapterPicker : BaseFragmentWithViewDataBinding<FragmentDemo
         setupDrawerButton()
     }
 
-    private fun createDialog(typeSpinner: DialogTypeSpinner, animationSpinner: DialogAnimationTypeSpinner) {
+    private fun createDialog(savedInstanceState: Bundle?) {
         val ctx = requireContext()
         val title = ResourceUtils.getPhrase(ctx, R.string.demo_dialog_default_title_text)
         val message = ResourceUtils.getPhrase(ctx, R.string.demo_dialog_default_message_text)
@@ -121,8 +119,9 @@ class FragmentDialogAdapterPicker : BaseFragmentWithViewDataBinding<FragmentDemo
             withNegativeButton(DialogButtonConfiguration(negativeText), onNegativeButtonClick)
             withSelectionCallback(selectionCallback)
         }.buildDialog().apply {
-            typeSpinner.dialog = this
-            animationSpinner.dialog = this
+            if (savedInstanceState == null) return@apply
+            val savedState = BundleUtils.getParcelable(DIALOG_STATE_TAG, savedInstanceState, Bundle::class.java)
+            restoreDialogState(savedState)
         }
     }
 

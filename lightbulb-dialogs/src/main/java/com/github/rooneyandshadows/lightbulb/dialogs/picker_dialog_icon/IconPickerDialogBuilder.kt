@@ -1,21 +1,27 @@
 package com.github.rooneyandshadows.lightbulb.dialogs.picker_dialog_icon
 
+import android.os.Bundle
 import androidx.lifecycle.LifecycleOwner
 import com.github.rooneyandshadows.lightbulb.dialogs.base.BasePickerDialogFragment.SelectionChangedListener
 import androidx.fragment.app.FragmentManager
+import com.github.rooneyandshadows.lightbulb.dialogs.base.BaseDialogBuilder
 import com.github.rooneyandshadows.lightbulb.dialogs.base.internal.*
 import com.github.rooneyandshadows.lightbulb.dialogs.base.internal.callbacks.*
+import com.github.rooneyandshadows.lightbulb.dialogs.picker_dialog_datetime.DateTimePickerDialogBuilder
 
 @Suppress("unused")
 class IconPickerDialogBuilder @JvmOverloads constructor(
     lifecycleOwner: LifecycleOwner? = null,
     manager: FragmentManager,
     dialogTag: String,
-) : com.github.rooneyandshadows.lightbulb.dialogs.base.BaseDialogBuilder<IconPickerDialog>(lifecycleOwner,
-    manager,
-    dialogTag) {
+) : BaseDialogBuilder<IconPickerDialog>(lifecycleOwner, manager, dialogTag) {
     private var changedCallback: SelectionChangedListener<IntArray?>? = null
     private var selection: IntArray? = null
+
+    @Override
+    override fun withSavedState(savedState: Bundle): IconPickerDialogBuilder {
+        return super.withSavedState(savedState) as IconPickerDialogBuilder
+    }
 
     @Override
     override fun withTitle(title: String): IconPickerDialogBuilder {
@@ -101,19 +107,23 @@ class IconPickerDialogBuilder @JvmOverloads constructor(
             onNegativeClickListener?.apply { addOnNegativeClickListeners(this) }
             onPositiveClickListener?.apply { addOnPositiveClickListener(this) }
             setOnSelectionChangedListener(changedCallback)
-            setSelection(selection)
         }
     }
 
     private fun getExistingDialogOrCreate(): IconPickerDialog {
         val dialog = dialogParentFragmentManager.findFragmentByTag(dialogTag) as IconPickerDialog?
         return dialog ?: IconPickerDialog.newInstance().apply {
+            if (savedState != null) {
+                restoreDialogState(savedState)
+                return@apply
+            }
             dialogTitle = title
             dialogMessage = message
             dialogPositiveButton = positiveButtonConfiguration
             dialogNegativeButton = negativeButtonConfiguration
             isCancelable = cancelableOnClickOutside
             dialogAnimationType = animation
+            setSelection(selection)
         }
     }
 }

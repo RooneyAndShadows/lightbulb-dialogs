@@ -1,10 +1,13 @@
 package com.github.rooneyandshadows.lightbulb.dialogs.dialog_custom
 
+import android.os.Bundle
 import androidx.lifecycle.LifecycleOwner
 import com.github.rooneyandshadows.lightbulb.dialogs.dialog_custom.CustomDialog.CustomDialogInflater
 import androidx.fragment.app.FragmentManager
+import com.github.rooneyandshadows.lightbulb.dialogs.base.BaseDialogBuilder
 import com.github.rooneyandshadows.lightbulb.dialogs.base.internal.*
 import com.github.rooneyandshadows.lightbulb.dialogs.base.internal.callbacks.*
+import com.github.rooneyandshadows.lightbulb.dialogs.dialog_alert.AlertDialogBuilder
 
 @Suppress("UNCHECKED_CAST")
 class CustomDialogBuilder<DialogType : CustomDialog> @JvmOverloads constructor(
@@ -12,9 +15,14 @@ class CustomDialogBuilder<DialogType : CustomDialog> @JvmOverloads constructor(
     dialogParentFragmentManager: FragmentManager,
     dialogTag: String,
     private val dialogInitializer: CustomDialogInitializer<DialogType>,
-    private val dialogInflater: CustomDialogInflater
-) : com.github.rooneyandshadows.lightbulb.dialogs.base.BaseDialogBuilder<CustomDialog>(lifecycleOwner, dialogParentFragmentManager, dialogTag) {
+    private val dialogInflater: CustomDialogInflater,
+) : BaseDialogBuilder<CustomDialog>(lifecycleOwner, dialogParentFragmentManager, dialogTag) {
     private var loading = false
+
+    @Override
+    override fun withSavedState(savedState: Bundle): CustomDialogBuilder<DialogType> {
+        return super.withSavedState(savedState) as CustomDialogBuilder<DialogType>
+    }
 
     @Override
     override fun withTitle(title: String): CustomDialogBuilder<DialogType> {
@@ -29,7 +37,7 @@ class CustomDialogBuilder<DialogType : CustomDialog> @JvmOverloads constructor(
     @Override
     override fun withPositiveButton(
         configuration: DialogButtonConfiguration,
-        onClickListener: DialogButtonClickListener
+        onClickListener: DialogButtonClickListener,
     ): CustomDialogBuilder<DialogType> {
         return super.withPositiveButton(configuration, onClickListener) as CustomDialogBuilder<DialogType>
     }
@@ -37,7 +45,7 @@ class CustomDialogBuilder<DialogType : CustomDialog> @JvmOverloads constructor(
     @Override
     override fun withNegativeButton(
         configuration: DialogButtonConfiguration,
-        onClickListener: DialogButtonClickListener
+        onClickListener: DialogButtonClickListener,
     ): CustomDialogBuilder<DialogType> {
         return super.withNegativeButton(configuration, onClickListener) as CustomDialogBuilder<DialogType>
     }
@@ -101,6 +109,8 @@ class CustomDialogBuilder<DialogType : CustomDialog> @JvmOverloads constructor(
     private fun getExistingDialogOrCreate(): DialogType {
         val dialog = dialogParentFragmentManager.findFragmentByTag(dialogTag) as DialogType?
         return dialog ?: dialogInitializer.initialize().apply {
+            restoreDialogState(savedState)
+            if (savedState != null) return@apply
             dialogTitle = title
             dialogMessage = message
             dialogType = type

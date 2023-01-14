@@ -1,21 +1,27 @@
 package com.github.rooneyandshadows.lightbulb.dialogs.picker_dialog_color
 
+import android.os.Bundle
 import androidx.fragment.app.FragmentManager
 import androidx.lifecycle.LifecycleOwner
 import com.github.rooneyandshadows.lightbulb.dialogs.base.BaseDialogBuilder
 import com.github.rooneyandshadows.lightbulb.dialogs.base.BasePickerDialogFragment.SelectionChangedListener
 import com.github.rooneyandshadows.lightbulb.dialogs.base.internal.*
 import com.github.rooneyandshadows.lightbulb.dialogs.base.internal.callbacks.*
+import com.github.rooneyandshadows.lightbulb.dialogs.dialog_loading.LoadingDialogBuilder
 
 @Suppress("unused")
 class ColorPickerDialogBuilder @JvmOverloads constructor(
     lifecycleOwner: LifecycleOwner? = null,
     manager: FragmentManager,
-    dialogTag: String
+    dialogTag: String,
 ) : BaseDialogBuilder<ColorPickerDialog>(lifecycleOwner, manager, dialogTag) {
     private var changedCallback: SelectionChangedListener<IntArray?>? = null
     private var selection: IntArray? = null
 
+    @Override
+    override fun withSavedState(savedState: Bundle): ColorPickerDialogBuilder {
+        return super.withSavedState(savedState) as ColorPickerDialogBuilder
+    }
 
     @Override
     override fun withTitle(title: String): ColorPickerDialogBuilder {
@@ -107,6 +113,8 @@ class ColorPickerDialogBuilder @JvmOverloads constructor(
     private fun getExistingDialogOrCreate(): ColorPickerDialog {
         val dialog = dialogParentFragmentManager.findFragmentByTag(dialogTag) as ColorPickerDialog?
         return dialog ?: ColorPickerDialog.newInstance().apply {
+            restoreDialogState(savedState)
+            if (savedState != null) return@apply
             dialogTitle = title
             dialogMessage = message
             dialogAnimationType = animation

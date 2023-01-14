@@ -43,40 +43,8 @@ class MonthPickerDialog : BasePickerDialogFragment<IntArray?>(MonthSelection(nul
 
     @Override
     override fun doOnCreate(dialogArguments: Bundle?, savedInstanceState: Bundle?) {
-        if (savedInstanceState == null) {
-            if (hasSelection())
-                selection.setCurrentSelection(selection.getCurrentSelection())
-        } else {
-            selection.setCurrentSelection(savedInstanceState.getIntArray(MONTH_SELECTION_TAG), false)
-            selection.setDraftSelection(savedInstanceState.getIntArray(MONTH_SELECTION_DRAFT_TAG), false)
-            minYear = savedInstanceState.getInt(PICKER_MIN_YEAR)
-            maxYear = savedInstanceState.getInt(PICKER_MAX_YEAR)
-            dialogDateFormat = savedInstanceState.getString(DATE_FORMAT_TAG, dialogDateFormat)
-            val previouslyEnabled = savedInstanceState.getStringArrayList(PICKER_ENABLED_MONTHS)
-            val previouslyDisabled = savedInstanceState.getStringArrayList(PICKER_DISABLED_MONTHS)
-            if (previouslyEnabled == null && previouslyDisabled == null)
-                setCalendarBounds(minYear, minYear)
-            previouslyDisabled?.apply {
-                val previouslyDisabledMonths = mutableListOf<IntArray>()
-                for (disabledMonth in previouslyDisabled) {
-                    val monthAsDate = getDateFromString(disabledMonth)
-                    val year = DateUtilsOffsetDate.extractYearFromDate(monthAsDate)
-                    val month = DateUtilsOffsetDate.extractMonthOfYearFromDate(monthAsDate)
-                    previouslyDisabledMonths.add(intArrayOf(year, month))
-                }
-                setDisabledMonths(ArrayList(previouslyDisabledMonths))
-            }
-            previouslyEnabled?.apply {
-                val previouslyEnabledMonths = mutableListOf<IntArray>()
-                for (enabledMonth in previouslyEnabled) {
-                    val monthAsDate = getDateFromString(enabledMonth)
-                    val year = DateUtilsOffsetDate.extractYearFromDate(monthAsDate)
-                    val month = DateUtilsOffsetDate.extractMonthOfYearFromDate(monthAsDate)
-                    previouslyEnabledMonths.add(intArrayOf(year, month))
-                }
-                setEnabledMonths(ArrayList(previouslyEnabledMonths))
-            }
-        }
+        if (savedInstanceState != null) return
+        if (hasSelection()) selection.setCurrentSelection(selection.getCurrentSelection())
     }
 
     @Override
@@ -108,6 +76,40 @@ class MonthPickerDialog : BasePickerDialogFragment<IntArray?>(MonthSelection(nul
             }
             putInt(MONTH_CALENDAR_SHOWN_YEAR, monthCalendar.currentShownYear)
             putString(DATE_FORMAT_TAG, dialogDateFormat)
+        }
+    }
+
+    @Override
+    override fun doOnRestoreInstanceState(savedState: Bundle) {
+        super.doOnRestoreInstanceState(savedState)
+        selection.setCurrentSelection(savedState.getIntArray(MONTH_SELECTION_TAG), false)
+        selection.setDraftSelection(savedState.getIntArray(MONTH_SELECTION_DRAFT_TAG), false)
+        minYear = savedState.getInt(PICKER_MIN_YEAR)
+        maxYear = savedState.getInt(PICKER_MAX_YEAR)
+        dialogDateFormat = savedState.getString(DATE_FORMAT_TAG, dialogDateFormat)
+        val previouslyEnabled = savedState.getStringArrayList(PICKER_ENABLED_MONTHS)
+        val previouslyDisabled = savedState.getStringArrayList(PICKER_DISABLED_MONTHS)
+        if (previouslyEnabled == null && previouslyDisabled == null)
+            setCalendarBounds(minYear, minYear)
+        previouslyDisabled?.apply {
+            val previouslyDisabledMonths = mutableListOf<IntArray>()
+            for (disabledMonth in previouslyDisabled) {
+                val monthAsDate = getDateFromString(disabledMonth)
+                val year = DateUtilsOffsetDate.extractYearFromDate(monthAsDate)
+                val month = DateUtilsOffsetDate.extractMonthOfYearFromDate(monthAsDate)
+                previouslyDisabledMonths.add(intArrayOf(year, month))
+            }
+            setDisabledMonths(ArrayList(previouslyDisabledMonths))
+        }
+        previouslyEnabled?.apply {
+            val previouslyEnabledMonths = mutableListOf<IntArray>()
+            for (enabledMonth in previouslyEnabled) {
+                val monthAsDate = getDateFromString(enabledMonth)
+                val year = DateUtilsOffsetDate.extractYearFromDate(monthAsDate)
+                val month = DateUtilsOffsetDate.extractMonthOfYearFromDate(monthAsDate)
+                previouslyEnabledMonths.add(intArrayOf(year, month))
+            }
+            setEnabledMonths(ArrayList(previouslyEnabledMonths))
         }
     }
 

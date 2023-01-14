@@ -14,21 +14,16 @@ import com.github.rooneyandshadows.lightbulb.dialogs.base.BaseDialogFragment
 import com.github.rooneyandshadows.lightbulb.dialogs.base.BasePickerDialogFragment
 import com.github.rooneyandshadows.lightbulb.dialogs.base.internal.DialogButtonConfiguration
 import com.github.rooneyandshadows.lightbulb.dialogs.base.internal.callbacks.DialogButtonClickListener
-import com.github.rooneyandshadows.lightbulb.dialogs.picker_dialog_icon.IconPickerAdapter
 import com.github.rooneyandshadows.lightbulb.dialogs.picker_dialog_icon.IconPickerDialog
 import com.github.rooneyandshadows.lightbulb.dialogs.picker_dialog_icon.IconPickerDialogBuilder
 import com.github.rooneyandshadows.lightbulb.dialogsdemo.R
 import com.github.rooneyandshadows.lightbulb.dialogsdemo.databinding.FragmentDemoDialogIconPickerBinding
-import com.github.rooneyandshadows.lightbulb.dialogsdemo.spinner.DialogAnimationTypeSpinner
-import com.github.rooneyandshadows.lightbulb.dialogsdemo.spinner.DialogTypeSpinner
 import com.github.rooneyandshadows.lightbulb.dialogsdemo.utils.icon.AppIconUtils
-import com.github.rooneyandshadows.lightbulb.recycleradapters.abstraction.EasyAdapterSelectableModes.SELECT_SINGLE
 
 @FragmentScreen(screenName = "IconPicker", screenGroup = "Demo")
 @FragmentConfiguration(layoutName = "fragment_demo_dialog_icon_picker", hasLeftDrawer = true)
 class FragmentDialogIconPicker : BaseFragmentWithViewDataBinding<FragmentDemoDialogIconPickerBinding>() {
     private lateinit var dialog: IconPickerDialog
-    private lateinit var adapter: IconPickerAdapter
 
     companion object {
         private const val DIALOG_TAG = "COLOR_PICKER_TAG"
@@ -37,27 +32,26 @@ class FragmentDialogIconPicker : BaseFragmentWithViewDataBinding<FragmentDemoDia
     @Override
     override fun doOnCreate(savedInstanceState: Bundle?) {
         super.doOnCreate(savedInstanceState)
-        adapter = IconPickerAdapter(requireContext(), SELECT_SINGLE).apply {
-            if (savedInstanceState == null)
-                setCollection(AppIconUtils.allForPicker)
-        }
+        var dialogSavedState: Bundle? = null
         savedInstanceState?.apply {
-            val adapterState = BundleUtils.getParcelable("ADAPTER_STATE", this, Bundle::class.java)!!
-            adapter.restoreAdapterState(adapterState)
+            dialogSavedState = BundleUtils.getParcelable("dialog_state", this, Bundle::class.java)
         }
+        createDialog(dialogSavedState)
+        if (savedInstanceState == null)
+            dialog.setData(AppIconUtils.allForPicker)
+        println(dialog)
     }
 
     @Override
     override fun doOnSaveInstanceState(outState: Bundle) {
         super.doOnSaveInstanceState(outState)
-        outState.putParcelable("ADAPTER_STATE", adapter.saveAdapterState())
+        outState.putParcelable("dialog_state", dialog.saveDialogState())
     }
 
     @Override
     override fun onViewBound(viewBinding: FragmentDemoDialogIconPickerBinding) {
         val typeSpinner = viewBinding.dialogTypeDropdown
         val animationTypeSpinner = viewBinding.dialogAnimationTypeDropdown
-        createDialog(typeSpinner, animationTypeSpinner)
         typeSpinner.apply {
             setLifecycleOwner(this@FragmentDialogIconPicker)
             this.animationTypeSpinner = viewBinding.dialogAnimationTypeDropdown
@@ -85,7 +79,7 @@ class FragmentDialogIconPicker : BaseFragmentWithViewDataBinding<FragmentDemoDia
         setupDrawerButton()
     }
 
-    private fun createDialog(typeSpinner: DialogTypeSpinner, animationSpinner: DialogAnimationTypeSpinner) {
+    private fun createDialog(dialogSavedState: Bundle?) {
         val ctx = requireContext()
         val title = ResourceUtils.getPhrase(ctx, R.string.demo_dialog_default_title_text)
         val message = ResourceUtils.getPhrase(ctx, R.string.demo_dialog_default_message_text)
@@ -108,16 +102,17 @@ class FragmentDialogIconPicker : BaseFragmentWithViewDataBinding<FragmentDemoDia
                 //TODO write logic
             }
         }
-        dialog = IconPickerDialogBuilder(this, childFragmentManager, DIALOG_TAG, adapter).apply {
+
+        dialog = IconPickerDialogBuilder(this, childFragmentManager, DIALOG_TAG).apply {
+            dialogSavedState?.apply {
+                withSavedState(this)
+            }
             withTitle(title)
             withMessage(message)
             withPositiveButton(DialogButtonConfiguration(positiveText), onPositiveButtonClick)
             withNegativeButton(DialogButtonConfiguration(negativeText), onNegativeButtonClick)
             withSelectionCallback(onSelectionChanged)
-        }.buildDialog().apply {
-            typeSpinner.dialog = this
-            animationSpinner.dialog = this
-        }
+        }.buildDialog()
     }
 
     private fun setupDrawerButton() {

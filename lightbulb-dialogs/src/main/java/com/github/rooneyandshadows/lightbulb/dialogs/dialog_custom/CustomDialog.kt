@@ -43,12 +43,6 @@ open class CustomDialog : BaseDialogFragment() {
     }
 
     @Override
-    override fun doOnCreate(dialogArguments: Bundle?, savedInstanceState: Bundle?) {
-        isLoading = savedInstanceState?.getBoolean(IS_LOADING_KEY)
-            ?: dialogArguments!!.getBoolean(IS_LOADING_KEY)
-    }
-
-    @Override
     override fun configureContent(view: View, savedInstanceState: Bundle?) {
         selectViews()
         setupLoadingView()
@@ -58,6 +52,12 @@ open class CustomDialog : BaseDialogFragment() {
     override fun doOnSaveInstanceState(outState: Bundle?) {
         super.doOnSaveInstanceState(outState)
         outState!!.putBoolean(IS_LOADING_KEY, isLoading)
+    }
+
+    @Override
+    override fun doOnRestoreInstanceState(savedState: Bundle) {
+        super.doOnRestoreInstanceState(savedState)
+        isLoading = savedState.getBoolean(IS_LOADING_KEY)
     }
 
     fun setDialogInflater(dialogInflater: CustomDialogInflater?) {

@@ -1,5 +1,6 @@
 package com.github.rooneyandshadows.lightbulb.dialogs.picker_dialog_adapter
 
+import android.os.Bundle
 import androidx.lifecycle.LifecycleOwner
 import com.github.rooneyandshadows.lightbulb.dialogs.base.BasePickerDialogFragment.SelectionChangedListener
 import androidx.fragment.app.FragmentManager
@@ -20,6 +21,11 @@ class AdapterPickerDialogBuilder<ModelType : EasyAdapterDataModel> @JvmOverloads
     private var changedCallback: SelectionChangedListener<IntArray?>? = null
     private var itemDecoration: RecyclerView.ItemDecoration? = null
     private var selection: IntArray? = null
+
+    @Override
+    override fun withSavedState(savedState: Bundle): AdapterPickerDialogBuilder<ModelType> {
+        return super.withSavedState(savedState) as AdapterPickerDialogBuilder<ModelType>
+    }
 
     @Override
     override fun withTitle(title: String): AdapterPickerDialogBuilder<ModelType> {
@@ -123,6 +129,8 @@ class AdapterPickerDialogBuilder<ModelType : EasyAdapterDataModel> @JvmOverloads
     private fun getExistingDialogOrCreate(): AdapterPickerDialog<ModelType> {
         val dialog = dialogParentFragmentManager.findFragmentByTag(dialogTag) as AdapterPickerDialog<ModelType>?
         return dialog ?: AdapterPickerDialog.newInstance<ModelType>(adapterCreator).apply {
+            restoreDialogState(savedState)
+            if (savedState != null) return@apply
             dialogTitle = title
             dialogMessage = message
             dialogType = type

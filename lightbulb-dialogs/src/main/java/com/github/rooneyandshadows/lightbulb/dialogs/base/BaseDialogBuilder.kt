@@ -1,15 +1,17 @@
 package com.github.rooneyandshadows.lightbulb.dialogs.base
 
+import android.os.Bundle
 import androidx.fragment.app.FragmentManager
 import androidx.lifecycle.LifecycleOwner
 import com.github.rooneyandshadows.lightbulb.dialogs.base.internal.*
 import com.github.rooneyandshadows.lightbulb.dialogs.base.internal.callbacks.*
 
-abstract class BaseDialogBuilder<DialogType : com.github.rooneyandshadows.lightbulb.dialogs.base.BaseDialogFragment?> @JvmOverloads constructor(
+abstract class BaseDialogBuilder<DialogType :BaseDialogFragment?> @JvmOverloads constructor(
     protected val dialogLifecycleOwner: LifecycleOwner? = null,
     protected val dialogParentFragmentManager: FragmentManager,
-    protected val dialogTag: String
+    protected val dialogTag: String,
 ) {
+    protected var savedState: Bundle? = null
     protected var title: String? = null
     protected var message: String? = null
     protected var positiveButtonConfiguration: DialogButtonConfiguration? = null
@@ -24,20 +26,25 @@ abstract class BaseDialogBuilder<DialogType : com.github.rooneyandshadows.lightb
     protected var dialogListeners: DialogListeners? = null
     protected var cancelableOnClickOutside = true
 
-    open fun withTitle(title: String): com.github.rooneyandshadows.lightbulb.dialogs.base.BaseDialogBuilder<DialogType> {
+    open fun withSavedState(savedState: Bundle): BaseDialogBuilder<DialogType> {
+        this.savedState = savedState
+        return this
+    }
+
+    open fun withTitle(title: String): BaseDialogBuilder<DialogType> {
         this.title = title
         return this
     }
 
-    open fun withMessage(message: String): com.github.rooneyandshadows.lightbulb.dialogs.base.BaseDialogBuilder<DialogType> {
+    open fun withMessage(message: String): BaseDialogBuilder<DialogType> {
         this.message = message
         return this
     }
 
     open fun withPositiveButton(
         configuration: DialogButtonConfiguration,
-        onClickListener: DialogButtonClickListener
-    ): com.github.rooneyandshadows.lightbulb.dialogs.base.BaseDialogBuilder<DialogType> {
+        onClickListener: DialogButtonClickListener,
+    ): BaseDialogBuilder<DialogType> {
         this.positiveButtonConfiguration = configuration
         onPositiveClickListener = onClickListener
         return this
@@ -45,44 +52,44 @@ abstract class BaseDialogBuilder<DialogType : com.github.rooneyandshadows.lightb
 
     open fun withNegativeButton(
         configuration: DialogButtonConfiguration,
-        onClickListener: DialogButtonClickListener
-    ): com.github.rooneyandshadows.lightbulb.dialogs.base.BaseDialogBuilder<DialogType> {
+        onClickListener: DialogButtonClickListener,
+    ): BaseDialogBuilder<DialogType> {
         this.negativeButtonConfiguration = configuration
         onNegativeClickListener = onClickListener
         return this
     }
 
-    open fun withOnCancelListener(listener: DialogCancelListener): com.github.rooneyandshadows.lightbulb.dialogs.base.BaseDialogBuilder<DialogType> {
+    open fun withOnCancelListener(listener: DialogCancelListener): BaseDialogBuilder<DialogType> {
         onCancelListener = listener
         return this
     }
 
-    open fun withOnShowListener(listener: DialogShowListener): com.github.rooneyandshadows.lightbulb.dialogs.base.BaseDialogBuilder<DialogType> {
+    open fun withOnShowListener(listener: DialogShowListener): BaseDialogBuilder<DialogType> {
         onShowListener = listener
         return this
     }
 
-    open fun withOnHideListener(listener: DialogHideListener): com.github.rooneyandshadows.lightbulb.dialogs.base.BaseDialogBuilder<DialogType> {
+    open fun withOnHideListener(listener: DialogHideListener): BaseDialogBuilder<DialogType> {
         onHideListener = listener
         return this
     }
 
-    open fun withCancelOnClickOutside(closeOnClickOutside: Boolean): com.github.rooneyandshadows.lightbulb.dialogs.base.BaseDialogBuilder<DialogType> {
+    open fun withCancelOnClickOutside(closeOnClickOutside: Boolean): BaseDialogBuilder<DialogType> {
         cancelableOnClickOutside = closeOnClickOutside
         return this
     }
 
-    open fun withDialogType(dialogType: DialogTypes): com.github.rooneyandshadows.lightbulb.dialogs.base.BaseDialogBuilder<DialogType> {
+    open fun withDialogType(dialogType: DialogTypes): BaseDialogBuilder<DialogType> {
         this.type = dialogType
         return this
     }
 
-    open fun withAnimations(animation: DialogAnimationTypes): com.github.rooneyandshadows.lightbulb.dialogs.base.BaseDialogBuilder<DialogType> {
+    open fun withAnimations(animation: DialogAnimationTypes): BaseDialogBuilder<DialogType> {
         this.animation = animation
         return this
     }
 
-    open fun withDialogListeners(listeners: DialogListeners): com.github.rooneyandshadows.lightbulb.dialogs.base.BaseDialogBuilder<DialogType> {
+    open fun withDialogListeners(listeners: DialogListeners): BaseDialogBuilder<DialogType> {
         dialogListeners = listeners
         return this
     }

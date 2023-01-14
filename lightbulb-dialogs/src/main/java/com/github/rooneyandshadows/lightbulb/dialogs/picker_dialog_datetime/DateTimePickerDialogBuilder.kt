@@ -1,10 +1,13 @@
 package com.github.rooneyandshadows.lightbulb.dialogs.picker_dialog_datetime
 
+import android.os.Bundle
 import androidx.lifecycle.LifecycleOwner
 import com.github.rooneyandshadows.lightbulb.dialogs.base.BasePickerDialogFragment.SelectionChangedListener
 import androidx.fragment.app.FragmentManager
+import com.github.rooneyandshadows.lightbulb.dialogs.base.BaseDialogBuilder
 import com.github.rooneyandshadows.lightbulb.dialogs.base.internal.*
 import com.github.rooneyandshadows.lightbulb.dialogs.base.internal.callbacks.*
+import com.github.rooneyandshadows.lightbulb.dialogs.picker_dialog_date_range.DateRangePickerDialogBuilder
 import java.time.OffsetDateTime
 
 @Suppress("unused")
@@ -12,10 +15,17 @@ class DateTimePickerDialogBuilder @JvmOverloads constructor(
     lifecycleOwner: LifecycleOwner? = null,
     manager: FragmentManager,
     dialogTag: String,
-) : com.github.rooneyandshadows.lightbulb.dialogs.base.BaseDialogBuilder<DateTimePickerDialog>(lifecycleOwner, manager, dialogTag) {
+) : BaseDialogBuilder<DateTimePickerDialog>(lifecycleOwner,
+    manager,
+    dialogTag) {
     private var dateSetListener: SelectionChangedListener<OffsetDateTime?>? = null
     private var initialDate: OffsetDateTime? = null
     private var dateFormat: String? = null
+
+    @Override
+    override fun withSavedState(savedState: Bundle): DateTimePickerDialogBuilder {
+        return super.withSavedState(savedState) as DateTimePickerDialogBuilder
+    }
 
     @Override
     override fun withTitle(title: String): DateTimePickerDialogBuilder {
@@ -113,6 +123,8 @@ class DateTimePickerDialogBuilder @JvmOverloads constructor(
     private fun getExistingDialogOrCreate(): DateTimePickerDialog {
         val dialog = dialogParentFragmentManager.findFragmentByTag(dialogTag) as DateTimePickerDialog?
         return dialog ?: DateTimePickerDialog.newInstance().apply {
+            restoreDialogState(savedState)
+            if (savedState != null) return@apply
             dialogAnimationType = animation
             isCancelable = cancelableOnClickOutside
             dialogNegativeButton = negativeButtonConfiguration

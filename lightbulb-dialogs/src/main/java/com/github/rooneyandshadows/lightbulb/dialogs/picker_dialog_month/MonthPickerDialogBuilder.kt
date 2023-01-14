@@ -1,10 +1,13 @@
 package com.github.rooneyandshadows.lightbulb.dialogs.picker_dialog_month
 
+import android.os.Bundle
 import androidx.lifecycle.LifecycleOwner
 import com.github.rooneyandshadows.lightbulb.dialogs.base.BasePickerDialogFragment.SelectionChangedListener
 import androidx.fragment.app.FragmentManager
+import com.github.rooneyandshadows.lightbulb.dialogs.base.BaseDialogBuilder
 import com.github.rooneyandshadows.lightbulb.dialogs.base.internal.*
 import com.github.rooneyandshadows.lightbulb.dialogs.base.internal.callbacks.*
+import com.github.rooneyandshadows.lightbulb.dialogs.picker_dialog_icon.IconPickerDialogBuilder
 import java.util.ArrayList
 
 @Suppress("unused")
@@ -12,7 +15,7 @@ class MonthPickerDialogBuilder @JvmOverloads constructor(
     lifecycleOwner: LifecycleOwner? = null,
     manager: FragmentManager,
     dialogTag: String,
-) : com.github.rooneyandshadows.lightbulb.dialogs.base.BaseDialogBuilder<MonthPickerDialog>(lifecycleOwner, manager, dialogTag) {
+) : BaseDialogBuilder<MonthPickerDialog>(lifecycleOwner, manager, dialogTag) {
     private var monthSetListener: SelectionChangedListener<IntArray?>? = null
     private var disabledMonths: ArrayList<IntArray>? = null
     private var enabledMonths: ArrayList<IntArray>? = null
@@ -20,6 +23,11 @@ class MonthPickerDialogBuilder @JvmOverloads constructor(
     private var initialSelection: IntArray? = null
     private var minYear = 1970
     private var maxYear = 2100
+
+    @Override
+    override fun withSavedState(savedState: Bundle): MonthPickerDialogBuilder {
+        return super.withSavedState(savedState) as MonthPickerDialogBuilder
+    }
 
     @Override
     override fun withTitle(title: String): MonthPickerDialogBuilder {
@@ -137,6 +145,8 @@ class MonthPickerDialogBuilder @JvmOverloads constructor(
     private fun getExistingDialogOrCreate(): MonthPickerDialog {
         val dialog = dialogParentFragmentManager.findFragmentByTag(dialogTag) as MonthPickerDialog?
         return dialog ?: MonthPickerDialog.newInstance().apply {
+            restoreDialogState(savedState)
+            if (savedState != null) return@apply
             setDisabledMonths(disabledMonths)
             setEnabledMonths(enabledMonths)
             setCalendarBounds(minYear, maxYear)

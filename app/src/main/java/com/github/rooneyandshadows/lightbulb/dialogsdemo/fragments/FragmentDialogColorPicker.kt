@@ -14,58 +14,52 @@ import com.github.rooneyandshadows.lightbulb.dialogs.base.BaseDialogFragment
 import com.github.rooneyandshadows.lightbulb.dialogs.base.BasePickerDialogFragment.SelectionChangedListener
 import com.github.rooneyandshadows.lightbulb.dialogs.base.internal.DialogButtonConfiguration
 import com.github.rooneyandshadows.lightbulb.dialogs.base.internal.callbacks.DialogButtonClickListener
-import com.github.rooneyandshadows.lightbulb.dialogs.picker_dialog_color.ColorPickerAdapter
 import com.github.rooneyandshadows.lightbulb.dialogs.picker_dialog_color.ColorPickerDialog
 import com.github.rooneyandshadows.lightbulb.dialogs.picker_dialog_color.ColorPickerDialogBuilder
 import com.github.rooneyandshadows.lightbulb.dialogsdemo.R
 import com.github.rooneyandshadows.lightbulb.dialogsdemo.databinding.FragmentDemoDialogColorPickerBinding
-import com.github.rooneyandshadows.lightbulb.dialogsdemo.spinner.DialogAnimationTypeSpinner
-import com.github.rooneyandshadows.lightbulb.dialogsdemo.spinner.DialogTypeSpinner
 import com.github.rooneyandshadows.lightbulb.dialogsdemo.utils.color.AppColorUtils
-import com.github.rooneyandshadows.lightbulb.recycleradapters.abstraction.EasyAdapterSelectableModes.SELECT_SINGLE
 
 @FragmentScreen(screenName = "ColorPicker", screenGroup = "Demo")
 @FragmentConfiguration(layoutName = "fragment_demo_dialog_color_picker", hasLeftDrawer = true)
 class FragmentDialogColorPicker : BaseFragmentWithViewDataBinding<FragmentDemoDialogColorPickerBinding>() {
-    private lateinit var dialog: ColorPickerDialog
-    private lateinit var adapter: ColorPickerAdapter
+    private lateinit var colorPickerDialog: ColorPickerDialog
 
     companion object {
         private const val DIALOG_TAG = "COLOR_PICKER_TAG"
+        private const val DIALOG_STATE_TAG = "COLOR_PICKER_STATE_TAG"
     }
 
     @Override
     override fun doOnCreate(savedInstanceState: Bundle?) {
         super.doOnCreate(savedInstanceState)
-        adapter = ColorPickerAdapter(requireContext(), SELECT_SINGLE).apply {
-            if (savedInstanceState == null) setCollection(AppColorUtils.allForPicker)
-        }
-        savedInstanceState?.apply {
-            val adapterState = BundleUtils.getParcelable("ADAPTER_STATE", this, Bundle::class.java)!!
-            adapter.restoreAdapterState(adapterState)
-        }
+        createDialog(savedInstanceState)
+        if (savedInstanceState == null)
+            colorPickerDialog.setData(AppColorUtils.allForPicker)
+
     }
 
     @Override
     override fun doOnSaveInstanceState(outState: Bundle) {
         super.doOnSaveInstanceState(outState)
-        outState.putParcelable("ADAPTER_STATE", adapter.saveAdapterState())
+        outState.putParcelable(DIALOG_STATE_TAG, colorPickerDialog.saveDialogState())
     }
 
     @Override
     override fun onViewBound(viewBinding: FragmentDemoDialogColorPickerBinding) {
-        val typeSpinner = viewBinding.dialogTypeDropdown
-        val animationTypeSpinner = viewBinding.dialogAnimationTypeDropdown
-        createDialog(typeSpinner, animationTypeSpinner)
-        typeSpinner.apply {
+        val typeDropdown = viewBinding.dialogTypeDropdown
+        val animationTypeDropdown = viewBinding.dialogAnimationTypeDropdown
+        typeDropdown.apply {
             setLifecycleOwner(this@FragmentDialogColorPicker)
-            this.animationTypeSpinner = viewBinding.dialogAnimationTypeDropdown
+            dialog = colorPickerDialog
+            animationTypeSpinner = viewBinding.dialogAnimationTypeDropdown
         }
-        animationTypeSpinner.apply {
+        animationTypeDropdown.apply {
             setLifecycleOwner(this@FragmentDialogColorPicker)
-            this.typeSpinner = viewBinding.dialogTypeDropdown
+            dialog = colorPickerDialog
+            typeSpinner = viewBinding.dialogTypeDropdown
         }
-        viewBinding.dialog = dialog
+        viewBinding.dialog = colorPickerDialog
     }
 
     @Override
@@ -84,7 +78,7 @@ class FragmentDialogColorPicker : BaseFragmentWithViewDataBinding<FragmentDemoDi
         setupDrawerButton()
     }
 
-    private fun createDialog(typeSpinner: DialogTypeSpinner, animationSpinner: DialogAnimationTypeSpinner) {
+    private fun createDialog(savedInstanceState: Bundle?) {
         val ctx = requireContext()
         val title = ResourceUtils.getPhrase(ctx, R.string.demo_dialog_default_title_text)
         val message = ResourceUtils.getPhrase(ctx, R.string.demo_dialog_default_message_text)
@@ -107,15 +101,18 @@ class FragmentDialogColorPicker : BaseFragmentWithViewDataBinding<FragmentDemoDi
                 //TODO write logic
             }
         }
-        dialog = ColorPickerDialogBuilder(this, childFragmentManager, DIALOG_TAG, adapter).apply {
+        colorPickerDialog = ColorPickerDialogBuilder(this, childFragmentManager, DIALOG_TAG).apply {
             withTitle(title)
             withMessage(message)
             withPositiveButton(DialogButtonConfiguration(positiveText), onPositiveButtonClick)
             withNegativeButton(DialogButtonConfiguration(negativeText), onNegativeButtonClick)
             withSelectionCallback(onSelectionChanged)
         }.buildDialog().apply {
-            typeSpinner.dialog = this
-            animationSpinner.dialog = this
+            if (savedInstanceState == null) return@apply
+            val dialogState = BundleUtils.getParcelable(DIALOG_STATE_TAG, savedInstanceState, Bundle::class.java)
+            restoreDialogState(dialogState)
+            //typeSpinner.dialog = this
+            //animationSpinner.dialog = this
         }
     }
 

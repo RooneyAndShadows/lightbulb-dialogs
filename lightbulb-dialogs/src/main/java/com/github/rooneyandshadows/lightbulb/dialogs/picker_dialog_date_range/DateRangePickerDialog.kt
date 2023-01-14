@@ -62,30 +62,17 @@ class DateRangePickerDialog : BasePickerDialogFragment<Array<OffsetDateTime?>?>(
     @Override
     override fun doOnCreate(dialogArguments: Bundle?, savedInstanceState: Bundle?) {
         super.doOnCreate(savedInstanceState, dialogArguments)
-        if (savedInstanceState == null) {
-            val defaultFrom = ResourceUtils.getPhrase(requireContext(), R.string.dialog_range_picker_from_text)
-            val defaultTo = ResourceUtils.getPhrase(requireContext(), R.string.dialog_range_picker_to_text)
-            dialogTextFrom = dialogTextFrom ?: defaultFrom
-            dialogTextTo = dialogTextTo ?: defaultTo
-            if (hasSelection()) selection.setCurrentSelection(
-                arrayOf(
-                    selection.getCurrentSelection()?.get(0),
-                    selection.getCurrentSelection()?.get(1)
-                )
+        if (savedInstanceState != null) return
+        val defaultFrom = ResourceUtils.getPhrase(requireContext(), R.string.dialog_range_picker_from_text)
+        val defaultTo = ResourceUtils.getPhrase(requireContext(), R.string.dialog_range_picker_to_text)
+        dialogTextFrom = dialogTextFrom ?: defaultFrom
+        dialogTextTo = dialogTextTo ?: defaultTo
+        if (hasSelection()) selection.setCurrentSelection(
+            arrayOf(
+                selection.getCurrentSelection()?.get(0),
+                selection.getCurrentSelection()?.get(1)
             )
-        } else {
-            offsetFrom = ZoneOffset.of(savedInstanceState.getString(DATE_FROM_ZONE_TAG))
-            offsetTo = ZoneOffset.of(savedInstanceState.getString(DATE_TO_ZONE_TAG))
-            dialogTextFrom = savedInstanceState.getString(DATE_RANGE_FROM_TEXT_TAG)
-            dialogTextTo = savedInstanceState.getString(DATE_RANGE_TO_TEXT_TAG)
-            dialogDateFormat = StringUtils.getOrDefault(savedInstanceState.getString(DATE_FORMAT_TAG), dialogDateFormat)
-            val selectionFrom = getDateFromString(savedInstanceState.getString(SELECTION_FROM_TAG))
-            val selectionTo = getDateFromString(savedInstanceState.getString(SELECTION_TO_TAG))
-            val draftFrom = getDateFromString(savedInstanceState.getString(DRAFT_FROM_TAG))
-            val draftTo = getDateFromString(savedInstanceState.getString(DRAFT_TO_TAG))
-            selection.setCurrentSelection(arrayOf(selectionFrom, selectionTo), false)
-            selection.setDraftSelection(arrayOf(draftFrom, draftTo), false)
-        }
+        )
     }
 
     @Override
@@ -107,6 +94,22 @@ class DateRangePickerDialog : BasePickerDialogFragment<Array<OffsetDateTime?>?>(
         }
         outState.putString(DATE_RANGE_FROM_TEXT_TAG, dialogTextFrom)
         outState.putString(DATE_RANGE_TO_TEXT_TAG, dialogTextTo)
+    }
+
+    @Override
+    override fun doOnRestoreInstanceState(savedState: Bundle) {
+        super.doOnRestoreInstanceState(savedState)
+        offsetFrom = ZoneOffset.of(savedState.getString(DATE_FROM_ZONE_TAG))
+        offsetTo = ZoneOffset.of(savedState.getString(DATE_TO_ZONE_TAG))
+        dialogTextFrom = savedState.getString(DATE_RANGE_FROM_TEXT_TAG)
+        dialogTextTo = savedState.getString(DATE_RANGE_TO_TEXT_TAG)
+        dialogDateFormat = StringUtils.getOrDefault(savedState.getString(DATE_FORMAT_TAG), dialogDateFormat)
+        val selectionFrom = getDateFromString(savedState.getString(SELECTION_FROM_TAG))
+        val selectionTo = getDateFromString(savedState.getString(SELECTION_TO_TAG))
+        val draftFrom = getDateFromString(savedState.getString(DRAFT_FROM_TAG))
+        val draftTo = getDateFromString(savedState.getString(DRAFT_TO_TAG))
+        selection.setCurrentSelection(arrayOf(selectionFrom, selectionTo), false)
+        selection.setDraftSelection(arrayOf(draftFrom, draftTo), false)
     }
 
     @Override

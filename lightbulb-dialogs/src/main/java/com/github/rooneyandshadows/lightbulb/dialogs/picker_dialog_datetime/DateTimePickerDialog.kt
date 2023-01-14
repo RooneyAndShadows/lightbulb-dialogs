@@ -44,19 +44,9 @@ class DateTimePickerDialog : BasePickerDialogFragment<OffsetDateTime?>(DateTimeS
 
     @Override
     override fun doOnCreate(dialogArguments: Bundle?, savedInstanceState: Bundle?) {
-        if (savedInstanceState == null) {
-            showingTimePicker = false
-            if (hasSelection())
-                selection.setCurrentSelection(selection.getCurrentSelection())
-        } else {
-            showingTimePicker = savedInstanceState.getBoolean(SHOWING_TIME_PICKER_TAG)
-            val selectionFromState = getDateFromString(savedInstanceState.getString(DATE_SELECTION_TAG))
-            val selectionDraftFromState = getDateFromString(savedInstanceState.getString(DATE_SELECTION_DRAFT_TAG))
-            selection.setCurrentSelection(selectionFromState, false)
-            selection.setDraftSelection(selectionDraftFromState, false)
-            dialogDateFormat = savedInstanceState.getString(DATE_FORMAT_TAG, dialogDateFormat)
-            zoneOffset = ZoneOffset.of(savedInstanceState.getString(DATE_OFFSET_TAG))
-        }
+        if (savedInstanceState != null) return
+        showingTimePicker = false
+        if (hasSelection()) selection.setCurrentSelection(selection.getCurrentSelection())
     }
 
     @Override
@@ -73,8 +63,18 @@ class DateTimePickerDialog : BasePickerDialogFragment<OffsetDateTime?>(DateTimeS
             putBoolean(SHOWING_TIME_PICKER_TAG, showingTimePicker)
             putString(DATE_FORMAT_TAG, dialogDateFormat)
         }
+    }
 
-
+    @Override
+    override fun doOnRestoreInstanceState(savedState: Bundle) {
+        super.doOnRestoreInstanceState(savedState)
+        showingTimePicker = savedState.getBoolean(SHOWING_TIME_PICKER_TAG)
+        val selectionFromState = getDateFromString(savedState.getString(DATE_SELECTION_TAG))
+        val selectionDraftFromState = getDateFromString(savedState.getString(DATE_SELECTION_DRAFT_TAG))
+        selection.setCurrentSelection(selectionFromState, false)
+        selection.setDraftSelection(selectionDraftFromState, false)
+        dialogDateFormat = savedState.getString(DATE_FORMAT_TAG, dialogDateFormat)
+        zoneOffset = ZoneOffset.of(savedState.getString(DATE_OFFSET_TAG))
     }
 
     @Override

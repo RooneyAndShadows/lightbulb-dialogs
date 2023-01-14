@@ -43,21 +43,24 @@ class ColorPickerDialog : AdapterPickerDialog<ColorModel>() {
     }
 
     @Override
-    override fun doOnCreate(dialogArguments: Bundle?, savedInstanceState: Bundle?) {
-        super.doOnCreate(dialogArguments, savedInstanceState)
-        if (savedInstanceState != null) lastVisibleItemPosition = savedInstanceState.getInt("LAST_VISIBLE_ITEM")
+    override fun doOnSaveInstanceState(outState: Bundle?) {
+        super.doOnSaveInstanceState(outState)
+        val gridLayoutManager = recyclerView?.layoutManager as GridLayoutManager?
+        if (gridLayoutManager != null)
+            outState!!.putInt("LAST_VISIBLE_ITEM", gridLayoutManager.findFirstVisibleItemPosition())
+        else outState!!.putInt("LAST_VISIBLE_ITEM", lastVisibleItemPosition)
     }
 
     @Override
-    override fun doOnSaveInstanceState(outState: Bundle?) {
-        super.doOnSaveInstanceState(outState)
-        val manager = recyclerView.layoutManager as GridLayoutManager?
-        if (manager != null) outState!!.putInt("LAST_VISIBLE_ITEM", manager.findFirstVisibleItemPosition())
+    override fun doOnRestoreInstanceState(savedState: Bundle) {
+        super.doOnRestoreInstanceState(savedState)
+        lastVisibleItemPosition = savedState.getInt("LAST_VISIBLE_ITEM")
     }
 
     @Override
     override fun configureContent(view: View, savedInstanceState: Bundle?) {
         super.configureContent(view, savedInstanceState)
+        val recyclerView = this.recyclerView!!
         recyclerView.layoutParams.height = 1 //Fixes rendering all possible icons (later will be resized)
         val maxWidth = getMaxWidth()
         spans = min(7, maxWidth / iconSize)
@@ -84,6 +87,7 @@ class ColorPickerDialog : AdapterPickerDialog<ColorModel>() {
         dialogLayout: View,
         fgPadding: Rect,
     ) {
+        val recyclerView = this.recyclerView!!
         val widthMeasureSpec = View.MeasureSpec.makeMeasureSpec(0, View.MeasureSpec.UNSPECIFIED)
         val heightMeasureSpec = View.MeasureSpec.makeMeasureSpec(0, View.MeasureSpec.UNSPECIFIED)
         dialogLayout.measure(widthMeasureSpec, heightMeasureSpec)
