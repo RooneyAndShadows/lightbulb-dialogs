@@ -23,7 +23,7 @@ class AdapterPickerDialogBuilder<ModelType : EasyAdapterDataModel> @JvmOverloads
     private var selection: IntArray? = null
 
     @Override
-    override fun withSavedState(savedState: Bundle): AdapterPickerDialogBuilder<ModelType> {
+    override fun withSavedState(savedState: Bundle?): AdapterPickerDialogBuilder<ModelType> {
         return super.withSavedState(savedState) as AdapterPickerDialogBuilder<ModelType>
     }
 

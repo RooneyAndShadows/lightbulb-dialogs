@@ -37,7 +37,7 @@ object MenuConfigurations {
                 1
             ) { slider: SliderMenu ->
                 slider.closeSlider()
-                MainActivityNavigator.route().toDemoLoading().forward()
+                MainActivityNavigator.route().toDemoLoading().replace()
             }
         ).addMenuItem(
             PrimaryMenuItem(
@@ -48,7 +48,7 @@ object MenuConfigurations {
                 1
             ) { slider: SliderMenu ->
                 slider.closeSlider()
-                MainActivityNavigator.route().toDemoAdapter().forward()
+                MainActivityNavigator.route().toDemoAdapter().replace()
                 // route().back()
                 //slider.closeSlider()
             }
@@ -61,7 +61,7 @@ object MenuConfigurations {
                 1
             ) { slider: SliderMenu ->
                 slider.closeSlider()
-                MainActivityNavigator.route().toDemoColorPicker().forward()
+                MainActivityNavigator.route().toDemoColorPicker().replace()
                 // route().back()
                 //slider.closeSlider()
             }
@@ -74,7 +74,7 @@ object MenuConfigurations {
                 1
             ) { slider: SliderMenu ->
                 slider.closeSlider()
-                MainActivityNavigator.route().toDemoIconPicker().forward()
+                MainActivityNavigator.route().toDemoIconPicker().replace()
                 // route().back()
                 //slider.closeSlider()
             }
@@ -87,7 +87,7 @@ object MenuConfigurations {
                 1
             ) { slider: SliderMenu ->
                 slider.closeSlider()
-                MainActivityNavigator.route().toDemoDateRange().forward()
+                MainActivityNavigator.route().toDemoDateRange().replace()
                 // route().back()
                 //slider.closeSlider()
             }

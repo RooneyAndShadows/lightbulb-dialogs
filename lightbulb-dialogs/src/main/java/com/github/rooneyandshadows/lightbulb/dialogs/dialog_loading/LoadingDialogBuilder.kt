@@ -17,7 +17,7 @@ class LoadingDialogBuilder @JvmOverloads constructor(
 ) : BaseDialogBuilder<LoadingDialog?>(lifecycleOwner, dialogParentFragmentManager, dialogTag) {
 
     @Override
-    override fun withSavedState(savedState: Bundle): LoadingDialogBuilder {
+    override fun withSavedState(savedState: Bundle?): LoadingDialogBuilder {
         return super.withSavedState(savedState) as LoadingDialogBuilder
     }
 

@@ -7,6 +7,7 @@ import com.github.rooneyandshadows.lightbulb.annotation_processors.annotations.F
 import com.github.rooneyandshadows.lightbulb.application.activity.slidermenu.drawable.NavigateBackDrawable
 import com.github.rooneyandshadows.lightbulb.application.fragment.base.BaseFragmentWithViewDataBinding
 import com.github.rooneyandshadows.lightbulb.application.fragment.cofiguration.ActionBarConfiguration
+import com.github.rooneyandshadows.lightbulb.commons.utils.BundleUtils
 import com.github.rooneyandshadows.lightbulb.commons.utils.InteractionUtils
 import com.github.rooneyandshadows.lightbulb.commons.utils.ResourceUtils
 import com.github.rooneyandshadows.lightbulb.dialogs.base.BaseDialogFragment
@@ -15,6 +16,8 @@ import com.github.rooneyandshadows.lightbulb.dialogs.dialog_loading.LoadingDialo
 import com.github.rooneyandshadows.lightbulb.dialogs.dialog_loading.LoadingDialogBuilder
 import com.github.rooneyandshadows.lightbulb.dialogsdemo.R
 import com.github.rooneyandshadows.lightbulb.dialogsdemo.databinding.FragmentDemoDialogLoadingBinding
+import com.github.rooneyandshadows.lightbulb.dialogsdemo.getDefaultDialogMessage
+import com.github.rooneyandshadows.lightbulb.dialogsdemo.getDefaultDialogTitle
 import com.github.rooneyandshadows.lightbulb.dialogsdemo.spinner.DialogAnimationTypeSpinner
 import com.github.rooneyandshadows.lightbulb.dialogsdemo.spinner.DialogTypeSpinner
 
@@ -25,20 +28,30 @@ class FragmentDialogLoading : BaseFragmentWithViewDataBinding<FragmentDemoDialog
 
     companion object {
         private const val DIALOG_TAG = "LOADING_DIALOG_TAG"
+        private const val DIALOG_STATE_TAG = "LOADING_DIALOG_STATE_TAG"
+    }
+
+    @Override
+    override fun doOnCreate(savedInstanceState: Bundle?) {
+        super.doOnCreate(savedInstanceState)
+        var dialogSavedState: Bundle? = null
+        savedInstanceState?.apply {
+            dialogSavedState = BundleUtils.getParcelable(DIALOG_STATE_TAG, this, Bundle::class.java)
+        }
+        createDialog(dialogSavedState)
     }
 
     @Override
     override fun onViewBound(viewBinding: FragmentDemoDialogLoadingBinding) {
-        val typeSpinner = viewBinding.dialogTypeDropdown
-        val animationTypeSpinner = viewBinding.dialogAnimationTypeDropdown
-        createDialog(typeSpinner, animationTypeSpinner)
-        typeSpinner.apply {
+        viewBinding.dialogTypeDropdown.apply {
             setLifecycleOwner(this@FragmentDialogLoading)
-            this.animationTypeSpinner = viewBinding.dialogAnimationTypeDropdown
+            dialog = loadingDialog
+            animationTypeSpinner = viewBinding.dialogAnimationTypeDropdown
         }
-        animationTypeSpinner.apply {
+        viewBinding.dialogAnimationTypeDropdown.apply {
             setLifecycleOwner(this@FragmentDialogLoading)
-            this.typeSpinner = viewBinding.dialogTypeDropdown
+            dialog = loadingDialog
+            typeSpinner = viewBinding.dialogTypeDropdown
         }
         viewBinding.dialog = loadingDialog
     }
@@ -58,27 +71,25 @@ class FragmentDialogLoading : BaseFragmentWithViewDataBinding<FragmentDemoDialog
         setupDrawerButton()
     }
 
-    private fun createDialog(typeSpinner: DialogTypeSpinner, animationSpinner: DialogAnimationTypeSpinner) {
-        val ctx = requireContext()
-        val title = ResourceUtils.getPhrase(ctx, R.string.demo_dialog_default_title_text)
-        val message = ResourceUtils.getPhrase(ctx, R.string.demo_dialog_default_message_text)
-        val onShowListener = object : DialogShowListener {
-            override fun doOnShow(dialogFragment: BaseDialogFragment) {
-                requireView().postDelayed({
-                    dialogFragment.dismiss()
-                    val toastMessage = ResourceUtils.getPhrase(ctx, R.string.demo_action_completed_text)
-                    InteractionUtils.showMessage(ctx, toastMessage)
-                }, 3000)
-            }
-        }
+    private fun createDialog(dialogSavedState: Bundle?) {
         loadingDialog = LoadingDialogBuilder(this, childFragmentManager, DIALOG_TAG).apply {
+            val ctx = requireContext()
+            val title = getDefaultDialogTitle(ctx)
+            val message = getDefaultDialogMessage(ctx)
+            val onShowListener = object : DialogShowListener {
+                override fun doOnShow(dialogFragment: BaseDialogFragment) {
+                    requireView().postDelayed({
+                        dialogFragment.dismiss()
+                        val toastMessage = ResourceUtils.getPhrase(ctx, R.string.demo_action_completed_text)
+                        InteractionUtils.showMessage(ctx, toastMessage)
+                    }, 3000)
+                }
+            }
+            withSavedState(dialogSavedState)
             withTitle(title)
             withMessage(message)
             withOnShowListener(onShowListener)
-        }.buildDialog().apply {
-            typeSpinner.dialog = this
-            animationSpinner.dialog = this
-        }
+        }.buildDialog()
     }
 
     private fun setupDrawerButton() {

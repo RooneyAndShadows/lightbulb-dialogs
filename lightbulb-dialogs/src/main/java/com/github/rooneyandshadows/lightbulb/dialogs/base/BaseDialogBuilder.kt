@@ -6,7 +6,7 @@ import androidx.lifecycle.LifecycleOwner
 import com.github.rooneyandshadows.lightbulb.dialogs.base.internal.*
 import com.github.rooneyandshadows.lightbulb.dialogs.base.internal.callbacks.*
 
-abstract class BaseDialogBuilder<DialogType :BaseDialogFragment?> @JvmOverloads constructor(
+abstract class BaseDialogBuilder<DialogType : BaseDialogFragment?> @JvmOverloads constructor(
     protected val dialogLifecycleOwner: LifecycleOwner? = null,
     protected val dialogParentFragmentManager: FragmentManager,
     protected val dialogTag: String,
@@ -26,7 +26,7 @@ abstract class BaseDialogBuilder<DialogType :BaseDialogFragment?> @JvmOverloads 
     protected var dialogListeners: DialogListeners? = null
     protected var cancelableOnClickOutside = true
 
-    open fun withSavedState(savedState: Bundle): BaseDialogBuilder<DialogType> {
+    open fun withSavedState(savedState: Bundle?): BaseDialogBuilder<DialogType> {
         this.savedState = savedState
         return this
     }

@@ -19,7 +19,7 @@ class IconPickerDialogBuilder @JvmOverloads constructor(
     private var selection: IntArray? = null
 
     @Override
-    override fun withSavedState(savedState: Bundle): IconPickerDialogBuilder {
+    override fun withSavedState(savedState: Bundle?): IconPickerDialogBuilder {
         return super.withSavedState(savedState) as IconPickerDialogBuilder
     }
 

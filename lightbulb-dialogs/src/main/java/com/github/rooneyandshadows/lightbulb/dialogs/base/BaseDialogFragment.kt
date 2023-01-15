@@ -140,10 +140,9 @@ abstract class BaseDialogFragment : DialogFragment(), DefaultLifecycleObserver {
     protected open fun doOnSaveInstanceState(outState: Bundle?) {}
 
     /**
-     * Called to ask the fragment to save its current dynamic state, so it
-     * can later be reconstructed in a new instance if its process is
-     * restarted.
-     * @param outState - Bundle in which to place your saved state.
+     * Called to ask the fragment to restore its state.
+     *
+     * @param savedState - Bundle containing previously saved values.
      */
     protected open fun doOnRestoreInstanceState(savedState: Bundle) {}
 
@@ -227,7 +226,15 @@ abstract class BaseDialogFragment : DialogFragment(), DefaultLifecycleObserver {
 
     fun onRestoreInstanceState(savedState: Bundle?) {
         savedState?.apply {
-            restoreBasicValues(savedState)
+            val helper = DialogBundleHelper(this)
+            dialogTitle = helper.title
+            dialogMessage = helper.message
+            dialogPositiveButton = helper.positiveButtonConfig
+            dialogNegativeButton = helper.negativeButtonConfig
+            isCancelable = helper.cancelable
+            isDialogShown = helper.showing
+            dialogType = helper.type
+            dialogAnimationType = helper.animationType
             doOnRestoreInstanceState(savedState)
         }
     }
@@ -235,7 +242,16 @@ abstract class BaseDialogFragment : DialogFragment(), DefaultLifecycleObserver {
     @Override
     final override fun onSaveInstanceState(outState: Bundle) {
         super.onSaveInstanceState(outState)
-        saveBasicValues(outState)
+        DialogBundleHelper(outState).apply {
+            withTitle(dialogTitle)
+            withMessage(dialogMessage)
+            withPositiveButtonConfig(dialogPositiveButton)
+            withNegativeButtonConfig(dialogNegativeButton)
+            withCancelable(isCancelable)
+            withShowing(isDialogShown)
+            withDialogType(dialogType)
+            withAnimation(dialogAnimationType)
+        }
         doOnSaveInstanceState(outState)
         if (dialogCallbacks != null)
             dialogCallbacks!!.doOnSaveInstanceState(this@BaseDialogFragment, view, outState)
@@ -339,10 +355,7 @@ abstract class BaseDialogFragment : DialogFragment(), DefaultLifecycleObserver {
     fun saveDialogState(): Bundle? {
         if (isDialogShown) return null
         return Bundle().apply {
-            saveBasicValues(this)
-            doOnSaveInstanceState(this)
-            if (dialogCallbacks != null)
-                dialogCallbacks!!.doOnSaveInstanceState(this@BaseDialogFragment, view, this)
+            onSaveInstanceState(this)
         }
     }
 
@@ -504,33 +517,6 @@ abstract class BaseDialogFragment : DialogFragment(), DefaultLifecycleObserver {
                 window.setBackgroundDrawable(ColorDrawable(Color.TRANSPARENT)) // overrides background to remove insets
                 setupBottomSheetDialog(bottomSheetDialogConstraints, window, dialogView)
             }
-        }
-    }
-
-    private fun saveBasicValues(outState: Bundle) {
-        DialogBundleHelper(outState).apply {
-            withTitle(dialogTitle)
-            withMessage(dialogMessage)
-            withPositiveButtonConfig(dialogPositiveButton)
-            withNegativeButtonConfig(dialogNegativeButton)
-            withCancelable(isCancelable)
-            withShowing(isDialogShown)
-            withDialogType(dialogType)
-            withAnimation(dialogAnimationType)
-        }
-    }
-
-    private fun restoreBasicValues(savedState: Bundle?) {
-        savedState?.apply {
-            val helper = DialogBundleHelper(this)
-            dialogTitle = helper.title
-            dialogMessage = helper.message
-            dialogPositiveButton = helper.positiveButtonConfig
-            dialogNegativeButton = helper.negativeButtonConfig
-            isCancelable = helper.cancelable
-            isDialogShown = helper.showing
-            dialogType = helper.type
-            dialogAnimationType = helper.animationType
         }
     }
 

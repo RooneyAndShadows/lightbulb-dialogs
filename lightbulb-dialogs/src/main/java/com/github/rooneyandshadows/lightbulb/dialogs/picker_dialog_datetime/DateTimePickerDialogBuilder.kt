@@ -23,7 +23,7 @@ class DateTimePickerDialogBuilder @JvmOverloads constructor(
     private var dateFormat: String? = null
 
     @Override
-    override fun withSavedState(savedState: Bundle): DateTimePickerDialogBuilder {
+    override fun withSavedState(savedState: Bundle?): DateTimePickerDialogBuilder {
         return super.withSavedState(savedState) as DateTimePickerDialogBuilder
     }
 

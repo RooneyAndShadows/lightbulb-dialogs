@@ -7,43 +7,48 @@ import com.github.rooneyandshadows.lightbulb.annotation_processors.annotations.F
 import com.github.rooneyandshadows.lightbulb.application.activity.slidermenu.drawable.ShowMenuDrawable
 import com.github.rooneyandshadows.lightbulb.application.fragment.base.BaseFragmentWithViewDataBinding
 import com.github.rooneyandshadows.lightbulb.application.fragment.cofiguration.ActionBarConfiguration
-import com.github.rooneyandshadows.lightbulb.commons.utils.InteractionUtils
+import com.github.rooneyandshadows.lightbulb.commons.utils.BundleUtils
 import com.github.rooneyandshadows.lightbulb.commons.utils.ResourceUtils
-import com.github.rooneyandshadows.lightbulb.dialogs.base.BaseDialogFragment
 import com.github.rooneyandshadows.lightbulb.dialogs.base.BasePickerDialogFragment.SelectionChangedListener
 import com.github.rooneyandshadows.lightbulb.dialogs.base.internal.DialogButtonConfiguration
-import com.github.rooneyandshadows.lightbulb.dialogs.base.internal.callbacks.DialogButtonClickListener
 import com.github.rooneyandshadows.lightbulb.dialogs.picker_dialog_date_range.DateRangePickerDialog
 import com.github.rooneyandshadows.lightbulb.dialogs.picker_dialog_date_range.DateRangePickerDialogBuilder
-import com.github.rooneyandshadows.lightbulb.dialogsdemo.R
+import com.github.rooneyandshadows.lightbulb.dialogsdemo.*
 import com.github.rooneyandshadows.lightbulb.dialogsdemo.databinding.FragmentDemoDialogDateRangePickerBinding
-import com.github.rooneyandshadows.lightbulb.dialogsdemo.spinner.DialogAnimationTypeSpinner
-import com.github.rooneyandshadows.lightbulb.dialogsdemo.spinner.DialogTypeSpinner
 import java.time.OffsetDateTime
 
 @FragmentScreen(screenName = "DateRange", screenGroup = "Demo")
 @FragmentConfiguration(layoutName = "fragment_demo_dialog_icon_picker", hasLeftDrawer = true)
 class FragmentDialogDateRangePicker : BaseFragmentWithViewDataBinding<FragmentDemoDialogDateRangePickerBinding>() {
-    private lateinit var dialog: DateRangePickerDialog
+    private lateinit var dateRangePickerDialog: DateRangePickerDialog
 
     companion object {
         private const val DIALOG_TAG = "DIALOG_DATE_RANGE_PICKER_TAG"
+        private const val DIALOG_STATE_TAG = "DIALOG_DATE_RANGE_PICKER_STATE_TAG"
+    }
+
+    override fun doOnCreate(savedInstanceState: Bundle?) {
+        super.doOnCreate(savedInstanceState)
+        var dialogSavedState: Bundle? = null
+        savedInstanceState?.apply {
+            dialogSavedState = BundleUtils.getParcelable(DIALOG_STATE_TAG, this, Bundle::class.java)
+        }
+        createDialog(dialogSavedState)
     }
 
     @Override
     override fun onViewBound(viewBinding: FragmentDemoDialogDateRangePickerBinding) {
-        val typeSpinner = viewBinding.dialogTypeDropdown
-        val animationTypeSpinner = viewBinding.dialogAnimationTypeDropdown
-        createDialog(typeSpinner, animationTypeSpinner)
-        typeSpinner.apply {
+        viewBinding.dialogTypeDropdown.apply {
             setLifecycleOwner(this@FragmentDialogDateRangePicker)
-            this.animationTypeSpinner = viewBinding.dialogAnimationTypeDropdown
+            dialog = dateRangePickerDialog
+            animationTypeSpinner = viewBinding.dialogAnimationTypeDropdown
         }
-        animationTypeSpinner.apply {
+        viewBinding.dialogAnimationTypeDropdown.apply {
             setLifecycleOwner(this@FragmentDialogDateRangePicker)
-            this.typeSpinner = viewBinding.dialogTypeDropdown
+            dialog = dateRangePickerDialog
+            typeSpinner = viewBinding.dialogTypeDropdown
         }
-        viewBinding.dialog = dialog
+        viewBinding.dialog = dateRangePickerDialog
     }
 
     @Override
@@ -62,35 +67,23 @@ class FragmentDialogDateRangePicker : BaseFragmentWithViewDataBinding<FragmentDe
         setupDrawerButton()
     }
 
-    private fun createDialog(typeSpinner: DialogTypeSpinner, animationSpinner: DialogAnimationTypeSpinner) {
+    private fun createDialog(dialogSavedState: Bundle?) {
         val ctx = requireContext()
-        val positiveText = ResourceUtils.getPhrase(requireContext(), R.string.demo_dialog_default_positive_button)
-        val negativeText = ResourceUtils.getPhrase(requireContext(), R.string.demo_dialog_default_negative_button)
-        val onPositiveButtonClick = object : DialogButtonClickListener {
-            override fun doOnClick(buttonView: View?, dialogFragment: BaseDialogFragment) {
-                val toastMessage = ResourceUtils.getPhrase(ctx, R.string.demo_positive_button_clicked_text)
-                InteractionUtils.showMessage(ctx, toastMessage)
-            }
-        }
-        val onNegativeButtonClick = object : DialogButtonClickListener {
-            override fun doOnClick(buttonView: View?, dialogFragment: BaseDialogFragment) {
-                val toastMessage = ResourceUtils.getPhrase(ctx, R.string.demo_negative_button_clicked_text)
-                InteractionUtils.showMessage(ctx, toastMessage)
-            }
-        }
+        val positiveButtonText = getDefaultPositiveButtonText(ctx)
+        val negativeButtonText = getDefaultNegativeButtonText(ctx)
+        val positiveButtonClickListener = getDefaultPositiveButtonClickListener()
+        val negativeButtonClickListener = getDefaultNegativeButtonClickListener()
         val onSelectionChanged = object : SelectionChangedListener<Array<OffsetDateTime?>?> {
             override fun onSelectionChanged(oldValue: Array<OffsetDateTime?>?, newValue: Array<OffsetDateTime?>?) {
                 //TODO write logic
             }
         }
-        dialog = DateRangePickerDialogBuilder(this, childFragmentManager, DIALOG_TAG).apply {
-            withPositiveButton(DialogButtonConfiguration(positiveText), onPositiveButtonClick)
-            withNegativeButton(DialogButtonConfiguration(negativeText), onNegativeButtonClick)
+        dateRangePickerDialog = DateRangePickerDialogBuilder(this, childFragmentManager, DIALOG_TAG).apply {
+            withSavedState(dialogSavedState)
+            withPositiveButton(DialogButtonConfiguration(positiveButtonText), positiveButtonClickListener)
+            withNegativeButton(DialogButtonConfiguration(negativeButtonText), negativeButtonClickListener)
             withOnDateSelectedEvent(onSelectionChanged)
-        }.buildDialog().apply {
-            typeSpinner.dialog = this
-            animationSpinner.dialog = this
-        }
+        }.buildDialog()
     }
 
     private fun setupDrawerButton() {

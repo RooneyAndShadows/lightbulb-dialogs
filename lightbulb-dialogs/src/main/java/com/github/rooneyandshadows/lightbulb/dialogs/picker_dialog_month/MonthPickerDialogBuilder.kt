@@ -25,7 +25,7 @@ class MonthPickerDialogBuilder @JvmOverloads constructor(
     private var maxYear = 2100
 
     @Override
-    override fun withSavedState(savedState: Bundle): MonthPickerDialogBuilder {
+    override fun withSavedState(savedState: Bundle?): MonthPickerDialogBuilder {
         return super.withSavedState(savedState) as MonthPickerDialogBuilder
     }
 

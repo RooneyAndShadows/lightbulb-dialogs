@@ -19,7 +19,7 @@ class ColorPickerDialogBuilder @JvmOverloads constructor(
     private var selection: IntArray? = null
 
     @Override
-    override fun withSavedState(savedState: Bundle): ColorPickerDialogBuilder {
+    override fun withSavedState(savedState: Bundle?): ColorPickerDialogBuilder {
         return super.withSavedState(savedState) as ColorPickerDialogBuilder
     }
 
@@ -106,21 +106,24 @@ class ColorPickerDialogBuilder @JvmOverloads constructor(
             onNegativeClickListener?.apply { addOnNegativeClickListeners(this) }
             onPositiveClickListener?.apply { addOnPositiveClickListener(this) }
             changedCallback?.apply { setOnSelectionChangedListener(this) }
-            setSelection(selection)
+
         }
     }
 
     private fun getExistingDialogOrCreate(): ColorPickerDialog {
         val dialog = dialogParentFragmentManager.findFragmentByTag(dialogTag) as ColorPickerDialog?
         return dialog ?: ColorPickerDialog.newInstance().apply {
-            restoreDialogState(savedState)
-            if (savedState != null) return@apply
+            if (savedState != null) {
+                restoreDialogState(savedState)
+                return@apply
+            }
             dialogTitle = title
             dialogMessage = message
             dialogAnimationType = animation
             isCancelable = cancelableOnClickOutside
             dialogNegativeButton = negativeButtonConfiguration
             dialogPositiveButton = positiveButtonConfiguration
+            setSelection(selection)
         }
     }
 }

@@ -23,7 +23,7 @@ class DateRangePickerDialogBuilder @JvmOverloads constructor(
     private var initialRange: Array<OffsetDateTime?>? = null
 
     @Override
-    override fun withSavedState(savedState: Bundle): DateRangePickerDialogBuilder {
+    override fun withSavedState(savedState: Bundle?): DateRangePickerDialogBuilder {
         return super.withSavedState(savedState) as DateRangePickerDialogBuilder
     }
 

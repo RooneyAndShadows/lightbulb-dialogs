@@ -20,7 +20,7 @@ class CustomDialogBuilder<DialogType : CustomDialog> @JvmOverloads constructor(
     private var loading = false
 
     @Override
-    override fun withSavedState(savedState: Bundle): CustomDialogBuilder<DialogType> {
+    override fun withSavedState(savedState: Bundle?): CustomDialogBuilder<DialogType> {
         return super.withSavedState(savedState) as CustomDialogBuilder<DialogType>
     }
 

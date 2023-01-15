@@ -2,14 +2,18 @@ package com.github.rooneyandshadows.lightbulb.dialogsdemo
 
 import android.content.Context
 import android.graphics.drawable.Drawable
+import android.view.View
 import androidx.databinding.BindingAdapter
 import androidx.databinding.InverseBindingAdapter
 import androidx.databinding.InverseBindingListener
 import com.github.rooneyandshadows.lightbulb.commons.utils.DrawableUtils
+import com.github.rooneyandshadows.lightbulb.commons.utils.InteractionUtils
 import com.github.rooneyandshadows.lightbulb.commons.utils.ResourceUtils
+import com.github.rooneyandshadows.lightbulb.dialogs.base.BaseDialogFragment
 import com.github.rooneyandshadows.lightbulb.dialogs.base.internal.DialogAnimationTypes
 import com.github.rooneyandshadows.lightbulb.dialogs.base.internal.DialogButtonConfiguration
 import com.github.rooneyandshadows.lightbulb.dialogs.base.internal.DialogTypes
+import com.github.rooneyandshadows.lightbulb.dialogs.base.internal.callbacks.DialogButtonClickListener
 import com.github.rooneyandshadows.lightbulb.dialogsdemo.models.DemoModel
 import com.github.rooneyandshadows.lightbulb.dialogsdemo.spinner.base.adapter.DialogPropertyItem
 import com.github.rooneyandshadows.lightbulb.dialogsdemo.utils.icon.AppIconUtils
@@ -28,6 +32,42 @@ fun DialogAnimationTypes.Companion.getAllAsDialogPropertyItems(): Array<DialogPr
     return DialogAnimationTypes.values().asList()
         .map { return@map DialogPropertyItem(it.name, it.value) }
         .toTypedArray()
+}
+
+fun getDefaultDialogTitle(context: Context): String {
+    return ResourceUtils.getPhrase(context, R.string.demo_dialog_default_title_text)
+}
+
+fun getDefaultDialogMessage(context: Context): String {
+    return ResourceUtils.getPhrase(context, R.string.demo_dialog_default_message_text)
+}
+
+fun getDefaultPositiveButtonText(context: Context): String {
+    return ResourceUtils.getPhrase(context, R.string.demo_dialog_default_positive_button)
+}
+
+fun getDefaultNegativeButtonText(context: Context): String {
+    return ResourceUtils.getPhrase(context, R.string.demo_dialog_default_negative_button)
+}
+
+fun getDefaultPositiveButtonClickListener(): DialogButtonClickListener {
+    return object : DialogButtonClickListener {
+        override fun doOnClick(buttonView: View?, dialogFragment: BaseDialogFragment) {
+            val context = buttonView!!.context
+            val toastMessage = ResourceUtils.getPhrase(context, R.string.demo_positive_button_clicked_text)
+            InteractionUtils.showMessage(context, toastMessage)
+        }
+    }
+}
+
+fun getDefaultNegativeButtonClickListener(): DialogButtonClickListener {
+    return object : DialogButtonClickListener {
+        override fun doOnClick(buttonView: View?, dialogFragment: BaseDialogFragment) {
+            val context = buttonView!!.context
+            val toastMessage = ResourceUtils.getPhrase(context, R.string.demo_negative_button_clicked_text)
+            InteractionUtils.showMessage(context, toastMessage)
+        }
+    }
 }
 
 @InverseBindingAdapter(attribute = "dialogButtonText", event = "dialogButtonTextChanged")

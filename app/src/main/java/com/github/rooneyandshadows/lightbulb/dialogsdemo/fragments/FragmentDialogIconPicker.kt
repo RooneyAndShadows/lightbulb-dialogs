@@ -8,59 +8,57 @@ import com.github.rooneyandshadows.lightbulb.application.activity.slidermenu.dra
 import com.github.rooneyandshadows.lightbulb.application.fragment.base.BaseFragmentWithViewDataBinding
 import com.github.rooneyandshadows.lightbulb.application.fragment.cofiguration.ActionBarConfiguration
 import com.github.rooneyandshadows.lightbulb.commons.utils.BundleUtils
-import com.github.rooneyandshadows.lightbulb.commons.utils.InteractionUtils
 import com.github.rooneyandshadows.lightbulb.commons.utils.ResourceUtils
-import com.github.rooneyandshadows.lightbulb.dialogs.base.BaseDialogFragment
 import com.github.rooneyandshadows.lightbulb.dialogs.base.BasePickerDialogFragment
 import com.github.rooneyandshadows.lightbulb.dialogs.base.internal.DialogButtonConfiguration
-import com.github.rooneyandshadows.lightbulb.dialogs.base.internal.callbacks.DialogButtonClickListener
 import com.github.rooneyandshadows.lightbulb.dialogs.picker_dialog_icon.IconPickerDialog
 import com.github.rooneyandshadows.lightbulb.dialogs.picker_dialog_icon.IconPickerDialogBuilder
-import com.github.rooneyandshadows.lightbulb.dialogsdemo.R
+import com.github.rooneyandshadows.lightbulb.dialogsdemo.*
 import com.github.rooneyandshadows.lightbulb.dialogsdemo.databinding.FragmentDemoDialogIconPickerBinding
+import com.github.rooneyandshadows.lightbulb.dialogsdemo.utils.color.AppColorUtils
 import com.github.rooneyandshadows.lightbulb.dialogsdemo.utils.icon.AppIconUtils
 
 @FragmentScreen(screenName = "IconPicker", screenGroup = "Demo")
 @FragmentConfiguration(layoutName = "fragment_demo_dialog_icon_picker", hasLeftDrawer = true)
 class FragmentDialogIconPicker : BaseFragmentWithViewDataBinding<FragmentDemoDialogIconPickerBinding>() {
-    private lateinit var dialog: IconPickerDialog
+    private lateinit var iconPickerDialog: IconPickerDialog
 
     companion object {
-        private const val DIALOG_TAG = "COLOR_PICKER_TAG"
+        private const val DIALOG_TAG = "ICON_PICKER_TAG"
+        private const val DIALOG_STATE_TAG = "ICON_PICKER_STATE_TAG"
     }
 
     @Override
     override fun doOnCreate(savedInstanceState: Bundle?) {
         super.doOnCreate(savedInstanceState)
+        val setInitialValues = savedInstanceState == null
         var dialogSavedState: Bundle? = null
         savedInstanceState?.apply {
-            dialogSavedState = BundleUtils.getParcelable("dialog_state", this, Bundle::class.java)
+            dialogSavedState = BundleUtils.getParcelable(DIALOG_STATE_TAG, this, Bundle::class.java)
         }
         createDialog(dialogSavedState)
-        if (savedInstanceState == null)
-            dialog.setData(AppIconUtils.allForPicker)
-        println(dialog)
+        if (setInitialValues) iconPickerDialog.setData(AppIconUtils.allForPicker)
     }
 
     @Override
     override fun doOnSaveInstanceState(outState: Bundle) {
         super.doOnSaveInstanceState(outState)
-        outState.putParcelable("dialog_state", dialog.saveDialogState())
+        outState.putParcelable(DIALOG_STATE_TAG, iconPickerDialog.saveDialogState())
     }
 
     @Override
     override fun onViewBound(viewBinding: FragmentDemoDialogIconPickerBinding) {
-        val typeSpinner = viewBinding.dialogTypeDropdown
-        val animationTypeSpinner = viewBinding.dialogAnimationTypeDropdown
-        typeSpinner.apply {
+        viewBinding.dialogTypeDropdown.apply {
             setLifecycleOwner(this@FragmentDialogIconPicker)
-            this.animationTypeSpinner = viewBinding.dialogAnimationTypeDropdown
+            dialog = iconPickerDialog
+            animationTypeSpinner = viewBinding.dialogAnimationTypeDropdown
         }
-        animationTypeSpinner.apply {
+        viewBinding.dialogAnimationTypeDropdown.apply {
             setLifecycleOwner(this@FragmentDialogIconPicker)
-            this.typeSpinner = viewBinding.dialogTypeDropdown
+            dialog = iconPickerDialog
+            typeSpinner = viewBinding.dialogTypeDropdown
         }
-        viewBinding.dialog = dialog
+        viewBinding.dialog = iconPickerDialog
     }
 
     @Override
@@ -80,37 +78,24 @@ class FragmentDialogIconPicker : BaseFragmentWithViewDataBinding<FragmentDemoDia
     }
 
     private fun createDialog(dialogSavedState: Bundle?) {
-        val ctx = requireContext()
-        val title = ResourceUtils.getPhrase(ctx, R.string.demo_dialog_default_title_text)
-        val message = ResourceUtils.getPhrase(ctx, R.string.demo_dialog_default_message_text)
-        val positiveText = ResourceUtils.getPhrase(requireContext(), R.string.demo_dialog_default_positive_button)
-        val negativeText = ResourceUtils.getPhrase(requireContext(), R.string.demo_dialog_default_negative_button)
-        val onPositiveButtonClick = object : DialogButtonClickListener {
-            override fun doOnClick(buttonView: View?, dialogFragment: BaseDialogFragment) {
-                val toastMessage = ResourceUtils.getPhrase(ctx, R.string.demo_positive_button_clicked_text)
-                InteractionUtils.showMessage(ctx, toastMessage)
+        iconPickerDialog = IconPickerDialogBuilder(this, childFragmentManager, DIALOG_TAG).apply {
+            val ctx = requireContext()
+            val title = getDefaultDialogTitle(ctx)
+            val message = getDefaultDialogMessage(ctx)
+            val positiveButtonText = getDefaultPositiveButtonText(ctx)
+            val negativeButtonText = getDefaultNegativeButtonText(ctx)
+            val positiveButtonClickListener = getDefaultPositiveButtonClickListener()
+            val negativeButtonClickListener = getDefaultNegativeButtonClickListener()
+            val onSelectionChanged = object : BasePickerDialogFragment.SelectionChangedListener<IntArray?> {
+                override fun onSelectionChanged(oldValue: IntArray?, newValue: IntArray?) {
+                    //TODO write logic
+                }
             }
-        }
-        val onNegativeButtonClick = object : DialogButtonClickListener {
-            override fun doOnClick(buttonView: View?, dialogFragment: BaseDialogFragment) {
-                val toastMessage = ResourceUtils.getPhrase(ctx, R.string.demo_negative_button_clicked_text)
-                InteractionUtils.showMessage(ctx, toastMessage)
-            }
-        }
-        val onSelectionChanged = object : BasePickerDialogFragment.SelectionChangedListener<IntArray?> {
-            override fun onSelectionChanged(oldValue: IntArray?, newValue: IntArray?) {
-                //TODO write logic
-            }
-        }
-
-        dialog = IconPickerDialogBuilder(this, childFragmentManager, DIALOG_TAG).apply {
-            dialogSavedState?.apply {
-                withSavedState(this)
-            }
+            withSavedState(dialogSavedState)
             withTitle(title)
             withMessage(message)
-            withPositiveButton(DialogButtonConfiguration(positiveText), onPositiveButtonClick)
-            withNegativeButton(DialogButtonConfiguration(negativeText), onNegativeButtonClick)
+            withPositiveButton(DialogButtonConfiguration(positiveButtonText), positiveButtonClickListener)
+            withNegativeButton(DialogButtonConfiguration(negativeButtonText), negativeButtonClickListener)
             withSelectionCallback(onSelectionChanged)
         }.buildDialog()
     }

@@ -19,7 +19,7 @@ class TimePickerDialogBuilder @JvmOverloads constructor(
     private var initialTime: IntArray? = null
 
     @Override
-    override fun withSavedState(savedState: Bundle): TimePickerDialogBuilder {
+    override fun withSavedState(savedState: Bundle?): TimePickerDialogBuilder {
         return super.withSavedState(savedState) as TimePickerDialogBuilder
     }
 

@@ -17,7 +17,7 @@ class AlertDialogBuilder @JvmOverloads constructor(
     dialogTag) {
 
     @Override
-    override fun withSavedState(savedState: Bundle): AlertDialogBuilder {
+    override fun withSavedState(savedState: Bundle?): AlertDialogBuilder {
         return super.withSavedState(savedState) as AlertDialogBuilder
     }
 

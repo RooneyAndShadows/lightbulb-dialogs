@@ -16,7 +16,7 @@ import com.github.rooneyandshadows.lightbulb.dialogs.base.internal.DialogButtonC
 import com.github.rooneyandshadows.lightbulb.dialogs.base.internal.callbacks.DialogButtonClickListener
 import com.github.rooneyandshadows.lightbulb.dialogs.picker_dialog_color.ColorPickerDialog
 import com.github.rooneyandshadows.lightbulb.dialogs.picker_dialog_color.ColorPickerDialogBuilder
-import com.github.rooneyandshadows.lightbulb.dialogsdemo.R
+import com.github.rooneyandshadows.lightbulb.dialogsdemo.*
 import com.github.rooneyandshadows.lightbulb.dialogsdemo.databinding.FragmentDemoDialogColorPickerBinding
 import com.github.rooneyandshadows.lightbulb.dialogsdemo.utils.color.AppColorUtils
 
@@ -33,10 +33,14 @@ class FragmentDialogColorPicker : BaseFragmentWithViewDataBinding<FragmentDemoDi
     @Override
     override fun doOnCreate(savedInstanceState: Bundle?) {
         super.doOnCreate(savedInstanceState)
-        createDialog(savedInstanceState)
-        if (savedInstanceState == null)
+        val setInitialValues = savedInstanceState == null
+        var dialogSavedState: Bundle? = null
+        savedInstanceState?.apply {
+            dialogSavedState = BundleUtils.getParcelable(DIALOG_STATE_TAG, this, Bundle::class.java)
+        }
+        createDialog(dialogSavedState)
+        if (setInitialValues)
             colorPickerDialog.setData(AppColorUtils.allForPicker)
-
     }
 
     @Override
@@ -47,14 +51,12 @@ class FragmentDialogColorPicker : BaseFragmentWithViewDataBinding<FragmentDemoDi
 
     @Override
     override fun onViewBound(viewBinding: FragmentDemoDialogColorPickerBinding) {
-        val typeDropdown = viewBinding.dialogTypeDropdown
-        val animationTypeDropdown = viewBinding.dialogAnimationTypeDropdown
-        typeDropdown.apply {
+        viewBinding.dialogTypeDropdown.apply {
             setLifecycleOwner(this@FragmentDialogColorPicker)
             dialog = colorPickerDialog
             animationTypeSpinner = viewBinding.dialogAnimationTypeDropdown
         }
-        animationTypeDropdown.apply {
+        viewBinding.dialogAnimationTypeDropdown.apply {
             setLifecycleOwner(this@FragmentDialogColorPicker)
             dialog = colorPickerDialog
             typeSpinner = viewBinding.dialogTypeDropdown
@@ -78,42 +80,27 @@ class FragmentDialogColorPicker : BaseFragmentWithViewDataBinding<FragmentDemoDi
         setupDrawerButton()
     }
 
-    private fun createDialog(savedInstanceState: Bundle?) {
-        val ctx = requireContext()
-        val title = ResourceUtils.getPhrase(ctx, R.string.demo_dialog_default_title_text)
-        val message = ResourceUtils.getPhrase(ctx, R.string.demo_dialog_default_message_text)
-        val positiveText = ResourceUtils.getPhrase(requireContext(), R.string.demo_dialog_default_positive_button)
-        val negativeText = ResourceUtils.getPhrase(requireContext(), R.string.demo_dialog_default_negative_button)
-        val onPositiveButtonClick = object : DialogButtonClickListener {
-            override fun doOnClick(buttonView: View?, dialogFragment: BaseDialogFragment) {
-                val toastMessage = ResourceUtils.getPhrase(ctx, R.string.demo_positive_button_clicked_text)
-                InteractionUtils.showMessage(ctx, toastMessage)
-            }
-        }
-        val onNegativeButtonClick = object : DialogButtonClickListener {
-            override fun doOnClick(buttonView: View?, dialogFragment: BaseDialogFragment) {
-                val toastMessage = ResourceUtils.getPhrase(ctx, R.string.demo_negative_button_clicked_text)
-                InteractionUtils.showMessage(ctx, toastMessage)
-            }
-        }
-        val onSelectionChanged = object : SelectionChangedListener<IntArray?> {
-            override fun onSelectionChanged(oldValue: IntArray?, newValue: IntArray?) {
-                //TODO write logic
-            }
-        }
+    private fun createDialog(dialogSavedState: Bundle?) {
         colorPickerDialog = ColorPickerDialogBuilder(this, childFragmentManager, DIALOG_TAG).apply {
+            val ctx = requireContext()
+            val title = getDefaultDialogTitle(ctx)
+            val message = getDefaultDialogMessage(ctx)
+            val positiveButtonText = getDefaultPositiveButtonText(ctx)
+            val negativeButtonText = getDefaultNegativeButtonText(ctx)
+            val positiveButtonClickListener = getDefaultPositiveButtonClickListener()
+            val negativeButtonClickListener = getDefaultNegativeButtonClickListener()
+            val onSelectionChanged = object : SelectionChangedListener<IntArray?> {
+                override fun onSelectionChanged(oldValue: IntArray?, newValue: IntArray?) {
+                    //TODO write logic
+                }
+            }
+            withSavedState(dialogSavedState)
             withTitle(title)
             withMessage(message)
-            withPositiveButton(DialogButtonConfiguration(positiveText), onPositiveButtonClick)
-            withNegativeButton(DialogButtonConfiguration(negativeText), onNegativeButtonClick)
+            withPositiveButton(DialogButtonConfiguration(positiveButtonText), positiveButtonClickListener)
+            withNegativeButton(DialogButtonConfiguration(negativeButtonText), negativeButtonClickListener)
             withSelectionCallback(onSelectionChanged)
-        }.buildDialog().apply {
-            if (savedInstanceState == null) return@apply
-            val dialogState = BundleUtils.getParcelable(DIALOG_STATE_TAG, savedInstanceState, Bundle::class.java)
-            restoreDialogState(dialogState)
-            //typeSpinner.dialog = this
-            //animationSpinner.dialog = this
-        }
+        }.buildDialog()
     }
 
     private fun setupDrawerButton() {
