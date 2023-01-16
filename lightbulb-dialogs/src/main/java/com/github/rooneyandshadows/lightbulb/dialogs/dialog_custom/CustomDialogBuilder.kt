@@ -109,8 +109,10 @@ class CustomDialogBuilder<DialogType : CustomDialog> @JvmOverloads constructor(
     private fun getExistingDialogOrCreate(): DialogType {
         val dialog = dialogParentFragmentManager.findFragmentByTag(dialogTag) as DialogType?
         return dialog ?: dialogInitializer.initialize().apply {
-            restoreDialogState(savedState)
-            if (savedState != null) return@apply
+            if (savedState != null) {
+                restoreDialogState(savedState)
+                return@apply
+            }
             dialogTitle = title
             dialogMessage = message
             dialogType = type

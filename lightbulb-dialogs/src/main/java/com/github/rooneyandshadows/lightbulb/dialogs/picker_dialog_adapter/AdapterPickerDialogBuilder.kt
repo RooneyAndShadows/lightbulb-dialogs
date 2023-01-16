@@ -121,7 +121,7 @@ class AdapterPickerDialogBuilder<ModelType : EasyAdapterDataModel> @JvmOverloads
             onHideListener?.apply { addOnHideListener(this) }
             onCancelListener?.apply { addOnCancelListener(this) }
             changedCallback?.apply { setOnSelectionChangedListener(this) }
-            setSelection(selection)
+
             setItemDecoration(itemDecoration)
         }
     }
@@ -129,8 +129,10 @@ class AdapterPickerDialogBuilder<ModelType : EasyAdapterDataModel> @JvmOverloads
     private fun getExistingDialogOrCreate(): AdapterPickerDialog<ModelType> {
         val dialog = dialogParentFragmentManager.findFragmentByTag(dialogTag) as AdapterPickerDialog<ModelType>?
         return dialog ?: AdapterPickerDialog.newInstance<ModelType>(adapterCreator).apply {
-            restoreDialogState(savedState)
-            if (savedState != null) return@apply
+            if (savedState != null) {
+                restoreDialogState(savedState)
+                return@apply
+            }
             dialogTitle = title
             dialogMessage = message
             dialogType = type
@@ -138,6 +140,7 @@ class AdapterPickerDialogBuilder<ModelType : EasyAdapterDataModel> @JvmOverloads
             isCancelable = cancelableOnClickOutside
             dialogNegativeButton = negativeButtonConfiguration
             dialogPositiveButton = positiveButtonConfiguration
+            setSelection(selection)
         }
     }
 }

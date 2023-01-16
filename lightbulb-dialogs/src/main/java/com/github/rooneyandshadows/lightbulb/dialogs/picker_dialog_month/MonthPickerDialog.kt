@@ -20,7 +20,7 @@ class MonthPickerDialog : BasePickerDialogFragment<IntArray?>(MonthSelection(nul
     private var maxYear = 2100
     private var disabledMonths: MutableList<IntArray>? = null
     private var enabledMonths: MutableList<IntArray>? = null
-    private lateinit var monthCalendar: MonthCalendarView
+    private var monthCalendar: MonthCalendarView? = null
     private lateinit var pickerHeadingSelectionTextView: TextView
     var dialogDateFormat = "MMMM YYYY"
     override var dialogType: DialogTypes
@@ -74,7 +74,7 @@ class MonthPickerDialog : BasePickerDialogFragment<IntArray?>(MonthSelection(nul
                     }
                 putStringArrayList(PICKER_DISABLED_MONTHS, ArrayList(disabled))
             }
-            putInt(MONTH_CALENDAR_SHOWN_YEAR, monthCalendar.currentShownYear)
+            putInt(MONTH_CALENDAR_SHOWN_YEAR, monthCalendar!!.currentShownYear)
             putString(DATE_FORMAT_TAG, dialogDateFormat)
         }
     }
@@ -124,6 +124,7 @@ class MonthPickerDialog : BasePickerDialogFragment<IntArray?>(MonthSelection(nul
     @Override
     override fun configureContent(view: View, savedInstanceState: Bundle?) {
         selectViews(view)
+        val monthCalendar = this.monthCalendar!!
         monthCalendar.setCalendarBounds(minYear, maxYear)
         disabledMonths?.apply { monthCalendar.setDisabledMonths(ArrayList(this)) }
         enabledMonths?.apply { monthCalendar.setEnabledMonths(ArrayList(this)) }
@@ -136,6 +137,7 @@ class MonthPickerDialog : BasePickerDialogFragment<IntArray?>(MonthSelection(nul
 
     @Override
     override fun synchronizeSelectUi() {
+        val monthCalendar = this.monthCalendar!!
         val newValue = if (selection.hasDraftSelection()) selection.getDraftSelection()
         else selection.getCurrentSelection()
         if (newValue == null) monthCalendar.clearSelection()
@@ -182,7 +184,7 @@ class MonthPickerDialog : BasePickerDialogFragment<IntArray?>(MonthSelection(nul
                 DateUtilsOffsetDate.date(maxYear, 12)
             )
         ) setSelection(null)
-        monthCalendar.setCalendarBounds(minYear, maxYear)
+        monthCalendar?.setCalendarBounds(minYear, maxYear)
     }
 
     fun setDisabledMonths(disabled: ArrayList<IntArray>?) {
@@ -191,7 +193,7 @@ class MonthPickerDialog : BasePickerDialogFragment<IntArray?>(MonthSelection(nul
             for (disabledMonth in disabled!!)
                 if (Arrays.equals(disabledMonth, getSelectionAsArray()))
                     setSelection(null)
-        monthCalendar.setDisabledMonths(disabled)
+        monthCalendar?.setDisabledMonths(disabled)
     }
 
     fun setEnabledMonths(enabled: ArrayList<IntArray>?) {
@@ -212,7 +214,7 @@ class MonthPickerDialog : BasePickerDialogFragment<IntArray?>(MonthSelection(nul
             }
             if (clearCurrentSelection) setSelection(null)
         }
-        enabledMonths?.apply { monthCalendar.setEnabledMonths(ArrayList(this)) }
+        enabledMonths?.apply { monthCalendar?.setEnabledMonths(ArrayList(this)) }
     }
 
     private fun getDateString(year: Int, month: Int): String? {

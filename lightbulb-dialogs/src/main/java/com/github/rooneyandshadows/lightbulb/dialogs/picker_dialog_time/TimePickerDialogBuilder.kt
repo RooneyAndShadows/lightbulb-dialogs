@@ -109,7 +109,6 @@ class TimePickerDialogBuilder @JvmOverloads constructor(
             setDialogCallbacks(dialogListeners)
             setParentFragManager(dialogParentFragmentManager)
             setDialogTag(dialogTag)
-            setSelection(initialTime)
             setOnSelectionChangedListener(timeSetListener)
             onNegativeClickListener?.apply { addOnNegativeClickListeners(this) }
             onPositiveClickListener?.apply { addOnPositiveClickListener(this) }
@@ -122,12 +121,11 @@ class TimePickerDialogBuilder @JvmOverloads constructor(
     private fun getExistingDialogOrCreate(): TimePickerDialog {
         val dialog = dialogParentFragmentManager.findFragmentByTag(dialogTag) as TimePickerDialog?
         return dialog ?: TimePickerDialog.newInstance().apply {
-            restoreDialogState(savedState)
-            if (savedState != null) return@apply
             dialogPositiveButton = positiveButtonConfiguration
             dialogNegativeButton = negativeButtonConfiguration
             isCancelable = cancelableOnClickOutside
             dialogAnimationType = animation
+            setSelection(initialTime)
         }
     }
 }

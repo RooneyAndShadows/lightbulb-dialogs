@@ -11,6 +11,8 @@ import androidx.appcompat.widget.AppCompatImageButton
 import com.github.rooneyandshadows.lightbulb.dialogs.base.BasePickerDialogFragment
 import com.github.rooneyandshadows.java.commons.date.DateUtilsOffsetDate
 import com.github.rooneyandshadows.lightbulb.dialogs.R
+import com.github.rooneyandshadows.lightbulb.dialogs.base.constraints.regular.RegularDialogConstraints
+import com.github.rooneyandshadows.lightbulb.dialogs.base.constraints.regular.RegularDialogConstraintsBuilder
 import com.github.rooneyandshadows.lightbulb.dialogs.base.internal.DialogTypes
 import com.prolificinteractive.materialcalendarview.MaterialCalendarView
 import com.prolificinteractive.materialcalendarview.CalendarDay
@@ -40,6 +42,14 @@ class DateTimePickerDialog : BasePickerDialogFragment<OffsetDateTime?>(DateTimeS
         fun newInstance(): DateTimePickerDialog {
             return DateTimePickerDialog()
         }
+    }
+
+    @Override
+    override fun getRegularConstraints(): RegularDialogConstraints {
+        return RegularDialogConstraintsBuilder(this)
+            .default()
+            .withMaxHeightInPercents(90)
+            .build()
     }
 
     @Override

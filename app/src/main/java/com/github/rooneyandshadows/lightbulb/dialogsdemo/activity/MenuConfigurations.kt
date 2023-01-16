@@ -49,8 +49,6 @@ object MenuConfigurations {
             ) { slider: SliderMenu ->
                 slider.closeSlider()
                 MainActivityNavigator.route().toDemoAdapter().replace()
-                // route().back()
-                //slider.closeSlider()
             }
         ).addMenuItem(
             PrimaryMenuItem(
@@ -62,8 +60,6 @@ object MenuConfigurations {
             ) { slider: SliderMenu ->
                 slider.closeSlider()
                 MainActivityNavigator.route().toDemoColorPicker().replace()
-                // route().back()
-                //slider.closeSlider()
             }
         ).addMenuItem(
             PrimaryMenuItem(
@@ -75,8 +71,6 @@ object MenuConfigurations {
             ) { slider: SliderMenu ->
                 slider.closeSlider()
                 MainActivityNavigator.route().toDemoIconPicker().replace()
-                // route().back()
-                //slider.closeSlider()
             }
         ).addMenuItem(
             PrimaryMenuItem(
@@ -88,8 +82,6 @@ object MenuConfigurations {
             ) { slider: SliderMenu ->
                 slider.closeSlider()
                 MainActivityNavigator.route().toDemoDateRange().replace()
-                // route().back()
-                //slider.closeSlider()
             }
         ).addMenuItem(
             PrimaryMenuItem(
@@ -99,8 +91,8 @@ object MenuConfigurations {
                 null,
                 1
             ) { slider: SliderMenu ->
-                // route().back()
-                //slider.closeSlider()
+                slider.closeSlider()
+                MainActivityNavigator.route().toDemoDateTime().replace()
             }
         ).addMenuItem(
             PrimaryMenuItem(
@@ -110,8 +102,8 @@ object MenuConfigurations {
                 null,
                 1
             ) { slider: SliderMenu ->
-                // route().back()
-                //slider.closeSlider()
+                slider.closeSlider()
+                MainActivityNavigator.route().toDemoMonth().replace()
             }
         ).addMenuItem(
             PrimaryMenuItem(

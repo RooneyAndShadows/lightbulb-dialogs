@@ -98,8 +98,10 @@ class LoadingDialogBuilder @JvmOverloads constructor(
     private fun getExistingDialogOrCreate(): LoadingDialog {
         val dialog = dialogParentFragmentManager.findFragmentByTag(dialogTag) as LoadingDialog?
         return dialog ?: LoadingDialog.newInstance().apply {
-            restoreDialogState(savedState)
-            if (savedState != null) return@apply
+            if (savedState != null) {
+                restoreDialogState(savedState)
+                return@apply
+            }
             dialogTitle = title
             dialogMessage = message
             dialogType = type

@@ -11,20 +11,22 @@ import com.github.rooneyandshadows.lightbulb.commons.utils.BundleUtils
 import com.github.rooneyandshadows.lightbulb.commons.utils.ResourceUtils
 import com.github.rooneyandshadows.lightbulb.dialogs.base.BasePickerDialogFragment.SelectionChangedListener
 import com.github.rooneyandshadows.lightbulb.dialogs.base.internal.DialogButtonConfiguration
-import com.github.rooneyandshadows.lightbulb.dialogs.picker_dialog_date_range.DateRangePickerDialog
-import com.github.rooneyandshadows.lightbulb.dialogs.picker_dialog_date_range.DateRangePickerDialogBuilder
+import com.github.rooneyandshadows.lightbulb.dialogs.picker_dialog_datetime.DateTimePickerDialog
+import com.github.rooneyandshadows.lightbulb.dialogs.picker_dialog_datetime.DateTimePickerDialogBuilder
+import com.github.rooneyandshadows.lightbulb.dialogs.picker_dialog_month.MonthPickerDialog
+import com.github.rooneyandshadows.lightbulb.dialogs.picker_dialog_month.MonthPickerDialogBuilder
 import com.github.rooneyandshadows.lightbulb.dialogsdemo.*
-import com.github.rooneyandshadows.lightbulb.dialogsdemo.databinding.FragmentDemoDialogDateRangePickerBinding
+import com.github.rooneyandshadows.lightbulb.dialogsdemo.databinding.FragmentDemoDialogMonthPickerBinding
 import java.time.OffsetDateTime
 
-@FragmentScreen(screenName = "DateRange", screenGroup = "Demo")
-@FragmentConfiguration(layoutName = "fragment_demo_dialog_date_range_picker", hasLeftDrawer = true)
-class FragmentDialogDateRangePicker : BaseFragmentWithViewDataBinding<FragmentDemoDialogDateRangePickerBinding>() {
-    private lateinit var dateRangePickerDialog: DateRangePickerDialog
+@FragmentScreen(screenName = "Month", screenGroup = "Demo")
+@FragmentConfiguration(layoutName = "fragment_demo_dialog_month_picker", hasLeftDrawer = true)
+class FragmentDialogMonthPicker : BaseFragmentWithViewDataBinding<FragmentDemoDialogMonthPickerBinding>() {
+    private lateinit var monthPickerDialog: MonthPickerDialog
 
     companion object {
-        private const val DIALOG_TAG = "DIALOG_DATE_RANGE_PICKER_TAG"
-        private const val DIALOG_STATE_TAG = "DIALOG_DATE_RANGE_PICKER_STATE_TAG"
+        private const val DIALOG_TAG = "DIALOG_MONTH_PICKER_TAG"
+        private const val DIALOG_STATE_TAG = "DIALOG_MONTH_PICKER_STATE_TAG"
     }
 
     @Override
@@ -40,22 +42,22 @@ class FragmentDialogDateRangePicker : BaseFragmentWithViewDataBinding<FragmentDe
     @Override
     override fun doOnSaveInstanceState(outState: Bundle) {
         super.doOnSaveInstanceState(outState)
-        outState.putParcelable(DIALOG_STATE_TAG, dateRangePickerDialog.saveDialogState())
+        outState.putParcelable(DIALOG_STATE_TAG, monthPickerDialog.saveDialogState())
     }
 
     @Override
-    override fun onViewBound(viewBinding: FragmentDemoDialogDateRangePickerBinding) {
+    override fun onViewBound(viewBinding: FragmentDemoDialogMonthPickerBinding) {
         viewBinding.dialogTypeDropdown.apply {
-            setLifecycleOwner(this@FragmentDialogDateRangePicker)
-            dialog = dateRangePickerDialog
+            setLifecycleOwner(this@FragmentDialogMonthPicker)
+            dialog = monthPickerDialog
             animationTypeSpinner = viewBinding.dialogAnimationTypeDropdown
         }
         viewBinding.dialogAnimationTypeDropdown.apply {
-            setLifecycleOwner(this@FragmentDialogDateRangePicker)
-            dialog = dateRangePickerDialog
+            setLifecycleOwner(this@FragmentDialogMonthPicker)
+            dialog = monthPickerDialog
             typeSpinner = viewBinding.dialogTypeDropdown
         }
-        viewBinding.dialog = dateRangePickerDialog
+        viewBinding.dialog = monthPickerDialog
     }
 
     @Override
@@ -80,12 +82,12 @@ class FragmentDialogDateRangePicker : BaseFragmentWithViewDataBinding<FragmentDe
         val negativeButtonText = getDefaultNegativeButtonText(ctx)
         val positiveButtonClickListener = getDefaultPositiveButtonClickListener()
         val negativeButtonClickListener = getDefaultNegativeButtonClickListener()
-        val onSelectionChanged = object : SelectionChangedListener<Array<OffsetDateTime?>?> {
-            override fun onSelectionChanged(oldValue: Array<OffsetDateTime?>?, newValue: Array<OffsetDateTime?>?) {
+        val onSelectionChanged = object : SelectionChangedListener<IntArray?> {
+            override fun onSelectionChanged(oldValue: IntArray?, newValue: IntArray?) {
                 //TODO write logic
             }
         }
-        dateRangePickerDialog = DateRangePickerDialogBuilder(this, childFragmentManager, DIALOG_TAG).apply {
+        monthPickerDialog = MonthPickerDialogBuilder(this, childFragmentManager, DIALOG_TAG).apply {
             withSavedState(dialogSavedState)
             withPositiveButton(DialogButtonConfiguration(positiveButtonText), positiveButtonClickListener)
             withNegativeButton(DialogButtonConfiguration(negativeButtonText), negativeButtonClickListener)

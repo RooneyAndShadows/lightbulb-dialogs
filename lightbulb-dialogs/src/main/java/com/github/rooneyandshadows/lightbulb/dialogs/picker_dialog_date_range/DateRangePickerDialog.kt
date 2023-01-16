@@ -10,6 +10,8 @@ import com.github.rooneyandshadows.java.commons.string.StringUtils
 import com.github.rooneyandshadows.lightbulb.commons.utils.ResourceUtils
 import com.github.rooneyandshadows.lightbulb.dialogs.R
 import com.github.rooneyandshadows.lightbulb.dialogs.base.BasePickerDialogFragment
+import com.github.rooneyandshadows.lightbulb.dialogs.base.constraints.regular.RegularDialogConstraints
+import com.github.rooneyandshadows.lightbulb.dialogs.base.constraints.regular.RegularDialogConstraintsBuilder
 import com.github.rooneyandshadows.lightbulb.dialogs.base.internal.DialogTypes
 import com.prolificinteractive.materialcalendarview.CalendarDay
 import com.prolificinteractive.materialcalendarview.MaterialCalendarView
@@ -57,6 +59,14 @@ class DateRangePickerDialog : BasePickerDialogFragment<Array<OffsetDateTime?>?>(
         fun newInstance(): DateRangePickerDialog {
             return DateRangePickerDialog()
         }
+    }
+
+    @Override
+    override fun getRegularConstraints(): RegularDialogConstraints {
+        return RegularDialogConstraintsBuilder(this)
+            .default()
+            .withMaxHeightInPercents(90)
+            .build()
     }
 
     @Override
@@ -150,9 +160,17 @@ class DateRangePickerDialog : BasePickerDialogFragment<Array<OffsetDateTime?>?>(
         else selection.getCurrentSelection()?.get(1)
         if (newFrom == null && newTo == null) calendar.post { calendar.clearSelection() }
         else if (newFrom != null && newTo != null) {
-            calendar.post {
-                calendar.selectRange(dateToCalendarDay(newFrom), dateToCalendarDay(newTo))
-                calendar.setCurrentDate(dateToCalendarDay(newTo), false)
+            calendar.selectedDates.apply {
+                val needsUpdate = if (size < 2) true
+                else {
+                    val calendarFrom = dateFromCalendarDay(first(), 0, 0, 0)
+                    val calendarTo = dateFromCalendarDay(last(), 23, 59, 59)
+                    !(compareDates(newFrom, calendarFrom) && compareDates(newTo, calendarTo))
+                }
+                if (needsUpdate) calendar.post {
+                    calendar.selectRange(dateToCalendarDay(newFrom), dateToCalendarDay(newTo))
+                    calendar.setCurrentDate(dateToCalendarDay(newTo), false)
+                }
             }
         }
         var dateStringFrom = DateUtilsOffsetDate.getDateString(dialogDateFormat, newFrom, Locale.getDefault())
@@ -225,5 +243,21 @@ class DateRangePickerDialog : BasePickerDialogFragment<Array<OffsetDateTime?>?>(
         val month = DateUtilsOffsetDate.extractMonthOfYearFromDate(date)
         val day = DateUtilsOffsetDate.extractDayOfMonthFromDate(date)
         return CalendarDay.from(year, month, day)
+    }
+
+    private fun dateFromCalendarDay(calendarDay: CalendarDay, hour: Int, minutes: Int, seconds: Int): OffsetDateTime {
+        return DateUtilsOffsetDate.date(
+            calendarDay.year,
+            calendarDay.month,
+            calendarDay.day,
+            hour,
+            minutes,
+            seconds,
+            offsetFrom
+        )
+    }
+
+    private fun compareDates(testDate: OffsetDateTime?, target: OffsetDateTime?): Boolean {
+        return DateUtilsOffsetDate.isDateEqual(testDate, target, false)
     }
 }

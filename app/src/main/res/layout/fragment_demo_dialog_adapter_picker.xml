@@ -94,6 +94,26 @@
 
                 </androidx.appcompat.widget.LinearLayoutCompat>
 
+                <androidx.appcompat.widget.LinearLayoutCompat
+                    android:layout_width="match_parent"
+                    android:layout_height="wrap_content"
+                    android:layout_marginBottom="15dp"
+                    android:orientation="vertical">
+
+                    <include
+                        layout="@layout/layout_option_title"
+                        app:optionTitle="@{@string/demo_dialog_other_options_text}" />
+
+                    <com.google.android.material.switchmaterial.SwitchMaterial
+                        android:id="@+id/dialog_cancelable_dropdown"
+                        android:layout_width="match_parent"
+                        android:layout_height="wrap_content"
+                        android:checked="@={dialog.cancelable}"
+                        android:text="@string/demo_dialog_cancelable_option_text"
+                        android:textSize="@dimen/text_size_checkbox" />
+
+                </androidx.appcompat.widget.LinearLayoutCompat>
+
                 <include
                     layout="@layout/layout_dialog_show_button"
                     app:dialog="@{dialog}" />

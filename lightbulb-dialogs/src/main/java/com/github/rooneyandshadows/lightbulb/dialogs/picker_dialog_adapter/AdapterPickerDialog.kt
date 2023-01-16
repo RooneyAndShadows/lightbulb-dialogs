@@ -47,10 +47,8 @@ abstract class AdapterPickerDialog<ItemType : EasyAdapterDataModel> :
     init {
         selectionListener = object : EasyAdapterSelectionChangedListener {
             override fun onChanged(newSelection: IntArray?) {
-                if (isDialogShown) selection.setDraftSelection(
-                    newSelection,
-                    false
-                ) else selection.setCurrentSelection(newSelection, false)
+                if (isDialogShown) selection.setDraftSelection(newSelection, false)
+                else selection.setCurrentSelection(newSelection, false)
             }
         }
     }
@@ -192,11 +190,14 @@ abstract class AdapterPickerDialog<ItemType : EasyAdapterDataModel> :
     private fun configureRecyclerView(adapter: EasyRecyclerAdapter<ItemType>) {
         val recyclerView = this.recyclerView!!
         adapter.addOrReplaceSelectionChangedListener(selectionListener)
+        recyclerView.isVerticalScrollBarEnabled = true
+        recyclerView.isScrollbarFadingEnabled = false
         recyclerView.itemAnimator = null
         recyclerView.layoutManager = LinearLayoutManager(context)
         if (recyclerView.itemDecorationCount > 0) recyclerView.removeItemDecorationAt(0)
         if (itemDecoration != null) recyclerView.addItemDecoration(itemDecoration!!, 0)
         recyclerView.adapter = adapter
+
     }
 
     interface AdapterCreator<ItemType : EasyAdapterDataModel> {

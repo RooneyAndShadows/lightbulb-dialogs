@@ -353,7 +353,6 @@ abstract class BaseDialogFragment : DialogFragment(), DefaultLifecycleObserver {
     }
 
     fun saveDialogState(): Bundle? {
-        if (isDialogShown) return null
         return Bundle().apply {
             onSaveInstanceState(this)
         }
@@ -361,7 +360,10 @@ abstract class BaseDialogFragment : DialogFragment(), DefaultLifecycleObserver {
 
     fun restoreDialogState(savedState: Bundle?) {
         savedState?.apply {
-            onRestoreInstanceState(this)
+            DialogBundleHelper(this).apply {
+                //dialog will restore it's state if previously shown
+                if (!showing) onRestoreInstanceState(bundle)
+            }
         }
     }
 
@@ -598,10 +600,8 @@ abstract class BaseDialogFragment : DialogFragment(), DefaultLifecycleObserver {
             else {
                 buttonNegative.text = dialogNegativeButton!!.buttonTitle
                 buttonNegative.setOnClickListener { view: View? ->
-                    for (listener in onNegativeClickListeners)
-                        listener.doOnClick(view, this)
-                    if (dialogNegativeButton!!.closeDialogOnClick)
-                        handleDismiss()
+                    for (listener in onNegativeClickListeners) listener.doOnClick(view, this)
+                    if (dialogNegativeButton!!.closeDialogOnClick) handleDismiss()
                 }
             }
         }

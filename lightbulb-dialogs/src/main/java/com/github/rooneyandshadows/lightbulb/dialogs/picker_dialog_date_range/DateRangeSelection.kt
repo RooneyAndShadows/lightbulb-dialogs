@@ -1,5 +1,6 @@
 package com.github.rooneyandshadows.lightbulb.dialogs.picker_dialog_date_range
 
+import com.github.rooneyandshadows.java.commons.date.DateUtilsOffsetDate
 import com.github.rooneyandshadows.lightbulb.dialogs.base.BaseDialogSelection
 import java.time.OffsetDateTime
 import java.util.*
@@ -14,7 +15,10 @@ internal class DateRangeSelection(current: Array<OffsetDateTime?>?, draft: Array
 
     @Override
     override fun compareValues(v1: Array<OffsetDateTime?>?, v2: Array<OffsetDateTime?>?): Boolean {
-        return Arrays.equals(v1, v2)
+        if ((v1 == null || v1.isEmpty()) && (v2 == null || v2.isEmpty())) return true
+        if ((v1 == null || v1.isEmpty()) || (v2 == null || v2.isEmpty())) return false
+        if (v1.size != v2.size) return false
+        return compareDates(v1.first(), v2.first()) && compareDates(v1.last(), v2.last())
     }
 
     @Override
@@ -41,5 +45,9 @@ internal class DateRangeSelection(current: Array<OffsetDateTime?>?, draft: Array
     override fun hasDraftSelection(): Boolean {
         val draft = getDraftSelection()
         return draft != null && draft[0] != null && draft[1] != null
+    }
+
+    private fun compareDates(testDate: OffsetDateTime?, target: OffsetDateTime?): Boolean {
+        return DateUtilsOffsetDate.isDateEqual(testDate, target, false)
     }
 }

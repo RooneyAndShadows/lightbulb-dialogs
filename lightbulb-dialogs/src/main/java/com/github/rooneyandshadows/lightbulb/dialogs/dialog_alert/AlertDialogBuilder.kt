@@ -99,8 +99,10 @@ class AlertDialogBuilder @JvmOverloads constructor(
     private fun getExistingDialogOrCreate(): AlertDialog {
         val dialog = dialogParentFragmentManager.findFragmentByTag(dialogTag) as AlertDialog?
         return dialog ?: AlertDialog.newInstance().apply {
-            restoreDialogState(savedState)
-            if (savedState != null) return@apply
+            if (savedState != null) {
+                restoreDialogState(savedState)
+                return@apply
+            }
             dialogTitle = title
             dialogMessage = message
             dialogType = type
