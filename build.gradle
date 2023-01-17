@@ -7,7 +7,7 @@ buildscript {
                 ktx                     : [
                         core: "1.9.0"
                 ],
-                android_appcompat       : "1.5.1",
+                android_appcompat       : "1.6.0",
                 android_constraintlayout: "2.1.4",
                 android_recyclerview    : "1.2.1",
                 android_dynamicanimation: "1.0.0",

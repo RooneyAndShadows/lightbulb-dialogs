@@ -47,11 +47,11 @@ android {
 }
 
 dependencies {
-    implementation 'androidx.appcompat:appcompat:1.5.1'
-    implementation "com.google.android.material:material:$versions.material"
-    implementation 'androidx.constraintlayout:constraintlayout:2.1.4'
     implementation "androidx.core:core-ktx:$versions.ktx.core"
     implementation "org.jetbrains.kotlin:kotlin-stdlib-jdk7:$versions.kotlin"
+    implementation "androidx.appcompat:appcompat:$versions.android_appcompat"
+    implementation "com.google.android.material:material:$versions.material"
+    implementation 'androidx.constraintlayout:constraintlayout:2.1.4'
     implementation "com.github.rooneyandshadows:lightbulb-application:$versions.lightbulb.application"
     implementation "com.github.rooneyandshadows:lightbulb-textinputview:$versions.lightbulb.textinputview"
     implementation "com.github.rooneyandshadows:lightbulb-recycleradapters:$versions.lightbulb.recycleradapters"
