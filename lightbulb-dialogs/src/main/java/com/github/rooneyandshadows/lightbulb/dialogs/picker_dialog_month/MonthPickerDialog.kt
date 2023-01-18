@@ -7,6 +7,7 @@ import android.view.View
 import android.widget.TextView
 import com.github.rooneyandshadows.java.commons.date.DateUtilsOffsetDate
 import com.github.rooneyandshadows.lightbulb.calendars.month.MonthCalendarView
+import com.github.rooneyandshadows.lightbulb.calendars.month.adapter.MonthEntry
 import com.github.rooneyandshadows.lightbulb.commons.utils.BundleUtils
 import com.github.rooneyandshadows.lightbulb.commons.utils.ResourceUtils
 import com.github.rooneyandshadows.lightbulb.dialogs.R
@@ -28,6 +29,12 @@ class MonthPickerDialog : BasePickerDialogFragment<MonthEntry?>(MonthSelection(n
     override var dialogType: DialogTypes
         get() = DialogTypes.NORMAL
         set(value) {}
+    val selectionAsArray: IntArray?
+        get() = selectionAsMonthEntry?.toArray()
+    val selectionAsDate: OffsetDateTime?
+        get() = selectionAsMonthEntry?.toDate()
+    val selectionAsMonthEntry: MonthEntry?
+        get() = selection.getCurrentSelection()
 
     companion object {
         private const val DATE_FORMAT_TAG = "DATE_FORMAT_TEXT"
@@ -135,21 +142,17 @@ class MonthPickerDialog : BasePickerDialogFragment<MonthEntry?>(MonthSelection(n
 
     @Override
     override fun setSelection(newSelection: MonthEntry?) {
-        val selection = validateSelectionInput(newSelection)
-        this.selection.setCurrentSelection(selection)
+        validateSelectionInput(newSelection).apply {
+            selection.setCurrentSelection(this)
+        }
+    }
+
+    fun setSelection(year: Int, month: Int) {
+        setSelection(MonthEntry(year, month))
     }
 
     fun clearSelection() {
         selection.setCurrentSelection(null)
-    }
-
-    fun getSelectionAsArray(): IntArray? {
-        return selection.getCurrentSelection()
-    }
-
-    fun setSelection(year: Int, month: Int) {
-        val selection = validateSelectionInput(year, month)
-        this.selection.setCurrentSelection(selection)
     }
 
     fun setCalendarBounds(min: Int, max: Int) {
@@ -160,45 +163,47 @@ class MonthPickerDialog : BasePickerDialogFragment<MonthEntry?>(MonthSelection(n
             minYear = min
             maxYear = max
         }
-        val targetDate = if (isDialogShown) getMonthAsDate(selection.getDraftSelection())
-        else getMonthAsDate(selection.getCurrentSelection())
-        if (targetDate != null && !DateUtilsOffsetDate.isDateInRange(
-                targetDate,
-                DateUtilsOffsetDate.date(minYear, 1),
-                DateUtilsOffsetDate.date(maxYear, 12)
-            )
-        ) setSelection(null)
+        val minDate = DateUtilsOffsetDate.date(minYear, 1)
+        val maxDate = DateUtilsOffsetDate.date(maxYear, 12)
+        val currentDate = selection.getCurrentSelection()?.toDate()
+        val draftDate = selection.getDraftSelection()?.toDate()
+        val targetDate = if (isDialogShown) draftDate
+        else currentDate
+        if (targetDate != null && !DateUtilsOffsetDate.isDateInRange(targetDate, minDate, maxDate))
+            setSelection(null)
         monthCalendar?.setCalendarBounds(minYear, maxYear)
     }
 
-    fun setDisabledMonths(disabled: ArrayList<IntArray>?) {
-        disabledMonths = disabled
-        if (disabledMonths != null)
-            for (disabledMonth in disabled!!)
-                if (Arrays.equals(disabledMonth, getSelectionAsArray()))
-                    setSelection(null)
+    fun setDisabledMonths(disabled: List<MonthEntry>) {
+        disabledMonths.apply {
+            clear()
+            addAll(disabled)
+            val currentSelection = selection.getCurrentSelection()
+            if (any { it.compare(currentSelection) })
+                clearSelection()
+        }
         monthCalendar?.setDisabledMonths(disabled)
     }
 
-    fun setEnabledMonths(enabled: ArrayList<IntArray>?) {
-        enabledMonths = enabled
-        if (enabledMonths != null) {
-            minYear = DateUtilsOffsetDate.extractYearFromDate(DateUtilsOffsetDate.nowLocal())
-            maxYear = minYear
-            if (enabledMonths!!.size > 0) {
-                minYear = enabled!![0][0]
-                maxYear = enabled[0][0]
+    fun setEnabledMonths(enabled: List<MonthEntry>) {
+        enabledMonths.apply {
+            clear()
+            addAll(enabled)
+            if (isNotEmpty()) {
+                minYear = first().year
+                maxYear = last().year
+                var clearCurrentSelection = true
+                forEach { enabledMonth ->
+                    val currentYear = enabledMonth.year
+                    if (enabledMonth.compare(selection.getCurrentSelection()))
+                        clearCurrentSelection = false
+                    if (currentYear < minYear) minYear = currentYear
+                    if (currentYear > maxYear) maxYear = currentYear
+                }
+                if (clearCurrentSelection) clearSelection()
             }
-            var clearCurrentSelection = true
-            for (month in enabledMonths!!) {
-                val currentYear = month[0]
-                if (Arrays.equals(month, getSelectionAsArray())) clearCurrentSelection = false
-                if (currentYear < minYear) minYear = currentYear
-                if (currentYear > maxYear) maxYear = currentYear
-            }
-            if (clearCurrentSelection) setSelection(null)
+            monthCalendar?.apply { setEnabledMonths(enabledMonths) }
         }
-        enabledMonths?.apply { monthCalendar?.setEnabledMonths(ArrayList(this)) }
     }
 
     private fun getDateString(year: Int, month: Int): String? {
@@ -218,21 +223,8 @@ class MonthPickerDialog : BasePickerDialogFragment<MonthEntry?>(MonthSelection(n
         monthCalendar = view.findViewById(R.id.dialogMonthPicker)
     }
 
-    private fun validateSelectionInput(selection: IntArray?): IntArray? {
-        return if (selection == null) null else validateSelectionInput(selection[0], selection[1])
-    }
-
-    private fun validateSelectionInput(year: Int, month: Int): IntArray {
-        var validatedYear = year
-        var validatedMonth = month
-        if (validatedYear < minYear) validatedYear = minYear
-        if (validatedYear > maxYear) validatedYear = maxYear
-        if (validatedMonth < 1) validatedMonth = 1
-        if (validatedMonth > 12) validatedMonth = 12
-        return intArrayOf(validatedYear, validatedMonth)
-    }
-
-    private fun getMonthAsDate(month: IntArray?): OffsetDateTime? {
-        return if (month == null) null else DateUtilsOffsetDate.date(month[0], month[1])
+    private fun validateSelectionInput(monthEntry: MonthEntry?): MonthEntry? {
+        monthEntry ?: return null
+        return monthEntry.getWithinYearBounds(minYear, maxYear)
     }
 }
