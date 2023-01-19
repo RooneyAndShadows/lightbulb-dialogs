@@ -86,11 +86,7 @@ class FragmentDialogIconPicker : BaseFragmentWithViewDataBinding<FragmentDemoDia
             val negativeButtonText = getDefaultNegativeButtonText(ctx)
             val positiveButtonClickListener = getDefaultPositiveButtonClickListener()
             val negativeButtonClickListener = getDefaultNegativeButtonClickListener()
-            val onSelectionChanged = object : BasePickerDialogFragment.SelectionChangedListener<IntArray?> {
-                override fun onSelectionChanged(oldValue: IntArray?, newValue: IntArray?) {
-                    //TODO write logic
-                }
-            }
+            val onSelectionChanged = getDefaultSelectionChangedListener<IntArray?>(ctx)
             withSavedState(dialogSavedState)
             withTitle(title)
             withMessage(message)

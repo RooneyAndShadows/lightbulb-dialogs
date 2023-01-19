@@ -3,7 +3,6 @@ package com.github.rooneyandshadows.lightbulb.dialogs.picker_dialog_date_range
 import com.github.rooneyandshadows.java.commons.date.DateUtilsOffsetDate
 import com.github.rooneyandshadows.lightbulb.dialogs.base.BaseDialogSelection
 import java.time.OffsetDateTime
-import java.util.*
 
 internal class DateRangeSelection(current: Array<OffsetDateTime?>?, draft: Array<OffsetDateTime?>?) :
     BaseDialogSelection<Array<OffsetDateTime?>?>(current, draft) {

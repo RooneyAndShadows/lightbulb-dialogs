@@ -9,15 +9,12 @@ import com.github.rooneyandshadows.lightbulb.application.fragment.base.BaseFragm
 import com.github.rooneyandshadows.lightbulb.application.fragment.cofiguration.ActionBarConfiguration
 import com.github.rooneyandshadows.lightbulb.commons.utils.BundleUtils
 import com.github.rooneyandshadows.lightbulb.commons.utils.ResourceUtils
-import com.github.rooneyandshadows.lightbulb.dialogs.base.BasePickerDialogFragment.SelectionChangedListener
 import com.github.rooneyandshadows.lightbulb.dialogs.base.internal.DialogButtonConfiguration
-import com.github.rooneyandshadows.lightbulb.dialogs.picker_dialog_datetime.DateTimePickerDialog
-import com.github.rooneyandshadows.lightbulb.dialogs.picker_dialog_datetime.DateTimePickerDialogBuilder
 import com.github.rooneyandshadows.lightbulb.dialogs.picker_dialog_month.MonthPickerDialog
+import com.github.rooneyandshadows.lightbulb.dialogs.picker_dialog_month.MonthPickerDialog.Month
 import com.github.rooneyandshadows.lightbulb.dialogs.picker_dialog_month.MonthPickerDialogBuilder
 import com.github.rooneyandshadows.lightbulb.dialogsdemo.*
 import com.github.rooneyandshadows.lightbulb.dialogsdemo.databinding.FragmentDemoDialogMonthPickerBinding
-import java.time.OffsetDateTime
 
 @FragmentScreen(screenName = "Month", screenGroup = "Demo")
 @FragmentConfiguration(layoutName = "fragment_demo_dialog_month_picker", hasLeftDrawer = true)
@@ -82,11 +79,7 @@ class FragmentDialogMonthPicker : BaseFragmentWithViewDataBinding<FragmentDemoDi
         val negativeButtonText = getDefaultNegativeButtonText(ctx)
         val positiveButtonClickListener = getDefaultPositiveButtonClickListener()
         val negativeButtonClickListener = getDefaultNegativeButtonClickListener()
-        val onSelectionChanged = object : SelectionChangedListener<IntArray?> {
-            override fun onSelectionChanged(oldValue: IntArray?, newValue: IntArray?) {
-                //TODO write logic
-            }
-        }
+        val onSelectionChanged = getDefaultSelectionChangedListener<Month?>(ctx)
         monthPickerDialog = MonthPickerDialogBuilder(this, childFragmentManager, DIALOG_TAG).apply {
             withSavedState(dialogSavedState)
             withPositiveButton(DialogButtonConfiguration(positiveButtonText), positiveButtonClickListener)

@@ -16,9 +16,8 @@ import com.github.rooneyandshadows.lightbulb.dialogs.base.internal.DialogButtonC
 import com.github.rooneyandshadows.lightbulb.dialogs.base.internal.callbacks.DialogButtonClickListener
 import com.github.rooneyandshadows.lightbulb.dialogs.picker_dialog_adapter.AdapterPickerDialog
 import com.github.rooneyandshadows.lightbulb.dialogs.picker_dialog_adapter.AdapterPickerDialogBuilder
-import com.github.rooneyandshadows.lightbulb.dialogsdemo.R
+import com.github.rooneyandshadows.lightbulb.dialogsdemo.*
 import com.github.rooneyandshadows.lightbulb.dialogsdemo.databinding.FragmentDemoDialogAdapterPickerBinding
-import com.github.rooneyandshadows.lightbulb.dialogsdemo.getRadioButtonAdapter
 import com.github.rooneyandshadows.lightbulb.dialogsdemo.models.DemoModel
 import com.github.rooneyandshadows.lightbulb.dialogsdemo.routing.screens.Screens.Demo
 import com.github.rooneyandshadows.lightbulb.dialogsdemo.spinner.DialogAnimationTypeSpinner
@@ -86,23 +85,9 @@ class FragmentDialogAdapterPicker : BaseFragmentWithViewDataBinding<FragmentDemo
         val message = ResourceUtils.getPhrase(ctx, R.string.demo_dialog_default_message_text)
         val positiveText = ResourceUtils.getPhrase(requireContext(), R.string.demo_dialog_default_positive_button)
         val negativeText = ResourceUtils.getPhrase(requireContext(), R.string.demo_dialog_default_negative_button)
-        val onPositiveButtonClick = object : DialogButtonClickListener {
-            override fun doOnClick(buttonView: View?, dialogFragment: BaseDialogFragment) {
-                val toastMessage = ResourceUtils.getPhrase(ctx, R.string.demo_positive_button_clicked_text)
-                InteractionUtils.showMessage(ctx, toastMessage)
-            }
-        }
-        val onNegativeButtonClick = object : DialogButtonClickListener {
-            override fun doOnClick(buttonView: View?, dialogFragment: BaseDialogFragment) {
-                val toastMessage = ResourceUtils.getPhrase(ctx, R.string.demo_negative_button_clicked_text)
-                InteractionUtils.showMessage(ctx, toastMessage)
-            }
-        }
-        val selectionCallback = object : SelectionChangedListener<IntArray?> {
-            override fun onSelectionChanged(oldValue: IntArray?, newValue: IntArray?) {
-                //TODO write logic
-            }
-        }
+        val onPositiveButtonClick = getDefaultPositiveButtonClickListener()
+        val onNegativeButtonClick = getDefaultNegativeButtonClickListener()
+        val selectionCallback = getDefaultSelectionChangedListener<IntArray?>(ctx)
         adapterPickerDialog = AdapterPickerDialogBuilder(
             this,
             childFragmentManager,

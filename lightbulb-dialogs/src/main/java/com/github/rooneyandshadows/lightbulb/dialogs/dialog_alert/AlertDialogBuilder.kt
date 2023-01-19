@@ -1,12 +1,13 @@
 package com.github.rooneyandshadows.lightbulb.dialogs.dialog_alert
 
 import android.os.Bundle
-import androidx.lifecycle.LifecycleOwner
 import androidx.fragment.app.FragmentManager
+import androidx.lifecycle.LifecycleOwner
 import com.github.rooneyandshadows.lightbulb.dialogs.base.BaseDialogBuilder
+import com.github.rooneyandshadows.lightbulb.dialogs.base.internal.DialogAnimationTypes
+import com.github.rooneyandshadows.lightbulb.dialogs.base.internal.DialogButtonConfiguration
+import com.github.rooneyandshadows.lightbulb.dialogs.base.internal.DialogTypes
 import com.github.rooneyandshadows.lightbulb.dialogs.base.internal.callbacks.*
-import com.github.rooneyandshadows.lightbulb.dialogs.base.internal.*
-import com.github.rooneyandshadows.lightbulb.dialogs.picker_dialog_adapter.AdapterPickerDialogBuilder
 
 class AlertDialogBuilder @JvmOverloads constructor(
     lifecycleOwner: LifecycleOwner? = null,

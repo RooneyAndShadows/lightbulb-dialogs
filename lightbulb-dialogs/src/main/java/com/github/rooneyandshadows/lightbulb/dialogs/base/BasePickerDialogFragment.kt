@@ -37,7 +37,7 @@ abstract class BasePickerDialogFragment<SelectionType>(
     }
 
     protected fun dispatchSelectionChangedEvent(oldValue: SelectionType?, newValue: SelectionType?) {
-        if (onSelectionChangedListener != null) onSelectionChangedListener!!.onSelectionChanged(oldValue, newValue)
+        if (onSelectionChangedListener != null) onSelectionChangedListener!!.onSelectionChanged(this, oldValue, newValue)
     }
 
     private fun initializeListeners() {
@@ -83,6 +83,10 @@ abstract class BasePickerDialogFragment<SelectionType>(
     }
 
     interface SelectionChangedListener<SelectionType> {
-        fun onSelectionChanged(oldValue: SelectionType?, newValue: SelectionType?)
+        fun onSelectionChanged(
+            dialog: BasePickerDialogFragment<SelectionType>,
+            oldValue: SelectionType?,
+            newValue: SelectionType?
+        )
     }
 }

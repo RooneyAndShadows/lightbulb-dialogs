@@ -10,6 +10,8 @@ import com.github.rooneyandshadows.lightbulb.commons.utils.DrawableUtils
 import com.github.rooneyandshadows.lightbulb.commons.utils.InteractionUtils
 import com.github.rooneyandshadows.lightbulb.commons.utils.ResourceUtils
 import com.github.rooneyandshadows.lightbulb.dialogs.base.BaseDialogFragment
+import com.github.rooneyandshadows.lightbulb.dialogs.base.BasePickerDialogFragment
+import com.github.rooneyandshadows.lightbulb.dialogs.base.BasePickerDialogFragment.SelectionChangedListener
 import com.github.rooneyandshadows.lightbulb.dialogs.base.internal.DialogAnimationTypes
 import com.github.rooneyandshadows.lightbulb.dialogs.base.internal.DialogButtonConfiguration
 import com.github.rooneyandshadows.lightbulb.dialogs.base.internal.DialogTypes
@@ -17,10 +19,10 @@ import com.github.rooneyandshadows.lightbulb.dialogs.base.internal.callbacks.Dia
 import com.github.rooneyandshadows.lightbulb.dialogsdemo.models.DemoModel
 import com.github.rooneyandshadows.lightbulb.dialogsdemo.spinner.base.adapter.DialogPropertyItem
 import com.github.rooneyandshadows.lightbulb.dialogsdemo.utils.icon.AppIconUtils
+import com.github.rooneyandshadows.lightbulb.recycleradapters.abstraction.EasyAdapterDataModel
 import com.github.rooneyandshadows.lightbulb.recycleradapters.implementation.CheckBoxSelectableAdapter
 import com.github.rooneyandshadows.lightbulb.recycleradapters.implementation.RadioButtonSelectableAdapter
 import com.github.rooneyandshadows.lightbulb.textinputview.TextInputView
-import java.util.*
 
 fun DialogTypes.Companion.getAllAsDialogPropertyItems(): Array<DialogPropertyItem> {
     return DialogTypes.values().asList()
@@ -70,6 +72,19 @@ fun getDefaultNegativeButtonClickListener(): DialogButtonClickListener {
     }
 }
 
+fun <SelectionType> getDefaultSelectionChangedListener(context: Context): SelectionChangedListener<SelectionType> {
+    return object : SelectionChangedListener<SelectionType> {
+        override fun onSelectionChanged(
+            dialog: BasePickerDialogFragment<SelectionType>,
+            oldValue: SelectionType?,
+            newValue: SelectionType?
+        ) {
+            val toastMessage = ResourceUtils.getPhrase(context, R.string.demo_selection_changed_text)
+            InteractionUtils.showMessage(context, toastMessage)
+        }
+    }
+}
+
 @InverseBindingAdapter(attribute = "dialogButtonText", event = "dialogButtonTextChanged")
 fun getSelectedValue(view: TextInputView): DialogButtonConfiguration? {
     if (view.text == "") return null
@@ -102,7 +117,8 @@ fun getRadioButtonAdapter(context: Context): RadioButtonSelectableAdapter<DemoMo
                 context,
                 item.icon,
                 R.attr.colorOnSurface,
-                R.dimen.ICON_SIZE_RECYCLER_ITEM)
+                R.dimen.ICON_SIZE_RECYCLER_ITEM
+            )
         }
 
         @Override

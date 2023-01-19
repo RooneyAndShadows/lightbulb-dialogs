@@ -11,6 +11,7 @@ import com.github.rooneyandshadows.lightbulb.commons.utils.BundleUtils
 import com.github.rooneyandshadows.lightbulb.commons.utils.InteractionUtils
 import com.github.rooneyandshadows.lightbulb.commons.utils.ResourceUtils
 import com.github.rooneyandshadows.lightbulb.dialogs.base.BaseDialogFragment
+import com.github.rooneyandshadows.lightbulb.dialogs.base.BasePickerDialogFragment
 import com.github.rooneyandshadows.lightbulb.dialogs.base.BasePickerDialogFragment.SelectionChangedListener
 import com.github.rooneyandshadows.lightbulb.dialogs.base.internal.DialogButtonConfiguration
 import com.github.rooneyandshadows.lightbulb.dialogs.base.internal.callbacks.DialogButtonClickListener
@@ -89,11 +90,7 @@ class FragmentDialogColorPicker : BaseFragmentWithViewDataBinding<FragmentDemoDi
             val negativeButtonText = getDefaultNegativeButtonText(ctx)
             val positiveButtonClickListener = getDefaultPositiveButtonClickListener()
             val negativeButtonClickListener = getDefaultNegativeButtonClickListener()
-            val onSelectionChanged = object : SelectionChangedListener<IntArray?> {
-                override fun onSelectionChanged(oldValue: IntArray?, newValue: IntArray?) {
-                    //TODO write logic
-                }
-            }
+            val onSelectionChanged = getDefaultSelectionChangedListener<IntArray?>(ctx)
             withSavedState(dialogSavedState)
             withTitle(title)
             withMessage(message)

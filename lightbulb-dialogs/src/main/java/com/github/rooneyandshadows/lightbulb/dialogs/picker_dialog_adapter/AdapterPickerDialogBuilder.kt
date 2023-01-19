@@ -128,7 +128,7 @@ class AdapterPickerDialogBuilder<ModelType : EasyAdapterDataModel> @JvmOverloads
 
     private fun getExistingDialogOrCreate(): AdapterPickerDialog<ModelType> {
         val dialog = dialogParentFragmentManager.findFragmentByTag(dialogTag) as AdapterPickerDialog<ModelType>?
-        return dialog ?: AdapterPickerDialog.newInstance<ModelType>(adapterCreator).apply {
+        return dialog ?: AdapterPickerDialog.newInstance(adapterCreator).apply {
             if (savedState != null) {
                 restoreDialogState(savedState)
                 return@apply

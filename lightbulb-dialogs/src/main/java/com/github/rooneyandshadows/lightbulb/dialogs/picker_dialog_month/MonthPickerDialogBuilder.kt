@@ -1,14 +1,13 @@
 package com.github.rooneyandshadows.lightbulb.dialogs.picker_dialog_month
 
 import android.os.Bundle
-import androidx.lifecycle.LifecycleOwner
-import com.github.rooneyandshadows.lightbulb.dialogs.base.BasePickerDialogFragment.SelectionChangedListener
 import androidx.fragment.app.FragmentManager
+import androidx.lifecycle.LifecycleOwner
 import com.github.rooneyandshadows.lightbulb.dialogs.base.BaseDialogBuilder
+import com.github.rooneyandshadows.lightbulb.dialogs.base.BasePickerDialogFragment.SelectionChangedListener
 import com.github.rooneyandshadows.lightbulb.dialogs.base.internal.*
 import com.github.rooneyandshadows.lightbulb.dialogs.base.internal.callbacks.*
-import com.github.rooneyandshadows.lightbulb.dialogs.picker_dialog_icon.IconPickerDialogBuilder
-import java.util.ArrayList
+import com.github.rooneyandshadows.lightbulb.dialogs.picker_dialog_month.MonthPickerDialog.*
 
 @Suppress("unused")
 class MonthPickerDialogBuilder @JvmOverloads constructor(
@@ -16,11 +15,11 @@ class MonthPickerDialogBuilder @JvmOverloads constructor(
     manager: FragmentManager,
     dialogTag: String,
 ) : BaseDialogBuilder<MonthPickerDialog>(lifecycleOwner, manager, dialogTag) {
-    private var monthSetListener: SelectionChangedListener<IntArray?>? = null
-    private var disabledMonths: ArrayList<IntArray>? = null
-    private var enabledMonths: ArrayList<IntArray>? = null
+    private var monthSetListener: SelectionChangedListener<Month?>? = null
+    private var disabledMonths: MutableList<Month> = mutableListOf()
+    private var enabledMonths: MutableList<Month> = mutableListOf()
     private var dateFormat: String? = null
-    private var initialSelection: IntArray? = null
+    private var initialSelection: Month? = null
     private var minYear = 1970
     private var maxYear = 2100
 
@@ -90,23 +89,34 @@ class MonthPickerDialogBuilder @JvmOverloads constructor(
         return super.withDialogListeners(listeners) as MonthPickerDialogBuilder
     }
 
-    fun withDisabledMonths(disabledMonths: ArrayList<IntArray>?): MonthPickerDialogBuilder {
-        this.disabledMonths = disabledMonths
+    fun withDisabledMonths(disabledMonths: List<Month>): MonthPickerDialogBuilder {
+        this.disabledMonths.apply {
+            clear()
+            addAll(disabledMonths)
+        }
         return this
     }
 
-    fun withEnabledMonths(enabledMonths: ArrayList<IntArray>?): MonthPickerDialogBuilder {
-        this.enabledMonths = enabledMonths
+    fun withEnabledMonths(enabledMonths: List<Month>): MonthPickerDialogBuilder {
+        this.enabledMonths.apply {
+            clear()
+            addAll(enabledMonths)
+        }
         return this
     }
 
-    fun withOnDateSelectedEvent(listener: SelectionChangedListener<IntArray?>): MonthPickerDialogBuilder {
+    fun withOnDateSelectedEvent(listener: SelectionChangedListener<Month?>): MonthPickerDialogBuilder {
         monthSetListener = listener
         return this
     }
 
+    fun withSelection(month: Month): MonthPickerDialogBuilder {
+        initialSelection = month
+        return this
+    }
+
     fun withSelection(year: Int, month: Int): MonthPickerDialogBuilder {
-        initialSelection = intArrayOf(year, month)
+        initialSelection = Month(year, month)
         return this
     }
 

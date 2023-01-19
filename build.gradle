@@ -18,7 +18,7 @@ buildscript {
                         application          : "1.2.8",
                         recycleradapters     : "2.0.0-RC5",
                         textinputview        : "1.0.11",
-                        calendars            : "1.0.1",
+                        calendars            : "2.0.0-RC1",
                         annotation_processors: "1.0.6-RC2"
                 ],
                 java                    : [

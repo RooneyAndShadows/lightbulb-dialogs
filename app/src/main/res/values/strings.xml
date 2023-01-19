@@ -27,6 +27,7 @@
 
     <string name="demo_positive_button_clicked_text">Positive button clicked</string>
     <string name="demo_negative_button_clicked_text">Negative button clicked</string>
+    <string name="demo_selection_changed_text">Selection changed</string>
     <string name="demo_action_completed_text">Action completed</string>
     <string name="demo_dialog_animation_must_be_bottomsheet_text">Invalid animation. Animation switched to TRANSITION_FROM_BOTTOM_TO_BOTTOM.</string>
 </resources>
