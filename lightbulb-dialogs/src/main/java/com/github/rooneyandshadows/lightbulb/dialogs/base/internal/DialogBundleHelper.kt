@@ -4,24 +4,6 @@ import android.os.Bundle
 import com.github.rooneyandshadows.lightbulb.commons.utils.BundleUtils
 
 class DialogBundleHelper(val bundle: Bundle = defaultBundle()) {
-    companion object {
-        private const val dialogTitleTextTag = "DIALOG_TITLE_TEXT_TAG"
-        private const val dialogMessageTextTag = "DIALOG_MESSAGE_TEXT_TAG"
-        private const val dialogCancelableTag = "DIALOG_CANCELABLE_TAG"
-        private const val dialogShowingTag = "DIALOG_SHOWING_TAG"
-        private const val dialogTypeTag = "DIALOG_TYPE_TAG"
-        private const val dialogAnimationTag = "DIALOG_ANIMATION_TAG"
-        private const val dialogPositiveButtonConfigTag = "DIALOG_POSITIVE_BUTTON_CONFIG_TAG"
-        private const val dialogNegativeButtonConfigTag = "DIALOG_NEGATIVE_BUTTON_CONFIG_TAG"
-
-        private fun defaultBundle(): Bundle {
-            return Bundle().apply {
-                putInt(dialogTypeTag, DialogTypes.NORMAL.value)
-                putInt(dialogAnimationTag, DialogAnimationTypes.NO_ANIMATION.value)
-            }
-        }
-    }
-
     val title: String?
         get() = bundle.getString(dialogTitleTextTag)
     val message: String?
@@ -46,6 +28,24 @@ class DialogBundleHelper(val bundle: Bundle = defaultBundle()) {
             bundle,
             DialogButtonConfiguration::class.java
         )
+
+    companion object {
+        private const val dialogTitleTextTag = "DIALOG_TITLE_TEXT_TAG"
+        private const val dialogMessageTextTag = "DIALOG_MESSAGE_TEXT_TAG"
+        private const val dialogCancelableTag = "DIALOG_CANCELABLE_TAG"
+        private const val dialogShowingTag = "DIALOG_SHOWING_TAG"
+        private const val dialogTypeTag = "DIALOG_TYPE_TAG"
+        private const val dialogAnimationTag = "DIALOG_ANIMATION_TAG"
+        private const val dialogPositiveButtonConfigTag = "DIALOG_POSITIVE_BUTTON_CONFIG_TAG"
+        private const val dialogNegativeButtonConfigTag = "DIALOG_NEGATIVE_BUTTON_CONFIG_TAG"
+
+        private fun defaultBundle(): Bundle {
+            return Bundle().apply {
+                putInt(dialogTypeTag, DialogTypes.NORMAL.value)
+                putInt(dialogAnimationTag, DialogAnimationTypes.NO_ANIMATION.value)
+            }
+        }
+    }
 
     fun withTitle(dialogTitle: String?): DialogBundleHelper {
         bundle.putString(dialogTitleTextTag, dialogTitle)

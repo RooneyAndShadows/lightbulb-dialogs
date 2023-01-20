@@ -8,27 +8,22 @@ import com.github.rooneyandshadows.lightbulb.application.activity.slidermenu.dra
 import com.github.rooneyandshadows.lightbulb.application.fragment.base.BaseFragmentWithViewDataBinding
 import com.github.rooneyandshadows.lightbulb.application.fragment.cofiguration.ActionBarConfiguration
 import com.github.rooneyandshadows.lightbulb.commons.utils.BundleUtils
-import com.github.rooneyandshadows.lightbulb.commons.utils.InteractionUtils
 import com.github.rooneyandshadows.lightbulb.commons.utils.ResourceUtils
-import com.github.rooneyandshadows.lightbulb.dialogs.base.BaseDialogFragment
-import com.github.rooneyandshadows.lightbulb.dialogs.base.BasePickerDialogFragment.*
 import com.github.rooneyandshadows.lightbulb.dialogs.base.internal.DialogButtonConfiguration
-import com.github.rooneyandshadows.lightbulb.dialogs.base.internal.callbacks.DialogButtonClickListener
-import com.github.rooneyandshadows.lightbulb.dialogs.picker_dialog_adapter.AdapterPickerDialog
 import com.github.rooneyandshadows.lightbulb.dialogs.picker_dialog_adapter.AdapterPickerDialogBuilder
-import com.github.rooneyandshadows.lightbulb.dialogsdemo.*
+import com.github.rooneyandshadows.lightbulb.dialogs.picker_dialog_adapter.AdapterPickerDialogBuilder.AdapterPickerDialogInitializer
+import com.github.rooneyandshadows.lightbulb.dialogsdemo.R
 import com.github.rooneyandshadows.lightbulb.dialogsdemo.databinding.FragmentDemoDialogAdapterPickerBinding
+import com.github.rooneyandshadows.lightbulb.dialogsdemo.dialogs.DemoSingleSelectionDialog
+import com.github.rooneyandshadows.lightbulb.dialogsdemo.getDefaultNegativeButtonClickListener
+import com.github.rooneyandshadows.lightbulb.dialogsdemo.getDefaultPositiveButtonClickListener
+import com.github.rooneyandshadows.lightbulb.dialogsdemo.getDefaultSelectionChangedListener
 import com.github.rooneyandshadows.lightbulb.dialogsdemo.models.DemoModel
-import com.github.rooneyandshadows.lightbulb.dialogsdemo.routing.screens.Screens.Demo
-import com.github.rooneyandshadows.lightbulb.dialogsdemo.spinner.DialogAnimationTypeSpinner
-import com.github.rooneyandshadows.lightbulb.dialogsdemo.spinner.DialogTypeSpinner
-import com.github.rooneyandshadows.lightbulb.recycleradapters.abstraction.EasyRecyclerAdapter
-import com.github.rooneyandshadows.lightbulb.recycleradapters.implementation.RadioButtonSelectableAdapter
 
 @FragmentScreen(screenName = "Adapter", screenGroup = "Demo")
 @FragmentConfiguration(layoutName = "fragment_demo_dialog_adapter_picker")
 class FragmentDialogAdapterPicker : BaseFragmentWithViewDataBinding<FragmentDemoDialogAdapterPickerBinding>() {
-    private lateinit var adapterPickerDialog: AdapterPickerDialog<DemoModel>
+    private lateinit var adapterPickerDialog: DemoSingleSelectionDialog
 
     companion object {
         private const val DIALOG_TAG = "ADAPTER_PICKER_DIALOG_TAG"
@@ -92,9 +87,10 @@ class FragmentDialogAdapterPicker : BaseFragmentWithViewDataBinding<FragmentDemo
             this,
             childFragmentManager,
             DIALOG_TAG,
-            object : AdapterPickerDialog.AdapterCreator<DemoModel> {
-                override fun createAdapter(): EasyRecyclerAdapter<DemoModel> {
-                    return getRadioButtonAdapter(ctx)
+            object : AdapterPickerDialogInitializer<DemoSingleSelectionDialog> {
+                @Override
+                override fun initialize(): DemoSingleSelectionDialog {
+                    return DemoSingleSelectionDialog.newInstance()
                 }
             }
         ).apply {

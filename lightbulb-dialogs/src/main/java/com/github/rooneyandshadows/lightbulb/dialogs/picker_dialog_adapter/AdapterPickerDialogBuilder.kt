@@ -1,115 +1,114 @@
 package com.github.rooneyandshadows.lightbulb.dialogs.picker_dialog_adapter
 
 import android.os.Bundle
-import androidx.lifecycle.LifecycleOwner
-import com.github.rooneyandshadows.lightbulb.dialogs.base.BasePickerDialogFragment.SelectionChangedListener
 import androidx.fragment.app.FragmentManager
+import androidx.lifecycle.LifecycleOwner
 import androidx.recyclerview.widget.RecyclerView
 import com.github.rooneyandshadows.lightbulb.dialogs.base.BaseDialogBuilder
+import com.github.rooneyandshadows.lightbulb.dialogs.base.BasePickerDialogFragment.SelectionChangedListener
 import com.github.rooneyandshadows.lightbulb.dialogs.base.internal.*
 import com.github.rooneyandshadows.lightbulb.dialogs.base.internal.callbacks.*
-import com.github.rooneyandshadows.lightbulb.dialogs.picker_dialog_adapter.AdapterPickerDialog.AdapterCreator
 import com.github.rooneyandshadows.lightbulb.recycleradapters.abstraction.EasyAdapterDataModel
 
 @Suppress("UNCHECKED_CAST", "unused")
-class AdapterPickerDialogBuilder<ModelType : EasyAdapterDataModel> @JvmOverloads constructor(
+class AdapterPickerDialogBuilder<DialogType : AdapterPickerDialog<out EasyAdapterDataModel>> @JvmOverloads constructor(
     lifecycleOwner: LifecycleOwner? = null,
     manager: FragmentManager,
     dialogTag: String,
-    private val adapterCreator: AdapterCreator<ModelType>,
-) : BaseDialogBuilder<AdapterPickerDialog<ModelType>>(lifecycleOwner, manager, dialogTag) {
+    private val dialogInitializer: AdapterPickerDialogInitializer<DialogType>
+) : BaseDialogBuilder<DialogType>(lifecycleOwner, manager, dialogTag) {
     private var changedCallback: SelectionChangedListener<IntArray?>? = null
     private var itemDecoration: RecyclerView.ItemDecoration? = null
     private var selection: IntArray? = null
 
     @Override
-    override fun withSavedState(savedState: Bundle?): AdapterPickerDialogBuilder<ModelType> {
-        return super.withSavedState(savedState) as AdapterPickerDialogBuilder<ModelType>
+    override fun withSavedState(savedState: Bundle?): AdapterPickerDialogBuilder<DialogType> {
+        return super.withSavedState(savedState) as AdapterPickerDialogBuilder<DialogType>
     }
 
     @Override
-    override fun withTitle(title: String): AdapterPickerDialogBuilder<ModelType> {
-        return super.withTitle(title) as AdapterPickerDialogBuilder<ModelType>
+    override fun withTitle(title: String): AdapterPickerDialogBuilder<DialogType> {
+        return super.withTitle(title) as AdapterPickerDialogBuilder<DialogType>
     }
 
     @Override
-    override fun withMessage(message: String): AdapterPickerDialogBuilder<ModelType> {
-        return super.withMessage(message) as AdapterPickerDialogBuilder<ModelType>
+    override fun withMessage(message: String): AdapterPickerDialogBuilder<DialogType> {
+        return super.withMessage(message) as AdapterPickerDialogBuilder<DialogType>
     }
 
     @Override
     override fun withPositiveButton(
         configuration: DialogButtonConfiguration,
         onClickListener: DialogButtonClickListener,
-    ): AdapterPickerDialogBuilder<ModelType> {
+    ): AdapterPickerDialogBuilder<DialogType> {
         return super.withPositiveButton(
             configuration,
             onClickListener
-        ) as AdapterPickerDialogBuilder<ModelType>
+        ) as AdapterPickerDialogBuilder<DialogType>
     }
 
     @Override
     override fun withNegativeButton(
         configuration: DialogButtonConfiguration,
         onClickListener: DialogButtonClickListener,
-    ): AdapterPickerDialogBuilder<ModelType> {
+    ): AdapterPickerDialogBuilder<DialogType> {
         return super.withNegativeButton(
             configuration,
             onClickListener
-        ) as AdapterPickerDialogBuilder<ModelType>
+        ) as AdapterPickerDialogBuilder<DialogType>
     }
 
     @Override
-    override fun withOnCancelListener(listener: DialogCancelListener): AdapterPickerDialogBuilder<ModelType> {
-        return super.withOnCancelListener(listener) as AdapterPickerDialogBuilder<ModelType>
+    override fun withOnCancelListener(listener: DialogCancelListener): AdapterPickerDialogBuilder<DialogType> {
+        return super.withOnCancelListener(listener) as AdapterPickerDialogBuilder<DialogType>
     }
 
     @Override
-    override fun withOnShowListener(listener: DialogShowListener): AdapterPickerDialogBuilder<ModelType> {
-        return super.withOnShowListener(listener) as AdapterPickerDialogBuilder<ModelType>
+    override fun withOnShowListener(listener: DialogShowListener): AdapterPickerDialogBuilder<DialogType> {
+        return super.withOnShowListener(listener) as AdapterPickerDialogBuilder<DialogType>
     }
 
     @Override
-    override fun withOnHideListener(listener: DialogHideListener): AdapterPickerDialogBuilder<ModelType> {
-        return super.withOnHideListener(listener) as AdapterPickerDialogBuilder<ModelType>
+    override fun withOnHideListener(listener: DialogHideListener): AdapterPickerDialogBuilder<DialogType> {
+        return super.withOnHideListener(listener) as AdapterPickerDialogBuilder<DialogType>
     }
 
     @Override
-    override fun withCancelOnClickOutside(closeOnClickOutside: Boolean): AdapterPickerDialogBuilder<ModelType> {
-        return super.withCancelOnClickOutside(closeOnClickOutside) as AdapterPickerDialogBuilder<ModelType>
+    override fun withCancelOnClickOutside(closeOnClickOutside: Boolean): AdapterPickerDialogBuilder<DialogType> {
+        return super.withCancelOnClickOutside(closeOnClickOutside) as AdapterPickerDialogBuilder<DialogType>
     }
 
     @Override
-    override fun withDialogType(dialogType: DialogTypes): AdapterPickerDialogBuilder<ModelType> {
-        return super.withDialogType(dialogType) as AdapterPickerDialogBuilder<ModelType>
+    override fun withDialogType(dialogType: DialogTypes): AdapterPickerDialogBuilder<DialogType> {
+        return super.withDialogType(dialogType) as AdapterPickerDialogBuilder<DialogType>
     }
 
     @Override
-    override fun withAnimations(animation: DialogAnimationTypes): AdapterPickerDialogBuilder<ModelType> {
-        return super.withAnimations(animation) as AdapterPickerDialogBuilder<ModelType>
+    override fun withAnimations(animation: DialogAnimationTypes): AdapterPickerDialogBuilder<DialogType> {
+        return super.withAnimations(animation) as AdapterPickerDialogBuilder<DialogType>
     }
 
     @Override
-    override fun withDialogListeners(listeners: DialogListeners): AdapterPickerDialogBuilder<ModelType> {
-        return super.withDialogListeners(listeners) as AdapterPickerDialogBuilder<ModelType>
+    override fun withDialogListeners(listeners: DialogListeners): AdapterPickerDialogBuilder<DialogType> {
+        return super.withDialogListeners(listeners) as AdapterPickerDialogBuilder<DialogType>
     }
 
-    fun withSelectionCallback(listener: SelectionChangedListener<IntArray?>): AdapterPickerDialogBuilder<ModelType> {
+    fun withSelectionCallback(listener: SelectionChangedListener<IntArray?>): AdapterPickerDialogBuilder<DialogType> {
         changedCallback = listener
         return this
     }
 
-    fun withSelection(selection: IntArray): AdapterPickerDialogBuilder<ModelType> {
+    fun withSelection(selection: IntArray): AdapterPickerDialogBuilder<DialogType> {
         this.selection = selection
         return this
     }
 
-    fun withItemDecoration(decoration: RecyclerView.ItemDecoration?): AdapterPickerDialogBuilder<ModelType> {
+    fun withItemDecoration(decoration: RecyclerView.ItemDecoration?): AdapterPickerDialogBuilder<DialogType> {
         itemDecoration = decoration
         return this
     }
 
-    override fun buildDialog(): AdapterPickerDialog<ModelType> {
+    override fun buildDialog(): DialogType {
         return getExistingDialogOrCreate().apply {
             setLifecycleOwner(dialogLifecycleOwner)
             setDialogCallbacks(dialogListeners)
@@ -121,14 +120,13 @@ class AdapterPickerDialogBuilder<ModelType : EasyAdapterDataModel> @JvmOverloads
             onHideListener?.apply { addOnHideListener(this) }
             onCancelListener?.apply { addOnCancelListener(this) }
             changedCallback?.apply { setOnSelectionChangedListener(this) }
-
             setItemDecoration(itemDecoration)
         }
     }
 
-    private fun getExistingDialogOrCreate(): AdapterPickerDialog<ModelType> {
-        val dialog = dialogParentFragmentManager.findFragmentByTag(dialogTag) as AdapterPickerDialog<ModelType>?
-        return dialog ?: AdapterPickerDialog.newInstance(adapterCreator).apply {
+    private fun getExistingDialogOrCreate(): DialogType {
+        val dialog = dialogParentFragmentManager.findFragmentByTag(dialogTag) as DialogType?
+        return dialog ?: dialogInitializer.initialize().apply {
             if (savedState != null) {
                 restoreDialogState(savedState)
                 return@apply
@@ -142,5 +140,9 @@ class AdapterPickerDialogBuilder<ModelType : EasyAdapterDataModel> @JvmOverloads
             dialogPositiveButton = positiveButtonConfiguration
             setSelection(selection)
         }
+    }
+
+    interface AdapterPickerDialogInitializer<DialogType : AdapterPickerDialog<out EasyAdapterDataModel>> {
+        fun initialize(): DialogType
     }
 }

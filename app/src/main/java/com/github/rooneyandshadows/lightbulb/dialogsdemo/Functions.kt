@@ -109,10 +109,10 @@ fun bindPickerEvent(view: TextInputView, bindingListener: InverseBindingListener
     }
 }
 
-fun getRadioButtonAdapter(context: Context): RadioButtonSelectableAdapter<DemoModel> {
+fun getRadioButtonAdapter(): RadioButtonSelectableAdapter<DemoModel> {
     return object : RadioButtonSelectableAdapter<DemoModel>() {
         @Override
-        override fun getItemIcon(item: DemoModel): Drawable {
+        override fun getItemIcon(context: Context, item: DemoModel): Drawable {
             return AppIconUtils.getIconWithAttributeColor(
                 context,
                 item.icon,
@@ -122,7 +122,7 @@ fun getRadioButtonAdapter(context: Context): RadioButtonSelectableAdapter<DemoMo
         }
 
         @Override
-        override fun getItemIconBackground(item: DemoModel): Drawable {
+        override fun getItemIconBackground(context: Context, item: DemoModel): Drawable {
             return DrawableUtils.getRoundedCornersDrawable(
                 item.iconBackgroundColor.color,
                 ResourceUtils.dpToPx(100)
@@ -131,9 +131,10 @@ fun getRadioButtonAdapter(context: Context): RadioButtonSelectableAdapter<DemoMo
     }
 }
 
-fun getCheckboxAdapter(context: Context): CheckBoxSelectableAdapter<DemoModel> {
+fun getCheckboxAdapter(): CheckBoxSelectableAdapter<DemoModel> {
     return object : CheckBoxSelectableAdapter<DemoModel>() {
-        override fun getItemIcon(item: DemoModel): Drawable {
+        @Override
+        override fun getItemIcon(context: Context, item: DemoModel): Drawable {
             return AppIconUtils.getIconWithAttributeColor(
                 context,
                 item.icon,
@@ -142,7 +143,8 @@ fun getCheckboxAdapter(context: Context): CheckBoxSelectableAdapter<DemoModel> {
             )
         }
 
-        override fun getItemIconBackground(item: DemoModel): Drawable {
+        @Override
+        override fun getItemIconBackground(context: Context, item: DemoModel): Drawable {
             return DrawableUtils.getRoundedCornersDrawable(
                 item.iconBackgroundColor.color,
                 ResourceUtils.dpToPx(100)

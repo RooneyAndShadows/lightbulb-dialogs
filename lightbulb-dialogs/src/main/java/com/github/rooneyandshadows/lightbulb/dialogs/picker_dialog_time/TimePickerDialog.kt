@@ -2,22 +2,27 @@ package com.github.rooneyandshadows.lightbulb.dialogs.picker_dialog_time
 
 import android.os.Build
 import android.os.Bundle
+import android.os.Parcel
+import android.os.Parcelable
 import android.view.LayoutInflater
 import android.view.View
 import android.widget.TimePicker
 import com.github.rooneyandshadows.lightbulb.dialogs.base.BasePickerDialogFragment
 import com.github.rooneyandshadows.java.commons.date.DateUtilsOffsetDate
+import com.github.rooneyandshadows.lightbulb.commons.utils.BundleUtils
 import com.github.rooneyandshadows.lightbulb.dialogs.R
 import com.github.rooneyandshadows.lightbulb.dialogs.base.internal.DialogTypes
+import com.github.rooneyandshadows.lightbulb.dialogs.picker_dialog_time.TimePickerDialog.*
 import java.time.OffsetDateTime
 
 @Suppress("unused", "UNUSED_PARAMETER")
-class TimePickerDialog : BasePickerDialogFragment<IntArray?>(
+class TimePickerDialog : BasePickerDialogFragment<Time?>(
     TimeSelection(
-        intArrayOf(
+        Time(
             DateUtilsOffsetDate.getHourOfDay(DateUtilsOffsetDate.nowLocal()),
             DateUtilsOffsetDate.getMinuteOfHour(DateUtilsOffsetDate.nowLocal())
-        ), null
+        ),
+        null
     ), false
 ) {
     private lateinit var picker: TimePicker
@@ -44,10 +49,10 @@ class TimePickerDialog : BasePickerDialogFragment<IntArray?>(
     override fun doOnSaveInstanceState(outState: Bundle?) {
         outState?.apply {
             selection.getCurrentSelection()?.apply {
-                putIntArray(TIME_SELECTION_TAG, selection.getCurrentSelection())
+                BundleUtils.putParcelable(TIME_SELECTION_TAG, outState, selection.getCurrentSelection())
             }
             selection.getDraftSelection()?.apply {
-                putIntArray(TIME_SELECTION_DRAFT_TAG, selection.getDraftSelection())
+                BundleUtils.putParcelable(TIME_SELECTION_DRAFT_TAG, outState, selection.getDraftSelection())
             }
         }
     }
@@ -55,8 +60,14 @@ class TimePickerDialog : BasePickerDialogFragment<IntArray?>(
     @Override
     override fun doOnRestoreInstanceState(savedState: Bundle) {
         super.doOnRestoreInstanceState(savedState)
-        selection.setCurrentSelection(savedState.getIntArray(TIME_SELECTION_TAG), false)
-        selection.setDraftSelection(savedState.getIntArray(TIME_SELECTION_DRAFT_TAG), false)
+        savedState.apply {
+            BundleUtils.getParcelable(TIME_SELECTION_TAG, this, Time::class.java)?.apply {
+                selection.setCurrentSelection(this, false)
+            }
+            BundleUtils.getParcelable(TIME_SELECTION_DRAFT_TAG, this, Time::class.java)?.apply {
+                selection.setDraftSelection(this, false)
+            }
+        }
     }
 
     @Override
@@ -71,19 +82,20 @@ class TimePickerDialog : BasePickerDialogFragment<IntArray?>(
         picker.isSaveEnabled = false
         synchronizeSelectUi()
         picker.setOnTimeChangedListener { _: TimePicker?, hourOfDay: Int, minutesOfHour: Int ->
-            val newSelection = intArrayOf(hourOfDay, minutesOfHour)
-            if (isDialogShown) selection.setDraftSelection(newSelection) else selection.setCurrentSelection(newSelection)
+            val newSelection = Time(hourOfDay, minutesOfHour)
+            if (isDialogShown) selection.setDraftSelection(newSelection)
+            else selection.setCurrentSelection(newSelection)
         }
     }
 
     @Suppress("DEPRECATION")
     @Override
     override fun synchronizeSelectUi() {
-        val newDate = if (selection.hasDraftSelection()) selection.getDraftSelection()
+        val newTime = if (selection.hasDraftSelection()) selection.getDraftSelection()
         else selection.getCurrentSelection()
-        if (newDate != null) {
-            val hour = newDate[0]
-            val minutes = newDate[1]
+        if (newTime != null) {
+            val hour = newTime.hour
+            val minutes = newTime.minute
             val apiLevel = Build.VERSION.SDK_INT
             if (apiLevel < 23) {
                 picker.currentHour = hour
@@ -96,36 +108,101 @@ class TimePickerDialog : BasePickerDialogFragment<IntArray?>(
     }
 
     @Override
-    override fun setSelection(newSelection: IntArray?) {
-        if (newSelection == null) selection.setCurrentSelection(null) else setSelection(newSelection[0], newSelection[1])
+    override fun setSelection(newSelection: Time?) {
+        selection.apply {
+            if (newSelection == null) setCurrentSelection(null)
+            else setCurrentSelection(newSelection)
+        }
     }
 
     fun setSelection(hour: Int, minutes: Int) {
-        val time = validateTime(hour, minutes)
-        selection.setCurrentSelection(time)
+        selection.apply {
+            val time = Time(hour, minutes)
+            setCurrentSelection(time)
+        }
     }
 
-    fun setSelectionFromDate(newSelection: OffsetDateTime?) {
-        if (newSelection == null) setSelection(null) else setSelection(
-            DateUtilsOffsetDate.extractYearFromDate(newSelection),
-            DateUtilsOffsetDate.extractMonthOfYearFromDate(newSelection)
+    fun setSelection(newSelection: OffsetDateTime?) {
+        selection.apply {
+            if (newSelection == null) setCurrentSelection(null)
+            else setCurrentSelection(Time.fromDate(newSelection))
+        }
+    }
+
+    class Time(hour: Int, minute: Int) : Parcelable {
+        var hour: Int = -1
+            private set
+        var minute: Int = -1
+            private set
+
+        constructor(parcel: Parcel) : this(
+            parcel.readInt(),
+            parcel.readInt()
         )
-    }
 
-    private fun validateTime(hour: Int, minutes: Int): IntArray {
-        var validatedHour = if (hour < 0) 0 else hour
-        var validatedMinute = if (minutes < 0) 0 else minutes
-        if (validatedMinute > 59)
-            validatedMinute = 59
-        if (validatedHour > 23)
-            validatedHour = 23
-        return intArrayOf(validatedHour, validatedMinute)
-    }
+        init {
+            val validatedTime = validateTime(hour, minute)
+            this.hour = validatedTime[0]
+            this.minute = validatedTime[1]
+        }
 
-    private fun getTimeFromDate(date: OffsetDateTime?): IntArray? {
-        return if (date == null) null else intArrayOf(
-            DateUtilsOffsetDate.getHourOfDay(date),
-            DateUtilsOffsetDate.getMinuteOfHour(date)
-        )
+        fun compare(hour: Int, minute: Int): Boolean {
+            return hour == this.hour && minute == this.minute
+        }
+
+        fun compare(target: Time?): Boolean {
+            if (target == null) return false
+            return hour == target.hour && minute == target.minute
+        }
+
+        fun toArray(): IntArray {
+            return intArrayOf(hour, minute)
+        }
+
+        private fun validateTime(hour: Int, minute: Int): IntArray {
+            val validatedHour = when {
+                hour < 0 -> 0
+                hour > 23 -> 23
+                else -> hour
+            }
+            val validatedMinute = when {
+                minute < 0 -> 0
+                minute > 59 -> 59
+                else -> minute
+            }
+            return intArrayOf(validatedHour, validatedMinute)
+        }
+
+        override fun writeToParcel(parcel: Parcel, flags: Int) {
+            parcel.writeInt(hour)
+            parcel.writeInt(minute)
+        }
+
+        override fun describeContents(): Int {
+            return 0
+        }
+
+        companion object CREATOR : Parcelable.Creator<Time> {
+            override fun createFromParcel(parcel: Parcel): Time {
+                return Time(parcel)
+            }
+
+            override fun newArray(size: Int): Array<Time?> {
+                return arrayOfNulls(size)
+            }
+
+            @JvmStatic
+            fun fromDate(date: OffsetDateTime): Time {
+                val hour = DateUtilsOffsetDate.getHourOfDay(date)
+                val minute = DateUtilsOffsetDate.getMinuteOfHour(date)
+                return Time(hour, minute)
+            }
+
+            @JvmStatic
+            fun fromDateString(dateString: String): Time {
+                val date = DateUtilsOffsetDate.getDateFromString(DateUtilsOffsetDate.defaultFormatWithTimeZone, dateString)
+                return fromDate(date)
+            }
+        }
     }
 }

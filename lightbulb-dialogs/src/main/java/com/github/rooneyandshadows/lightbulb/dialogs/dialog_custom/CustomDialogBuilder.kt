@@ -1,15 +1,14 @@
 package com.github.rooneyandshadows.lightbulb.dialogs.dialog_custom
 
 import android.os.Bundle
-import androidx.lifecycle.LifecycleOwner
-import com.github.rooneyandshadows.lightbulb.dialogs.dialog_custom.CustomDialog.CustomDialogInflater
 import androidx.fragment.app.FragmentManager
+import androidx.lifecycle.LifecycleOwner
 import com.github.rooneyandshadows.lightbulb.dialogs.base.BaseDialogBuilder
 import com.github.rooneyandshadows.lightbulb.dialogs.base.internal.*
 import com.github.rooneyandshadows.lightbulb.dialogs.base.internal.callbacks.*
-import com.github.rooneyandshadows.lightbulb.dialogs.dialog_alert.AlertDialogBuilder
+import com.github.rooneyandshadows.lightbulb.dialogs.dialog_custom.CustomDialog.CustomDialogInflater
 
-@Suppress("UNCHECKED_CAST")
+@Suppress("UNCHECKED_CAST", "unused")
 class CustomDialogBuilder<DialogType : CustomDialog> @JvmOverloads constructor(
     lifecycleOwner: LifecycleOwner? = null,
     dialogParentFragmentManager: FragmentManager,

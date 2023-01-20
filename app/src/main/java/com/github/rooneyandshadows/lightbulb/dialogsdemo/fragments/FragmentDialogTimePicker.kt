@@ -10,59 +10,60 @@ import com.github.rooneyandshadows.lightbulb.application.fragment.cofiguration.A
 import com.github.rooneyandshadows.lightbulb.commons.utils.BundleUtils
 import com.github.rooneyandshadows.lightbulb.commons.utils.ResourceUtils
 import com.github.rooneyandshadows.lightbulb.dialogs.base.internal.DialogButtonConfiguration
-import com.github.rooneyandshadows.lightbulb.dialogs.picker_dialog_icon.IconPickerAdapter.IconModel
-import com.github.rooneyandshadows.lightbulb.dialogs.picker_dialog_icon.IconPickerAdapter.IconSet
-import com.github.rooneyandshadows.lightbulb.dialogs.picker_dialog_icon.IconPickerDialog
-import com.github.rooneyandshadows.lightbulb.dialogs.picker_dialog_icon.IconPickerDialogBuilder
+import com.github.rooneyandshadows.lightbulb.dialogs.picker_dialog_datetime.DateTimePickerDialog
+import com.github.rooneyandshadows.lightbulb.dialogs.picker_dialog_datetime.DateTimePickerDialogBuilder
+import com.github.rooneyandshadows.lightbulb.dialogs.picker_dialog_time.TimePickerDialog
+import com.github.rooneyandshadows.lightbulb.dialogs.picker_dialog_time.TimePickerDialog.Time
+import com.github.rooneyandshadows.lightbulb.dialogs.picker_dialog_time.TimePickerDialogBuilder
 import com.github.rooneyandshadows.lightbulb.dialogsdemo.*
-import com.github.rooneyandshadows.lightbulb.dialogsdemo.databinding.FragmentDemoDialogIconPickerBinding
+import com.github.rooneyandshadows.lightbulb.dialogsdemo.databinding.FragmentDemoDialogDateTimePickerBinding
+import com.github.rooneyandshadows.lightbulb.dialogsdemo.databinding.FragmentDemoDialogTimePickerBinding
+import java.time.OffsetDateTime
 
-@FragmentScreen(screenName = "IconPicker", screenGroup = "Demo")
-@FragmentConfiguration(layoutName = "fragment_demo_dialog_icon_picker", hasLeftDrawer = true)
-class FragmentDialogIconPicker : BaseFragmentWithViewDataBinding<FragmentDemoDialogIconPickerBinding>() {
-    private lateinit var iconPickerDialog: IconPickerDialog
+@FragmentScreen(screenName = "Time", screenGroup = "Demo")
+@FragmentConfiguration(layoutName = "fragment_demo_dialog_time_picker", hasLeftDrawer = true)
+class FragmentDialogTimePicker : BaseFragmentWithViewDataBinding<FragmentDemoDialogTimePickerBinding>() {
+    private lateinit var timePickerDialog: TimePickerDialog
 
     companion object {
-        private const val DIALOG_TAG = "ICON_PICKER_TAG"
-        private const val DIALOG_STATE_TAG = "ICON_PICKER_STATE_TAG"
+        private const val DIALOG_TAG = "DIALOG_TIME_PICKER_TAG"
+        private const val DIALOG_STATE_TAG = "DIALOG_TIME_PICKER_STATE_TAG"
     }
 
     @Override
     override fun doOnCreate(savedInstanceState: Bundle?) {
         super.doOnCreate(savedInstanceState)
-        val setInitialValues = savedInstanceState == null
         var dialogSavedState: Bundle? = null
         savedInstanceState?.apply {
             dialogSavedState = BundleUtils.getParcelable(DIALOG_STATE_TAG, this, Bundle::class.java)
         }
         createDialog(dialogSavedState)
-        if (setInitialValues) iconPickerDialog.setData(IconModel.getAllForSet(IconSet.FONTAWESOME))
     }
 
     @Override
     override fun doOnSaveInstanceState(outState: Bundle) {
         super.doOnSaveInstanceState(outState)
-        outState.putParcelable(DIALOG_STATE_TAG, iconPickerDialog.saveDialogState())
+        outState.putParcelable(DIALOG_STATE_TAG, timePickerDialog.saveDialogState())
     }
 
     @Override
-    override fun onViewBound(viewBinding: FragmentDemoDialogIconPickerBinding) {
+    override fun onViewBound(viewBinding: FragmentDemoDialogTimePickerBinding) {
         viewBinding.dialogTypeDropdown.apply {
-            setLifecycleOwner(this@FragmentDialogIconPicker)
-            dialog = iconPickerDialog
+            setLifecycleOwner(this@FragmentDialogTimePicker)
+            dialog = timePickerDialog
             animationTypeSpinner = viewBinding.dialogAnimationTypeDropdown
         }
         viewBinding.dialogAnimationTypeDropdown.apply {
-            setLifecycleOwner(this@FragmentDialogIconPicker)
-            dialog = iconPickerDialog
+            setLifecycleOwner(this@FragmentDialogTimePicker)
+            dialog = timePickerDialog
             typeSpinner = viewBinding.dialogTypeDropdown
         }
-        viewBinding.dialog = iconPickerDialog
+        viewBinding.dialog = timePickerDialog
     }
 
     @Override
     override fun configureActionBar(): ActionBarConfiguration {
-        val title = ResourceUtils.getPhrase(requireContext(), R.string.demo_icon_title)
+        val title = ResourceUtils.getPhrase(requireContext(), R.string.demo_time_title)
         val subTitle = ResourceUtils.getPhrase(requireContext(), R.string.app_name)
         return ActionBarConfiguration(R.id.toolbar)
             .withActionButtons(true)
@@ -77,21 +78,17 @@ class FragmentDialogIconPicker : BaseFragmentWithViewDataBinding<FragmentDemoDia
     }
 
     private fun createDialog(dialogSavedState: Bundle?) {
-        iconPickerDialog = IconPickerDialogBuilder(this, childFragmentManager, DIALOG_TAG).apply {
-            val ctx = requireContext()
-            val title = getDefaultDialogTitle(ctx)
-            val message = getDefaultDialogMessage(ctx)
-            val positiveButtonText = getDefaultPositiveButtonText(ctx)
-            val negativeButtonText = getDefaultNegativeButtonText(ctx)
-            val positiveButtonClickListener = getDefaultPositiveButtonClickListener()
-            val negativeButtonClickListener = getDefaultNegativeButtonClickListener()
-            val onSelectionChanged = getDefaultSelectionChangedListener<IntArray?>(ctx)
+        val ctx = requireContext()
+        val positiveButtonText = getDefaultPositiveButtonText(ctx)
+        val negativeButtonText = getDefaultNegativeButtonText(ctx)
+        val positiveButtonClickListener = getDefaultPositiveButtonClickListener()
+        val negativeButtonClickListener = getDefaultNegativeButtonClickListener()
+        val onSelectionChanged = getDefaultSelectionChangedListener<Time?>(ctx)
+        timePickerDialog = TimePickerDialogBuilder(this, childFragmentManager, DIALOG_TAG).apply {
             withSavedState(dialogSavedState)
-            withTitle(title)
-            withMessage(message)
             withPositiveButton(DialogButtonConfiguration(positiveButtonText), positiveButtonClickListener)
             withNegativeButton(DialogButtonConfiguration(negativeButtonText), negativeButtonClickListener)
-            withSelectionCallback(onSelectionChanged)
+            withOnDateSelectedEvent(onSelectionChanged)
         }.buildDialog()
     }
 

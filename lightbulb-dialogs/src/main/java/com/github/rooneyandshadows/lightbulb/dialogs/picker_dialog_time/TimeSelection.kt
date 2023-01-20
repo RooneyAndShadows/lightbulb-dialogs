@@ -1,12 +1,16 @@
 package com.github.rooneyandshadows.lightbulb.dialogs.picker_dialog_time
 
 import com.github.rooneyandshadows.lightbulb.dialogs.base.BaseDialogSelection
+import com.github.rooneyandshadows.lightbulb.dialogs.picker_dialog_month.MonthPickerDialog
+import com.github.rooneyandshadows.lightbulb.dialogs.picker_dialog_time.TimePickerDialog.*
 import java.util.*
 
-internal class TimeSelection(current: IntArray?, draft: IntArray?) : BaseDialogSelection<IntArray?>(current, draft) {
+internal class TimeSelection(current: Time?, draft: Time?) : BaseDialogSelection<Time?>(current, draft) {
     @Override
-    override fun compareValues(v1: IntArray?, v2: IntArray?): Boolean {
-        return Arrays.equals(v1, v2)
+    override fun compareValues(v1: Time?, v2: Time?): Boolean {
+        if (v1 == null && v2 == null) return true
+        if (v1 == null || v2 == null) return false
+        return (v1.hour == v2.hour && v1.minute == v2.minute)
     }
 
     @Override

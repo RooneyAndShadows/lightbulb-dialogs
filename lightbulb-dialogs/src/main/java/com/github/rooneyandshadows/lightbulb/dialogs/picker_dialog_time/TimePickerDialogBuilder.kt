@@ -7,7 +7,7 @@ import com.github.rooneyandshadows.lightbulb.dialogs.base.BaseDialogBuilder
 import com.github.rooneyandshadows.lightbulb.dialogs.base.BasePickerDialogFragment.SelectionChangedListener
 import com.github.rooneyandshadows.lightbulb.dialogs.base.internal.*
 import com.github.rooneyandshadows.lightbulb.dialogs.base.internal.callbacks.*
-import com.github.rooneyandshadows.lightbulb.dialogs.picker_dialog_month.MonthPickerDialogBuilder
+import com.github.rooneyandshadows.lightbulb.dialogs.picker_dialog_time.TimePickerDialog.Time
 
 @Suppress("unused")
 class TimePickerDialogBuilder @JvmOverloads constructor(
@@ -15,8 +15,8 @@ class TimePickerDialogBuilder @JvmOverloads constructor(
     manager: FragmentManager,
     dialogTag: String,
 ) : BaseDialogBuilder<TimePickerDialog>(lifecycleOwner, manager, dialogTag) {
-    private var timeSetListener: SelectionChangedListener<IntArray?>? = null
-    private var initialTime: IntArray? = null
+    private var timeSetListener: SelectionChangedListener<Time?>? = null
+    private var initialTime: Time? = null
 
     @Override
     override fun withSavedState(savedState: Bundle?): TimePickerDialogBuilder {
@@ -85,19 +85,19 @@ class TimePickerDialogBuilder @JvmOverloads constructor(
     }
 
     @Override
-    fun withOnDateSelectedEvent(listener: SelectionChangedListener<IntArray?>): TimePickerDialogBuilder {
+    fun withOnDateSelectedEvent(listener: SelectionChangedListener<Time?>): TimePickerDialogBuilder {
         timeSetListener = listener
         return this
     }
 
     @Override
     fun withInitialTime(hour: Int, minute: Int): TimePickerDialogBuilder {
-        initialTime = intArrayOf(hour, minute)
+        initialTime = Time(hour, minute)
         return this
     }
 
     @Override
-    fun withInitialTime(time: IntArray): TimePickerDialogBuilder {
+    fun withInitialTime(time: Time): TimePickerDialogBuilder {
         initialTime = time
         return this
     }
