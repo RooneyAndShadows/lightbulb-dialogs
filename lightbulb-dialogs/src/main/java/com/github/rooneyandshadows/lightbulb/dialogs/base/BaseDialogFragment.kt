@@ -352,7 +352,7 @@ abstract class BaseDialogFragment : DialogFragment(), DefaultLifecycleObserver {
             super.show(manager, tag)
     }
 
-    fun saveDialogState(): Bundle? {
+    fun saveDialogState(): Bundle {
         return Bundle().apply {
             onSaveInstanceState(this)
         }

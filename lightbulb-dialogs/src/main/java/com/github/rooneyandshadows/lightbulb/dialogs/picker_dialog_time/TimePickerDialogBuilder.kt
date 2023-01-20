@@ -121,6 +121,10 @@ class TimePickerDialogBuilder @JvmOverloads constructor(
     private fun getExistingDialogOrCreate(): TimePickerDialog {
         val dialog = dialogParentFragmentManager.findFragmentByTag(dialogTag) as TimePickerDialog?
         return dialog ?: TimePickerDialog.newInstance().apply {
+            if (savedState != null) {
+                restoreDialogState(savedState)
+                return@apply
+            }
             dialogPositiveButton = positiveButtonConfiguration
             dialogNegativeButton = negativeButtonConfiguration
             isCancelable = cancelableOnClickOutside

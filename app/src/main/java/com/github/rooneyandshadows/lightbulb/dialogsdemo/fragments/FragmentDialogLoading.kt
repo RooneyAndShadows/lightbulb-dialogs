@@ -5,6 +5,7 @@ import android.view.View
 import com.github.rooneyandshadows.lightbulb.annotation_processors.annotations.FragmentConfiguration
 import com.github.rooneyandshadows.lightbulb.annotation_processors.annotations.FragmentScreen
 import com.github.rooneyandshadows.lightbulb.application.activity.slidermenu.drawable.NavigateBackDrawable
+import com.github.rooneyandshadows.lightbulb.application.activity.slidermenu.drawable.ShowMenuDrawable
 import com.github.rooneyandshadows.lightbulb.application.fragment.base.BaseFragmentWithViewDataBinding
 import com.github.rooneyandshadows.lightbulb.application.fragment.cofiguration.ActionBarConfiguration
 import com.github.rooneyandshadows.lightbulb.commons.utils.BundleUtils
@@ -22,7 +23,7 @@ import com.github.rooneyandshadows.lightbulb.dialogsdemo.spinner.DialogAnimation
 import com.github.rooneyandshadows.lightbulb.dialogsdemo.spinner.DialogTypeSpinner
 
 @FragmentScreen(screenName = "Loading", screenGroup = "Demo")
-@FragmentConfiguration(layoutName = "fragment_demo_dialog_loading")
+@FragmentConfiguration(layoutName = "fragment_demo_dialog_loading", hasLeftDrawer = true)
 class FragmentDialogLoading : BaseFragmentWithViewDataBinding<FragmentDemoDialogLoadingBinding>() {
     private lateinit var loadingDialog: LoadingDialog
 
@@ -62,6 +63,7 @@ class FragmentDialogLoading : BaseFragmentWithViewDataBinding<FragmentDemoDialog
         val subTitle = ResourceUtils.getPhrase(requireContext(), R.string.app_name)
         return ActionBarConfiguration(R.id.toolbar)
             .withActionButtons(true)
+            .attachToDrawer(true)
             .withTitle(title)
             .withSubTitle(subTitle)
     }
@@ -93,7 +95,7 @@ class FragmentDialogLoading : BaseFragmentWithViewDataBinding<FragmentDemoDialog
     }
 
     private fun setupDrawerButton() {
-        val actionBarDrawable = NavigateBackDrawable(requireContext())
+        val actionBarDrawable = ShowMenuDrawable(requireContext())
         actionBarDrawable.setEnabled(false)
         actionBarDrawable.backgroundColor = ResourceUtils.getColorByAttribute(requireContext(), R.attr.colorError)
         actionBarManager.setHomeIcon(actionBarDrawable)

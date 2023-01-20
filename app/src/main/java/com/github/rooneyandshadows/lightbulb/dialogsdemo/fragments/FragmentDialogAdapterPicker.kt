@@ -44,10 +44,12 @@ class FragmentDialogAdapterPicker : BaseFragmentWithViewDataBinding<FragmentDemo
         val animationTypeSpinner = viewBinding.dialogAnimationTypeDropdown
         typeSpinner.apply {
             setLifecycleOwner(this@FragmentDialogAdapterPicker)
+            dialog = adapterPickerDialog
             this.animationTypeSpinner = viewBinding.dialogAnimationTypeDropdown
         }
         animationTypeSpinner.apply {
             setLifecycleOwner(this@FragmentDialogAdapterPicker)
+            dialog = adapterPickerDialog
             this.typeSpinner = viewBinding.dialogTypeDropdown
         }
         viewBinding.dialog = adapterPickerDialog
