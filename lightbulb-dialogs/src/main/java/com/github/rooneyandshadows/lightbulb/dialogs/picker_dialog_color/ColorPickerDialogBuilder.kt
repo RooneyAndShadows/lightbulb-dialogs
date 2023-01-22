@@ -104,8 +104,7 @@ class ColorPickerDialogBuilder @JvmOverloads constructor(
             onCancelListener?.apply { addOnCancelListener(this) }
             onNegativeClickListener?.apply { addOnNegativeClickListeners(this) }
             onPositiveClickListener?.apply { addOnPositiveClickListener(this) }
-            changedCallback?.apply { setOnSelectionChangedListener(this) }
-
+            changedCallback?.apply { addOnSelectionChangedListener(this) }
         }
     }
 

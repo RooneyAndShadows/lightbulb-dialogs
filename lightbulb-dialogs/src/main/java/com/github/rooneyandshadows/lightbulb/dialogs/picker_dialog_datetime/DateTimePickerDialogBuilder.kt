@@ -111,7 +111,7 @@ class DateTimePickerDialogBuilder @JvmOverloads constructor(
             setDialogTag(dialogTag)
             onNegativeClickListener?.apply { addOnNegativeClickListeners(this) }
             onPositiveClickListener?.apply { addOnPositiveClickListener(this) }
-            dateSetListener?.apply { setOnSelectionChangedListener(this) }
+            dateSetListener?.apply { addOnSelectionChangedListener(this) }
             onShowListener?.apply { addOnShowListener(this) }
             onHideListener?.apply { addOnHideListener(this) }
             onCancelListener?.apply { addOnCancelListener(this) }

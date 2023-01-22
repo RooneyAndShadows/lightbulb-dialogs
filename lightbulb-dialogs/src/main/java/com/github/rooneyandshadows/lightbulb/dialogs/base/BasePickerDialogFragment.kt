@@ -6,11 +6,12 @@ import com.github.rooneyandshadows.lightbulb.dialogs.base.internal.callbacks.Dia
 import com.github.rooneyandshadows.lightbulb.dialogs.base.internal.callbacks.DialogCancelListener
 import com.github.rooneyandshadows.lightbulb.dialogs.base.internal.callbacks.DialogShowListener
 
+@Suppress("unused")
 abstract class BasePickerDialogFragment<SelectionType>(
     protected val selection: BaseDialogSelection<SelectionType>,
-    private val synchronizeUiOnDraftChange: Boolean
+    private val synchronizeUiOnDraftChange: Boolean,
 ) : BaseDialogFragment() {
-    private var onSelectionChangedListener: SelectionChangedListener<SelectionType>? = null
+    private var onSelectionChangedListeners: MutableList<SelectionChangedListener<SelectionType>> = mutableListOf()
 
     protected constructor(selection: BaseDialogSelection<SelectionType>) : this(selection, true)
 
@@ -20,8 +21,12 @@ abstract class BasePickerDialogFragment<SelectionType>(
 
     protected abstract fun synchronizeSelectUi()
 
-    fun setOnSelectionChangedListener(onSelectionChangedListener: SelectionChangedListener<SelectionType>?) {
-        this.onSelectionChangedListener = onSelectionChangedListener
+    fun addOnSelectionChangedListener(onSelectionChangedListener: SelectionChangedListener<SelectionType>) {
+        onSelectionChangedListeners.add(onSelectionChangedListener)
+    }
+
+    fun removeOnSelectionChangedListener(onSelectionChangedListener: SelectionChangedListener<SelectionType>) {
+        onSelectionChangedListeners.remove(onSelectionChangedListener)
     }
 
     open fun setSelection(newSelection: SelectionType?) {
@@ -37,7 +42,9 @@ abstract class BasePickerDialogFragment<SelectionType>(
     }
 
     protected fun dispatchSelectionChangedEvent(oldValue: SelectionType?, newValue: SelectionType?) {
-        if (onSelectionChangedListener != null) onSelectionChangedListener!!.onSelectionChanged(this, oldValue, newValue)
+        onSelectionChangedListeners.forEach {
+            it.onSelectionChanged(this, oldValue, newValue)
+        }
     }
 
     private fun initializeListeners() {
@@ -86,7 +93,7 @@ abstract class BasePickerDialogFragment<SelectionType>(
         fun onSelectionChanged(
             dialog: BasePickerDialogFragment<SelectionType>,
             oldValue: SelectionType?,
-            newValue: SelectionType?
+            newValue: SelectionType?,
         )
     }
 }

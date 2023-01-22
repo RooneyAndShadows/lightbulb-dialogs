@@ -7,7 +7,6 @@ import androidx.fragment.app.FragmentManager
 import com.github.rooneyandshadows.lightbulb.dialogs.base.BaseDialogBuilder
 import com.github.rooneyandshadows.lightbulb.dialogs.base.internal.*
 import com.github.rooneyandshadows.lightbulb.dialogs.base.internal.callbacks.*
-import com.github.rooneyandshadows.lightbulb.dialogs.picker_dialog_datetime.DateTimePickerDialogBuilder
 
 @Suppress("unused")
 class IconPickerDialogBuilder @JvmOverloads constructor(
@@ -106,7 +105,7 @@ class IconPickerDialogBuilder @JvmOverloads constructor(
             onCancelListener?.apply { addOnCancelListener(this) }
             onNegativeClickListener?.apply { addOnNegativeClickListeners(this) }
             onPositiveClickListener?.apply { addOnPositiveClickListener(this) }
-            setOnSelectionChangedListener(changedCallback)
+            changedCallback?.apply { addOnSelectionChangedListener(this) }
         }
     }
 

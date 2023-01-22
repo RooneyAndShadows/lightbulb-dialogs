@@ -109,7 +109,7 @@ class TimePickerDialogBuilder @JvmOverloads constructor(
             setDialogCallbacks(dialogListeners)
             setParentFragManager(dialogParentFragmentManager)
             setDialogTag(dialogTag)
-            setOnSelectionChangedListener(timeSetListener)
+            timeSetListener?.apply { addOnSelectionChangedListener(this) }
             onNegativeClickListener?.apply { addOnNegativeClickListeners(this) }
             onPositiveClickListener?.apply { addOnPositiveClickListener(this) }
             onShowListener?.apply { addOnShowListener(this) }

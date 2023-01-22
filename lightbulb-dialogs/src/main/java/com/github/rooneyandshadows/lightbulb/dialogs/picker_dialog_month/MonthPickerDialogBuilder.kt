@@ -147,7 +147,7 @@ class MonthPickerDialogBuilder @JvmOverloads constructor(
             onShowListener?.apply { addOnShowListener(this) }
             onHideListener?.apply { addOnHideListener(this) }
             onCancelListener?.apply { addOnCancelListener(this) }
-            monthSetListener?.apply { setOnSelectionChangedListener(this) }
+            monthSetListener?.apply { addOnSelectionChangedListener(this) }
         }
     }
 

@@ -119,7 +119,7 @@ class AdapterPickerDialogBuilder<DialogType : AdapterPickerDialog<out EasyAdapte
             onShowListener?.apply { addOnShowListener(this) }
             onHideListener?.apply { addOnHideListener(this) }
             onCancelListener?.apply { addOnCancelListener(this) }
-            changedCallback?.apply { setOnSelectionChangedListener(this) }
+            changedCallback?.apply { addOnSelectionChangedListener(this) }
             setItemDecoration(itemDecoration)
         }
     }

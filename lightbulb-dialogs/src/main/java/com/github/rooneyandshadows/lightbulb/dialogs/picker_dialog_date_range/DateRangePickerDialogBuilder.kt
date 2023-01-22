@@ -7,7 +7,6 @@ import androidx.fragment.app.FragmentManager
 import com.github.rooneyandshadows.lightbulb.dialogs.base.BaseDialogBuilder
 import com.github.rooneyandshadows.lightbulb.dialogs.base.internal.*
 import com.github.rooneyandshadows.lightbulb.dialogs.base.internal.callbacks.*
-import com.github.rooneyandshadows.lightbulb.dialogs.picker_dialog_color.ColorPickerDialogBuilder
 import java.time.OffsetDateTime
 
 @Suppress("unused")
@@ -123,7 +122,7 @@ class DateRangePickerDialogBuilder @JvmOverloads constructor(
             dateFormat?.apply { dialogDateFormat = this }
             onNegativeClickListener?.apply { addOnNegativeClickListeners(this) }
             onPositiveClickListener?.apply { addOnPositiveClickListener(this) }
-            dateSetListener?.apply { setOnSelectionChangedListener(this) }
+            dateSetListener?.apply { addOnSelectionChangedListener(this) }
             onShowListener?.apply { addOnShowListener(this) }
             onHideListener?.apply { addOnHideListener(this) }
             onCancelListener?.apply { addOnCancelListener(this) }
