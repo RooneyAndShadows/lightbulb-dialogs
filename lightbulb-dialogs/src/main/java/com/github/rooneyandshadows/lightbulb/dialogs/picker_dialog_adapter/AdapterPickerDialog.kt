@@ -26,13 +26,13 @@ abstract class AdapterPickerDialog<ItemType : EasyAdapterDataModel> :
     private val adapterStateTag = "ADAPTER_STATE_TAG"
     private val adapterSelectionTag = "ADAPTER_SELECTION_TAG"
     private val adapterSelectionDraftTag = "ADAPTER_SELECTION_DRAFT_TAG"
-    protected var recyclerView: RecyclerView? = null
-        private set
-    protected val adapter: EasyRecyclerAdapter<ItemType> by lazy {
-        return@lazy adapterCreator.createAdapter()
-    }
     private var itemDecoration: RecyclerView.ItemDecoration? = null
     private val selectionListener: EasyAdapterSelectionChangedListener
+    protected var recyclerView: RecyclerView? = null
+        private set
+    val adapter: EasyRecyclerAdapter<ItemType> by lazy {
+        return@lazy adapterCreator.createAdapter()
+    }
     protected abstract val adapterCreator: AdapterCreator<ItemType>
 
     companion object {
@@ -169,6 +169,18 @@ abstract class AdapterPickerDialog<ItemType : EasyAdapterDataModel> :
             selection.setDraftSelection(draftSelection)
             adapter.restoreAdapterState(adapterState)
         }
+    }
+
+    @Override
+    override fun setSelection(newSelection: IntArray?) {
+        super.setSelection(newSelection)
+        adapter.selectPositions(positions = newSelection, newState = true, incremental = false)
+    }
+
+    fun selectItem(item: ItemType?) {
+        if (item == null) return
+        val position = adapter.getPosition(item)
+        if (position != -1) setSelection(intArrayOf(position))
     }
 
     fun setSelection(newSelection: Int) {
