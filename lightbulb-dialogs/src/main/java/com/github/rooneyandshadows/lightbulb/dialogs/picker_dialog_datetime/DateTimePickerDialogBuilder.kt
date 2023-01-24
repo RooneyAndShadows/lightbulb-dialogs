@@ -17,7 +17,7 @@ class DateTimePickerDialogBuilder @JvmOverloads constructor(
 ) : BaseDialogBuilder<DateTimePickerDialog>(lifecycleOwner,
     manager,
     dialogTag) {
-    private var dateSetListener: SelectionChangedListener<OffsetDateTime?>? = null
+    private var dateSetListener: SelectionChangedListener<OffsetDateTime>? = null
     private var initialDate: OffsetDateTime? = null
     private var dateFormat: String? = null
 
@@ -87,7 +87,7 @@ class DateTimePickerDialogBuilder @JvmOverloads constructor(
         return super.withDialogListeners(listeners) as DateTimePickerDialogBuilder
     }
 
-    fun withOnDateSelectedEvent(listener: SelectionChangedListener<OffsetDateTime?>): DateTimePickerDialogBuilder {
+    fun withOnDateSelectedEvent(listener: SelectionChangedListener<OffsetDateTime>): DateTimePickerDialogBuilder {
         dateSetListener = listener
         return this
     }

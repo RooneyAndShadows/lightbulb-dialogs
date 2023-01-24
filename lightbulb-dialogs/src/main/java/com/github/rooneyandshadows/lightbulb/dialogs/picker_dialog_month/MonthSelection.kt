@@ -3,7 +3,7 @@ package com.github.rooneyandshadows.lightbulb.dialogs.picker_dialog_month
 import com.github.rooneyandshadows.lightbulb.dialogs.base.BaseDialogSelection
 import com.github.rooneyandshadows.lightbulb.dialogs.picker_dialog_month.MonthPickerDialog.*
 
-internal class MonthSelection(current: Month?, draft: Month?) : BaseDialogSelection<Month?>(current, draft) {
+internal class MonthSelection(current: Month?, draft: Month?) : BaseDialogSelection<Month>(current, draft) {
     @Override
     override fun compareValues(v1: Month?, v2: Month?): Boolean {
         if (v1 == null && v2 == null) return true

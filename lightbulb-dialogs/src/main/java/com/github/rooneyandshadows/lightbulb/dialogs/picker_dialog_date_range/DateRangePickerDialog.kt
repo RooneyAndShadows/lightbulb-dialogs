@@ -2,25 +2,29 @@ package com.github.rooneyandshadows.lightbulb.dialogs.picker_dialog_date_range
 
 import android.content.res.Configuration
 import android.os.Bundle
+import android.os.Parcel
+import android.os.Parcelable
 import android.view.LayoutInflater
 import android.view.View
 import android.widget.TextView
 import com.github.rooneyandshadows.java.commons.date.DateUtilsOffsetDate
 import com.github.rooneyandshadows.java.commons.string.StringUtils
+import com.github.rooneyandshadows.lightbulb.commons.utils.BundleUtils
+import com.github.rooneyandshadows.lightbulb.commons.utils.ParcelUtils
 import com.github.rooneyandshadows.lightbulb.commons.utils.ResourceUtils
 import com.github.rooneyandshadows.lightbulb.dialogs.R
 import com.github.rooneyandshadows.lightbulb.dialogs.base.BasePickerDialogFragment
 import com.github.rooneyandshadows.lightbulb.dialogs.base.constraints.regular.RegularDialogConstraints
 import com.github.rooneyandshadows.lightbulb.dialogs.base.constraints.regular.RegularDialogConstraintsBuilder
 import com.github.rooneyandshadows.lightbulb.dialogs.base.internal.DialogTypes
+import com.github.rooneyandshadows.lightbulb.dialogs.picker_dialog_date_range.DateRangePickerDialog.DateRange
 import com.prolificinteractive.materialcalendarview.CalendarDay
 import com.prolificinteractive.materialcalendarview.MaterialCalendarView
 import java.time.OffsetDateTime
 import java.time.ZoneOffset
-import java.util.*
 
-@Suppress("MemberVisibilityCanBePrivate", "UNUSED_PARAMETER")
-class DateRangePickerDialog : BasePickerDialogFragment<Array<OffsetDateTime?>?>(DateRangeSelection(null, null)) {
+@Suppress("MemberVisibilityCanBePrivate", "UNUSED_PARAMETER", "unused")
+class DateRangePickerDialog : BasePickerDialogFragment<DateRange>(DateRangeSelection(null, null)) {
     private lateinit var textViewFrom: TextView
     private lateinit var textViewTo: TextView
     private lateinit var textViewFromValue: TextView
@@ -46,10 +50,8 @@ class DateRangePickerDialog : BasePickerDialogFragment<Array<OffsetDateTime?>?>(
         set(value) {}
 
     companion object {
-        private const val SELECTION_FROM_TAG = "DATE_RANGE_SELECTION_FROM_TAG"
-        private const val SELECTION_TO_TAG = "DATE_RANGE_SELECTION_TO_TAG"
-        private const val DRAFT_FROM_TAG = "DATE_RANGE_DRAFT_FROM_TAG"
-        private const val DRAFT_TO_TAG = "DATE_RANGE_DRAFT_TO_TAG"
+        private const val SELECTION_CURRENT_TAG = "SELECTION_CURRENT_TAG"
+        private const val SELECTION_DRAFT_TAG = "SELECTION_DRAFT_TAG"
         private const val DATE_RANGE_FROM_TEXT_TAG = "DATE_RANGE_FROM_TEXT_TAG"
         private const val DATE_RANGE_TO_TEXT_TAG = "DATE_RANGE_TO_TEXT_TAG"
         private const val DATE_FORMAT_TAG = "DATE_FORMAT_TAG"
@@ -77,12 +79,6 @@ class DateRangePickerDialog : BasePickerDialogFragment<Array<OffsetDateTime?>?>(
         val defaultTo = ResourceUtils.getPhrase(requireContext(), R.string.dialog_range_picker_to_text)
         dialogTextFrom = dialogTextFrom ?: defaultFrom
         dialogTextTo = dialogTextTo ?: defaultTo
-        if (hasSelection()) selection.setCurrentSelection(
-            arrayOf(
-                selection.getCurrentSelection()?.get(0),
-                selection.getCurrentSelection()?.get(1)
-            )
-        )
     }
 
     @Override
@@ -90,17 +86,11 @@ class DateRangePickerDialog : BasePickerDialogFragment<Array<OffsetDateTime?>?>(
         super.doOnSaveInstanceState(outState)
         outState!!.putString(DATE_FROM_ZONE_TAG, offsetFrom.toString())
         outState.putString(DATE_TO_ZONE_TAG, offsetTo.toString())
-        selection.getCurrentSelection()?.get(0)?.apply {
-            outState.putString(SELECTION_FROM_TAG, getDateString(this))
+        selection.getCurrentSelection()?.apply {
+            BundleUtils.putParcelable(SELECTION_CURRENT_TAG, outState, this)
         }
-        selection.getCurrentSelection()?.get(1)?.apply {
-            outState.putString(SELECTION_TO_TAG, getDateString(this))
-        }
-        selection.getDraftSelection()?.get(0)?.apply {
-            outState.putString(DRAFT_FROM_TAG, getDateString(this))
-        }
-        selection.getDraftSelection()?.get(1)?.apply {
-            outState.putString(DRAFT_TO_TAG, getDateString(this))
+        selection.getDraftSelection()?.apply {
+            BundleUtils.putParcelable(SELECTION_DRAFT_TAG, outState, this)
         }
         outState.putString(DATE_RANGE_FROM_TEXT_TAG, dialogTextFrom)
         outState.putString(DATE_RANGE_TO_TEXT_TAG, dialogTextTo)
@@ -114,12 +104,12 @@ class DateRangePickerDialog : BasePickerDialogFragment<Array<OffsetDateTime?>?>(
         dialogTextFrom = savedState.getString(DATE_RANGE_FROM_TEXT_TAG)
         dialogTextTo = savedState.getString(DATE_RANGE_TO_TEXT_TAG)
         dialogDateFormat = StringUtils.getOrDefault(savedState.getString(DATE_FORMAT_TAG), dialogDateFormat)
-        val selectionFrom = getDateFromString(savedState.getString(SELECTION_FROM_TAG))
-        val selectionTo = getDateFromString(savedState.getString(SELECTION_TO_TAG))
-        val draftFrom = getDateFromString(savedState.getString(DRAFT_FROM_TAG))
-        val draftTo = getDateFromString(savedState.getString(DRAFT_TO_TAG))
-        selection.setCurrentSelection(arrayOf(selectionFrom, selectionTo), false)
-        selection.setDraftSelection(arrayOf(draftFrom, draftTo), false)
+        BundleUtils.getParcelable(SELECTION_CURRENT_TAG, savedState, DateRange::class.java)?.apply {
+            selection.setCurrentSelection(this, false)
+        }
+        BundleUtils.getParcelable(SELECTION_DRAFT_TAG, savedState, DateRange::class.java)?.apply {
+            selection.setDraftSelection(this, false)
+        }
     }
 
     @Override
@@ -145,8 +135,9 @@ class DateRangePickerDialog : BasePickerDialogFragment<Array<OffsetDateTime?>?>(
             val last = dates[dates.size - 1]
             val newFrom = DateUtilsOffsetDate.date(first.year, first.month, first.day, 0, 0, 0, offsetFrom)
             val newTo = DateUtilsOffsetDate.date(last.year, last.month, last.day, 23, 59, 59, offsetTo)
-            if (isDialogShown) selection.setDraftSelection(arrayOf(newFrom, newTo))
-            else selection.setCurrentSelection(arrayOf(newFrom, newTo))
+            val range = DateRange(newFrom, newTo)
+            if (isDialogShown) selection.setDraftSelection(range)
+            else selection.setCurrentSelection(range)
         }
         synchronizeSelectUi()
     }
@@ -154,10 +145,10 @@ class DateRangePickerDialog : BasePickerDialogFragment<Array<OffsetDateTime?>?>(
     @Override
     override fun synchronizeSelectUi() {
         val context = requireContext()
-        val newFrom = if (selection.hasDraftSelection()) selection.getDraftSelection()?.get(0)
-        else selection.getCurrentSelection()?.get(0)
-        val newTo = if (selection.hasDraftSelection()) selection.getDraftSelection()?.get(1)
-        else selection.getCurrentSelection()?.get(1)
+        val newFrom = if (selection.hasDraftSelection()) selection.getDraftSelection()?.from
+        else selection.getCurrentSelection()?.from
+        val newTo = if (selection.hasDraftSelection()) selection.getDraftSelection()?.to
+        else selection.getCurrentSelection()?.to
         if (newFrom == null && newTo == null) calendar.post { calendar.clearSelection() }
         else if (newFrom != null && newTo != null) {
             calendar.selectedDates.apply {
@@ -173,34 +164,27 @@ class DateRangePickerDialog : BasePickerDialogFragment<Array<OffsetDateTime?>?>(
                 }
             }
         }
-        var dateStringFrom = DateUtilsOffsetDate.getDateString(dialogDateFormat, newFrom, Locale.getDefault())
-        var dateStringTo = DateUtilsOffsetDate.getDateString(dialogDateFormat, newTo, Locale.getDefault())
-        if (dateStringFrom == null || dateStringFrom == "") dateStringFrom =
-            ResourceUtils.getPhrase(context, R.string.dialog_date_picker_empty_text)
-        if (dateStringTo == null || dateStringTo == "") dateStringTo =
-            ResourceUtils.getPhrase(context, R.string.dialog_date_picker_empty_text)
-        textViewFromValue.text = dateStringFrom
-        textViewToValue.text = dateStringTo
+        textViewFromValue.apply {
+            val default = ResourceUtils.getPhrase(context, R.string.dialog_date_picker_empty_text)
+            text = DateUtilsOffsetDate.getDateString(dialogDateFormat, newFrom) ?: default
+        }
+        textViewToValue.apply {
+            val default = ResourceUtils.getPhrase(context, R.string.dialog_date_picker_empty_text)
+            text = DateUtilsOffsetDate.getDateString(dialogDateFormat, newTo) ?: default
+        }
     }
 
     @Override
-    override fun setSelection(newSelection: Array<OffsetDateTime?>?) {
-        var selection = newSelection
-        if (selection == null) selection = arrayOf(null, null)
-        setSelection(selection[0], selection[1])
+    override fun setSelection(newSelection: DateRange?) {
+        val validatedRange = prepareRangeForSet(newSelection)
+        selection.setCurrentSelection(validatedRange)
+        offsetFrom = validatedRange?.from?.offset
+        offsetTo = validatedRange?.from?.offset
     }
 
-    fun setSelection(from: OffsetDateTime?, to: OffsetDateTime?) {
-        var newFrom = from
-        var newTo = to
-        val preparedDates = prepareRangeForSet(newFrom, newTo)
-        newFrom = preparedDates[0]
-        newTo = preparedDates[1]
-        val isValid = newFrom != null && newTo != null || newFrom == null && newTo == null
-        if (!isValid) return
-        selection.setCurrentSelection(arrayOf(newFrom, newTo))
-        if (newFrom != null) offsetFrom = newFrom.offset
-        if (newTo != null) offsetTo = newTo.offset
+    fun setSelection(from: OffsetDateTime, to: OffsetDateTime) {
+        val rangeToSet = DateRange(from, to)
+        setSelection(rangeToSet)
     }
 
     private fun selectViews(view: View) {
@@ -210,31 +194,22 @@ class DateRangePickerDialog : BasePickerDialogFragment<Array<OffsetDateTime?>?>(
         textViewToValue = view.findViewById(R.id.rangePickerToValue)
     }
 
-    private fun getDateFromString(dateString: String?): OffsetDateTime? {
-        return DateUtilsOffsetDate.getDateFromString(DateUtilsOffsetDate.defaultFormatWithTimeZone, dateString)
-    }
-
-    private fun getDateString(date: OffsetDateTime?): String? {
-        return DateUtilsOffsetDate.getDateString(DateUtilsOffsetDate.defaultFormatWithTimeZone, date)
-    }
-
-    private fun prepareRangeForSet(from: OffsetDateTime?, to: OffsetDateTime?): Array<OffsetDateTime?> {
-        var newFrom = from
-        var newTo = to
-        if (newFrom != null && newTo != null) {
-            if (DateUtilsOffsetDate.isDateAfter(newFrom, newTo)) {
-                val tmp: OffsetDateTime = newFrom
-                newFrom = newTo
-                newTo = tmp
-            } else if (DateUtilsOffsetDate.isDateBefore(newTo, newFrom)) {
-                val tmp: OffsetDateTime = newFrom
-                newFrom = newTo
-                newTo = tmp
-            }
+    private fun prepareRangeForSet(range: DateRange?): DateRange? {
+        range ?: return null
+        var from = range.from
+        var to = range.to
+        if (DateUtilsOffsetDate.isDateAfter(from, to)) {
+            val tmp: OffsetDateTime = from
+            from = to
+            to = tmp
+        } else if (DateUtilsOffsetDate.isDateBefore(to, from)) {
+            val tmp: OffsetDateTime = from
+            from = to
+            to = tmp
         }
-        newFrom = DateUtilsOffsetDate.setTimeToDate(newFrom, 0, 0, 0)
-        newTo = DateUtilsOffsetDate.setTimeToDate(newTo, 23, 59, 59)
-        return arrayOf(newFrom, newTo)
+        from = DateUtilsOffsetDate.setTimeToDate(from, 0, 0, 0)
+        to = DateUtilsOffsetDate.setTimeToDate(to, 23, 59, 59)
+        return DateRange(from, to)
     }
 
     private fun dateToCalendarDay(date: OffsetDateTime?): CalendarDay? {
@@ -259,5 +234,52 @@ class DateRangePickerDialog : BasePickerDialogFragment<Array<OffsetDateTime?>?>(
 
     private fun compareDates(testDate: OffsetDateTime?, target: OffsetDateTime?): Boolean {
         return DateUtilsOffsetDate.isDateEqual(testDate, target, false)
+    }
+
+    class DateRange(val from: OffsetDateTime, val to: OffsetDateTime) : Parcelable {
+        constructor(parcel: Parcel) : this(
+            ParcelUtils.readOffsetDateTime(parcel)!!,
+            ParcelUtils.readOffsetDateTime(parcel)!!
+        )
+
+        fun compare(from: OffsetDateTime, to: OffsetDateTime): Boolean {
+            val fromEquals = DateUtilsOffsetDate.isDateEqual(this.from, from, false)
+            val toEquals = DateUtilsOffsetDate.isDateEqual(this.to, to, false)
+            return fromEquals && toEquals
+        }
+
+        fun compare(target: DateRange?): Boolean {
+            if (target == null) return false
+            return compare(target.from, target.to)
+        }
+
+        fun getFromString(format: String): String {
+            return DateUtilsOffsetDate.getDateString(format, from)
+        }
+
+        fun getToString(format: String): String {
+            return DateUtilsOffsetDate.getDateString(format, to)
+        }
+
+        @Override
+        override fun writeToParcel(parcel: Parcel, flags: Int) {
+            ParcelUtils.writeOffsetDateTime(parcel, from)
+            ParcelUtils.writeOffsetDateTime(parcel, to)
+        }
+
+        @Override
+        override fun describeContents(): Int {
+            return 0
+        }
+
+        companion object CREATOR : Parcelable.Creator<DateRange> {
+            override fun createFromParcel(parcel: Parcel): DateRange {
+                return DateRange(parcel)
+            }
+
+            override fun newArray(size: Int): Array<DateRange?> {
+                return arrayOfNulls(size)
+            }
+        }
     }
 }

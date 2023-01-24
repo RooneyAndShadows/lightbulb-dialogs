@@ -15,7 +15,7 @@ class TimePickerDialogBuilder @JvmOverloads constructor(
     manager: FragmentManager,
     dialogTag: String,
 ) : BaseDialogBuilder<TimePickerDialog>(lifecycleOwner, manager, dialogTag) {
-    private var timeSetListener: SelectionChangedListener<Time?>? = null
+    private var timeSetListener: SelectionChangedListener<Time>? = null
     private var initialTime: Time? = null
 
     @Override
@@ -85,7 +85,7 @@ class TimePickerDialogBuilder @JvmOverloads constructor(
     }
 
     @Override
-    fun withOnDateSelectedEvent(listener: SelectionChangedListener<Time?>): TimePickerDialogBuilder {
+    fun withOnDateSelectedEvent(listener: SelectionChangedListener<Time>): TimePickerDialogBuilder {
         timeSetListener = listener
         return this
     }

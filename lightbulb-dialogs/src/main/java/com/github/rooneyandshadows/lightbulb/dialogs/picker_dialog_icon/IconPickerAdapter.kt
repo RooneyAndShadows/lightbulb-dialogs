@@ -11,6 +11,7 @@ import androidx.recyclerview.widget.RecyclerView
 import com.github.rooneyandshadows.lightbulb.commons.utils.IconUtils
 import com.github.rooneyandshadows.lightbulb.commons.utils.ResourceUtils
 import com.github.rooneyandshadows.lightbulb.dialogs.R
+import com.github.rooneyandshadows.lightbulb.dialogs.picker_dialog_icon.IconPickerAdapter.*
 import com.github.rooneyandshadows.lightbulb.recycleradapters.abstraction.EasyAdapterDataModel
 import com.github.rooneyandshadows.lightbulb.recycleradapters.abstraction.EasyAdapterSelectableModes
 import com.github.rooneyandshadows.lightbulb.recycleradapters.abstraction.EasyRecyclerAdapter
@@ -19,7 +20,7 @@ import com.mikepenz.iconics.typeface.library.fontawesome.FontAwesome
 
 @Suppress("unused")
 class IconPickerAdapter(selectableMode: EasyAdapterSelectableModes) :
-    EasyRecyclerAdapter<IconPickerAdapter.IconModel>(selectableMode) {
+    EasyRecyclerAdapter<IconModel>(selectableMode) {
 
     @Override
     override fun onCreateViewHolder(parent: ViewGroup, viewType: Int): RecyclerView.ViewHolder {

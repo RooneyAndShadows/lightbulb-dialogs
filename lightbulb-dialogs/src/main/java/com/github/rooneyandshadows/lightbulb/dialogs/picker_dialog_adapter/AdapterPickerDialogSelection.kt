@@ -4,7 +4,7 @@ import com.github.rooneyandshadows.lightbulb.dialogs.base.BaseDialogSelection
 import java.util.*
 
 internal class AdapterPickerDialogSelection(current: IntArray?, draft: IntArray?) :
-    BaseDialogSelection<IntArray?>(current, draft) {
+    BaseDialogSelection<IntArray>(current, draft) {
     override fun compareValues(v1: IntArray?, v2: IntArray?): Boolean {
         return Arrays.equals(v1, v2)
     }

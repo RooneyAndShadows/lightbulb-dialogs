@@ -22,7 +22,7 @@ import com.github.rooneyandshadows.lightbulb.recycleradapters.abstraction.callba
 
 @Suppress("unused")
 abstract class AdapterPickerDialog<ItemType : EasyAdapterDataModel> :
-    BasePickerDialogFragment<IntArray?>(AdapterPickerDialogSelection(null, null)) {
+    BasePickerDialogFragment<IntArray>(AdapterPickerDialogSelection(null, null)) {
     private val adapterStateTag = "ADAPTER_STATE_TAG"
     private val adapterSelectionTag = "ADAPTER_SELECTION_TAG"
     private val adapterSelectionDraftTag = "ADAPTER_SELECTION_DRAFT_TAG"

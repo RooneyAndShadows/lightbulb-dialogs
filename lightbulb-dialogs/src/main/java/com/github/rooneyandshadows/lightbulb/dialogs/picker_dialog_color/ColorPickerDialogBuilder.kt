@@ -14,7 +14,7 @@ class ColorPickerDialogBuilder @JvmOverloads constructor(
     manager: FragmentManager,
     dialogTag: String,
 ) : BaseDialogBuilder<ColorPickerDialog>(lifecycleOwner, manager, dialogTag) {
-    private var changedCallback: SelectionChangedListener<IntArray?>? = null
+    private var changedCallback: SelectionChangedListener<IntArray>? = null
     private var selection: IntArray? = null
 
     @Override
@@ -83,7 +83,7 @@ class ColorPickerDialogBuilder @JvmOverloads constructor(
         return super.withDialogListeners(listeners) as ColorPickerDialogBuilder
     }
 
-    fun withSelectionCallback(listener: SelectionChangedListener<IntArray?>): ColorPickerDialogBuilder {
+    fun withSelectionCallback(listener: SelectionChangedListener<IntArray>): ColorPickerDialogBuilder {
         changedCallback = listener
         return this
     }

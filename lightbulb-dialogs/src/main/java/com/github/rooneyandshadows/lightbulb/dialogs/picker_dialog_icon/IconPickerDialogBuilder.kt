@@ -14,7 +14,7 @@ class IconPickerDialogBuilder @JvmOverloads constructor(
     manager: FragmentManager,
     dialogTag: String,
 ) : BaseDialogBuilder<IconPickerDialog>(lifecycleOwner, manager, dialogTag) {
-    private var changedCallback: SelectionChangedListener<IntArray?>? = null
+    private var changedCallback: SelectionChangedListener<IntArray>? = null
     private var selection: IntArray? = null
 
     @Override
@@ -83,7 +83,7 @@ class IconPickerDialogBuilder @JvmOverloads constructor(
         return super.withDialogListeners(listeners) as IconPickerDialogBuilder
     }
 
-    fun withSelectionCallback(listener: SelectionChangedListener<IntArray?>): IconPickerDialogBuilder {
+    fun withSelectionCallback(listener: SelectionChangedListener<IntArray>): IconPickerDialogBuilder {
         changedCallback = listener
         return this
     }

@@ -21,7 +21,7 @@ import java.time.ZoneOffset
 import java.util.*
 
 @Suppress("UNUSED_PARAMETER")
-class DateTimePickerDialog : BasePickerDialogFragment<OffsetDateTime?>(DateTimeSelection(null, null)) {
+class DateTimePickerDialog : BasePickerDialogFragment<OffsetDateTime>(DateTimeSelection(null, null)) {
     private var showingTimePicker = false
     private lateinit var calendarView: MaterialCalendarView
     private lateinit var timePickerView: TimePicker

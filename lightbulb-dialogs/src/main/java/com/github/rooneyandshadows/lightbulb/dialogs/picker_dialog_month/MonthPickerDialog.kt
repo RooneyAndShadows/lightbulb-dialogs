@@ -23,14 +23,60 @@ import kotlin.math.max
 import kotlin.math.min
 
 @Suppress("unused", "MemberVisibilityCanBePrivate", "UNUSED_PARAMETER")
-class MonthPickerDialog : BasePickerDialogFragment<Month?>(MonthSelection(null, null)) {
-    private var minYear = DEFAULT_YEAR_MIN
-    private var maxYear = DEFAULT_YEAR_MAX
-    private val disabledMonths: MutableList<Month> = mutableListOf()
-    private val enabledMonths: MutableList<Month> = mutableListOf()
+class MonthPickerDialog : BasePickerDialogFragment<Month>(MonthSelection(null, null)) {
     private var monthCalendar: MonthCalendarView? = null
     private lateinit var pickerHeadingSelectionTextView: TextView
     var dialogDateFormat = DEFAULT_DATE_FORMAT
+    var minYear = DEFAULT_YEAR_MIN
+        set(value) {
+            field = value
+            setCalendarBounds(field, maxYear)
+        }
+        get() = monthCalendar?.minYear ?: field
+    var maxYear = DEFAULT_YEAR_MAX
+        set(value) {
+            field = value
+            setCalendarBounds(minYear, field)
+        }
+        get() = monthCalendar?.maxYear ?: field
+    var disabledMonths: List<Month> = listOf()
+        set(value) {
+            field = value
+            field.apply {
+                val currentSelection = selection.getCurrentSelection()
+                if (any { it.compare(currentSelection) })
+                    clearSelection()
+            }
+            monthCalendar?.apply {
+                val monthEntries = monthsToMonthEntries(field)
+                setDisabledMonths(monthEntries)
+            }
+        }
+        get() = field.toList()
+    var enabledMonths: List<Month> = listOf()
+        set(value) {
+            field = value
+            field.apply {
+                if (isNotEmpty()) {
+                    minYear = first().year
+                    maxYear = last().year
+                    var clearCurrentSelection = true
+                    forEach { enabledMonth ->
+                        val currentYear = enabledMonth.year
+                        if (enabledMonth.compare(selection.getCurrentSelection()))
+                            clearCurrentSelection = false
+                        if (currentYear < minYear) minYear = currentYear
+                        if (currentYear > maxYear) maxYear = currentYear
+                    }
+                    if (clearCurrentSelection) clearSelection()
+                }
+                monthCalendar?.apply {
+                    val monthEntries = monthsToMonthEntries(field)
+                    setEnabledMonths(monthEntries)
+                }
+            }
+        }
+        get() = field.toList()
     val selectionAsArray: IntArray?
         get() = selectionAsMonth?.toArray()
     val selectionAsDate: OffsetDateTime?
@@ -96,10 +142,10 @@ class MonthPickerDialog : BasePickerDialogFragment<Month?>(MonthSelection(null, 
             selection.setDraftSelection(this, false)
         }
         BundleUtils.getParcelableArrayList(PICKER_ENABLED_MONTHS, savedState, Month::class.java)?.apply {
-            enabledMonths.addAll(this)
+            enabledMonths = this
         }
         BundleUtils.getParcelableArrayList(PICKER_DISABLED_MONTHS, savedState, Month::class.java)?.apply {
-            disabledMonths.addAll(this)
+            disabledMonths = this
         }
         minYear = savedState.getInt(PICKER_MIN_YEAR)
         maxYear = savedState.getInt(PICKER_MAX_YEAR)
@@ -126,7 +172,6 @@ class MonthPickerDialog : BasePickerDialogFragment<Month?>(MonthSelection(null, 
         selectViews(view)
         val monthCalendar = this.monthCalendar!!
         monthCalendar.setCalendarBounds(minYear, maxYear)
-
         disabledMonths.apply {
             val entries = monthsToMonthEntries(this)
             monthCalendar.setDisabledMonths(entries)
@@ -197,41 +242,6 @@ class MonthPickerDialog : BasePickerDialogFragment<Month?>(MonthSelection(null, 
         if (targetDate != null && !DateUtilsOffsetDate.isDateInRange(targetDate, minDate, maxDate))
             setSelection(null)
         monthCalendar?.setCalendarBounds(minYear, maxYear)
-    }
-
-
-    fun setDisabledMonths(disabled: List<Month>) {
-        disabledMonths.apply {
-            clear()
-            addAll(disabled)
-            val currentSelection = selection.getCurrentSelection()
-            if (any { it.compare(currentSelection) })
-                clearSelection()
-        }
-        val monthEntries = monthsToMonthEntries(disabledMonths)
-        monthCalendar?.setDisabledMonths(monthEntries)
-    }
-
-    fun setEnabledMonths(enabled: List<Month>) {
-        enabledMonths.apply {
-            clear()
-            addAll(enabled)
-            if (isNotEmpty()) {
-                minYear = first().year
-                maxYear = last().year
-                var clearCurrentSelection = true
-                forEach { enabledMonth ->
-                    val currentYear = enabledMonth.year
-                    if (enabledMonth.compare(selection.getCurrentSelection()))
-                        clearCurrentSelection = false
-                    if (currentYear < minYear) minYear = currentYear
-                    if (currentYear > maxYear) maxYear = currentYear
-                }
-                if (clearCurrentSelection) clearSelection()
-            }
-            val monthEntries = monthsToMonthEntries(enabledMonths)
-            monthCalendar?.setEnabledMonths(monthEntries)
-        }
     }
 
     private fun getDateString(year: Int, month: Int): String? {

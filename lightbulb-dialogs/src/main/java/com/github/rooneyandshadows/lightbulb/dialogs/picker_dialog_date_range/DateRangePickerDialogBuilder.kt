@@ -1,13 +1,13 @@
 package com.github.rooneyandshadows.lightbulb.dialogs.picker_dialog_date_range
 
 import android.os.Bundle
-import androidx.lifecycle.LifecycleOwner
-import com.github.rooneyandshadows.lightbulb.dialogs.base.BasePickerDialogFragment.SelectionChangedListener
 import androidx.fragment.app.FragmentManager
+import androidx.lifecycle.LifecycleOwner
 import com.github.rooneyandshadows.lightbulb.dialogs.base.BaseDialogBuilder
+import com.github.rooneyandshadows.lightbulb.dialogs.base.BasePickerDialogFragment.SelectionChangedListener
 import com.github.rooneyandshadows.lightbulb.dialogs.base.internal.*
 import com.github.rooneyandshadows.lightbulb.dialogs.base.internal.callbacks.*
-import java.time.OffsetDateTime
+import com.github.rooneyandshadows.lightbulb.dialogs.picker_dialog_date_range.DateRangePickerDialog.*
 
 @Suppress("unused")
 class DateRangePickerDialogBuilder @JvmOverloads constructor(
@@ -15,11 +15,11 @@ class DateRangePickerDialogBuilder @JvmOverloads constructor(
     manager: FragmentManager,
     dialogTag: String,
 ) : BaseDialogBuilder<DateRangePickerDialog>(lifecycleOwner, manager, dialogTag) {
-    private var dateSetListener: SelectionChangedListener<Array<OffsetDateTime?>?>? = null
+    private var dateSetListener: SelectionChangedListener<DateRange>? = null
     private var textFrom: String? = null
     private var textTo: String? = null
     private var dateFormat: String? = null
-    private var initialRange: Array<OffsetDateTime?>? = null
+    private var initialRange: DateRange? = null
 
     @Override
     override fun withSavedState(savedState: Bundle?): DateRangePickerDialogBuilder {
@@ -97,12 +97,12 @@ class DateRangePickerDialogBuilder @JvmOverloads constructor(
         return this
     }
 
-    fun withOnDateSelectedEvent(listener: SelectionChangedListener<Array<OffsetDateTime?>?>?): DateRangePickerDialogBuilder {
+    fun withOnDateSelectedEvent(listener: SelectionChangedListener<DateRange>?): DateRangePickerDialogBuilder {
         dateSetListener = listener
         return this
     }
 
-    fun withSelection(range: Array<OffsetDateTime?>): DateRangePickerDialogBuilder {
+    fun withSelection(range: DateRange?): DateRangePickerDialogBuilder {
         initialRange = range
         return this
     }

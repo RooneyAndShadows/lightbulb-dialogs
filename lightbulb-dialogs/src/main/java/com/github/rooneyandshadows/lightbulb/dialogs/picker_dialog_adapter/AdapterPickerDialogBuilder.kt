@@ -17,7 +17,7 @@ class AdapterPickerDialogBuilder<DialogType : AdapterPickerDialog<out EasyAdapte
     dialogTag: String,
     private val dialogInitializer: AdapterPickerDialogInitializer<DialogType>
 ) : BaseDialogBuilder<DialogType>(lifecycleOwner, manager, dialogTag) {
-    private var changedCallback: SelectionChangedListener<IntArray?>? = null
+    private var changedCallback: SelectionChangedListener<IntArray>? = null
     private var itemDecoration: RecyclerView.ItemDecoration? = null
     private var selection: IntArray? = null
 
@@ -93,7 +93,7 @@ class AdapterPickerDialogBuilder<DialogType : AdapterPickerDialog<out EasyAdapte
         return super.withDialogListeners(listeners) as AdapterPickerDialogBuilder<DialogType>
     }
 
-    fun withSelectionCallback(listener: SelectionChangedListener<IntArray?>): AdapterPickerDialogBuilder<DialogType> {
+    fun withSelectionCallback(listener: SelectionChangedListener<IntArray>): AdapterPickerDialogBuilder<DialogType> {
         changedCallback = listener
         return this
     }

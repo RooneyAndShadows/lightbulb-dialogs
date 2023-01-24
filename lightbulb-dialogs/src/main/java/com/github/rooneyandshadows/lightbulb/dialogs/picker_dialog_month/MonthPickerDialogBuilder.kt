@@ -15,7 +15,7 @@ class MonthPickerDialogBuilder @JvmOverloads constructor(
     manager: FragmentManager,
     dialogTag: String,
 ) : BaseDialogBuilder<MonthPickerDialog>(lifecycleOwner, manager, dialogTag) {
-    private var monthSetListener: SelectionChangedListener<Month?>? = null
+    private var monthSetListener: SelectionChangedListener<Month>? = null
     private var disabledMonths: MutableList<Month> = mutableListOf()
     private var enabledMonths: MutableList<Month> = mutableListOf()
     private var dateFormat: String? = null
@@ -105,7 +105,7 @@ class MonthPickerDialogBuilder @JvmOverloads constructor(
         return this
     }
 
-    fun withOnDateSelectedEvent(listener: SelectionChangedListener<Month?>): MonthPickerDialogBuilder {
+    fun withOnDateSelectedEvent(listener: SelectionChangedListener<Month>): MonthPickerDialogBuilder {
         monthSetListener = listener
         return this
     }
@@ -158,8 +158,8 @@ class MonthPickerDialogBuilder @JvmOverloads constructor(
                 restoreDialogState(savedState)
                 return@apply
             }
-            setDisabledMonths(disabledMonths)
-            setEnabledMonths(enabledMonths)
+            disabledMonths = this@MonthPickerDialogBuilder.disabledMonths
+            enabledMonths = this@MonthPickerDialogBuilder.enabledMonths
             setCalendarBounds(minYear, maxYear)
             dialogPositiveButton = positiveButtonConfiguration
             dialogNegativeButton = negativeButtonConfiguration

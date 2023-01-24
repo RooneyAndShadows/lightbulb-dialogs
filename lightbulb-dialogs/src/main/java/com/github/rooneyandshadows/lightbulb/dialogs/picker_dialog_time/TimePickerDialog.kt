@@ -16,7 +16,7 @@ import com.github.rooneyandshadows.lightbulb.dialogs.picker_dialog_time.TimePick
 import java.time.OffsetDateTime
 
 @Suppress("unused", "UNUSED_PARAMETER")
-class TimePickerDialog : BasePickerDialogFragment<Time?>(
+class TimePickerDialog : BasePickerDialogFragment<Time>(
     TimeSelection(
         Time(
             DateUtilsOffsetDate.getHourOfDay(DateUtilsOffsetDate.nowLocal()),
