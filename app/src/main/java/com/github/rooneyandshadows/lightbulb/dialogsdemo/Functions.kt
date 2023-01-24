@@ -19,7 +19,6 @@ import com.github.rooneyandshadows.lightbulb.dialogs.base.internal.callbacks.Dia
 import com.github.rooneyandshadows.lightbulb.dialogsdemo.models.DemoModel
 import com.github.rooneyandshadows.lightbulb.dialogsdemo.spinner.base.adapter.DialogPropertyItem
 import com.github.rooneyandshadows.lightbulb.dialogsdemo.utils.icon.AppIconUtils
-import com.github.rooneyandshadows.lightbulb.recycleradapters.abstraction.EasyAdapterDataModel
 import com.github.rooneyandshadows.lightbulb.recycleradapters.implementation.CheckBoxSelectableAdapter
 import com.github.rooneyandshadows.lightbulb.recycleradapters.implementation.RadioButtonSelectableAdapter
 import com.github.rooneyandshadows.lightbulb.textinputview.TextInputView

@@ -84,7 +84,7 @@ class FragmentDialogAdapterPicker : BaseFragmentWithViewDataBinding<FragmentDemo
         val negativeText = ResourceUtils.getPhrase(requireContext(), R.string.demo_dialog_default_negative_button)
         val onPositiveButtonClick = getDefaultPositiveButtonClickListener()
         val onNegativeButtonClick = getDefaultNegativeButtonClickListener()
-        val selectionCallback = getDefaultSelectionChangedListener<IntArray?>(ctx)
+        val selectionCallback = getDefaultSelectionChangedListener<IntArray>(ctx)
         adapterPickerDialog = AdapterPickerDialogBuilder(
             this,
             childFragmentManager,

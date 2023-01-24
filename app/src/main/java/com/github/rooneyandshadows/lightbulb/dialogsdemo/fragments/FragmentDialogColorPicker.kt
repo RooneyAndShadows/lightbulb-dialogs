@@ -8,13 +8,8 @@ import com.github.rooneyandshadows.lightbulb.application.activity.slidermenu.dra
 import com.github.rooneyandshadows.lightbulb.application.fragment.base.BaseFragmentWithViewDataBinding
 import com.github.rooneyandshadows.lightbulb.application.fragment.cofiguration.ActionBarConfiguration
 import com.github.rooneyandshadows.lightbulb.commons.utils.BundleUtils
-import com.github.rooneyandshadows.lightbulb.commons.utils.InteractionUtils
 import com.github.rooneyandshadows.lightbulb.commons.utils.ResourceUtils
-import com.github.rooneyandshadows.lightbulb.dialogs.base.BaseDialogFragment
-import com.github.rooneyandshadows.lightbulb.dialogs.base.BasePickerDialogFragment
-import com.github.rooneyandshadows.lightbulb.dialogs.base.BasePickerDialogFragment.SelectionChangedListener
 import com.github.rooneyandshadows.lightbulb.dialogs.base.internal.DialogButtonConfiguration
-import com.github.rooneyandshadows.lightbulb.dialogs.base.internal.callbacks.DialogButtonClickListener
 import com.github.rooneyandshadows.lightbulb.dialogs.picker_dialog_color.ColorPickerDialog
 import com.github.rooneyandshadows.lightbulb.dialogs.picker_dialog_color.ColorPickerDialogBuilder
 import com.github.rooneyandshadows.lightbulb.dialogsdemo.*
@@ -90,7 +85,7 @@ class FragmentDialogColorPicker : BaseFragmentWithViewDataBinding<FragmentDemoDi
             val negativeButtonText = getDefaultNegativeButtonText(ctx)
             val positiveButtonClickListener = getDefaultPositiveButtonClickListener()
             val negativeButtonClickListener = getDefaultNegativeButtonClickListener()
-            val onSelectionChanged = getDefaultSelectionChangedListener<IntArray?>(ctx)
+            val onSelectionChanged = getDefaultSelectionChangedListener<IntArray>(ctx)
             withSavedState(dialogSavedState)
             withTitle(title)
             withMessage(message)

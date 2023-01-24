@@ -2,7 +2,6 @@ package com.github.rooneyandshadows.lightbulb.dialogsdemo.dialogs
 
 import com.github.rooneyandshadows.lightbulb.dialogs.picker_dialog_adapter.AdapterPickerDialog
 import com.github.rooneyandshadows.lightbulb.dialogsdemo.getCheckboxAdapter
-import com.github.rooneyandshadows.lightbulb.dialogsdemo.getRadioButtonAdapter
 import com.github.rooneyandshadows.lightbulb.dialogsdemo.models.DemoModel
 import com.github.rooneyandshadows.lightbulb.recycleradapters.abstraction.EasyRecyclerAdapter
 

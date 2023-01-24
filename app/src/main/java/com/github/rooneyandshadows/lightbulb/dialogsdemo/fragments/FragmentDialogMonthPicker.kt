@@ -79,7 +79,7 @@ class FragmentDialogMonthPicker : BaseFragmentWithViewDataBinding<FragmentDemoDi
         val negativeButtonText = getDefaultNegativeButtonText(ctx)
         val positiveButtonClickListener = getDefaultPositiveButtonClickListener()
         val negativeButtonClickListener = getDefaultNegativeButtonClickListener()
-        val onSelectionChanged = getDefaultSelectionChangedListener<Month?>(ctx)
+        val onSelectionChanged = getDefaultSelectionChangedListener<Month>(ctx)
         monthPickerDialog = MonthPickerDialogBuilder(this, childFragmentManager, DIALOG_TAG).apply {
             withSavedState(dialogSavedState)
             withPositiveButton(DialogButtonConfiguration(positiveButtonText), positiveButtonClickListener)

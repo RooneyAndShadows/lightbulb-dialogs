@@ -79,7 +79,7 @@ class FragmentDialogDateTimePicker : BaseFragmentWithViewDataBinding<FragmentDem
         val negativeButtonText = getDefaultNegativeButtonText(ctx)
         val positiveButtonClickListener = getDefaultPositiveButtonClickListener()
         val negativeButtonClickListener = getDefaultNegativeButtonClickListener()
-        val onSelectionChanged = getDefaultSelectionChangedListener<OffsetDateTime?>(ctx)
+        val onSelectionChanged = getDefaultSelectionChangedListener<OffsetDateTime>(ctx)
         dateTimePickerDialog = DateTimePickerDialogBuilder(this, childFragmentManager, DIALOG_TAG).apply {
             withSavedState(dialogSavedState)
             withPositiveButton(DialogButtonConfiguration(positiveButtonText), positiveButtonClickListener)

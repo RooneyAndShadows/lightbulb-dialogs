@@ -13,6 +13,7 @@ import com.github.rooneyandshadows.lightbulb.dialogs.base.BasePickerDialogFragme
 import com.github.rooneyandshadows.lightbulb.dialogs.base.BasePickerDialogFragment.SelectionChangedListener
 import com.github.rooneyandshadows.lightbulb.dialogs.base.internal.DialogButtonConfiguration
 import com.github.rooneyandshadows.lightbulb.dialogs.picker_dialog_date_range.DateRangePickerDialog
+import com.github.rooneyandshadows.lightbulb.dialogs.picker_dialog_date_range.DateRangePickerDialog.*
 import com.github.rooneyandshadows.lightbulb.dialogs.picker_dialog_date_range.DateRangePickerDialogBuilder
 import com.github.rooneyandshadows.lightbulb.dialogsdemo.*
 import com.github.rooneyandshadows.lightbulb.dialogsdemo.databinding.FragmentDemoDialogDateRangePickerBinding
@@ -81,7 +82,7 @@ class FragmentDialogDateRangePicker : BaseFragmentWithViewDataBinding<FragmentDe
         val negativeButtonText = getDefaultNegativeButtonText(ctx)
         val positiveButtonClickListener = getDefaultPositiveButtonClickListener()
         val negativeButtonClickListener = getDefaultNegativeButtonClickListener()
-        val onSelectionChanged = getDefaultSelectionChangedListener<Array<OffsetDateTime?>?>(ctx)
+        val onSelectionChanged = getDefaultSelectionChangedListener<DateRange>(ctx)
         dateRangePickerDialog = DateRangePickerDialogBuilder(this, childFragmentManager, DIALOG_TAG).apply {
             withSavedState(dialogSavedState)
             withPositiveButton(DialogButtonConfiguration(positiveButtonText), positiveButtonClickListener)

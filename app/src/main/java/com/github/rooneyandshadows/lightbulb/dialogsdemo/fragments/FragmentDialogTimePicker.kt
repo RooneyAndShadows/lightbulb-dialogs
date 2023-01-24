@@ -10,15 +10,11 @@ import com.github.rooneyandshadows.lightbulb.application.fragment.cofiguration.A
 import com.github.rooneyandshadows.lightbulb.commons.utils.BundleUtils
 import com.github.rooneyandshadows.lightbulb.commons.utils.ResourceUtils
 import com.github.rooneyandshadows.lightbulb.dialogs.base.internal.DialogButtonConfiguration
-import com.github.rooneyandshadows.lightbulb.dialogs.picker_dialog_datetime.DateTimePickerDialog
-import com.github.rooneyandshadows.lightbulb.dialogs.picker_dialog_datetime.DateTimePickerDialogBuilder
 import com.github.rooneyandshadows.lightbulb.dialogs.picker_dialog_time.TimePickerDialog
 import com.github.rooneyandshadows.lightbulb.dialogs.picker_dialog_time.TimePickerDialog.Time
 import com.github.rooneyandshadows.lightbulb.dialogs.picker_dialog_time.TimePickerDialogBuilder
 import com.github.rooneyandshadows.lightbulb.dialogsdemo.*
-import com.github.rooneyandshadows.lightbulb.dialogsdemo.databinding.FragmentDemoDialogDateTimePickerBinding
 import com.github.rooneyandshadows.lightbulb.dialogsdemo.databinding.FragmentDemoDialogTimePickerBinding
-import java.time.OffsetDateTime
 
 @FragmentScreen(screenName = "Time", screenGroup = "Demo")
 @FragmentConfiguration(layoutName = "fragment_demo_dialog_time_picker", hasLeftDrawer = true)
@@ -83,7 +79,7 @@ class FragmentDialogTimePicker : BaseFragmentWithViewDataBinding<FragmentDemoDia
         val negativeButtonText = getDefaultNegativeButtonText(ctx)
         val positiveButtonClickListener = getDefaultPositiveButtonClickListener()
         val negativeButtonClickListener = getDefaultNegativeButtonClickListener()
-        val onSelectionChanged = getDefaultSelectionChangedListener<Time?>(ctx)
+        val onSelectionChanged = getDefaultSelectionChangedListener<Time>(ctx)
         timePickerDialog = TimePickerDialogBuilder(this, childFragmentManager, DIALOG_TAG).apply {
             withSavedState(dialogSavedState)
             withPositiveButton(DialogButtonConfiguration(positiveButtonText), positiveButtonClickListener)

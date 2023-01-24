@@ -4,7 +4,6 @@ import android.os.Bundle
 import android.view.View
 import com.github.rooneyandshadows.lightbulb.annotation_processors.annotations.FragmentConfiguration
 import com.github.rooneyandshadows.lightbulb.annotation_processors.annotations.FragmentScreen
-import com.github.rooneyandshadows.lightbulb.application.activity.slidermenu.drawable.NavigateBackDrawable
 import com.github.rooneyandshadows.lightbulb.application.activity.slidermenu.drawable.ShowMenuDrawable
 import com.github.rooneyandshadows.lightbulb.application.fragment.base.BaseFragmentWithViewDataBinding
 import com.github.rooneyandshadows.lightbulb.application.fragment.cofiguration.ActionBarConfiguration
@@ -19,8 +18,6 @@ import com.github.rooneyandshadows.lightbulb.dialogsdemo.R
 import com.github.rooneyandshadows.lightbulb.dialogsdemo.databinding.FragmentDemoDialogLoadingBinding
 import com.github.rooneyandshadows.lightbulb.dialogsdemo.getDefaultDialogMessage
 import com.github.rooneyandshadows.lightbulb.dialogsdemo.getDefaultDialogTitle
-import com.github.rooneyandshadows.lightbulb.dialogsdemo.spinner.DialogAnimationTypeSpinner
-import com.github.rooneyandshadows.lightbulb.dialogsdemo.spinner.DialogTypeSpinner
 
 @FragmentScreen(screenName = "Loading", screenGroup = "Demo")
 @FragmentConfiguration(layoutName = "fragment_demo_dialog_loading", hasLeftDrawer = true)
