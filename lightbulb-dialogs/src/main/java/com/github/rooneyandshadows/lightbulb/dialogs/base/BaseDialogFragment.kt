@@ -2,6 +2,7 @@ package com.github.rooneyandshadows.lightbulb.dialogs.base
 
 import android.annotation.SuppressLint
 import android.app.Dialog
+import android.content.Context
 import android.content.DialogInterface
 import android.graphics.Color
 import android.graphics.Rect
@@ -50,6 +51,7 @@ abstract class BaseDialogFragment : DialogFragment(), DefaultLifecycleObserver {
         private set
     protected lateinit var footerViewHierarchy: DialogLayoutHierarchyFooter
         private set
+    protected var isAttached = false
     var isDialogShown = false
         private set
     open var dialogType: DialogTypes = NORMAL
@@ -114,6 +116,13 @@ abstract class BaseDialogFragment : DialogFragment(), DefaultLifecycleObserver {
      * @param savedInstanceState - If the fragment is being re-created from a previous saved state, this is the state.
      */
     protected open fun doOnCreate(dialogArguments: Bundle?, savedInstanceState: Bundle?) {}
+
+    /**
+     * Called when fragment has been attached to context.
+     *
+     * @param context - target context.
+     */
+    protected open fun doOnAttach(context: Context) {}
 
     /**
      * Called immediately after onCreateView(LayoutInflater, ViewGroup, Bundle) has returned,
@@ -204,13 +213,20 @@ abstract class BaseDialogFragment : DialogFragment(), DefaultLifecycleObserver {
     }
 
     @Override
-    override fun onResume(owner: LifecycleOwner) {
+    final override fun onAttach(context: Context) {
+        super.onAttach(context)
+        isAttached = true
+        doOnAttach(context)
+    }
+
+    @Override
+    final override fun onResume(owner: LifecycleOwner) {
         super<DefaultLifecycleObserver>.onResume(owner)
         isLifecycleOwnerInStateAllowingShow = true
     }
 
     @Override
-    override fun onStop(owner: LifecycleOwner) {
+    final override fun onStop(owner: LifecycleOwner) {
         super<DefaultLifecycleObserver>.onStop(owner)
         isLifecycleOwnerInStateAllowingShow = false
     }

@@ -28,16 +28,10 @@ class MonthPickerDialog : BasePickerDialogFragment<Month>(MonthSelection(null, n
     private lateinit var pickerHeadingSelectionTextView: TextView
     var dialogDateFormat = DEFAULT_DATE_FORMAT
     var minYear = DEFAULT_YEAR_MIN
-        set(value) {
-            field = value
-            setCalendarBounds(field, maxYear)
-        }
+        private set
         get() = monthCalendar?.minYear ?: field
     var maxYear = DEFAULT_YEAR_MAX
-        set(value) {
-            field = value
-            setCalendarBounds(minYear, field)
-        }
+        private set
         get() = monthCalendar?.maxYear ?: field
     var disabledMonths: List<Month> = listOf()
         set(value) {
@@ -98,7 +92,6 @@ class MonthPickerDialog : BasePickerDialogFragment<Month>(MonthSelection(null, n
         private const val PICKER_MAX_YEAR = "MONTH_PICKER_MAX_YEAR"
         private const val PICKER_DISABLED_MONTHS = "PICKER_DISABLED_MONTHS"
         private const val PICKER_ENABLED_MONTHS = "PICKER_ENABLED_MONTHS"
-        private const val MONTH_CALENDAR_SHOWN_YEAR = "MONTH_PICKER_SHOWN_YEAR"
         fun newInstance(): MonthPickerDialog {
             return MonthPickerDialog()
         }
@@ -122,12 +115,15 @@ class MonthPickerDialog : BasePickerDialogFragment<Month>(MonthSelection(null, n
                 BundleUtils.putParcelable(MONTH_SELECTION_DRAFT_TAG, outState, this)
             }
             enabledMonths.apply {
-                BundleUtils.putParcelableArrayList(PICKER_ENABLED_MONTHS, outState, this as ArrayList<Month>)
+                val arrayList = arrayListOf<Month>()
+                arrayList.addAll(this)
+                BundleUtils.putParcelableArrayList(PICKER_ENABLED_MONTHS, outState, arrayList)
             }
             disabledMonths.apply {
-                BundleUtils.putParcelableArrayList(PICKER_DISABLED_MONTHS, outState, this as ArrayList<Month>)
+                val arrayList = arrayListOf<Month>()
+                arrayList.addAll(this)
+                BundleUtils.putParcelableArrayList(PICKER_DISABLED_MONTHS, outState, arrayList)
             }
-            putInt(MONTH_CALENDAR_SHOWN_YEAR, monthCalendar!!.currentShownYear)
             putString(DATE_FORMAT_TAG, dialogDateFormat)
         }
     }
@@ -185,7 +181,7 @@ class MonthPickerDialog : BasePickerDialogFragment<Month>(MonthSelection(null, n
             override fun onSelectionChanged(
                 monthCalendarView: MonthCalendarView,
                 newSelection: MonthEntry?,
-                oldSelection: MonthEntry?
+                oldSelection: MonthEntry?,
             ) {
                 val selectedMonthEntry = newSelection?.let { monthEntry -> return@let monthEntrytoMonth(monthEntry) }
                 if (isDialogShown) selection.setDraftSelection(selectedMonthEntry)

@@ -19,6 +19,7 @@ import com.github.rooneyandshadows.lightbulb.dialogs.base.constraints.regular.Re
 import com.github.rooneyandshadows.lightbulb.recycleradapters.abstraction.EasyAdapterDataModel
 import com.github.rooneyandshadows.lightbulb.recycleradapters.abstraction.EasyRecyclerAdapter
 import com.github.rooneyandshadows.lightbulb.recycleradapters.abstraction.callbacks.EasyAdapterSelectionChangedListener
+import java.util.Arrays
 
 @Suppress("unused")
 abstract class AdapterPickerDialog<ItemType : EasyAdapterDataModel> :
@@ -47,8 +48,8 @@ abstract class AdapterPickerDialog<ItemType : EasyAdapterDataModel> :
     init {
         selectionListener = object : EasyAdapterSelectionChangedListener {
             override fun onChanged(newSelection: IntArray?) {
-                if (isDialogShown) selection.setDraftSelection(newSelection, false)
-                else selection.setCurrentSelection(newSelection, false)
+                if (isDialogShown) selection.setDraftSelection(newSelection)
+                else selection.setCurrentSelection(newSelection)
             }
         }
     }
@@ -62,6 +63,7 @@ abstract class AdapterPickerDialog<ItemType : EasyAdapterDataModel> :
     override fun configureContent(view: View, savedInstanceState: Bundle?) {
         selectViews(view)
         configureRecyclerView(adapter)
+        synchronizeSelectUi()
     }
 
     @Override
@@ -78,7 +80,8 @@ abstract class AdapterPickerDialog<ItemType : EasyAdapterDataModel> :
     override fun synchronizeSelectUi() {
         val newSelection = if (selection.hasDraftSelection()) selection.getDraftSelection()
         else selection.getCurrentSelection()
-        adapter.selectPositions(newSelection, newState = true, incremental = false)
+        val needAdapterSync = !compareValues(newSelection, adapter.selectedPositionsAsArray)
+        if (needAdapterSync) adapter.selectPositions(newSelection, newState = true, incremental = false)
     }
 
     @Override
@@ -209,7 +212,10 @@ abstract class AdapterPickerDialog<ItemType : EasyAdapterDataModel> :
         if (recyclerView.itemDecorationCount > 0) recyclerView.removeItemDecorationAt(0)
         if (itemDecoration != null) recyclerView.addItemDecoration(itemDecoration!!, 0)
         recyclerView.adapter = adapter
+    }
 
+    private fun compareValues(v1: IntArray?, v2: IntArray): Boolean {
+        return Arrays.equals(v1, v2)
     }
 
     interface AdapterCreator<ItemType : EasyAdapterDataModel> {

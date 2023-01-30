@@ -160,7 +160,8 @@ class DateTimePickerDialog : BasePickerDialogFragment<OffsetDateTime>(DateTimeSe
 
     @Override
     override fun synchronizeSelectUi() {
-        val newDate = if (selection.hasDraftSelection()) selection.getDraftSelection() else selection.getCurrentSelection()
+        val newDate = if (selection.hasDraftSelection()) selection.getDraftSelection()
+        else selection.getCurrentSelection()
         if (newDate != null) {
             modeChangeButton.visibility = View.VISIBLE
             val selectedDate = dateToCalendarDay(newDate)

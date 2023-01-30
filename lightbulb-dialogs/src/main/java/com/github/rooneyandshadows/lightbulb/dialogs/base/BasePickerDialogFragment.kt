@@ -70,21 +70,21 @@ abstract class BasePickerDialogFragment<SelectionType>(
         })
         selection.addSelectionListeners(object : PickerSelectionListeners<SelectionType> {
             override fun onCurrentSelectionChangedListener(newValue: SelectionType?, oldValue: SelectionType?) {
-                synchronizeSelectUi()
+                if (isAttached) synchronizeSelectUi()
                 dispatchSelectionChangedEvent(newValue, oldValue)
             }
 
             override fun onDraftSelectionChangedListener(newValue: SelectionType?, oldValue: SelectionType?) {
-                if (synchronizeUiOnDraftChange) synchronizeSelectUi()
+                if (synchronizeUiOnDraftChange && isAttached) synchronizeSelectUi()
             }
 
             override fun onDraftCommit(newValue: SelectionType?, beforeCommit: SelectionType?) {
-                synchronizeSelectUi()
+                if (isAttached) synchronizeSelectUi()
                 dispatchSelectionChangedEvent(newValue, beforeCommit)
             }
 
             override fun onDraftReverted() {
-                synchronizeSelectUi()
+                if (isAttached) synchronizeSelectUi()
             }
         })
     }
