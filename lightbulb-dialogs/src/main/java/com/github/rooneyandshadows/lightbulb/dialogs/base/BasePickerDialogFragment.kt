@@ -41,9 +41,9 @@ abstract class BasePickerDialogFragment<SelectionType>(
         return selection.hasCurrentSelection()
     }
 
-    protected fun dispatchSelectionChangedEvent(oldValue: SelectionType?, newValue: SelectionType?) {
+    protected fun dispatchSelectionChangedEvent(newValue: SelectionType?, oldValue: SelectionType?) {
         onSelectionChangedListeners.forEach {
-            it.onSelectionChanged(this, oldValue, newValue)
+            it.onSelectionChanged(this, newValue, oldValue)
         }
     }
 
@@ -71,16 +71,16 @@ abstract class BasePickerDialogFragment<SelectionType>(
         selection.addSelectionListeners(object : PickerSelectionListeners<SelectionType> {
             override fun onCurrentSelectionChangedListener(newValue: SelectionType?, oldValue: SelectionType?) {
                 synchronizeSelectUi()
-                dispatchSelectionChangedEvent(oldValue, newValue)
+                dispatchSelectionChangedEvent(newValue, oldValue)
             }
 
-            override fun onDraftSelectionChangedListener(newValue: SelectionType?) {
+            override fun onDraftSelectionChangedListener(newValue: SelectionType?, oldValue: SelectionType?) {
                 if (synchronizeUiOnDraftChange) synchronizeSelectUi()
             }
 
             override fun onDraftCommit(newValue: SelectionType?, beforeCommit: SelectionType?) {
                 synchronizeSelectUi()
-                dispatchSelectionChangedEvent(beforeCommit, newValue)
+                dispatchSelectionChangedEvent(newValue, beforeCommit)
             }
 
             override fun onDraftReverted() {
@@ -92,8 +92,8 @@ abstract class BasePickerDialogFragment<SelectionType>(
     interface SelectionChangedListener<SelectionType> {
         fun onSelectionChanged(
             dialog: BasePickerDialogFragment<SelectionType>,
-            oldValue: SelectionType?,
             newValue: SelectionType?,
+            oldValue: SelectionType?,
         )
     }
 }
