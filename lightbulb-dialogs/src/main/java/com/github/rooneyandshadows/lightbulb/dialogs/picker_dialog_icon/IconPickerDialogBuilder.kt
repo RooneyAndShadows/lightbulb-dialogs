@@ -18,8 +18,27 @@ class IconPickerDialogBuilder @JvmOverloads constructor(
     private var selection: IntArray? = null
 
     @Override
-    override fun withSavedState(savedState: Bundle?): IconPickerDialogBuilder {
-        return super.withSavedState(savedState) as IconPickerDialogBuilder
+    override fun setupNonRetainableSettings(dialog: IconPickerDialog) {
+        dialog.apply {
+            changedCallback?.apply { addOnSelectionChangedListener(this) }
+        }
+    }
+
+    @Override
+    override fun setupRetainableSettings(dialog: IconPickerDialog) {
+        dialog.apply {
+            setSelection(selection)
+        }
+    }
+
+    @Override
+    override fun initializeNewDialog(): IconPickerDialog {
+        return IconPickerDialog.newInstance()
+    }
+
+    @Override
+    override fun withInitialDialogState(savedState: Bundle?): IconPickerDialogBuilder {
+        return super.withInitialDialogState(savedState) as IconPickerDialogBuilder
     }
 
     @Override
@@ -91,38 +110,5 @@ class IconPickerDialogBuilder @JvmOverloads constructor(
     fun withSelection(selection: IntArray): IconPickerDialogBuilder {
         this.selection = selection
         return this
-    }
-
-    @Override
-    override fun buildDialog(): IconPickerDialog {
-        return getExistingDialogOrCreate().apply {
-            setLifecycleOwner(dialogLifecycleOwner)
-            setDialogCallbacks(dialogListeners)
-            setParentFragManager(dialogParentFragmentManager)
-            setDialogTag(dialogTag)
-            onShowListener?.apply { addOnShowListener(this) }
-            onHideListener?.apply { addOnHideListener(this) }
-            onCancelListener?.apply { addOnCancelListener(this) }
-            onNegativeClickListener?.apply { addOnNegativeClickListeners(this) }
-            onPositiveClickListener?.apply { addOnPositiveClickListener(this) }
-            changedCallback?.apply { addOnSelectionChangedListener(this) }
-        }
-    }
-
-    private fun getExistingDialogOrCreate(): IconPickerDialog {
-        val dialog = dialogParentFragmentManager.findFragmentByTag(dialogTag) as IconPickerDialog?
-        return dialog ?: IconPickerDialog.newInstance().apply {
-            if (savedState != null) {
-                restoreDialogState(savedState)
-                return@apply
-            }
-            dialogTitle = title
-            dialogMessage = message
-            dialogPositiveButton = positiveButtonConfiguration
-            dialogNegativeButton = negativeButtonConfiguration
-            isCancelable = cancelableOnClickOutside
-            dialogAnimationType = animation
-            setSelection(selection)
-        }
     }
 }

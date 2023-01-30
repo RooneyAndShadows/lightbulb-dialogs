@@ -82,7 +82,7 @@ class FragmentDialogAlert : BaseFragmentWithViewDataBinding<FragmentDemoDialogAl
             val negativeButtonText = getDefaultNegativeButtonText(ctx)
             val positiveButtonClickListener = getDefaultPositiveButtonClickListener()
             val negativeButtonClickListener = getDefaultNegativeButtonClickListener()
-            withSavedState(dialogSavedState)
+            withInitialDialogState(dialogSavedState)
             withTitle(title)
             withMessage(message)
             withPositiveButton(DialogButtonConfiguration(positiveButtonText), positiveButtonClickListener)

@@ -8,18 +8,33 @@ import com.github.rooneyandshadows.lightbulb.dialogs.base.internal.DialogAnimati
 import com.github.rooneyandshadows.lightbulb.dialogs.base.internal.DialogButtonConfiguration
 import com.github.rooneyandshadows.lightbulb.dialogs.base.internal.DialogTypes
 import com.github.rooneyandshadows.lightbulb.dialogs.base.internal.callbacks.*
+import com.github.rooneyandshadows.lightbulb.dialogs.dialog_custom.CustomDialogBuilder
 
 class AlertDialogBuilder @JvmOverloads constructor(
     lifecycleOwner: LifecycleOwner? = null,
     dialogParentFragmentManager: FragmentManager,
     dialogTag: String,
-) : BaseDialogBuilder<AlertDialog>(lifecycleOwner,
+) : BaseDialogBuilder<AlertDialog>(
+    lifecycleOwner,
     dialogParentFragmentManager,
-    dialogTag) {
+    dialogTag
+) {
+    @Override
+    override fun setupNonRetainableSettings(dialog: AlertDialog) {
+    }
 
     @Override
-    override fun withSavedState(savedState: Bundle?): AlertDialogBuilder {
-        return super.withSavedState(savedState) as AlertDialogBuilder
+    override fun setupRetainableSettings(dialog: AlertDialog) {
+    }
+
+    @Override
+    override fun initializeNewDialog(): AlertDialog {
+        return AlertDialog.newInstance()
+    }
+
+    @Override
+    override fun withInitialDialogState(savedState: Bundle?): AlertDialogBuilder {
+        return super.withInitialDialogState(savedState) as AlertDialogBuilder
     }
 
     @Override
@@ -81,36 +96,5 @@ class AlertDialogBuilder @JvmOverloads constructor(
     @Override
     override fun withDialogListeners(listeners: DialogListeners): AlertDialogBuilder {
         return super.withDialogListeners(listeners) as AlertDialogBuilder
-    }
-
-    @Override
-    override fun buildDialog(): AlertDialog {
-        return getExistingDialogOrCreate().apply {
-            setLifecycleOwner(dialogLifecycleOwner)
-            setParentFragManager(dialogParentFragmentManager)
-            setDialogTag(dialogTag)
-            onShowListener?.apply { addOnShowListener(this) }
-            onHideListener?.apply { addOnHideListener(this) }
-            onCancelListener?.apply { addOnCancelListener(this) }
-            onNegativeClickListener?.apply { addOnNegativeClickListeners(this) }
-            onPositiveClickListener?.apply { addOnPositiveClickListener(this) }
-        }
-    }
-
-    private fun getExistingDialogOrCreate(): AlertDialog {
-        val dialog = dialogParentFragmentManager.findFragmentByTag(dialogTag) as AlertDialog?
-        return dialog ?: AlertDialog.newInstance().apply {
-            if (savedState != null) {
-                restoreDialogState(savedState)
-                return@apply
-            }
-            dialogTitle = title
-            dialogMessage = message
-            dialogType = type
-            dialogAnimationType = animation
-            isCancelable = cancelableOnClickOutside
-            dialogNegativeButton = negativeButtonConfiguration
-            dialogPositiveButton = positiveButtonConfiguration
-        }
     }
 }

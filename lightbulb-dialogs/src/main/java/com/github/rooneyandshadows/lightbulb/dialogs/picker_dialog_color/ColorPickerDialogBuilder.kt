@@ -18,8 +18,27 @@ class ColorPickerDialogBuilder @JvmOverloads constructor(
     private var selection: IntArray? = null
 
     @Override
-    override fun withSavedState(savedState: Bundle?): ColorPickerDialogBuilder {
-        return super.withSavedState(savedState) as ColorPickerDialogBuilder
+    override fun setupNonRetainableSettings(dialog: ColorPickerDialog) {
+        dialog.apply {
+            changedCallback?.apply { addOnSelectionChangedListener(this) }
+        }
+    }
+
+    @Override
+    override fun setupRetainableSettings(dialog: ColorPickerDialog) {
+        dialog.apply {
+            setSelection(selection)
+        }
+    }
+
+    @Override
+    override fun initializeNewDialog(): ColorPickerDialog {
+        return ColorPickerDialog.newInstance()
+    }
+
+    @Override
+    override fun withInitialDialogState(savedState: Bundle?): ColorPickerDialogBuilder {
+        return super.withInitialDialogState(savedState) as ColorPickerDialogBuilder
     }
 
     @Override
@@ -91,37 +110,5 @@ class ColorPickerDialogBuilder @JvmOverloads constructor(
     fun withSelection(selection: IntArray): ColorPickerDialogBuilder {
         this.selection = selection
         return this
-    }
-
-    override fun buildDialog(): ColorPickerDialog {
-        return getExistingDialogOrCreate().apply {
-            setLifecycleOwner(dialogLifecycleOwner)
-            setDialogCallbacks(dialogListeners)
-            setParentFragManager(dialogParentFragmentManager)
-            setDialogTag(dialogTag)
-            onShowListener?.apply { addOnShowListener(this) }
-            onHideListener?.apply { addOnHideListener(this) }
-            onCancelListener?.apply { addOnCancelListener(this) }
-            onNegativeClickListener?.apply { addOnNegativeClickListeners(this) }
-            onPositiveClickListener?.apply { addOnPositiveClickListener(this) }
-            changedCallback?.apply { addOnSelectionChangedListener(this) }
-        }
-    }
-
-    private fun getExistingDialogOrCreate(): ColorPickerDialog {
-        val dialog = dialogParentFragmentManager.findFragmentByTag(dialogTag) as ColorPickerDialog?
-        return dialog ?: ColorPickerDialog.newInstance().apply {
-            if (savedState != null) {
-                restoreDialogState(savedState)
-                return@apply
-            }
-            dialogTitle = title
-            dialogMessage = message
-            dialogAnimationType = animation
-            isCancelable = cancelableOnClickOutside
-            dialogNegativeButton = negativeButtonConfiguration
-            dialogPositiveButton = positiveButtonConfiguration
-            setSelection(selection)
-        }
     }
 }

@@ -354,16 +354,16 @@ abstract class BaseDialogFragment : DialogFragment(), DefaultLifecycleObserver {
 
     fun saveDialogState(): Bundle {
         return Bundle().apply {
-            onSaveInstanceState(this)
+            if (isDialogShown) putBoolean("IGNORE_MANUALLY_SAVED_STATE", true)
+            else onSaveInstanceState(this)
         }
     }
 
     fun restoreDialogState(savedState: Bundle?) {
         savedState?.apply {
-            DialogBundleHelper(this).apply {
-                //dialog will restore it's state if previously shown
-                if (!showing) onRestoreInstanceState(bundle)
-            }
+            val ignoreManualRestore = getBoolean("IGNORE_MANUALLY_SAVED_STATE", false)
+            if (ignoreManualRestore) return@apply
+            onRestoreInstanceState(this)
         }
     }
 

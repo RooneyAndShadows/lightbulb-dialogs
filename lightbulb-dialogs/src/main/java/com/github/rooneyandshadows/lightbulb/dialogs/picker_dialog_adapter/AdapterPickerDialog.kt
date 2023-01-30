@@ -165,9 +165,9 @@ abstract class AdapterPickerDialog<ItemType : EasyAdapterDataModel> :
             val adapterState = BundleUtils.getParcelable(adapterStateTag, this, Bundle::class.java)!!
             val currentSelection = getIntArray(adapterSelectionTag)
             val draftSelection = getIntArray(adapterSelectionDraftTag)
-            selection.setCurrentSelection(currentSelection)
-            selection.setDraftSelection(draftSelection)
             adapter.restoreAdapterState(adapterState)
+            selection.setCurrentSelection(currentSelection, false)
+            selection.setDraftSelection(draftSelection, false)
         }
     }
 

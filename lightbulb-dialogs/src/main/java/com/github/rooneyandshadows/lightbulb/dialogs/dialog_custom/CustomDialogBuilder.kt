@@ -7,6 +7,7 @@ import com.github.rooneyandshadows.lightbulb.dialogs.base.BaseDialogBuilder
 import com.github.rooneyandshadows.lightbulb.dialogs.base.internal.*
 import com.github.rooneyandshadows.lightbulb.dialogs.base.internal.callbacks.*
 import com.github.rooneyandshadows.lightbulb.dialogs.dialog_custom.CustomDialog.CustomDialogInflater
+import com.github.rooneyandshadows.lightbulb.dialogs.dialog_loading.LoadingDialogBuilder
 
 @Suppress("UNCHECKED_CAST", "unused")
 class CustomDialogBuilder<DialogType : CustomDialog> @JvmOverloads constructor(
@@ -19,8 +20,27 @@ class CustomDialogBuilder<DialogType : CustomDialog> @JvmOverloads constructor(
     private var loading = false
 
     @Override
-    override fun withSavedState(savedState: Bundle?): CustomDialogBuilder<DialogType> {
-        return super.withSavedState(savedState) as CustomDialogBuilder<DialogType>
+    override fun setupNonRetainableSettings(dialog: CustomDialog) {
+        dialog.apply {
+            setDialogInflater(dialogInflater)
+        }
+    }
+
+    @Override
+    override fun setupRetainableSettings(dialog: CustomDialog) {
+        dialog.apply {
+            isLoading = loading
+        }
+    }
+
+    @Override
+    override fun initializeNewDialog(): CustomDialog {
+        return dialogInitializer.initialize()
+    }
+
+    @Override
+    override fun withInitialDialogState(savedState: Bundle?): CustomDialogBuilder<DialogType> {
+        return super.withInitialDialogState(savedState) as CustomDialogBuilder<DialogType>
     }
 
     @Override
@@ -87,40 +107,6 @@ class CustomDialogBuilder<DialogType : CustomDialog> @JvmOverloads constructor(
     fun withLoading(isLoading: Boolean): CustomDialogBuilder<DialogType> {
         loading = isLoading
         return this
-    }
-
-    @Override
-    override fun buildDialog(): CustomDialog {
-        return getExistingDialogOrCreate().apply {
-            setLifecycleOwner(dialogLifecycleOwner)
-            setDialogInflater(dialogInflater)
-            setDialogCallbacks(dialogListeners)
-            setParentFragManager(dialogParentFragmentManager)
-            setDialogTag(dialogTag)
-            onShowListener?.apply { addOnShowListener(this) }
-            onHideListener?.apply { addOnHideListener(this) }
-            onCancelListener?.apply { addOnCancelListener(this) }
-            onNegativeClickListener?.apply { addOnNegativeClickListeners(this) }
-            onPositiveClickListener?.apply { addOnPositiveClickListener(this) }
-        }
-    }
-
-    private fun getExistingDialogOrCreate(): DialogType {
-        val dialog = dialogParentFragmentManager.findFragmentByTag(dialogTag) as DialogType?
-        return dialog ?: dialogInitializer.initialize().apply {
-            if (savedState != null) {
-                restoreDialogState(savedState)
-                return@apply
-            }
-            dialogTitle = title
-            dialogMessage = message
-            dialogType = type
-            dialogAnimationType = animation
-            isCancelable = cancelableOnClickOutside
-            dialogNegativeButton = negativeButtonConfiguration
-            dialogPositiveButton = positiveButtonConfiguration
-            isLoading = loading
-        }
     }
 
     interface CustomDialogInitializer<DialogType : CustomDialog> {

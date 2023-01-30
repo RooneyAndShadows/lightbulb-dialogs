@@ -6,12 +6,13 @@ import androidx.lifecycle.LifecycleOwner
 import com.github.rooneyandshadows.lightbulb.dialogs.base.internal.*
 import com.github.rooneyandshadows.lightbulb.dialogs.base.internal.callbacks.*
 
-abstract class BaseDialogBuilder<DialogType : BaseDialogFragment?> @JvmOverloads constructor(
+@Suppress("UNCHECKED_CAST")
+abstract class BaseDialogBuilder<DialogType : BaseDialogFragment> @JvmOverloads constructor(
     protected val dialogLifecycleOwner: LifecycleOwner? = null,
     protected val dialogParentFragmentManager: FragmentManager,
     protected val dialogTag: String,
 ) {
-    protected var savedState: Bundle? = null
+    protected var initialDialogState: Bundle? = null
     protected var title: String? = null
     protected var message: String? = null
     protected var positiveButtonConfiguration: DialogButtonConfiguration? = null
@@ -25,9 +26,12 @@ abstract class BaseDialogBuilder<DialogType : BaseDialogFragment?> @JvmOverloads
     protected var type: DialogTypes = DialogTypes.NORMAL
     protected var dialogListeners: DialogListeners? = null
     protected var cancelableOnClickOutside = true
+    protected abstract fun setupNonRetainableSettings(dialog: DialogType)
+    protected abstract fun setupRetainableSettings(dialog: DialogType)
+    protected abstract fun initializeNewDialog(): DialogType
 
-    open fun withSavedState(savedState: Bundle?): BaseDialogBuilder<DialogType> {
-        this.savedState = savedState
+    open fun withInitialDialogState(savedState: Bundle?): BaseDialogBuilder<DialogType> {
+        this.initialDialogState = savedState
         return this
     }
 
@@ -94,5 +98,37 @@ abstract class BaseDialogBuilder<DialogType : BaseDialogFragment?> @JvmOverloads
         return this
     }
 
-    abstract fun buildDialog(): DialogType
+    fun buildDialog(): DialogType {
+        return getExistingDialogOrCreate().apply {
+            setDialogTag(dialogTag)
+            setLifecycleOwner(dialogLifecycleOwner)
+            setParentFragManager(dialogParentFragmentManager)
+            setDialogCallbacks(dialogListeners)
+            onShowListener?.apply { addOnShowListener(this) }
+            onHideListener?.apply { addOnHideListener(this) }
+            onCancelListener?.apply { addOnCancelListener(this) }
+            onNegativeClickListener?.apply { addOnNegativeClickListeners(this) }
+            onPositiveClickListener?.apply { addOnPositiveClickListener(this) }
+            setupNonRetainableSettings(this)
+        }
+    }
+
+    private fun getExistingDialogOrCreate(): DialogType {
+        val dialog = dialogParentFragmentManager.findFragmentByTag(dialogTag) as DialogType?
+        return dialog ?: initializeNewDialog().apply dialogInstance@{
+            initialDialogState?.apply {
+                val ignoreManuallySavedState = getBoolean("IGNORE_MANUALLY_SAVED_STATE", false)
+                if (!ignoreManuallySavedState) this@dialogInstance.restoreDialogState(this)
+                return@dialogInstance
+            }
+            dialogTitle = title
+            dialogMessage = message
+            dialogType = type
+            dialogAnimationType = animation
+            isCancelable = cancelableOnClickOutside
+            dialogNegativeButton = negativeButtonConfiguration
+            dialogPositiveButton = positiveButtonConfiguration
+            setupRetainableSettings(this)
+        }
+    }
 }

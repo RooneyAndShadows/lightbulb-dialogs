@@ -81,7 +81,7 @@ class FragmentDialogTimePicker : BaseFragmentWithViewDataBinding<FragmentDemoDia
         val negativeButtonClickListener = getDefaultNegativeButtonClickListener()
         val onSelectionChanged = getDefaultSelectionChangedListener<Time>(ctx)
         timePickerDialog = TimePickerDialogBuilder(this, childFragmentManager, DIALOG_TAG).apply {
-            withSavedState(dialogSavedState)
+            withInitialDialogState(dialogSavedState)
             withPositiveButton(DialogButtonConfiguration(positiveButtonText), positiveButtonClickListener)
             withNegativeButton(DialogButtonConfiguration(negativeButtonText), negativeButtonClickListener)
             withOnDateSelectedEvent(onSelectionChanged)

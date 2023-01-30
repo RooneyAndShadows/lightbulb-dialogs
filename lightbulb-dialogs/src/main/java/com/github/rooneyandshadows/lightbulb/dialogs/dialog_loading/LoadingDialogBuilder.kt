@@ -13,11 +13,23 @@ class LoadingDialogBuilder @JvmOverloads constructor(
     lifecycleOwner: LifecycleOwner? = null,
     dialogParentFragmentManager: FragmentManager,
     dialogTag: String,
-) : BaseDialogBuilder<LoadingDialog?>(lifecycleOwner, dialogParentFragmentManager, dialogTag) {
+) : BaseDialogBuilder<LoadingDialog>(lifecycleOwner, dialogParentFragmentManager, dialogTag) {
+    @Override
+    override fun setupNonRetainableSettings(dialog: LoadingDialog) {
+    }
 
     @Override
-    override fun withSavedState(savedState: Bundle?): LoadingDialogBuilder {
-        return super.withSavedState(savedState) as LoadingDialogBuilder
+    override fun setupRetainableSettings(dialog: LoadingDialog) {
+    }
+
+    @Override
+    override fun initializeNewDialog(): LoadingDialog {
+        return LoadingDialog.newInstance()
+    }
+
+    @Override
+    override fun withInitialDialogState(savedState: Bundle?): LoadingDialogBuilder {
+        return super.withInitialDialogState(savedState) as LoadingDialogBuilder
     }
 
     @Override
@@ -79,32 +91,5 @@ class LoadingDialogBuilder @JvmOverloads constructor(
     @Override
     override fun withDialogListeners(listeners: DialogListeners): LoadingDialogBuilder {
         return super.withDialogListeners(listeners) as LoadingDialogBuilder
-    }
-
-    @Override
-    override fun buildDialog(): LoadingDialog {
-        return getExistingDialogOrCreate().apply {
-            setLifecycleOwner(dialogLifecycleOwner)
-            setDialogCallbacks(dialogListeners)
-            setParentFragManager(dialogParentFragmentManager)
-            setDialogTag(dialogTag)
-            onShowListener?.apply { addOnShowListener(this) }
-            onHideListener?.apply { addOnHideListener(this) }
-            onCancelListener?.apply { addOnCancelListener(this) }
-        }
-    }
-
-    private fun getExistingDialogOrCreate(): LoadingDialog {
-        val dialog = dialogParentFragmentManager.findFragmentByTag(dialogTag) as LoadingDialog?
-        return dialog ?: LoadingDialog.newInstance().apply {
-            if (savedState != null) {
-                restoreDialogState(savedState)
-                return@apply
-            }
-            dialogTitle = title
-            dialogMessage = message
-            dialogType = type
-            dialogAnimationType = animation
-        }
     }
 }

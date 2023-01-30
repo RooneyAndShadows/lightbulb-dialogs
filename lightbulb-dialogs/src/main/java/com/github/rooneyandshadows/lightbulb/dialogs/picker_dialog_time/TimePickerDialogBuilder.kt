@@ -19,8 +19,27 @@ class TimePickerDialogBuilder @JvmOverloads constructor(
     private var initialTime: Time? = null
 
     @Override
-    override fun withSavedState(savedState: Bundle?): TimePickerDialogBuilder {
-        return super.withSavedState(savedState) as TimePickerDialogBuilder
+    override fun setupNonRetainableSettings(dialog: TimePickerDialog) {
+        dialog.apply {
+            timeSetListener?.apply { addOnSelectionChangedListener(this) }
+        }
+    }
+
+    @Override
+    override fun setupRetainableSettings(dialog: TimePickerDialog) {
+        dialog.apply {
+            setSelection(initialTime)
+        }
+    }
+
+    @Override
+    override fun initializeNewDialog(): TimePickerDialog {
+        return TimePickerDialog.newInstance()
+    }
+
+    @Override
+    override fun withInitialDialogState(savedState: Bundle?): TimePickerDialogBuilder {
+        return super.withInitialDialogState(savedState) as TimePickerDialogBuilder
     }
 
     @Override
@@ -100,36 +119,5 @@ class TimePickerDialogBuilder @JvmOverloads constructor(
     fun withInitialTime(time: Time): TimePickerDialogBuilder {
         initialTime = time
         return this
-    }
-
-    @Override
-    override fun buildDialog(): TimePickerDialog {
-        return getExistingDialogOrCreate().apply {
-            setLifecycleOwner(dialogLifecycleOwner)
-            setDialogCallbacks(dialogListeners)
-            setParentFragManager(dialogParentFragmentManager)
-            setDialogTag(dialogTag)
-            timeSetListener?.apply { addOnSelectionChangedListener(this) }
-            onNegativeClickListener?.apply { addOnNegativeClickListeners(this) }
-            onPositiveClickListener?.apply { addOnPositiveClickListener(this) }
-            onShowListener?.apply { addOnShowListener(this) }
-            onHideListener?.apply { addOnHideListener(this) }
-            onCancelListener?.apply { addOnCancelListener(this) }
-        }
-    }
-
-    private fun getExistingDialogOrCreate(): TimePickerDialog {
-        val dialog = dialogParentFragmentManager.findFragmentByTag(dialogTag) as TimePickerDialog?
-        return dialog ?: TimePickerDialog.newInstance().apply {
-            if (savedState != null) {
-                restoreDialogState(savedState)
-                return@apply
-            }
-            dialogPositiveButton = positiveButtonConfiguration
-            dialogNegativeButton = negativeButtonConfiguration
-            isCancelable = cancelableOnClickOutside
-            dialogAnimationType = animation
-            setSelection(initialTime)
-        }
     }
 }

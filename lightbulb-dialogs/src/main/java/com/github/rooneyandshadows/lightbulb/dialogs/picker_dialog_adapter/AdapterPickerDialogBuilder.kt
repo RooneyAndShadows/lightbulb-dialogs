@@ -22,8 +22,28 @@ class AdapterPickerDialogBuilder<DialogType : AdapterPickerDialog<out EasyAdapte
     private var selection: IntArray? = null
 
     @Override
-    override fun withSavedState(savedState: Bundle?): AdapterPickerDialogBuilder<DialogType> {
-        return super.withSavedState(savedState) as AdapterPickerDialogBuilder<DialogType>
+    override fun setupNonRetainableSettings(dialog: DialogType) {
+        dialog.apply {
+            changedCallback?.apply { addOnSelectionChangedListener(this) }
+            setItemDecoration(itemDecoration)
+        }
+    }
+
+    @Override
+    override fun setupRetainableSettings(dialog: DialogType) {
+        dialog.apply {
+            setSelection(selection)
+        }
+    }
+
+    @Override
+    override fun initializeNewDialog(): DialogType {
+        return dialogInitializer.initialize()
+    }
+
+    @Override
+    override fun withInitialDialogState(savedState: Bundle?): AdapterPickerDialogBuilder<DialogType> {
+        return super.withInitialDialogState(savedState) as AdapterPickerDialogBuilder<DialogType>
     }
 
     @Override
@@ -106,40 +126,6 @@ class AdapterPickerDialogBuilder<DialogType : AdapterPickerDialog<out EasyAdapte
     fun withItemDecoration(decoration: RecyclerView.ItemDecoration?): AdapterPickerDialogBuilder<DialogType> {
         itemDecoration = decoration
         return this
-    }
-
-    override fun buildDialog(): DialogType {
-        return getExistingDialogOrCreate().apply {
-            setLifecycleOwner(dialogLifecycleOwner)
-            setDialogCallbacks(dialogListeners)
-            setParentFragManager(dialogParentFragmentManager)
-            setDialogTag(dialogTag)
-            onNegativeClickListener?.apply { addOnNegativeClickListeners(this) }
-            onPositiveClickListener?.apply { addOnPositiveClickListener(this) }
-            onShowListener?.apply { addOnShowListener(this) }
-            onHideListener?.apply { addOnHideListener(this) }
-            onCancelListener?.apply { addOnCancelListener(this) }
-            changedCallback?.apply { addOnSelectionChangedListener(this) }
-            setItemDecoration(itemDecoration)
-        }
-    }
-
-    private fun getExistingDialogOrCreate(): DialogType {
-        val dialog = dialogParentFragmentManager.findFragmentByTag(dialogTag) as DialogType?
-        return dialog ?: dialogInitializer.initialize().apply {
-            if (savedState != null) {
-                restoreDialogState(savedState)
-                return@apply
-            }
-            dialogTitle = title
-            dialogMessage = message
-            dialogType = type
-            dialogAnimationType = animation
-            isCancelable = cancelableOnClickOutside
-            dialogNegativeButton = negativeButtonConfiguration
-            dialogPositiveButton = positiveButtonConfiguration
-            setSelection(selection)
-        }
     }
 
     interface AdapterPickerDialogInitializer<DialogType : AdapterPickerDialog<out EasyAdapterDataModel>> {

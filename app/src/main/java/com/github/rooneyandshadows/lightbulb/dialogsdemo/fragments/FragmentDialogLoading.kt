@@ -84,7 +84,7 @@ class FragmentDialogLoading : BaseFragmentWithViewDataBinding<FragmentDemoDialog
                     }, 3000)
                 }
             }
-            withSavedState(dialogSavedState)
+            withInitialDialogState(dialogSavedState)
             withTitle(title)
             withMessage(message)
             withOnShowListener(onShowListener)

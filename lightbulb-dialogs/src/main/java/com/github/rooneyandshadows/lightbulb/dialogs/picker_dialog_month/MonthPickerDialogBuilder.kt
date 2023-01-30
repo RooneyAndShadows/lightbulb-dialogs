@@ -24,8 +24,32 @@ class MonthPickerDialogBuilder @JvmOverloads constructor(
     private var maxYear = 2100
 
     @Override
-    override fun withSavedState(savedState: Bundle?): MonthPickerDialogBuilder {
-        return super.withSavedState(savedState) as MonthPickerDialogBuilder
+    override fun setupNonRetainableSettings(dialog: MonthPickerDialog) {
+        dialog.apply {
+            monthSetListener?.apply { addOnSelectionChangedListener(this) }
+        }
+    }
+
+    @Override
+    override fun setupRetainableSettings(dialog: MonthPickerDialog) {
+        dialog.apply {
+            disabledMonths = this@MonthPickerDialogBuilder.disabledMonths
+            enabledMonths = this@MonthPickerDialogBuilder.enabledMonths
+            dialogAnimationType = animation
+            dateFormat?.apply { dialogDateFormat = this }
+            setCalendarBounds(minYear, maxYear)
+            setSelection(initialSelection)
+        }
+    }
+
+    @Override
+    override fun initializeNewDialog(): MonthPickerDialog {
+        return MonthPickerDialog.newInstance()
+    }
+
+    @Override
+    override fun withInitialDialogState(savedState: Bundle?): MonthPickerDialogBuilder {
+        return super.withInitialDialogState(savedState) as MonthPickerDialogBuilder
     }
 
     @Override
@@ -133,40 +157,5 @@ class MonthPickerDialogBuilder @JvmOverloads constructor(
     fun withDateFormat(dateFormat: String?): MonthPickerDialogBuilder {
         this.dateFormat = dateFormat
         return this
-    }
-
-    @Override
-    override fun buildDialog(): MonthPickerDialog {
-        return getExistingDialogOrCreate().apply {
-            setLifecycleOwner(dialogLifecycleOwner)
-            setDialogCallbacks(dialogListeners)
-            setParentFragManager(dialogParentFragmentManager)
-            setDialogTag(dialogTag)
-            onNegativeClickListener?.apply { addOnNegativeClickListeners(this) }
-            onPositiveClickListener?.apply { addOnPositiveClickListener(this) }
-            onShowListener?.apply { addOnShowListener(this) }
-            onHideListener?.apply { addOnHideListener(this) }
-            onCancelListener?.apply { addOnCancelListener(this) }
-            monthSetListener?.apply { addOnSelectionChangedListener(this) }
-        }
-    }
-
-    private fun getExistingDialogOrCreate(): MonthPickerDialog {
-        val dialog = dialogParentFragmentManager.findFragmentByTag(dialogTag) as MonthPickerDialog?
-        return dialog ?: MonthPickerDialog.newInstance().apply {
-            if (savedState != null) {
-                restoreDialogState(savedState)
-                return@apply
-            }
-            disabledMonths = this@MonthPickerDialogBuilder.disabledMonths
-            enabledMonths = this@MonthPickerDialogBuilder.enabledMonths
-            setCalendarBounds(minYear, maxYear)
-            dialogPositiveButton = positiveButtonConfiguration
-            dialogNegativeButton = negativeButtonConfiguration
-            dateFormat?.apply { dialogDateFormat = this }
-            isCancelable = cancelableOnClickOutside
-            dialogAnimationType = animation
-            setSelection(initialSelection)
-        }
     }
 }
