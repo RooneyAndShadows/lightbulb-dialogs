@@ -26,26 +26,16 @@ abstract class BasePickerDialogFragment<SelectionType>(
     }
 
     @Override
-    override fun doOnCreate(dialogArguments: Bundle?, savedInstanceState: Bundle?) {
-        super.doOnCreate(dialogArguments, savedInstanceState)
-        savedInstanceState?.apply {
-            getBundle(selectionStateKey)?.apply {
-                selection.restoreState(this)
-            }
-        }
-    }
-
-    @Override
-    override fun doOnSaveInstanceState(outState: Bundle?) {
-        super.doOnSaveInstanceState(outState)
-        outState?.apply {
+    override fun doOnSaveDialogProperties(outState: Bundle) {
+        super.doOnSaveDialogProperties(outState)
+        outState.apply {
             putBundle(selectionStateKey, selection.saveState())
         }
     }
 
     @Override
-    override fun doOnRestoreViewsState(savedState: Bundle) {
-        super.doOnRestoreViewsState(savedState)
+    override fun doOnRestoreDialogProperties(savedState: Bundle) {
+        super.doOnRestoreDialogProperties(savedState)
         savedState.apply {
             getBundle(selectionStateKey)?.apply {
                 selection.restoreState(this)
@@ -54,7 +44,7 @@ abstract class BasePickerDialogFragment<SelectionType>(
     }
 
     @Override
-    final override fun configureContent(view: View, savedInstanceState: Bundle?) {
+    final override fun setupDialogContent(view: View, savedInstanceState: Bundle?) {
         doOnConfigureContent(view, savedInstanceState)
         synchronizeSelectUi()
     }

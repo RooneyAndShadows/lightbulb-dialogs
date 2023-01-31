@@ -89,7 +89,7 @@ abstract class BaseDialogFragment : DialogFragment(), DefaultLifecycleObserver {
      * @param view - layout of the dialog.
      * @param savedInstanceState - If the fragment is being re-created from a previous saved state, this is the state.
      */
-    protected abstract fun configureContent(
+    protected abstract fun setupDialogContent(
         view: View,
         savedInstanceState: Bundle?,
     )
@@ -111,15 +111,6 @@ abstract class BaseDialogFragment : DialogFragment(), DefaultLifecycleObserver {
     protected open fun doOnAttach(context: Context) {}
 
     /**
-     * Called immediately after onCreateView(LayoutInflater, ViewGroup, Bundle) has returned,
-     * but before any saved state has been restored in to the view.
-     *
-     * @param view - layout of the dialog
-     * @param savedInstanceState - If the fragment is being re-created from a previous saved state, this is the state.
-     */
-    protected open fun doOnViewCreated(view: View?, savedInstanceState: Bundle?) {}
-
-    /**
      * Called when all saved state has been restored into the view hierarchy of the dialog fragment.
      *
      * @param savedInstanceState
@@ -139,7 +130,14 @@ abstract class BaseDialogFragment : DialogFragment(), DefaultLifecycleObserver {
      *
      * @param savedState - Bundle containing previously saved values.
      */
-    protected open fun doOnRestoreViewsState(savedState: Bundle) {}
+    protected open fun doOnRestoreInstanceState(savedState: Bundle) {}
+
+    /**
+     * Called when dialog saved dialog non view dependent properties.
+     *
+     * @param outState - Bundle in which to place your saved state.
+     */
+    protected open fun doOnSaveDialogProperties(outState: Bundle) {}
 
     /**
      * Called to ask the fragment to restore its state. Called in onCreate
@@ -232,6 +230,21 @@ abstract class BaseDialogFragment : DialogFragment(), DefaultLifecycleObserver {
             dialogCallbacks!!.doOnCreate(this, arguments, savedInstanceState)
     }
 
+    private fun saveDialogProperties(outState: Bundle) {
+        DialogBundleHelper(outState).apply {
+            withTitle(dialogTitle)
+            withMessage(dialogMessage)
+            withPositiveButtonConfig(dialogPositiveButton)
+            withNegativeButtonConfig(dialogNegativeButton)
+            withCancelable(isCancelable)
+            withShowing(isDialogShown)
+            withDialogType(dialogType)
+            withAnimation(dialogAnimationType)
+        }.bundle.apply {
+            doOnSaveDialogProperties(this)
+        }
+    }
+
     private fun restoreDialogProperties(savedState: Bundle?) {
         savedState?.apply {
             val helper = DialogBundleHelper(this)
@@ -247,25 +260,16 @@ abstract class BaseDialogFragment : DialogFragment(), DefaultLifecycleObserver {
         }
     }
 
-    fun onRestoreViewsState(savedState: Bundle?) {
+    fun onRestoreInstanceState(savedState: Bundle?) {
         savedState?.apply {
-            doOnRestoreViewsState(savedState)
+            doOnRestoreInstanceState(savedState)
         }
     }
 
     @Override
     final override fun onSaveInstanceState(outState: Bundle) {
         super.onSaveInstanceState(outState)
-        DialogBundleHelper(outState).apply {
-            withTitle(dialogTitle)
-            withMessage(dialogMessage)
-            withPositiveButtonConfig(dialogPositiveButton)
-            withNegativeButtonConfig(dialogNegativeButton)
-            withCancelable(isCancelable)
-            withShowing(isDialogShown)
-            withDialogType(dialogType)
-            withAnimation(dialogAnimationType)
-        }
+        saveDialogProperties(outState)
         doOnSaveInstanceState(outState)
         if (dialogCallbacks != null)
             dialogCallbacks!!.doOnSaveInstanceState(this@BaseDialogFragment, view, outState)
@@ -285,12 +289,12 @@ abstract class BaseDialogFragment : DialogFragment(), DefaultLifecycleObserver {
     @Override
     final override fun onViewCreated(view: View, savedInstanceState: Bundle?) {
         super.onViewCreated(view, savedInstanceState)
-        configureContent(rootView, savedInstanceState)
-        onRestoreViewsState(savedInstanceState)
+        setupDialogContent(rootView, savedInstanceState)
+        onRestoreInstanceState(savedInstanceState)
         configureHeading()
         configureButtons()
         measureDialogLayout()
-        doOnViewCreated(view, savedInstanceState)
+        //doOnViewCreated(view, savedInstanceState)
         if (dialogCallbacks != null)
             dialogCallbacks!!.doOnInflated(this, view, savedInstanceState)
     }
@@ -391,7 +395,7 @@ abstract class BaseDialogFragment : DialogFragment(), DefaultLifecycleObserver {
 
     fun setDialogButtons(
         positiveButtonConfig: DialogButtonConfiguration?,
-        negativeButtonConfig: DialogButtonConfiguration?
+        negativeButtonConfig: DialogButtonConfiguration?,
     ) {
         dialogPositiveButton = positiveButtonConfig
         dialogNegativeButton = negativeButtonConfig
@@ -401,7 +405,7 @@ abstract class BaseDialogFragment : DialogFragment(), DefaultLifecycleObserver {
     fun saveDialogState(): Bundle {
         return Bundle().apply {
             if (isDialogShown) putBoolean("IGNORE_MANUALLY_SAVED_STATE", true)
-            else onSaveInstanceState(this)
+            else saveDialogProperties(this)
         }
     }
 
@@ -410,7 +414,6 @@ abstract class BaseDialogFragment : DialogFragment(), DefaultLifecycleObserver {
             val ignoreManualRestore = getBoolean("IGNORE_MANUALLY_SAVED_STATE", false)
             if (ignoreManualRestore) return@apply
             restoreDialogProperties(this)
-            onRestoreViewsState(this)
         }
     }
 

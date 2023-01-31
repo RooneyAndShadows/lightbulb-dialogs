@@ -31,24 +31,18 @@ class DateRangePickerDialog : BasePickerDialogFragment<DateRange>(DateRangeSelec
     private lateinit var calendar: MaterialCalendarView
     private var offsetFrom = ZoneOffset.of(DateUtilsOffsetDate.getLocalTimeZone())
     private var offsetTo = ZoneOffset.of(DateUtilsOffsetDate.getLocalTimeZone())
-    var dialogDateFormat: String = "MMM dd, yyyy"
+    var dialogDateFormat: String = DEFAULT_DATE_FORMAT
+        private set
     var dialogTextFrom: String? = null
-        set(value) {
-            field = value
-            if (this::textViewFrom.isInitialized)
-                textViewFrom.text = value
-        }
+        private set
     var dialogTextTo: String? = null
-        set(value) {
-            field = value
-            if (this::textViewTo.isInitialized)
-                textViewTo.text = value
-        }
+        private set
     override var dialogType: DialogTypes
         get() = DialogTypes.NORMAL
         set(value) {}
 
     companion object {
+        private const val DEFAULT_DATE_FORMAT = "MMM dd, yyyy"
         private const val DATE_RANGE_FROM_TEXT_TAG = "DATE_RANGE_FROM_TEXT_TAG"
         private const val DATE_RANGE_TO_TEXT_TAG = "DATE_RANGE_TO_TEXT_TAG"
         private const val DATE_FORMAT_TAG = "DATE_FORMAT_TAG"
@@ -69,6 +63,25 @@ class DateRangePickerDialog : BasePickerDialogFragment<DateRange>(DateRangeSelec
     }
 
     @Override
+    override fun doOnSaveDialogProperties(outState: Bundle) {
+        super.doOnSaveDialogProperties(outState)
+        outState.putString(DATE_FROM_ZONE_TAG, offsetFrom.toString())
+        outState.putString(DATE_TO_ZONE_TAG, offsetTo.toString())
+        outState.putString(DATE_RANGE_FROM_TEXT_TAG, dialogTextFrom)
+        outState.putString(DATE_RANGE_TO_TEXT_TAG, dialogTextTo)
+    }
+
+    @Override
+    override fun doOnRestoreDialogProperties(savedState: Bundle) {
+        super.doOnRestoreDialogProperties(savedState)
+        offsetFrom = ZoneOffset.of(savedState.getString(DATE_FROM_ZONE_TAG))
+        offsetTo = ZoneOffset.of(savedState.getString(DATE_TO_ZONE_TAG))
+        dialogTextFrom = savedState.getString(DATE_RANGE_FROM_TEXT_TAG)
+        dialogTextTo = savedState.getString(DATE_RANGE_TO_TEXT_TAG)
+        dialogDateFormat = StringUtils.getOrDefault(savedState.getString(DATE_FORMAT_TAG), dialogDateFormat)
+    }
+
+    @Override
     override fun doOnCreate(dialogArguments: Bundle?, savedInstanceState: Bundle?) {
         super.doOnCreate(savedInstanceState, dialogArguments)
         if (savedInstanceState != null) return
@@ -76,25 +89,6 @@ class DateRangePickerDialog : BasePickerDialogFragment<DateRange>(DateRangeSelec
         val defaultTo = ResourceUtils.getPhrase(requireContext(), R.string.dialog_range_picker_to_text)
         dialogTextFrom = dialogTextFrom ?: defaultFrom
         dialogTextTo = dialogTextTo ?: defaultTo
-    }
-
-    @Override
-    override fun doOnSaveInstanceState(outState: Bundle?) {
-        super.doOnSaveInstanceState(outState)
-        outState!!.putString(DATE_FROM_ZONE_TAG, offsetFrom.toString())
-        outState.putString(DATE_TO_ZONE_TAG, offsetTo.toString())
-        outState.putString(DATE_RANGE_FROM_TEXT_TAG, dialogTextFrom)
-        outState.putString(DATE_RANGE_TO_TEXT_TAG, dialogTextTo)
-    }
-
-    @Override
-    override fun doOnRestoreViewsState(savedState: Bundle) {
-        super.doOnRestoreViewsState(savedState)
-        offsetFrom = ZoneOffset.of(savedState.getString(DATE_FROM_ZONE_TAG))
-        offsetTo = ZoneOffset.of(savedState.getString(DATE_TO_ZONE_TAG))
-        dialogTextFrom = savedState.getString(DATE_RANGE_FROM_TEXT_TAG)
-        dialogTextTo = savedState.getString(DATE_RANGE_TO_TEXT_TAG)
-        dialogDateFormat = StringUtils.getOrDefault(savedState.getString(DATE_FORMAT_TAG), dialogDateFormat)
     }
 
     @Override
@@ -169,6 +163,30 @@ class DateRangePickerDialog : BasePickerDialogFragment<DateRange>(DateRangeSelec
     fun setSelection(from: OffsetDateTime, to: OffsetDateTime) {
         val rangeToSet = DateRange(from, to)
         setSelection(rangeToSet)
+    }
+
+    fun setDialogDateFormat(format: String?) {
+        dialogDateFormat = format ?: DEFAULT_DATE_FORMAT
+        textViewFromValue.apply {
+            val default = ResourceUtils.getPhrase(context, R.string.dialog_date_picker_empty_text)
+            text = DateUtilsOffsetDate.getDateString(dialogDateFormat, selection.getCurrentSelection()?.from) ?: default
+        }
+        textViewToValue.apply {
+            val default = ResourceUtils.getPhrase(context, R.string.dialog_date_picker_empty_text)
+            text = DateUtilsOffsetDate.getDateString(dialogDateFormat, selection.getCurrentSelection()?.to) ?: default
+        }
+    }
+
+    fun setDialogTextFrom(textFrom: String?) {
+        dialogTextFrom = textFrom
+        if (this::textViewFrom.isInitialized)
+            textViewFrom.text = dialogTextFrom
+    }
+
+    fun setDialogTextTo(textFrom: String?) {
+        dialogTextTo = textFrom
+        if (this::textViewTo.isInitialized)
+            textViewTo.text = dialogTextTo
     }
 
     private fun selectViews(view: View) {

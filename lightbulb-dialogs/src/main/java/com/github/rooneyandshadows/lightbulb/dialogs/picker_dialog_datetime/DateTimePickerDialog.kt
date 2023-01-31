@@ -76,8 +76,8 @@ class DateTimePickerDialog : BasePickerDialogFragment<OffsetDateTime>(DateTimeSe
     }
 
     @Override
-    override fun doOnRestoreViewsState(savedState: Bundle) {
-        super.doOnRestoreViewsState(savedState)
+    override fun doOnRestoreInstanceState(savedState: Bundle) {
+        super.doOnRestoreInstanceState(savedState)
         showingTimePicker = savedState.getBoolean(SHOWING_TIME_PICKER_TAG)
         val selectionFromState = getDateFromString(savedState.getString(DATE_SELECTION_TAG))
         val selectionDraftFromState = getDateFromString(savedState.getString(DATE_SELECTION_DRAFT_TAG))

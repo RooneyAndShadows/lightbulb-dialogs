@@ -75,8 +75,8 @@ fun <SelectionType> getDefaultSelectionChangedListener(context: Context): Select
     return object : SelectionChangedListener<SelectionType> {
         override fun onSelectionChanged(
             dialog: BasePickerDialogFragment<SelectionType>,
+            newValue: SelectionType?,
             oldValue: SelectionType?,
-            newValue: SelectionType?
         ) {
             val toastMessage = ResourceUtils.getPhrase(context, R.string.demo_selection_changed_text)
             InteractionUtils.showMessage(context, toastMessage)

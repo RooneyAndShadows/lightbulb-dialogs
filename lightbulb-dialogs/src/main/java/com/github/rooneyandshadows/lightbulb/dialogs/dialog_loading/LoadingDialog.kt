@@ -34,6 +34,6 @@ class LoadingDialog : BaseDialogFragment() {
     }
 
     @Override
-    override fun configureContent(view: View, savedInstanceState: Bundle?) {
+    override fun setupDialogContent(view: View, savedInstanceState: Bundle?) {
     }
 }

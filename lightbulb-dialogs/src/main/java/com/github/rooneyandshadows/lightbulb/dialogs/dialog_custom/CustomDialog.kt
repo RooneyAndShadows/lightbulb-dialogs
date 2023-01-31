@@ -43,7 +43,7 @@ open class CustomDialog : BaseDialogFragment() {
     }
 
     @Override
-    override fun configureContent(view: View, savedInstanceState: Bundle?) {
+    override fun setupDialogContent(view: View, savedInstanceState: Bundle?) {
         selectViews()
         setupLoadingView()
     }
@@ -55,8 +55,8 @@ open class CustomDialog : BaseDialogFragment() {
     }
 
     @Override
-    override fun doOnRestoreViewsState(savedState: Bundle) {
-        super.doOnRestoreViewsState(savedState)
+    override fun doOnRestoreInstanceState(savedState: Bundle) {
+        super.doOnRestoreInstanceState(savedState)
         isLoading = savedState.getBoolean(IS_LOADING_KEY)
     }
 

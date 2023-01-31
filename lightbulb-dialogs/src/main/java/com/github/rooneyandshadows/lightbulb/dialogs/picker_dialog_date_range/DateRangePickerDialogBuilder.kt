@@ -31,9 +31,9 @@ class DateRangePickerDialogBuilder @JvmOverloads constructor(
     @Override
     override fun setupRetainableSettings(dialog: DateRangePickerDialog) {
         dialog.apply {
-            dateFormat?.apply { dialogDateFormat = this }
-            dialogTextFrom = textFrom
-            dialogTextTo = textTo
+            dateFormat?.apply { setDialogDateFormat(this) }
+            setDialogTextFrom(textFrom)
+            setDialogTextTo(textTo)
             setSelection(initialRange)
         }
     }

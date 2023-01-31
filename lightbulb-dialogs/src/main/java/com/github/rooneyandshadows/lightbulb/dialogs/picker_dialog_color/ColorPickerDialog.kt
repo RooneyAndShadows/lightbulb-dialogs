@@ -25,6 +25,7 @@ import kotlin.math.min
 class ColorPickerDialog : AdapterPickerDialog<ColorModel>() {
     private var spans = 0
     private var lastVisibleItemPosition = -1
+    private val iconSize = ResourceUtils.dpToPx(50)
     override var dialogType: DialogTypes
         get() = NORMAL
         set(value) {}
@@ -36,7 +37,7 @@ class ColorPickerDialog : AdapterPickerDialog<ColorModel>() {
         }
 
     companion object {
-        private val iconSize = ResourceUtils.dpToPx(50)
+        private const val LAST_VISIBLE_ITEM_KEY = "LAST_VISIBLE_ITEM_KEY"
         fun newInstance(): ColorPickerDialog {
             return ColorPickerDialog()
         }
@@ -47,14 +48,14 @@ class ColorPickerDialog : AdapterPickerDialog<ColorModel>() {
         super.doOnSaveInstanceState(outState)
         val gridLayoutManager = recyclerView?.layoutManager as GridLayoutManager?
         if (gridLayoutManager != null)
-            outState!!.putInt("LAST_VISIBLE_ITEM", gridLayoutManager.findFirstVisibleItemPosition())
-        else outState!!.putInt("LAST_VISIBLE_ITEM", lastVisibleItemPosition)
+            outState!!.putInt(LAST_VISIBLE_ITEM_KEY, gridLayoutManager.findFirstVisibleItemPosition())
+        else outState!!.putInt(LAST_VISIBLE_ITEM_KEY, lastVisibleItemPosition)
     }
 
     @Override
-    override fun doOnRestoreViewsState(savedState: Bundle) {
-        super.doOnRestoreViewsState(savedState)
-        lastVisibleItemPosition = savedState.getInt("LAST_VISIBLE_ITEM")
+    override fun doOnRestoreInstanceState(savedState: Bundle) {
+        super.doOnRestoreInstanceState(savedState)
+        lastVisibleItemPosition = savedState.getInt(LAST_VISIBLE_ITEM_KEY)
     }
 
     @Override

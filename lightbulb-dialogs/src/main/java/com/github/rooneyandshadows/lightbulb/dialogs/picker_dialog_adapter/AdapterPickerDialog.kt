@@ -59,7 +59,7 @@ abstract class AdapterPickerDialog<ItemType : EasyAdapterDataModel> :
 
     @Override
     override fun doOnConfigureContent(view: View, savedInstanceState: Bundle?) {
-        selectViews(view)
+        recyclerView = view.findViewById(R.id.dialogRecycler)
         configureRecyclerView(adapter)
     }
 
@@ -145,16 +145,16 @@ abstract class AdapterPickerDialog<ItemType : EasyAdapterDataModel> :
     }
 
     @Override
-    override fun doOnSaveInstanceState(outState: Bundle?) {
-        super.doOnSaveInstanceState(outState)
-        outState?.apply {
+    override fun doOnSaveDialogProperties(outState: Bundle) {
+        super.doOnSaveDialogProperties(outState)
+        outState.apply {
             putParcelable(adapterStateTag, adapter.saveAdapterState())
         }
     }
 
     @Override
-    override fun doOnRestoreViewsState(savedState: Bundle) {
-        super.doOnRestoreViewsState(savedState)
+    override fun doOnRestoreDialogProperties(savedState: Bundle) {
+        super.doOnRestoreDialogProperties(savedState)
         savedState.apply {
             val adapterState = BundleUtils.getParcelable(adapterStateTag, this, Bundle::class.java)!!
             adapter.restoreAdapterState(adapterState)
@@ -183,10 +183,6 @@ abstract class AdapterPickerDialog<ItemType : EasyAdapterDataModel> :
 
     fun setData(data: List<ItemType>?) {
         adapter.setCollection(data ?: mutableListOf())
-    }
-
-    private fun selectViews(rootView: View) {
-        recyclerView = rootView.findViewById(R.id.dialogRecycler)
     }
 
     private fun configureRecyclerView(adapter: EasyRecyclerAdapter<ItemType>) {

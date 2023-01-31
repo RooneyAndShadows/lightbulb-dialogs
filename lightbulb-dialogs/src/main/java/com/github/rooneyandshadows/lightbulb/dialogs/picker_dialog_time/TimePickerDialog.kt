@@ -58,8 +58,8 @@ class TimePickerDialog : BasePickerDialogFragment<Time>(
     }
 
     @Override
-    override fun doOnRestoreViewsState(savedState: Bundle) {
-        super.doOnRestoreViewsState(savedState)
+    override fun doOnRestoreInstanceState(savedState: Bundle) {
+        super.doOnRestoreInstanceState(savedState)
         savedState.apply {
             BundleUtils.getParcelable(TIME_SELECTION_TAG, this, Time::class.java)?.apply {
                 selection.setCurrentSelection(this, false)
