@@ -51,14 +51,14 @@ class IconPickerDialog : AdapterPickerDialog<IconModel>() {
     }
 
     @Override
-    override fun doOnRestoreInstanceState(savedState: Bundle) {
-        super.doOnRestoreInstanceState(savedState)
+    override fun doOnRestoreViewsState(savedState: Bundle) {
+        super.doOnRestoreViewsState(savedState)
         lastVisibleItemPosition = savedState.getInt("LAST_VISIBLE_ITEM")
     }
 
     @Override
-    override fun configureContent(view: View, savedInstanceState: Bundle?) {
-        super.configureContent(view, savedInstanceState)
+    override fun doOnConfigureContent(view: View, savedInstanceState: Bundle?) {
+        super.doOnConfigureContent(view, savedInstanceState)
         val recyclerView = this.recyclerView!!
         recyclerView.layoutParams.height = 1 //Fixes rendering all possible icons (later will be resized)
         spans = min(7, getMaxWidth() / iconSize)

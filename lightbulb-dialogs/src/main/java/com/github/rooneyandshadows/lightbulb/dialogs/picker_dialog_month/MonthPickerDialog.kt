@@ -18,7 +18,6 @@ import com.github.rooneyandshadows.lightbulb.dialogs.base.internal.DialogTypes
 import com.github.rooneyandshadows.lightbulb.dialogs.base.internal.DialogTypes.*
 import com.github.rooneyandshadows.lightbulb.dialogs.picker_dialog_month.MonthPickerDialog.*
 import java.time.OffsetDateTime
-import java.util.*
 import kotlin.math.max
 import kotlin.math.min
 
@@ -92,6 +91,7 @@ class MonthPickerDialog : BasePickerDialogFragment<Month>(MonthSelection(null, n
         private const val PICKER_MAX_YEAR = "MONTH_PICKER_MAX_YEAR"
         private const val PICKER_DISABLED_MONTHS = "PICKER_DISABLED_MONTHS"
         private const val PICKER_ENABLED_MONTHS = "PICKER_ENABLED_MONTHS"
+        private const val PICKER_HEADING_TEXT_VIEW_STATE = "PICKER_HEADING_TEXT_VIEW_STATE"
         fun newInstance(): MonthPickerDialog {
             return MonthPickerDialog()
         }
@@ -105,43 +105,43 @@ class MonthPickerDialog : BasePickerDialogFragment<Month>(MonthSelection(null, n
 
     @Override
     override fun doOnSaveInstanceState(outState: Bundle?) {
-        outState?.apply {
+        outState?.apply bundle@{
             putInt(PICKER_MIN_YEAR, minYear)
             putInt(PICKER_MAX_YEAR, maxYear)
             selection.getCurrentSelection()?.apply {
-                BundleUtils.putParcelable(MONTH_SELECTION_TAG, outState, this)
+                BundleUtils.putParcelable(MONTH_SELECTION_TAG, this@bundle, this)
             }
             selection.getDraftSelection()?.apply {
-                BundleUtils.putParcelable(MONTH_SELECTION_DRAFT_TAG, outState, this)
+                BundleUtils.putParcelable(MONTH_SELECTION_DRAFT_TAG, this@bundle, this)
             }
             enabledMonths.apply {
                 val arrayList = arrayListOf<Month>()
                 arrayList.addAll(this)
-                BundleUtils.putParcelableArrayList(PICKER_ENABLED_MONTHS, outState, arrayList)
+                BundleUtils.putParcelableArrayList(PICKER_ENABLED_MONTHS, this@bundle, arrayList)
             }
             disabledMonths.apply {
                 val arrayList = arrayListOf<Month>()
                 arrayList.addAll(this)
-                BundleUtils.putParcelableArrayList(PICKER_DISABLED_MONTHS, outState, arrayList)
+                BundleUtils.putParcelableArrayList(PICKER_DISABLED_MONTHS, this@bundle, arrayList)
+            }
+            pickerHeadingSelectionTextView.apply {
+                BundleUtils.putParcelable(PICKER_HEADING_TEXT_VIEW_STATE, this@bundle, onSaveInstanceState())
             }
             putString(DATE_FORMAT_TAG, dialogDateFormat)
         }
     }
 
     @Override
-    override fun doOnRestoreInstanceState(savedState: Bundle) {
-        super.doOnRestoreInstanceState(savedState)
-        BundleUtils.getParcelable(MONTH_SELECTION_TAG, savedState, Month::class.java)?.apply {
-            selection.setCurrentSelection(this, false)
-        }
-        BundleUtils.getParcelable(MONTH_SELECTION_DRAFT_TAG, savedState, Month::class.java)?.apply {
-            selection.setDraftSelection(this, false)
-        }
+    override fun doOnRestoreViewsState(savedState: Bundle) {
+        super.doOnRestoreViewsState(savedState)
         BundleUtils.getParcelableArrayList(PICKER_ENABLED_MONTHS, savedState, Month::class.java)?.apply {
             enabledMonths = this
         }
         BundleUtils.getParcelableArrayList(PICKER_DISABLED_MONTHS, savedState, Month::class.java)?.apply {
             disabledMonths = this
+        }
+        BundleUtils.getParcelable(PICKER_HEADING_TEXT_VIEW_STATE, savedState, Parcelable::class.java).apply {
+            pickerHeadingSelectionTextView.onRestoreInstanceState(this)
         }
         minYear = savedState.getInt(PICKER_MIN_YEAR)
         maxYear = savedState.getInt(PICKER_MAX_YEAR)
@@ -164,7 +164,7 @@ class MonthPickerDialog : BasePickerDialogFragment<Month>(MonthSelection(null, n
     }
 
     @Override
-    override fun configureContent(view: View, savedInstanceState: Bundle?) {
+    override fun doOnConfigureContent(view: View, savedInstanceState: Bundle?) {
         selectViews(view)
         val monthCalendar = this.monthCalendar!!
         monthCalendar.setCalendarBounds(minYear, maxYear)
@@ -184,26 +184,35 @@ class MonthPickerDialog : BasePickerDialogFragment<Month>(MonthSelection(null, n
                 oldSelection: MonthEntry?,
             ) {
                 val selectedMonthEntry = newSelection?.let { monthEntry -> return@let monthEntrytoMonth(monthEntry) }
+
                 if (isDialogShown) selection.setDraftSelection(selectedMonthEntry)
                 else selection.setCurrentSelection(selectedMonthEntry)
             }
         })
-        synchronizeSelectUi()
     }
 
     @Override
     override fun synchronizeSelectUi() {
         val ctx = requireContext()
-        val newValue = if (selection.hasDraftSelection()) selection.getDraftSelection()
-        else selection.getCurrentSelection()
-        if (newValue == null) monthCalendar?.clearSelection()
-        else monthCalendar?.setSelectedMonthAndScrollToYear(monthToMonthEntry(newValue))
+        val pendingSelection = selection.getActiveSelection()
+        val needSync = checkIfCalendarNeedsSync(pendingSelection)
+        if (!needSync) return
+        if (pendingSelection == null) monthCalendar?.clearSelection()
+        else monthCalendar?.setSelectedMonthAndScrollToYear(monthToMonthEntry(pendingSelection))
         pickerHeadingSelectionTextView.apply {
-            text = newValue?.getMonthString(dialogDateFormat) ?: ResourceUtils.getPhrase(
-                ctx,
-                R.string.dialog_month_picker_empty_text
-            )
+            val defaultText = ResourceUtils.getPhrase(ctx, R.string.dialog_month_picker_empty_text)
+            val newText = pendingSelection?.getMonthString(dialogDateFormat) ?: defaultText
+            text = newText
         }
+    }
+
+    private fun checkIfCalendarNeedsSync(currentValue: Month?): Boolean {
+        val calendarValue = monthCalendar!!.selection?.let {
+            monthEntrytoMonth(it)
+        }
+        if (currentValue == null && calendarValue == null) return true
+        if (currentValue == null || calendarValue == null) return false
+        return (currentValue.year == calendarValue.year && currentValue.month == calendarValue.month)
     }
 
     @Override
@@ -279,7 +288,6 @@ class MonthPickerDialog : BasePickerDialogFragment<Month>(MonthSelection(null, n
     }
 
     class Month(val year: Int, val month: Int) : Parcelable {
-
         constructor(parcel: Parcel) : this(
             parcel.readInt(),
             parcel.readInt()

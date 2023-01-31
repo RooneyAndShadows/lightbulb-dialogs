@@ -76,8 +76,8 @@ class DateTimePickerDialog : BasePickerDialogFragment<OffsetDateTime>(DateTimeSe
     }
 
     @Override
-    override fun doOnRestoreInstanceState(savedState: Bundle) {
-        super.doOnRestoreInstanceState(savedState)
+    override fun doOnRestoreViewsState(savedState: Bundle) {
+        super.doOnRestoreViewsState(savedState)
         showingTimePicker = savedState.getBoolean(SHOWING_TIME_PICKER_TAG)
         val selectionFromState = getDateFromString(savedState.getString(DATE_SELECTION_TAG))
         val selectionDraftFromState = getDateFromString(savedState.getString(DATE_SELECTION_DRAFT_TAG))
@@ -95,8 +95,7 @@ class DateTimePickerDialog : BasePickerDialogFragment<OffsetDateTime>(DateTimeSe
         else layoutInflater.inflate(R.layout.dialog_picker_datetime_horizontal, null)
     }
 
-    @Override
-    override fun configureContent(view: View, savedInstanceState: Bundle?) {
+    override fun doOnConfigureContent(view: View, savedInstanceState: Bundle?) {
         selectViews(view)
         val context = requireContext()
         modeChangeButton.background = ResourceUtils.getDrawable(context, R.drawable.background_round_corners_transparent)
@@ -155,7 +154,6 @@ class DateTimePickerDialog : BasePickerDialogFragment<OffsetDateTime>(DateTimeSe
             if (isDialogShown) selection.setDraftSelection(date) else selection.setCurrentSelection(date)
         }
         syncPickerMode()
-        synchronizeSelectUi()
     }
 
     @Override

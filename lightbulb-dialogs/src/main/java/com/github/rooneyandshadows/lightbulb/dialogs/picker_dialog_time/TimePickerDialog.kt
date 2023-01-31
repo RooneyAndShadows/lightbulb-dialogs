@@ -58,8 +58,8 @@ class TimePickerDialog : BasePickerDialogFragment<Time>(
     }
 
     @Override
-    override fun doOnRestoreInstanceState(savedState: Bundle) {
-        super.doOnRestoreInstanceState(savedState)
+    override fun doOnRestoreViewsState(savedState: Bundle) {
+        super.doOnRestoreViewsState(savedState)
         savedState.apply {
             BundleUtils.getParcelable(TIME_SELECTION_TAG, this, Time::class.java)?.apply {
                 selection.setCurrentSelection(this, false)
@@ -76,11 +76,10 @@ class TimePickerDialog : BasePickerDialogFragment<Time>(
     }
 
     @Override
-    override fun configureContent(view: View, savedInstanceState: Bundle?) {
+    override fun doOnConfigureContent(view: View, savedInstanceState: Bundle?) {
         picker = view.findViewById(R.id.dialogTimePicker)
         picker.setIs24HourView(true)
         picker.isSaveEnabled = false
-        synchronizeSelectUi()
         picker.setOnTimeChangedListener { _: TimePicker?, hourOfDay: Int, minutesOfHour: Int ->
             val newSelection = Time(hourOfDay, minutesOfHour)
             if (isDialogShown) selection.setDraftSelection(newSelection)

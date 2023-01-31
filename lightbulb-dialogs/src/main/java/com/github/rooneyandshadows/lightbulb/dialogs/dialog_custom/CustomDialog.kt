@@ -55,8 +55,8 @@ open class CustomDialog : BaseDialogFragment() {
     }
 
     @Override
-    override fun doOnRestoreInstanceState(savedState: Bundle) {
-        super.doOnRestoreInstanceState(savedState)
+    override fun doOnRestoreViewsState(savedState: Bundle) {
+        super.doOnRestoreViewsState(savedState)
         isLoading = savedState.getBoolean(IS_LOADING_KEY)
     }
 

@@ -1,16 +1,26 @@
 package com.github.rooneyandshadows.lightbulb.dialogs.base
 
+import android.os.Bundle
 import java.util.ArrayList
 import java.util.HashMap
 
 abstract class BaseDialogSelection<SelectionType>(current: SelectionType?, draft: SelectionType?) {
     private val selectionCurrentKey = "SELECTION_CURRENT"
     private val selectionDraftKey = "SELECTION_DRAFT"
+    protected val CURRENT_SELECTION_STATE_KEY = "CURRENT_SELECTION_STATE_KEY"
+    protected val DRAFT_SELECTION_STATE_KEY = "DRAFT_SELECTION_STATE_KEY"
     private val selection = HashMap<String, SelectionType?>()
     private val selectionListeners = ArrayList<PickerSelectionListeners<SelectionType>>()
-    abstract fun compareValues(v1: SelectionType?, v2: SelectionType?): Boolean
+    protected abstract fun compareValues(v1: SelectionType?, v2: SelectionType?): Boolean
     abstract fun hasCurrentSelection(): Boolean
     abstract fun hasDraftSelection(): Boolean
+    abstract fun saveState(): Bundle
+    abstract fun restoreState(source: Bundle)
+
+    fun getActiveSelection(): SelectionType? {
+        return if (hasDraftSelection()) getDraftSelection()
+        else getCurrentSelection()
+    }
 
     init {
         selection[selectionCurrentKey] = current

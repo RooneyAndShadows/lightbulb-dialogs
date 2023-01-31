@@ -25,8 +25,6 @@ import java.util.Arrays
 abstract class AdapterPickerDialog<ItemType : EasyAdapterDataModel> :
     BasePickerDialogFragment<IntArray>(AdapterPickerDialogSelection(null, null)) {
     private val adapterStateTag = "ADAPTER_STATE_TAG"
-    private val adapterSelectionTag = "ADAPTER_SELECTION_TAG"
-    private val adapterSelectionDraftTag = "ADAPTER_SELECTION_DRAFT_TAG"
     private var itemDecoration: RecyclerView.ItemDecoration? = null
     private val selectionListener: EasyAdapterSelectionChangedListener
     protected var recyclerView: RecyclerView? = null
@@ -60,10 +58,9 @@ abstract class AdapterPickerDialog<ItemType : EasyAdapterDataModel> :
     }
 
     @Override
-    override fun configureContent(view: View, savedInstanceState: Bundle?) {
+    override fun doOnConfigureContent(view: View, savedInstanceState: Bundle?) {
         selectViews(view)
         configureRecyclerView(adapter)
-        synchronizeSelectUi()
     }
 
     @Override
@@ -152,25 +149,15 @@ abstract class AdapterPickerDialog<ItemType : EasyAdapterDataModel> :
         super.doOnSaveInstanceState(outState)
         outState?.apply {
             putParcelable(adapterStateTag, adapter.saveAdapterState())
-            selection.getCurrentSelection()?.apply {
-                putIntArray(adapterSelectionTag, this)
-            }
-            selection.getDraftSelection()?.apply {
-                putIntArray(adapterSelectionDraftTag, this)
-            }
         }
     }
 
     @Override
-    override fun doOnRestoreInstanceState(savedState: Bundle) {
-        super.doOnRestoreInstanceState(savedState)
+    override fun doOnRestoreViewsState(savedState: Bundle) {
+        super.doOnRestoreViewsState(savedState)
         savedState.apply {
             val adapterState = BundleUtils.getParcelable(adapterStateTag, this, Bundle::class.java)!!
-            val currentSelection = getIntArray(adapterSelectionTag)
-            val draftSelection = getIntArray(adapterSelectionDraftTag)
             adapter.restoreAdapterState(adapterState)
-            selection.setCurrentSelection(currentSelection, false)
-            selection.setDraftSelection(draftSelection, false)
         }
     }
 

@@ -9,7 +9,6 @@ import android.view.View
 import android.widget.TextView
 import com.github.rooneyandshadows.java.commons.date.DateUtilsOffsetDate
 import com.github.rooneyandshadows.java.commons.string.StringUtils
-import com.github.rooneyandshadows.lightbulb.commons.utils.BundleUtils
 import com.github.rooneyandshadows.lightbulb.commons.utils.ParcelUtils
 import com.github.rooneyandshadows.lightbulb.commons.utils.ResourceUtils
 import com.github.rooneyandshadows.lightbulb.dialogs.R
@@ -50,8 +49,6 @@ class DateRangePickerDialog : BasePickerDialogFragment<DateRange>(DateRangeSelec
         set(value) {}
 
     companion object {
-        private const val SELECTION_CURRENT_TAG = "SELECTION_CURRENT_TAG"
-        private const val SELECTION_DRAFT_TAG = "SELECTION_DRAFT_TAG"
         private const val DATE_RANGE_FROM_TEXT_TAG = "DATE_RANGE_FROM_TEXT_TAG"
         private const val DATE_RANGE_TO_TEXT_TAG = "DATE_RANGE_TO_TEXT_TAG"
         private const val DATE_FORMAT_TAG = "DATE_FORMAT_TAG"
@@ -86,30 +83,18 @@ class DateRangePickerDialog : BasePickerDialogFragment<DateRange>(DateRangeSelec
         super.doOnSaveInstanceState(outState)
         outState!!.putString(DATE_FROM_ZONE_TAG, offsetFrom.toString())
         outState.putString(DATE_TO_ZONE_TAG, offsetTo.toString())
-        selection.getCurrentSelection()?.apply {
-            BundleUtils.putParcelable(SELECTION_CURRENT_TAG, outState, this)
-        }
-        selection.getDraftSelection()?.apply {
-            BundleUtils.putParcelable(SELECTION_DRAFT_TAG, outState, this)
-        }
         outState.putString(DATE_RANGE_FROM_TEXT_TAG, dialogTextFrom)
         outState.putString(DATE_RANGE_TO_TEXT_TAG, dialogTextTo)
     }
 
     @Override
-    override fun doOnRestoreInstanceState(savedState: Bundle) {
-        super.doOnRestoreInstanceState(savedState)
+    override fun doOnRestoreViewsState(savedState: Bundle) {
+        super.doOnRestoreViewsState(savedState)
         offsetFrom = ZoneOffset.of(savedState.getString(DATE_FROM_ZONE_TAG))
         offsetTo = ZoneOffset.of(savedState.getString(DATE_TO_ZONE_TAG))
         dialogTextFrom = savedState.getString(DATE_RANGE_FROM_TEXT_TAG)
         dialogTextTo = savedState.getString(DATE_RANGE_TO_TEXT_TAG)
         dialogDateFormat = StringUtils.getOrDefault(savedState.getString(DATE_FORMAT_TAG), dialogDateFormat)
-        BundleUtils.getParcelable(SELECTION_CURRENT_TAG, savedState, DateRange::class.java)?.apply {
-            selection.setCurrentSelection(this, false)
-        }
-        BundleUtils.getParcelable(SELECTION_DRAFT_TAG, savedState, DateRange::class.java)?.apply {
-            selection.setDraftSelection(this, false)
-        }
     }
 
     @Override
@@ -121,7 +106,7 @@ class DateRangePickerDialog : BasePickerDialogFragment<DateRange>(DateRangeSelec
     }
 
     @Override
-    override fun configureContent(view: View, savedInstanceState: Bundle?) {
+    override fun doOnConfigureContent(view: View, savedInstanceState: Bundle?) {
         selectViews(view)
         val context = requireContext()
         textViewFrom.text = dialogTextFrom
@@ -139,7 +124,6 @@ class DateRangePickerDialog : BasePickerDialogFragment<DateRange>(DateRangeSelec
             if (isDialogShown) selection.setDraftSelection(range)
             else selection.setCurrentSelection(range)
         }
-        synchronizeSelectUi()
     }
 
     @Override

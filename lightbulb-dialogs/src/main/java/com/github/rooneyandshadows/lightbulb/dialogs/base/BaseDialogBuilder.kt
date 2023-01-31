@@ -121,13 +121,13 @@ abstract class BaseDialogBuilder<DialogType : BaseDialogFragment> @JvmOverloads 
                 if (!ignoreManuallySavedState) this@dialogInstance.restoreDialogState(this)
                 return@dialogInstance
             }
-            dialogTitle = title
-            dialogMessage = message
+            setDialogTitle(title)
+            setDialogMessage(message)
+            setDialogPositiveButton(positiveButtonConfiguration)
+            setDialogNegativeButton(negativeButtonConfiguration)
             dialogType = type
             dialogAnimationType = animation
             isCancelable = cancelableOnClickOutside
-            dialogNegativeButton = negativeButtonConfiguration
-            dialogPositiveButton = positiveButtonConfiguration
             setupRetainableSettings(this)
         }
     }

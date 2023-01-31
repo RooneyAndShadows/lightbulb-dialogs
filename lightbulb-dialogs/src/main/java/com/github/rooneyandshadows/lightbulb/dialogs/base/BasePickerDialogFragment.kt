@@ -1,5 +1,6 @@
 package com.github.rooneyandshadows.lightbulb.dialogs.base
 
+import android.os.Bundle
 import android.view.View
 import com.github.rooneyandshadows.lightbulb.dialogs.base.BaseDialogSelection.PickerSelectionListeners
 import com.github.rooneyandshadows.lightbulb.dialogs.base.internal.callbacks.DialogButtonClickListener
@@ -11,6 +12,7 @@ abstract class BasePickerDialogFragment<SelectionType>(
     protected val selection: BaseDialogSelection<SelectionType>,
     private val synchronizeUiOnDraftChange: Boolean,
 ) : BaseDialogFragment() {
+    private val selectionStateKey = "DIALOG_SELECTION_STATE_KEY"
     private var onSelectionChangedListeners: MutableList<SelectionChangedListener<SelectionType>> = mutableListOf()
 
     protected constructor(selection: BaseDialogSelection<SelectionType>) : this(selection, true)
@@ -20,6 +22,42 @@ abstract class BasePickerDialogFragment<SelectionType>(
     }
 
     protected abstract fun synchronizeSelectUi()
+    protected open fun doOnConfigureContent(view: View, savedInstanceState: Bundle?) {
+    }
+
+    @Override
+    override fun doOnCreate(dialogArguments: Bundle?, savedInstanceState: Bundle?) {
+        super.doOnCreate(dialogArguments, savedInstanceState)
+        savedInstanceState?.apply {
+            getBundle(selectionStateKey)?.apply {
+                selection.restoreState(this)
+            }
+        }
+    }
+
+    @Override
+    override fun doOnSaveInstanceState(outState: Bundle?) {
+        super.doOnSaveInstanceState(outState)
+        outState?.apply {
+            putBundle(selectionStateKey, selection.saveState())
+        }
+    }
+
+    @Override
+    override fun doOnRestoreViewsState(savedState: Bundle) {
+        super.doOnRestoreViewsState(savedState)
+        savedState.apply {
+            getBundle(selectionStateKey)?.apply {
+                selection.restoreState(this)
+            }
+        }
+    }
+
+    @Override
+    final override fun configureContent(view: View, savedInstanceState: Bundle?) {
+        doOnConfigureContent(view, savedInstanceState)
+        synchronizeSelectUi()
+    }
 
     fun addOnSelectionChangedListener(onSelectionChangedListener: SelectionChangedListener<SelectionType>) {
         onSelectionChangedListeners.add(onSelectionChangedListener)

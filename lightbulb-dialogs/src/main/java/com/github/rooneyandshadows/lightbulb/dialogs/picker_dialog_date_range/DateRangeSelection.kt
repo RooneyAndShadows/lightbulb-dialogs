@@ -1,5 +1,7 @@
 package com.github.rooneyandshadows.lightbulb.dialogs.picker_dialog_date_range
 
+import android.os.Bundle
+import com.github.rooneyandshadows.lightbulb.commons.utils.BundleUtils
 import com.github.rooneyandshadows.lightbulb.dialogs.base.BaseDialogSelection
 import com.github.rooneyandshadows.lightbulb.dialogs.picker_dialog_date_range.DateRangePickerDialog.DateRange
 
@@ -28,5 +30,30 @@ internal class DateRangeSelection(current: DateRange?, draft: DateRange?) :
     override fun hasDraftSelection(): Boolean {
         val draft = getDraftSelection()
         return draft != null
+    }
+
+    @Override
+    override fun saveState(): Bundle {
+        return Bundle().apply bundle@{
+            getCurrentSelection()?.apply {
+                BundleUtils.putParcelable(CURRENT_SELECTION_STATE_KEY, this@bundle, this)
+            }
+            getDraftSelection()?.apply {
+                BundleUtils.putParcelable(DRAFT_SELECTION_STATE_KEY, this@bundle, this)
+            }
+        }
+    }
+
+    @Override
+    override fun restoreState(source: Bundle) {
+        val clazz = DateRange::class.java
+        source.apply {
+            BundleUtils.getParcelable(CURRENT_SELECTION_STATE_KEY, this, clazz)?.apply {
+                setCurrentSelection(this, false)
+            }
+            BundleUtils.getParcelable(DRAFT_SELECTION_STATE_KEY, this, clazz)?.apply {
+                setDraftSelection(this, false)
+            }
+        }
     }
 }
