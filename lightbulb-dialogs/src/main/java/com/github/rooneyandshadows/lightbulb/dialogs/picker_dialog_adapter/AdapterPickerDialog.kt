@@ -26,7 +26,6 @@ import java.util.Arrays
 abstract class AdapterPickerDialog<ItemType : EasyAdapterDataModel> : BasePickerDialogFragment<IntArray>(
     AdapterPickerDialogSelection(null, null)
 ) {
-    private val selectionListener: EasyAdapterSelectionChangedListener
     protected var recyclerView: RecyclerView? = null
         private set
     var itemDecoration: ItemDecoration? = null
@@ -46,22 +45,13 @@ abstract class AdapterPickerDialog<ItemType : EasyAdapterDataModel> : BasePicker
         }
     }
 
-    init {
-        selectionListener = object : EasyAdapterSelectionChangedListener {
-            override fun onChanged(newSelection: IntArray?) {
-                if (isDialogShown) selection.setDraftSelection(newSelection)
-                else selection.setCurrentSelection(newSelection)
-            }
-        }
-    }
-
     @Override
     override fun getDialogLayout(layoutInflater: LayoutInflater): View {
         return View.inflate(context, R.layout.dialog_picker_normal, null)
     }
 
     @Override
-    override fun doOnConfigureContent(view: View, savedInstanceState: Bundle?) {
+    override fun setupDialogContent(view: View, savedInstanceState: Bundle?) {
         recyclerView = view.findViewById(R.id.dialogRecycler)
         configureRecyclerView(adapter)
     }
@@ -77,11 +67,23 @@ abstract class AdapterPickerDialog<ItemType : EasyAdapterDataModel> : BasePicker
     }
 
     @Override
-    override fun synchronizeSelectUi() {
+    override fun onSelectionChange() {
         val pendingSelection = selection.getActiveSelection()
         val currentAdapterSelection = adapter.selectedPositionsAsArray
         val needAdapterSync = !Arrays.equals(pendingSelection, currentAdapterSelection)
         if (needAdapterSync) adapter.selectPositions(pendingSelection, newState = true, incremental = false)
+    }
+
+    @Override
+    override fun doOnViewStateRestored(savedInstanceState: Bundle?) {
+        super.doOnViewStateRestored(savedInstanceState)
+        val selectionListener = object : EasyAdapterSelectionChangedListener {
+            override fun onChanged(newSelection: IntArray?) {
+                if (isDialogShown) selection.setDraftSelection(newSelection)
+                else selection.setCurrentSelection(newSelection)
+            }
+        }
+        adapter.addOrReplaceSelectionChangedListener(selectionListener)
     }
 
     @Override
@@ -204,7 +206,6 @@ abstract class AdapterPickerDialog<ItemType : EasyAdapterDataModel> : BasePicker
 
     private fun configureRecyclerView(adapter: EasyRecyclerAdapter<ItemType>) {
         val recyclerView = this.recyclerView!!
-        adapter.addOrReplaceSelectionChangedListener(selectionListener)
         recyclerView.isVerticalScrollBarEnabled = true
         recyclerView.isScrollbarFadingEnabled = false
         recyclerView.itemAnimator = null

@@ -33,12 +33,13 @@ class MonthPickerDialogBuilder @JvmOverloads constructor(
     @Override
     override fun setupRetainableSettings(dialog: MonthPickerDialog) {
         dialog.apply {
-            disabledMonths = this@MonthPickerDialogBuilder.disabledMonths
-            enabledMonths = this@MonthPickerDialogBuilder.enabledMonths
-            dialogAnimationType = animation
-            dateFormat?.apply { dialogDateFormat = this }
+            val builder = this@MonthPickerDialogBuilder
+            setDisabledMonths(builder.disabledMonths)
+            setEnabledMonths(builder.enabledMonths)
+            setDialogDateFormat(dateFormat)
             setCalendarBounds(minYear, maxYear)
             setSelection(initialSelection)
+            dialogAnimationType = animation
         }
     }
 
@@ -151,11 +152,6 @@ class MonthPickerDialogBuilder @JvmOverloads constructor(
 
     fun withMaxYear(year: Int): MonthPickerDialogBuilder {
         maxYear = year
-        return this
-    }
-
-    fun withDateFormat(dateFormat: String?): MonthPickerDialogBuilder {
-        this.dateFormat = dateFormat
         return this
     }
 }

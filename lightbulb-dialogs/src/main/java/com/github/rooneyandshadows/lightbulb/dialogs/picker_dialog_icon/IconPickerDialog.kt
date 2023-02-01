@@ -59,8 +59,8 @@ class IconPickerDialog : AdapterPickerDialog<IconModel>() {
     }
 
     @Override
-    override fun doOnConfigureContent(view: View, savedInstanceState: Bundle?) {
-        super.doOnConfigureContent(view, savedInstanceState)
+    override fun setupDialogContent(view: View, savedInstanceState: Bundle?) {
+        super.setupDialogContent(view, savedInstanceState)
         val recyclerView = this.recyclerView!!
         recyclerView.layoutParams.height = 1 //Fixes rendering all possible icons (later will be resized)
         spans = min(7, getMaxWidth() / iconSize)

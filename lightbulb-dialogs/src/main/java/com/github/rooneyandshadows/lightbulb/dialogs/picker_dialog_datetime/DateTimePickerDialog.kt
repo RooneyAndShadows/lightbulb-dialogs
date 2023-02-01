@@ -90,7 +90,7 @@ class DateTimePickerDialog : BasePickerDialogFragment<OffsetDateTime>(DateTimeSe
         else layoutInflater.inflate(R.layout.dialog_picker_datetime_horizontal, null)
     }
 
-    override fun doOnConfigureContent(view: View, savedInstanceState: Bundle?) {
+    override fun setupDialogContent(view: View, savedInstanceState: Bundle?) {
         selectViews(view)
         val context = requireContext()
         modeChangeButton!!.background = ResourceUtils.getDrawable(context, R.drawable.background_round_corners_transparent)
@@ -152,7 +152,7 @@ class DateTimePickerDialog : BasePickerDialogFragment<OffsetDateTime>(DateTimeSe
     }
 
     @Override
-    override fun synchronizeSelectUi() {
+    override fun onSelectionChange() {
         val newDate = if (selection.hasDraftSelection()) selection.getDraftSelection()
         else selection.getCurrentSelection()
         if (newDate != null) {

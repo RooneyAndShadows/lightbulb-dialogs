@@ -100,7 +100,7 @@ class DateRangePickerDialog : BasePickerDialogFragment<DateRange>(DateRangeSelec
     }
 
     @Override
-    override fun doOnConfigureContent(view: View, savedInstanceState: Bundle?) {
+    override fun setupDialogContent(view: View, savedInstanceState: Bundle?) {
         selectViews(view)
         val context = requireContext()
         setupHeader()
@@ -121,7 +121,7 @@ class DateRangePickerDialog : BasePickerDialogFragment<DateRange>(DateRangeSelec
     }
 
     @Override
-    override fun synchronizeSelectUi() {
+    override fun onSelectionChange() {
         val context = requireContext()
         val pendingSelection = selection.getActiveSelection()
         val needSync = checkIfCalendarNeedsSync(pendingSelection)
@@ -132,7 +132,7 @@ class DateRangePickerDialog : BasePickerDialogFragment<DateRange>(DateRangeSelec
             calendar?.selectRange(newFrom, newTo)
             calendar?.setCurrentDate(newTo, false)
         }
-        setupHeader(pendingSelection)
+        setupHeader()
     }
 
     private fun setupHeader() {

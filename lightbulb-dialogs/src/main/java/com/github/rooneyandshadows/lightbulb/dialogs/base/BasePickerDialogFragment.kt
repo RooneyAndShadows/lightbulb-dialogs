@@ -21,9 +21,7 @@ abstract class BasePickerDialogFragment<SelectionType>(
         initializeListeners()
     }
 
-    protected abstract fun synchronizeSelectUi()
-    protected open fun doOnConfigureContent(view: View, savedInstanceState: Bundle?) {
-    }
+    protected abstract fun onSelectionChange()
 
     @Override
     override fun doOnSaveDialogProperties(outState: Bundle) {
@@ -41,12 +39,6 @@ abstract class BasePickerDialogFragment<SelectionType>(
                 selection.restoreState(this)
             }
         }
-    }
-
-    @Override
-    final override fun setupDialogContent(view: View, savedInstanceState: Bundle?) {
-        doOnConfigureContent(view, savedInstanceState)
-        synchronizeSelectUi()
     }
 
     fun addOnSelectionChangedListener(onSelectionChangedListener: SelectionChangedListener<SelectionType>) {
@@ -98,21 +90,21 @@ abstract class BasePickerDialogFragment<SelectionType>(
         })
         selection.addSelectionListeners(object : PickerSelectionListeners<SelectionType> {
             override fun onCurrentSelectionChangedListener(newValue: SelectionType?, oldValue: SelectionType?) {
-                if (isAttached) synchronizeSelectUi()
+                if (isAttached) onSelectionChange()
                 dispatchSelectionChangedEvent(newValue, oldValue)
             }
 
             override fun onDraftSelectionChangedListener(newValue: SelectionType?, oldValue: SelectionType?) {
-                if (synchronizeUiOnDraftChange && isAttached) synchronizeSelectUi()
+                if (synchronizeUiOnDraftChange && isAttached) onSelectionChange()
             }
 
             override fun onDraftCommit(newValue: SelectionType?, beforeCommit: SelectionType?) {
-                if (isAttached) synchronizeSelectUi()
+                if (isAttached) onSelectionChange()
                 dispatchSelectionChangedEvent(newValue, beforeCommit)
             }
 
             override fun onDraftReverted() {
-                if (isAttached) synchronizeSelectUi()
+                if (isAttached) onSelectionChange()
             }
         })
     }

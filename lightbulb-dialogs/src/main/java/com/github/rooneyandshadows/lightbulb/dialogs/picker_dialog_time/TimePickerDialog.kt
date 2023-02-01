@@ -9,7 +9,6 @@ import android.view.View
 import android.widget.TimePicker
 import com.github.rooneyandshadows.lightbulb.dialogs.base.BasePickerDialogFragment
 import com.github.rooneyandshadows.java.commons.date.DateUtilsOffsetDate
-import com.github.rooneyandshadows.lightbulb.commons.utils.BundleUtils
 import com.github.rooneyandshadows.lightbulb.dialogs.R
 import com.github.rooneyandshadows.lightbulb.dialogs.base.internal.DialogTypes
 import com.github.rooneyandshadows.lightbulb.dialogs.picker_dialog_time.TimePickerDialog.*
@@ -32,8 +31,6 @@ class TimePickerDialog : BasePickerDialogFragment<Time>(
         set(value) {}
 
     companion object {
-        private const val TIME_SELECTION_TAG = "TIME_SELECTION_TAG"
-        private const val TIME_SELECTION_DRAFT_TAG = "TIME_SELECTION_DRAFT_TAG"
         fun newInstance(): TimePickerDialog {
             return TimePickerDialog()
         }
@@ -46,63 +43,56 @@ class TimePickerDialog : BasePickerDialogFragment<Time>(
     }
 
     @Override
-    override fun doOnSaveInstanceState(outState: Bundle?) {
-        outState?.apply {
-            selection.getCurrentSelection()?.apply {
-                BundleUtils.putParcelable(TIME_SELECTION_TAG, outState, selection.getCurrentSelection())
-            }
-            selection.getDraftSelection()?.apply {
-                BundleUtils.putParcelable(TIME_SELECTION_DRAFT_TAG, outState, selection.getDraftSelection())
-            }
-        }
-    }
-
-    @Override
-    override fun doOnRestoreInstanceState(savedState: Bundle) {
-        super.doOnRestoreInstanceState(savedState)
-        savedState.apply {
-            BundleUtils.getParcelable(TIME_SELECTION_TAG, this, Time::class.java)?.apply {
-                selection.setCurrentSelection(this, false)
-            }
-            BundleUtils.getParcelable(TIME_SELECTION_DRAFT_TAG, this, Time::class.java)?.apply {
-                selection.setDraftSelection(this, false)
-            }
-        }
-    }
-
-    @Override
     override fun getDialogLayout(layoutInflater: LayoutInflater): View {
         return layoutInflater.inflate(R.layout.dialog_picker_time_picker, null)
     }
 
     @Override
-    override fun doOnConfigureContent(view: View, savedInstanceState: Bundle?) {
+    override fun setupDialogContent(view: View, savedInstanceState: Bundle?) {
         picker = view.findViewById(R.id.dialogTimePicker)
         picker.setIs24HourView(true)
         picker.isSaveEnabled = false
-        picker.setOnTimeChangedListener { _: TimePicker?, hourOfDay: Int, minutesOfHour: Int ->
-            val newSelection = Time(hourOfDay, minutesOfHour)
-            if (isDialogShown) selection.setDraftSelection(newSelection)
-            else selection.setCurrentSelection(newSelection)
+        selection.getActiveSelection()?.apply {
+            picker.hour = hour
+            picker.minute = minute
         }
     }
 
     @Suppress("DEPRECATION")
     @Override
-    override fun synchronizeSelectUi() {
-        val newTime = if (selection.hasDraftSelection()) selection.getDraftSelection()
-        else selection.getCurrentSelection()
-        if (newTime != null) {
-            val hour = newTime.hour
-            val minutes = newTime.minute
-            val apiLevel = Build.VERSION.SDK_INT
-            if (apiLevel < 23) {
-                picker.currentHour = hour
-                picker.currentMinute = minutes
-            } else {
-                picker.hour = hour
-                picker.minute = minutes
+    override fun onSelectionChange() {
+        val pendingSelection = selection.getActiveSelection()
+        if (!checkIfTimePickerNeedsSync(pendingSelection)) return
+        picker.apply {
+            pendingSelection?.apply {
+                val hour = hour
+                val minutes = minute
+                val apiLevel = Build.VERSION.SDK_INT
+                if (apiLevel < Build.VERSION_CODES.M) {
+                    picker.currentHour = hour
+                    picker.currentMinute = minutes
+                } else {
+                    picker.hour = hour
+                    picker.minute = minutes
+                }
             }
+        }
+    }
+
+    private fun checkIfTimePickerNeedsSync(currentValue: Time?): Boolean {
+        val timePickerValue = picker.let {
+            Time(it.hour, it.minute)
+        }
+        return !timePickerValue.compare(currentValue)
+    }
+
+    @Override
+    override fun doOnViewStateRestored(savedInstanceState: Bundle?) {
+        super.doOnViewStateRestored(savedInstanceState)
+        picker.setOnTimeChangedListener { _: TimePicker?, hourOfDay: Int, minutesOfHour: Int ->
+            val newSelection = Time(hourOfDay, minutesOfHour)
+            if (isDialogShown) selection.setDraftSelection(newSelection)
+            else selection.setCurrentSelection(newSelection)
         }
     }
 
