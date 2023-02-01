@@ -10,6 +10,7 @@ import android.view.WindowManager
 import androidx.appcompat.widget.LinearLayoutCompat
 import androidx.recyclerview.widget.LinearLayoutManager
 import androidx.recyclerview.widget.RecyclerView
+import androidx.recyclerview.widget.RecyclerView.ItemDecoration
 import com.github.rooneyandshadows.lightbulb.commons.utils.BundleUtils
 import com.github.rooneyandshadows.lightbulb.dialogs.R
 import com.github.rooneyandshadows.lightbulb.dialogs.base.BasePickerDialogFragment
@@ -22,12 +23,13 @@ import com.github.rooneyandshadows.lightbulb.recycleradapters.abstraction.callba
 import java.util.Arrays
 
 @Suppress("unused")
-abstract class AdapterPickerDialog<ItemType : EasyAdapterDataModel> :
-    BasePickerDialogFragment<IntArray>(AdapterPickerDialogSelection(null, null)) {
-    private val adapterStateTag = "ADAPTER_STATE_TAG"
-    private var itemDecoration: RecyclerView.ItemDecoration? = null
+abstract class AdapterPickerDialog<ItemType : EasyAdapterDataModel> : BasePickerDialogFragment<IntArray>(
+    AdapterPickerDialogSelection(null, null)
+) {
     private val selectionListener: EasyAdapterSelectionChangedListener
     protected var recyclerView: RecyclerView? = null
+        private set
+    var itemDecoration: ItemDecoration? = null
         private set
     val adapter: EasyRecyclerAdapter<ItemType> by lazy {
         return@lazy adapterCreator.createAdapter()
@@ -35,6 +37,7 @@ abstract class AdapterPickerDialog<ItemType : EasyAdapterDataModel> :
     protected abstract val adapterCreator: AdapterCreator<ItemType>
 
     companion object {
+        private const val ADAPTER_STATE_TAG = "ADAPTER_STATE_TAG"
         fun <ItemType : EasyAdapterDataModel> newInstance(adapterCreator: AdapterCreator<ItemType>): AdapterPickerDialog<ItemType> {
             return object : AdapterPickerDialog<ItemType>() {
                 override val adapterCreator: AdapterCreator<ItemType>
@@ -75,10 +78,10 @@ abstract class AdapterPickerDialog<ItemType : EasyAdapterDataModel> :
 
     @Override
     override fun synchronizeSelectUi() {
-        val newSelection = if (selection.hasDraftSelection()) selection.getDraftSelection()
-        else selection.getCurrentSelection()
-        val needAdapterSync = !compareValues(newSelection, adapter.selectedPositionsAsArray)
-        if (needAdapterSync) adapter.selectPositions(newSelection, newState = true, incremental = false)
+        val pendingSelection = selection.getActiveSelection()
+        val currentAdapterSelection = adapter.selectedPositionsAsArray
+        val needAdapterSync = !Arrays.equals(pendingSelection, currentAdapterSelection)
+        if (needAdapterSync) adapter.selectPositions(pendingSelection, newState = true, incremental = false)
     }
 
     @Override
@@ -148,7 +151,7 @@ abstract class AdapterPickerDialog<ItemType : EasyAdapterDataModel> :
     override fun doOnSaveDialogProperties(outState: Bundle) {
         super.doOnSaveDialogProperties(outState)
         outState.apply {
-            putParcelable(adapterStateTag, adapter.saveAdapterState())
+            putParcelable(ADAPTER_STATE_TAG, adapter.saveAdapterState())
         }
     }
 
@@ -156,7 +159,7 @@ abstract class AdapterPickerDialog<ItemType : EasyAdapterDataModel> :
     override fun doOnRestoreDialogProperties(savedState: Bundle) {
         super.doOnRestoreDialogProperties(savedState)
         savedState.apply {
-            val adapterState = BundleUtils.getParcelable(adapterStateTag, this, Bundle::class.java)!!
+            val adapterState = BundleUtils.getParcelable(ADAPTER_STATE_TAG, this, Bundle::class.java)!!
             adapter.restoreAdapterState(adapterState)
         }
     }
@@ -177,12 +180,26 @@ abstract class AdapterPickerDialog<ItemType : EasyAdapterDataModel> :
         setSelection(intArrayOf(newSelection))
     }
 
-    fun setItemDecoration(itemDecoration: RecyclerView.ItemDecoration?) {
+    fun setItemDecoration(itemDecoration: ItemDecoration?) {
         this.itemDecoration = itemDecoration
+        recyclerView?.apply {
+            (0 until itemDecorationCount).forEach {
+                removeItemDecorationAt(0)
+            }
+            if (itemDecoration != null) addItemDecoration(itemDecoration)
+        }
     }
 
     fun setData(data: List<ItemType>?) {
         adapter.setCollection(data ?: mutableListOf())
+    }
+
+    private fun clearItemDecorations() {
+        recyclerView?.apply {
+            (0 until itemDecorationCount).forEach {
+                removeItemDecorationAt(0)
+            }
+        }
     }
 
     private fun configureRecyclerView(adapter: EasyRecyclerAdapter<ItemType>) {
@@ -195,10 +212,6 @@ abstract class AdapterPickerDialog<ItemType : EasyAdapterDataModel> :
         if (recyclerView.itemDecorationCount > 0) recyclerView.removeItemDecorationAt(0)
         if (itemDecoration != null) recyclerView.addItemDecoration(itemDecoration!!, 0)
         recyclerView.adapter = adapter
-    }
-
-    private fun compareValues(v1: IntArray?, v2: IntArray): Boolean {
-        return Arrays.equals(v1, v2)
     }
 
     interface AdapterCreator<ItemType : EasyAdapterDataModel> {

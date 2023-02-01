@@ -29,7 +29,7 @@ class CustomDialogBuilder<DialogType : CustomDialog> @JvmOverloads constructor(
     @Override
     override fun setupRetainableSettings(dialog: CustomDialog) {
         dialog.apply {
-            isLoading = loading
+            setLoading(loading)
         }
     }
 

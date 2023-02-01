@@ -33,7 +33,7 @@ class DateTimePickerDialogBuilder @JvmOverloads constructor(
     @Override
     override fun setupRetainableSettings(dialog: DateTimePickerDialog) {
         dialog.apply {
-            dateFormat?.apply { dialogDateFormat = this }
+            setDialogDateFormat(dateFormat)
             setSelection(initialDate)
         }
     }

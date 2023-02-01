@@ -89,7 +89,6 @@ class MonthPickerDialog : BasePickerDialogFragment<Month>(MonthSelection(null, n
         private const val PICKER_MAX_YEAR = "MONTH_PICKER_MAX_YEAR"
         private const val PICKER_DISABLED_MONTHS = "PICKER_DISABLED_MONTHS"
         private const val PICKER_ENABLED_MONTHS = "PICKER_ENABLED_MONTHS"
-        private const val PICKER_HEADING_TEXT_VIEW_STATE = "PICKER_HEADING_TEXT_VIEW_STATE"
         fun newInstance(): MonthPickerDialog {
             return MonthPickerDialog()
         }
@@ -117,9 +116,6 @@ class MonthPickerDialog : BasePickerDialogFragment<Month>(MonthSelection(null, n
                 arrayList.addAll(this)
                 BundleUtils.putParcelableArrayList(PICKER_DISABLED_MONTHS, this@bundle, arrayList)
             }
-            pickerHeadingSelectionTextView.apply {
-                BundleUtils.putParcelable(PICKER_HEADING_TEXT_VIEW_STATE, this@bundle, onSaveInstanceState())
-            }
             putString(DATE_FORMAT_TAG, dialogDateFormat)
         }
     }
@@ -132,9 +128,6 @@ class MonthPickerDialog : BasePickerDialogFragment<Month>(MonthSelection(null, n
         }
         BundleUtils.getParcelableArrayList(PICKER_DISABLED_MONTHS, savedState, Month::class.java)?.apply {
             disabledMonths = this
-        }
-        BundleUtils.getParcelable(PICKER_HEADING_TEXT_VIEW_STATE, savedState, Parcelable::class.java).apply {
-            pickerHeadingSelectionTextView.onRestoreInstanceState(this)
         }
         minYear = savedState.getInt(PICKER_MIN_YEAR)
         maxYear = savedState.getInt(PICKER_MAX_YEAR)

@@ -17,10 +17,7 @@ open class CustomDialog : BaseDialogFragment() {
     private var titleView: AppCompatTextView? = null
     private var dialogInflater: CustomDialogInflater? = null
     var isLoading = false
-        set(value) {
-            field = value
-            setupLoadingView()
-        }
+        private set
 
     companion object {
         private const val IS_LOADING_KEY = "IS_LOADING_KEY"
@@ -44,20 +41,30 @@ open class CustomDialog : BaseDialogFragment() {
 
     @Override
     override fun setupDialogContent(view: View, savedInstanceState: Bundle?) {
-        selectViews()
+        loadingIndicator = requireView().findViewById(R.id.loadingIndicator)
+        titleView = requireView().findViewById(R.id.dialogTitleTextView)
         setupLoadingView()
     }
 
     @Override
     override fun doOnSaveInstanceState(outState: Bundle?) {
         super.doOnSaveInstanceState(outState)
-        outState!!.putBoolean(IS_LOADING_KEY, isLoading)
+        outState?.apply {
+            putBoolean(IS_LOADING_KEY, isLoading)
+        }
     }
 
     @Override
     override fun doOnRestoreInstanceState(savedState: Bundle) {
         super.doOnRestoreInstanceState(savedState)
-        isLoading = savedState.getBoolean(IS_LOADING_KEY)
+        savedState.apply {
+            setLoading(getBoolean(IS_LOADING_KEY))
+        }
+    }
+
+    fun setLoading(isLoading: Boolean) {
+        this.isLoading = isLoading
+        setupLoadingView()
     }
 
     fun setDialogInflater(dialogInflater: CustomDialogInflater?) {
@@ -68,17 +75,13 @@ open class CustomDialog : BaseDialogFragment() {
         fun inflateView(dialog: CustomDialog?, layoutInflater: LayoutInflater?): View?
     }
 
-    private fun selectViews() {
-        if (view == null) return
-        loadingIndicator = requireView().findViewById(R.id.loadingIndicator)
-        titleView = requireView().findViewById(R.id.dialogTitleTextView)
-    }
-
     private fun setupLoadingView() {
-        if (loadingIndicator == null) return
-        loadingIndicator!!.visibility = if (isLoading) View.VISIBLE else View.GONE
-        val endPadding =
-            if (isLoading) ResourceUtils.getDimenPxById(loadingIndicator!!.context, R.dimen.dialog_spacing_size_small) else 0
-        titleView!!.setPadding(titleView!!.paddingLeft, titleView!!.paddingTop, endPadding, titleView!!.paddingBottom)
+        loadingIndicator?.apply {
+            val endPadding = if (isLoading) ResourceUtils.getDimenPxById(context, R.dimen.dialog_spacing_size_small) else 0
+            visibility = if (isLoading) View.VISIBLE else View.GONE
+            titleView?.apply {
+                setPadding(titleView!!.paddingLeft, titleView!!.paddingTop, endPadding, titleView!!.paddingBottom)
+            }
+        }
     }
 }
