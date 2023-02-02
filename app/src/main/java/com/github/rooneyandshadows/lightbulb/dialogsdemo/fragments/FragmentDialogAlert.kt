@@ -46,8 +46,6 @@ class FragmentDialogAlert : BaseFragmentWithViewBinding<FragmentDemoDialogAlertB
     @Override
     override fun doOnViewBound(viewBinding: FragmentDemoDialogAlertBinding, savedInstanceState: Bundle?) {
         super.doOnViewBound(viewBinding, savedInstanceState)
-        if (savedInstanceState == null)
-            viewBinding.testAlert.show()
         viewBinding.dialogTypeDropdown.apply {
             setLifecycleOwner(this@FragmentDialogAlert)
             dialog = alertDialog
