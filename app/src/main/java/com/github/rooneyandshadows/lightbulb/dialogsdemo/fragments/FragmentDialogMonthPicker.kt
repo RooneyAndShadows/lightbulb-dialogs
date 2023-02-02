@@ -5,7 +5,7 @@ import android.view.View
 import com.github.rooneyandshadows.lightbulb.annotation_processors.annotations.FragmentConfiguration
 import com.github.rooneyandshadows.lightbulb.annotation_processors.annotations.FragmentScreen
 import com.github.rooneyandshadows.lightbulb.application.activity.slidermenu.drawable.ShowMenuDrawable
-import com.github.rooneyandshadows.lightbulb.application.fragment.base.BaseFragmentWithViewDataBinding
+import com.github.rooneyandshadows.lightbulb.application.fragment.base.BaseFragmentWithViewBinding
 import com.github.rooneyandshadows.lightbulb.application.fragment.cofiguration.ActionBarConfiguration
 import com.github.rooneyandshadows.lightbulb.commons.utils.BundleUtils
 import com.github.rooneyandshadows.lightbulb.commons.utils.ResourceUtils
@@ -18,7 +18,7 @@ import com.github.rooneyandshadows.lightbulb.dialogsdemo.databinding.FragmentDem
 
 @FragmentScreen(screenName = "Month", screenGroup = "Demo")
 @FragmentConfiguration(layoutName = "fragment_demo_dialog_month_picker", hasLeftDrawer = true)
-class FragmentDialogMonthPicker : BaseFragmentWithViewDataBinding<FragmentDemoDialogMonthPickerBinding>() {
+class FragmentDialogMonthPicker : BaseFragmentWithViewBinding<FragmentDemoDialogMonthPickerBinding>() {
     private lateinit var monthPickerDialog: MonthPickerDialog
 
     companion object {
@@ -43,7 +43,8 @@ class FragmentDialogMonthPicker : BaseFragmentWithViewDataBinding<FragmentDemoDi
     }
 
     @Override
-    override fun onViewBound(viewBinding: FragmentDemoDialogMonthPickerBinding) {
+    override fun doOnViewBound(viewBinding: FragmentDemoDialogMonthPickerBinding, savedInstanceState: Bundle?) {
+        super.doOnViewBound(viewBinding, savedInstanceState)
         viewBinding.dialogTypeDropdown.apply {
             setLifecycleOwner(this@FragmentDialogMonthPicker)
             dialog = monthPickerDialog

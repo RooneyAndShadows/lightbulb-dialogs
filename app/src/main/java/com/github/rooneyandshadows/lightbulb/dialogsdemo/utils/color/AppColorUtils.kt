@@ -1,6 +1,7 @@
 package com.github.rooneyandshadows.lightbulb.dialogsdemo.utils.color
 
 import com.github.rooneyandshadows.lightbulb.dialogs.picker_dialog_color.ColorPickerAdapter
+import com.github.rooneyandshadows.lightbulb.dialogs.picker_dialog_color.ColorPickerAdapter.ColorModel
 import com.github.rooneyandshadows.lightbulb.dialogsdemo.utils.color.colors.DemoColors
 import java.util.ArrayList
 
@@ -10,11 +11,11 @@ object AppColorUtils {
         return desiredColor.color
     }
 
-    val allForPicker: ArrayList<ColorPickerAdapter.ColorModel>
+    val allForPicker: ArrayList<ColorModel>
         get() {
-            val result = ArrayList<ColorPickerAdapter.ColorModel>()
+            val result = ArrayList<ColorModel>()
             for (color in DemoColors.values())
-                result.add(ColorPickerAdapter.ColorModel(color.hexCode, color.colorName))
+                result.add(ColorModel(color.hexCode, color.colorName))
             return result
         }
 }

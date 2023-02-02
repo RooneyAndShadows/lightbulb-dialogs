@@ -29,8 +29,8 @@ class DateRangePickerDialog : BasePickerDialogFragment<DateRange>(DateRangeSelec
     private var textViewFromValue: TextView? = null
     private var textViewToValue: TextView? = null
     private var calendar: MaterialCalendarView? = null
-    private var offsetFrom = ZoneOffset.of(DateUtilsOffsetDate.getLocalTimeZone())
-    private var offsetTo = ZoneOffset.of(DateUtilsOffsetDate.getLocalTimeZone())
+    private var offsetFrom = DEFAULT_OFFSET
+    private var offsetTo = DEFAULT_OFFSET
     override var dialogType: DialogTypes
         get() = DialogTypes.NORMAL
         set(value) {}
@@ -42,6 +42,7 @@ class DateRangePickerDialog : BasePickerDialogFragment<DateRange>(DateRangeSelec
         private set
 
     companion object {
+        private val DEFAULT_OFFSET = ZoneOffset.of(DateUtilsOffsetDate.getLocalTimeZone())
         private const val DEFAULT_DATE_FORMAT = "MMM dd, yyyy"
         private const val DATE_RANGE_FROM_TEXT_TAG = "DATE_RANGE_FROM_TEXT_TAG"
         private const val DATE_RANGE_TO_TEXT_TAG = "DATE_RANGE_TO_TEXT_TAG"
@@ -101,12 +102,43 @@ class DateRangePickerDialog : BasePickerDialogFragment<DateRange>(DateRangeSelec
 
     @Override
     override fun setupDialogContent(view: View, savedInstanceState: Bundle?) {
+        val activeSelection = selection.getActiveSelection()
         selectViews(view)
-        val context = requireContext()
-        setupHeader()
+        setupHeader(activeSelection)
         calendar?.apply {
             leftArrow.setTint(ResourceUtils.getColorByAttribute(context, R.attr.colorAccent))
             rightArrow.setTint(ResourceUtils.getColorByAttribute(context, R.attr.colorAccent))
+            post {
+                if (activeSelection == null) {
+                    clearSelection()
+                    return@post
+                }
+                val start = dateToCalendarDay(activeSelection.from)
+                val end = dateToCalendarDay(activeSelection.to)
+                selectRange(start, end)
+                calendar?.setCurrentDate(end, false)
+
+            }
+        }
+    }
+
+    @Override
+    override fun onSelectionChange(newSelection: DateRange?) {
+        setupHeader(newSelection)
+        val needSync = checkIfCalendarNeedsSync(newSelection)
+        if (!needSync) return
+        calendar?.post {
+            val newFrom = dateToCalendarDay(newSelection?.from)
+            val newTo = dateToCalendarDay(newSelection?.to)
+            calendar?.selectRange(newFrom, newTo)
+            calendar?.setCurrentDate(newTo, false)
+        }
+    }
+
+    @Override
+    override fun doOnViewStateRestored(savedInstanceState: Bundle?) {
+        super.doOnViewStateRestored(savedInstanceState)
+        calendar?.apply {
             setOnRangeSelectedListener { _: MaterialCalendarView?, dates: List<CalendarDay> ->
                 if (dates.size < 2) return@setOnRangeSelectedListener
                 val first = dates[0]
@@ -120,23 +152,7 @@ class DateRangePickerDialog : BasePickerDialogFragment<DateRange>(DateRangeSelec
         }
     }
 
-    @Override
-    override fun onSelectionChange() {
-        val context = requireContext()
-        val pendingSelection = selection.getActiveSelection()
-        val needSync = checkIfCalendarNeedsSync(pendingSelection)
-        if (!needSync) return
-        calendar?.post {
-            val newFrom = dateToCalendarDay(pendingSelection?.from)
-            val newTo = dateToCalendarDay(pendingSelection?.to)
-            calendar?.selectRange(newFrom, newTo)
-            calendar?.setCurrentDate(newTo, false)
-        }
-        setupHeader()
-    }
-
-    private fun setupHeader() {
-        val selection = selection.getActiveSelection()
+    private fun setupHeader(selection: DateRange?) {
         textViewFrom?.apply {
             text = dialogTextFrom
         }
@@ -154,9 +170,9 @@ class DateRangePickerDialog : BasePickerDialogFragment<DateRange>(DateRangeSelec
     }
 
     private fun checkIfCalendarNeedsSync(currentValue: DateRange?): Boolean {
-        val selectedDates = calendar?.selectedDates ?: return false
+        val selectedDates = calendar!!.selectedDates
         selectedDates.apply {
-            if (size < 2) return true
+            if (size < 2) return currentValue != null
             val calendarFrom = dateFromCalendarDay(first(), 0, 0, 0)
             val calendarTo = dateFromCalendarDay(last(), 23, 59, 59)
             return !(compareDates(currentValue?.from, calendarFrom) && compareDates(currentValue?.to, calendarTo))
@@ -167,8 +183,8 @@ class DateRangePickerDialog : BasePickerDialogFragment<DateRange>(DateRangeSelec
     override fun setSelection(newSelection: DateRange?) {
         val validatedRange = prepareRangeForSet(newSelection)
         selection.setCurrentSelection(validatedRange)
-        offsetFrom = validatedRange?.from?.offset
-        offsetTo = validatedRange?.from?.offset
+        offsetFrom = validatedRange?.from?.offset ?: DEFAULT_OFFSET
+        offsetTo = validatedRange?.from?.offset ?: DEFAULT_OFFSET
     }
 
     fun setSelection(from: OffsetDateTime, to: OffsetDateTime) {
@@ -177,15 +193,9 @@ class DateRangePickerDialog : BasePickerDialogFragment<DateRange>(DateRangeSelec
     }
 
     fun setDialogDateFormat(format: String?) {
+        val activeSelection = selection.getActiveSelection()
         dialogDateFormat = format ?: DEFAULT_DATE_FORMAT
-        textViewFromValue?.apply {
-            val default = ResourceUtils.getPhrase(context, R.string.dialog_date_picker_empty_text)
-            text = DateUtilsOffsetDate.getDateString(dialogDateFormat, selection.getActiveSelection()?.from) ?: default
-        }
-        textViewToValue?.apply {
-            val default = ResourceUtils.getPhrase(context, R.string.dialog_date_picker_empty_text)
-            text = DateUtilsOffsetDate.getDateString(dialogDateFormat, selection.getActiveSelection()?.to) ?: default
-        }
+        setupHeader(activeSelection)
     }
 
     fun setDialogTextFrom(textFrom: String?) {

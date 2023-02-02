@@ -5,18 +5,17 @@ import android.os.Bundle
 import android.view.LayoutInflater
 import android.view.View
 import android.widget.TimePicker
-import androidx.appcompat.widget.AppCompatTextView
-import com.github.rooneyandshadows.lightbulb.commons.utils.ResourceUtils
 import androidx.appcompat.widget.AppCompatImageButton
-import com.github.rooneyandshadows.lightbulb.dialogs.base.BasePickerDialogFragment
+import androidx.appcompat.widget.AppCompatTextView
 import com.github.rooneyandshadows.java.commons.date.DateUtilsOffsetDate
+import com.github.rooneyandshadows.lightbulb.commons.utils.ResourceUtils
 import com.github.rooneyandshadows.lightbulb.dialogs.R
+import com.github.rooneyandshadows.lightbulb.dialogs.base.BasePickerDialogFragment
 import com.github.rooneyandshadows.lightbulb.dialogs.base.constraints.regular.RegularDialogConstraints
 import com.github.rooneyandshadows.lightbulb.dialogs.base.constraints.regular.RegularDialogConstraintsBuilder
 import com.github.rooneyandshadows.lightbulb.dialogs.base.internal.DialogTypes
-import com.github.rooneyandshadows.lightbulb.dialogs.picker_dialog_month.MonthPickerDialog
-import com.prolificinteractive.materialcalendarview.MaterialCalendarView
 import com.prolificinteractive.materialcalendarview.CalendarDay
+import com.prolificinteractive.materialcalendarview.MaterialCalendarView
 import java.time.OffsetDateTime
 import java.time.ZoneOffset
 import java.util.*
@@ -28,7 +27,7 @@ class DateTimePickerDialog : BasePickerDialogFragment<OffsetDateTime>(DateTimeSe
     private var timePickerView: TimePicker? = null
     private var selectionTextValue: AppCompatTextView? = null
     private var modeChangeButton: AppCompatImageButton? = null
-    private var zoneOffset = ZoneOffset.of(DateUtilsOffsetDate.getLocalTimeZone())
+    private var zoneOffset = DEFAULT_OFFSET
     var dialogDateFormat = DEFAULT_DATE_FORMAT
         private set
     override var dialogType: DialogTypes
@@ -36,6 +35,7 @@ class DateTimePickerDialog : BasePickerDialogFragment<OffsetDateTime>(DateTimeSe
         set(value) {}
 
     companion object {
+        private val DEFAULT_OFFSET = ZoneOffset.of(DateUtilsOffsetDate.getLocalTimeZone())
         private const val DEFAULT_DATE_FORMAT = "dd MMM HH:mm, yyyy"
         private const val SHOWING_TIME_PICKER_TAG = "SHOWING_TIME_PICKER_TAG"
         private const val DATE_FORMAT_TAG = "DATE_FORMAT_TEXT"
@@ -63,6 +63,7 @@ class DateTimePickerDialog : BasePickerDialogFragment<OffsetDateTime>(DateTimeSe
         }
     }
 
+    @Override
     override fun doOnRestoreDialogProperties(savedState: Bundle) {
         super.doOnRestoreDialogProperties(savedState)
         savedState.apply {
@@ -82,8 +83,9 @@ class DateTimePickerDialog : BasePickerDialogFragment<OffsetDateTime>(DateTimeSe
 
     @Override
     override fun setupDialogContent(view: View, savedInstanceState: Bundle?) {
+        val activeSelection = selection.getActiveSelection()
         selectViews(view)
-        setupHeader()
+        setupHeader(activeSelection)
         val context = requireContext()
         modeChangeButton?.apply {
             background = ResourceUtils.getDrawable(context, R.drawable.background_round_corners_transparent)
@@ -116,19 +118,18 @@ class DateTimePickerDialog : BasePickerDialogFragment<OffsetDateTime>(DateTimeSe
     }
 
     @Override
-    override fun onSelectionChange() {
-        setupHeader()
-        val pendingSelection = selection.getActiveSelection()
-        if (!checkIfCalendarNeedsSync(pendingSelection)) return
+    override fun onSelectionChange(newSelection: OffsetDateTime?) {
+        setupHeader(newSelection)
+        if (!checkIfCalendarNeedsSync(newSelection)) return
         calendarView?.apply {
-            val selectedDate = dateToCalendarDay(pendingSelection)
+            val selectedDate = dateToCalendarDay(newSelection)
             setDateSelected(selectedDate, true)
             setCurrentDate(selectedDate, false)
         }
         timePickerView?.apply {
-            if (pendingSelection == null) return@apply
-            hour = DateUtilsOffsetDate.getHourOfDay(pendingSelection)
-            minute = DateUtilsOffsetDate.getMinuteOfHour(pendingSelection)
+            if (newSelection == null) return@apply
+            hour = DateUtilsOffsetDate.getHourOfDay(newSelection)
+            minute = DateUtilsOffsetDate.getMinuteOfHour(newSelection)
         }
     }
 
@@ -179,12 +180,13 @@ class DateTimePickerDialog : BasePickerDialogFragment<OffsetDateTime>(DateTimeSe
     @Override
     override fun setSelection(newSelection: OffsetDateTime?) {
         super.setSelection(newSelection)
-        if (newSelection != null) zoneOffset = newSelection.offset
+        zoneOffset = newSelection?.offset ?: DEFAULT_OFFSET
     }
 
     fun setDialogDateFormat(dateFormat: String?) {
+        val activeSelection = selection.getActiveSelection()
         dialogDateFormat = dateFormat ?: DEFAULT_DATE_FORMAT
-        setupHeader()
+        setupHeader(activeSelection)
     }
 
     private fun selectViews(view: View) {
@@ -194,16 +196,7 @@ class DateTimePickerDialog : BasePickerDialogFragment<OffsetDateTime>(DateTimeSe
         calendarView = view.findViewById(R.id.dateCalendarView)
     }
 
-    private fun getDateFromString(dateString: String?): OffsetDateTime? {
-        return DateUtilsOffsetDate.getDateFromString(DateUtilsOffsetDate.defaultFormatWithTimeZone, dateString)
-    }
-
-    private fun getDateString(date: OffsetDateTime?): String? {
-        return DateUtilsOffsetDate.getDateString(DateUtilsOffsetDate.defaultFormatWithTimeZone, date)
-    }
-
-    private fun setupHeader() {
-        val selection = selection.getActiveSelection()
+    private fun setupHeader(selection: OffsetDateTime?) {
         modeChangeButton?.apply {
             visibility = if (selection == null) View.GONE else View.VISIBLE
         }

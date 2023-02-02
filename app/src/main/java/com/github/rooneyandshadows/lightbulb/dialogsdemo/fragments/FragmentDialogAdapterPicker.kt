@@ -5,7 +5,7 @@ import android.view.View
 import com.github.rooneyandshadows.lightbulb.annotation_processors.annotations.FragmentConfiguration
 import com.github.rooneyandshadows.lightbulb.annotation_processors.annotations.FragmentScreen
 import com.github.rooneyandshadows.lightbulb.application.activity.slidermenu.drawable.NavigateBackDrawable
-import com.github.rooneyandshadows.lightbulb.application.fragment.base.BaseFragmentWithViewDataBinding
+import com.github.rooneyandshadows.lightbulb.application.fragment.base.BaseFragmentWithViewBinding
 import com.github.rooneyandshadows.lightbulb.application.fragment.cofiguration.ActionBarConfiguration
 import com.github.rooneyandshadows.lightbulb.commons.utils.BundleUtils
 import com.github.rooneyandshadows.lightbulb.commons.utils.ResourceUtils
@@ -21,13 +21,23 @@ import com.github.rooneyandshadows.lightbulb.dialogsdemo.getDefaultSelectionChan
 import com.github.rooneyandshadows.lightbulb.dialogsdemo.models.DemoModel
 
 @FragmentScreen(screenName = "Adapter", screenGroup = "Demo")
-@FragmentConfiguration(layoutName = "fragment_demo_dialog_adapter_picker")
-class FragmentDialogAdapterPicker : BaseFragmentWithViewDataBinding<FragmentDemoDialogAdapterPickerBinding>() {
+@FragmentConfiguration(layoutName = "fragment_demo_dialog_adapter_picker", hasLeftDrawer = true)
+class FragmentDialogAdapterPicker : BaseFragmentWithViewBinding<FragmentDemoDialogAdapterPickerBinding>() {
     private lateinit var adapterPickerDialog: DemoSingleSelectionDialog
 
     companion object {
         private const val DIALOG_TAG = "ADAPTER_PICKER_DIALOG_TAG"
         private const val DIALOG_STATE_TAG = "ADAPTER_PICKER_DIALOG_STATE"
+    }
+
+    @Override
+    override fun configureActionBar(): ActionBarConfiguration {
+        val title = ResourceUtils.getPhrase(requireContext(), R.string.demo_adapter_title)
+        val subTitle = ResourceUtils.getPhrase(requireContext(), R.string.app_name)
+        return ActionBarConfiguration(R.id.toolbar)
+            .withActionButtons(true)
+            .withTitle(title)
+            .withSubTitle(subTitle)
     }
 
     @Override
@@ -39,7 +49,8 @@ class FragmentDialogAdapterPicker : BaseFragmentWithViewDataBinding<FragmentDemo
     }
 
     @Override
-    override fun onViewBound(viewBinding: FragmentDemoDialogAdapterPickerBinding) {
+    override fun doOnViewBound(viewBinding: FragmentDemoDialogAdapterPickerBinding, savedInstanceState: Bundle?) {
+        super.doOnViewBound(viewBinding, savedInstanceState)
         val typeSpinner = viewBinding.dialogTypeDropdown
         val animationTypeSpinner = viewBinding.dialogAnimationTypeDropdown
         typeSpinner.apply {
@@ -59,16 +70,6 @@ class FragmentDialogAdapterPicker : BaseFragmentWithViewDataBinding<FragmentDemo
     override fun doOnSaveInstanceState(outState: Bundle) {
         super.doOnSaveInstanceState(outState)
         BundleUtils.putParcelable(DIALOG_STATE_TAG, outState, adapterPickerDialog.saveDialogState())
-    }
-
-    @Override
-    override fun configureActionBar(): ActionBarConfiguration {
-        val title = ResourceUtils.getPhrase(requireContext(), R.string.demo_adapter_title)
-        val subTitle = ResourceUtils.getPhrase(requireContext(), R.string.app_name)
-        return ActionBarConfiguration(R.id.toolbar)
-            .withActionButtons(true)
-            .withTitle(title)
-            .withSubTitle(subTitle)
     }
 
     @Override

@@ -21,7 +21,7 @@ abstract class BasePickerDialogFragment<SelectionType>(
         initializeListeners()
     }
 
-    protected abstract fun onSelectionChange()
+    protected abstract fun onSelectionChange(newSelection: SelectionType?)
 
     @Override
     override fun doOnSaveDialogProperties(outState: Bundle) {
@@ -90,21 +90,21 @@ abstract class BasePickerDialogFragment<SelectionType>(
         })
         selection.addSelectionListeners(object : PickerSelectionListeners<SelectionType> {
             override fun onCurrentSelectionChangedListener(newValue: SelectionType?, oldValue: SelectionType?) {
-                if (isAttached) onSelectionChange()
+                if (isAttached) onSelectionChange(newValue)
                 dispatchSelectionChangedEvent(newValue, oldValue)
             }
 
             override fun onDraftSelectionChangedListener(newValue: SelectionType?, oldValue: SelectionType?) {
-                if (synchronizeUiOnDraftChange && isAttached) onSelectionChange()
+                if (synchronizeUiOnDraftChange && isAttached) onSelectionChange(newValue)
             }
 
             override fun onDraftCommit(newValue: SelectionType?, beforeCommit: SelectionType?) {
-                if (isAttached) onSelectionChange()
+                if (isAttached) onSelectionChange(newValue)
                 dispatchSelectionChangedEvent(newValue, beforeCommit)
             }
 
             override fun onDraftReverted() {
-                if (isAttached) onSelectionChange()
+                if (isAttached) onSelectionChange(selection.getCurrentSelection())
             }
         })
     }

@@ -67,11 +67,10 @@ abstract class AdapterPickerDialog<ItemType : EasyAdapterDataModel> : BasePicker
     }
 
     @Override
-    override fun onSelectionChange() {
-        val pendingSelection = selection.getActiveSelection()
+    override fun onSelectionChange(newSelection: IntArray?) {
         val currentAdapterSelection = adapter.selectedPositionsAsArray
-        val needAdapterSync = !Arrays.equals(pendingSelection, currentAdapterSelection)
-        if (needAdapterSync) adapter.selectPositions(pendingSelection, newState = true, incremental = false)
+        val needAdapterSync = !Arrays.equals(newSelection, currentAdapterSelection)
+        if (needAdapterSync) adapter.selectPositions(newSelection, newState = true, incremental = false)
     }
 
     @Override

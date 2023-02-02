@@ -5,7 +5,7 @@ import android.view.View
 import com.github.rooneyandshadows.lightbulb.annotation_processors.annotations.FragmentConfiguration
 import com.github.rooneyandshadows.lightbulb.annotation_processors.annotations.FragmentScreen
 import com.github.rooneyandshadows.lightbulb.application.activity.slidermenu.drawable.ShowMenuDrawable
-import com.github.rooneyandshadows.lightbulb.application.fragment.base.BaseFragmentWithViewDataBinding
+import com.github.rooneyandshadows.lightbulb.application.fragment.base.BaseFragmentWithViewBinding
 import com.github.rooneyandshadows.lightbulb.application.fragment.cofiguration.ActionBarConfiguration
 import com.github.rooneyandshadows.lightbulb.commons.utils.BundleUtils
 import com.github.rooneyandshadows.lightbulb.commons.utils.InteractionUtils
@@ -21,7 +21,7 @@ import com.github.rooneyandshadows.lightbulb.dialogsdemo.getDefaultDialogTitle
 
 @FragmentScreen(screenName = "Loading", screenGroup = "Demo")
 @FragmentConfiguration(layoutName = "fragment_demo_dialog_loading", hasLeftDrawer = true)
-class FragmentDialogLoading : BaseFragmentWithViewDataBinding<FragmentDemoDialogLoadingBinding>() {
+class FragmentDialogLoading : BaseFragmentWithViewBinding<FragmentDemoDialogLoadingBinding>() {
     private lateinit var loadingDialog: LoadingDialog
 
     companion object {
@@ -40,7 +40,8 @@ class FragmentDialogLoading : BaseFragmentWithViewDataBinding<FragmentDemoDialog
     }
 
     @Override
-    override fun onViewBound(viewBinding: FragmentDemoDialogLoadingBinding) {
+    override fun doOnViewBound(viewBinding: FragmentDemoDialogLoadingBinding, savedInstanceState: Bundle?) {
+        super.doOnViewBound(viewBinding, savedInstanceState)
         viewBinding.dialogTypeDropdown.apply {
             setLifecycleOwner(this@FragmentDialogLoading)
             dialog = loadingDialog

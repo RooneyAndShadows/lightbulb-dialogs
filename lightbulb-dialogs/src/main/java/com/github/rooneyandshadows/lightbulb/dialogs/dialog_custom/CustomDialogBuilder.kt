@@ -4,10 +4,11 @@ import android.os.Bundle
 import androidx.fragment.app.FragmentManager
 import androidx.lifecycle.LifecycleOwner
 import com.github.rooneyandshadows.lightbulb.dialogs.base.BaseDialogBuilder
-import com.github.rooneyandshadows.lightbulb.dialogs.base.internal.*
+import com.github.rooneyandshadows.lightbulb.dialogs.base.internal.DialogAnimationTypes
+import com.github.rooneyandshadows.lightbulb.dialogs.base.internal.DialogButtonConfiguration
+import com.github.rooneyandshadows.lightbulb.dialogs.base.internal.DialogTypes
 import com.github.rooneyandshadows.lightbulb.dialogs.base.internal.callbacks.*
 import com.github.rooneyandshadows.lightbulb.dialogs.dialog_custom.CustomDialog.CustomDialogInflater
-import com.github.rooneyandshadows.lightbulb.dialogs.dialog_loading.LoadingDialogBuilder
 
 @Suppress("UNCHECKED_CAST", "unused")
 class CustomDialogBuilder<DialogType : CustomDialog> @JvmOverloads constructor(

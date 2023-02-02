@@ -1,0 +1,25 @@
+<?xml version="1.0" encoding="utf-8"?>
+<resources>
+    <declare-styleable name="AlertDialogView">
+        <attr name="alert_dialog_tag" format="string" />
+        <attr name="alert_dialog_cancelable" format="boolean" />
+        <attr name="alert_dialog_button_positive_text" format="string" />
+        <attr name="alert_dialog_button_negative_text" format="string" />
+        <attr name="alert_dialog_animation" format="enum">
+            <enum name="fade" value="1" />
+            <enum name="no_animation" value="2" />
+            <enum name="transition_from_left_to_right" value="3" />
+            <enum name="transition_from_top_to_bottom" value="4" />
+            <enum name="transition_from_bottom_to_bottom" value="5" />
+        </attr>
+        <attr name="alert_dialog_title" format="string" />
+        <attr name="alert_dialog_message" format="string" />
+        <attr name="alert_dialog_type" format="enum">
+            <enum name="NORMAL" value="1" />
+            <enum name="FULLSCREEN" value="2" />
+            <enum name="BOTTOM_SHEET" value="3" />
+        </attr>
+        <attr name="alert_dialog_button_text_color" format="color" />
+        <attr name="alert_dialog_button_corner_radius" format="integer" />
+    </declare-styleable>
+</resources>

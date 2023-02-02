@@ -8,6 +8,7 @@ import com.github.rooneyandshadows.lightbulb.application.activity.slidermenu.con
 import com.github.rooneyandshadows.lightbulb.application.activity.slidermenu.items.PrimaryMenuItem
 import com.github.rooneyandshadows.lightbulb.commons.utils.ResourceUtils
 import com.github.rooneyandshadows.lightbulb.dialogsdemo.R
+import com.github.rooneyandshadows.lightbulb.dialogsdemo.activity.MainActivityNavigator.*
 
 object MenuConfigurations {
     @SuppressLint("InflateParams")
@@ -24,7 +25,7 @@ object MenuConfigurations {
                 1
             ) { slider: SliderMenu ->
                 slider.closeSlider()
-                MainActivityNavigator.route().toDemoAlert().replace()
+                route().toDemoAlert().replace()
             }
         ).addMenuItem(
             PrimaryMenuItem(
@@ -35,7 +36,7 @@ object MenuConfigurations {
                 1
             ) { slider: SliderMenu ->
                 slider.closeSlider()
-                MainActivityNavigator.route().toDemoLoading().replace()
+                route().toDemoLoading().replace()
             }
         ).addMenuItem(
             PrimaryMenuItem(
@@ -46,7 +47,7 @@ object MenuConfigurations {
                 1
             ) { slider: SliderMenu ->
                 slider.closeSlider()
-                MainActivityNavigator.route().toDemoAdapter().replace()
+                route().toDemoAdapter().replace()
             }
         ).addMenuItem(
             PrimaryMenuItem(
@@ -57,7 +58,7 @@ object MenuConfigurations {
                 1
             ) { slider: SliderMenu ->
                 slider.closeSlider()
-                MainActivityNavigator.route().toDemoColorPicker().replace()
+                route().toDemoColorPicker().replace()
             }
         ).addMenuItem(
             PrimaryMenuItem(
@@ -68,7 +69,7 @@ object MenuConfigurations {
                 1
             ) { slider: SliderMenu ->
                 slider.closeSlider()
-                MainActivityNavigator.route().toDemoIconPicker().replace()
+                route().toDemoIconPicker().replace()
             }
         ).addMenuItem(
             PrimaryMenuItem(
@@ -79,7 +80,7 @@ object MenuConfigurations {
                 1
             ) { slider: SliderMenu ->
                 slider.closeSlider()
-                MainActivityNavigator.route().toDemoDateRange().replace()
+                route().toDemoDateRange().replace()
             }
         ).addMenuItem(
             PrimaryMenuItem(
@@ -90,7 +91,7 @@ object MenuConfigurations {
                 1
             ) { slider: SliderMenu ->
                 slider.closeSlider()
-                MainActivityNavigator.route().toDemoDateTime().replace()
+                route().toDemoDateTime().replace()
             }
         ).addMenuItem(
             PrimaryMenuItem(
@@ -101,7 +102,7 @@ object MenuConfigurations {
                 1
             ) { slider: SliderMenu ->
                 slider.closeSlider()
-                MainActivityNavigator.route().toDemoMonth().replace()
+                route().toDemoMonth().replace()
             }
         ).addMenuItem(
             PrimaryMenuItem(
@@ -112,7 +113,7 @@ object MenuConfigurations {
                 1
             ) { slider: SliderMenu ->
                 slider.closeSlider()
-                MainActivityNavigator.route().toDemoTime().replace()
+                route().toDemoTime().replace()
             }
         )
         return configuration

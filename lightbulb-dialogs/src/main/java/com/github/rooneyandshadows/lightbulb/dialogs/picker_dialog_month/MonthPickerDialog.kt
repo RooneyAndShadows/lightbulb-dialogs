@@ -114,8 +114,9 @@ class MonthPickerDialog : BasePickerDialogFragment<Month>(MonthSelection(null, n
 
     @Override
     override fun setupDialogContent(view: View, savedInstanceState: Bundle?) {
+        val activeSelection = selection.getActiveSelection()
         selectViews(view)
-        setupHeader()
+        setupHeader(activeSelection)
         monthCalendar?.apply {
             val dialog = this@MonthPickerDialog
             val pendingSelection = dialog.selection.getActiveSelection()
@@ -130,12 +131,11 @@ class MonthPickerDialog : BasePickerDialogFragment<Month>(MonthSelection(null, n
     }
 
     @Override
-    override fun onSelectionChange() {
-        setupHeader()
-        val pendingSelection = selection.getActiveSelection()
-        if (!checkIfCalendarNeedsSync(pendingSelection)) return
-        if (pendingSelection == null) monthCalendar?.clearSelection()
-        else monthCalendar?.setSelectedMonthAndScrollToYear(monthToMonthEntry(pendingSelection))
+    override fun onSelectionChange(newSelection: Month?) {
+        setupHeader(newSelection)
+        if (!checkIfCalendarNeedsSync(newSelection)) return
+        if (newSelection == null) monthCalendar?.clearSelection()
+        else monthCalendar?.setSelectedMonthAndScrollToYear(monthToMonthEntry(newSelection))
     }
 
     @Override
@@ -156,8 +156,9 @@ class MonthPickerDialog : BasePickerDialogFragment<Month>(MonthSelection(null, n
     }
 
     fun setDialogDateFormat(dateFormat: String?) {
+        val activeSelection = selection.getActiveSelection()
         dialogDateFormat = dateFormat ?: DEFAULT_DATE_FORMAT
-        setupHeader()
+        setupHeader(activeSelection)
     }
 
     fun setMinYear(minYear: Int) {
@@ -206,9 +207,8 @@ class MonthPickerDialog : BasePickerDialogFragment<Month>(MonthSelection(null, n
         }
     }
 
-    private fun setupHeader() {
+    private fun setupHeader(selection: Month?) {
         pickerHeadingSelectionTextView?.apply {
-            val selection = selection.getActiveSelection()
             val defaultText = ResourceUtils.getPhrase(context, R.string.dialog_month_picker_empty_text)
             val newText = selection?.getMonthString(dialogDateFormat) ?: defaultText
             text = newText

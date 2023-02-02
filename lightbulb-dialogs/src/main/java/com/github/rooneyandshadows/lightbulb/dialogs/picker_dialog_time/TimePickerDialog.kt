@@ -14,7 +14,7 @@ import com.github.rooneyandshadows.lightbulb.dialogs.base.internal.DialogTypes
 import com.github.rooneyandshadows.lightbulb.dialogs.picker_dialog_time.TimePickerDialog.*
 import java.time.OffsetDateTime
 
-@Suppress("unused", "UNUSED_PARAMETER")
+@Suppress("unused", "UNUSED_PARAMETER", "DEPRECATION")
 class TimePickerDialog : BasePickerDialogFragment<Time>(
     TimeSelection(
         Time(
@@ -25,7 +25,6 @@ class TimePickerDialog : BasePickerDialogFragment<Time>(
     ), false
 ) {
     private lateinit var picker: TimePicker
-    private val ignorePickerEvent = false
     override var dialogType: DialogTypes
         get() = DialogTypes.NORMAL
         set(value) {}
@@ -58,13 +57,11 @@ class TimePickerDialog : BasePickerDialogFragment<Time>(
         }
     }
 
-    @Suppress("DEPRECATION")
     @Override
-    override fun onSelectionChange() {
-        val pendingSelection = selection.getActiveSelection()
-        if (!checkIfTimePickerNeedsSync(pendingSelection)) return
+    override fun onSelectionChange(newSelection: Time?) {
+        if (!checkIfTimePickerNeedsSync(newSelection)) return
         picker.apply {
-            pendingSelection?.apply {
+            newSelection?.apply {
                 val hour = hour
                 val minutes = minute
                 val apiLevel = Build.VERSION.SDK_INT

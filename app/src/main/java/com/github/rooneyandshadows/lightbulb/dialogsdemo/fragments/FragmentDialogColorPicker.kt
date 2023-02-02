@@ -5,7 +5,7 @@ import android.view.View
 import com.github.rooneyandshadows.lightbulb.annotation_processors.annotations.FragmentConfiguration
 import com.github.rooneyandshadows.lightbulb.annotation_processors.annotations.FragmentScreen
 import com.github.rooneyandshadows.lightbulb.application.activity.slidermenu.drawable.ShowMenuDrawable
-import com.github.rooneyandshadows.lightbulb.application.fragment.base.BaseFragmentWithViewDataBinding
+import com.github.rooneyandshadows.lightbulb.application.fragment.base.BaseFragmentWithViewBinding
 import com.github.rooneyandshadows.lightbulb.application.fragment.cofiguration.ActionBarConfiguration
 import com.github.rooneyandshadows.lightbulb.commons.utils.BundleUtils
 import com.github.rooneyandshadows.lightbulb.commons.utils.ResourceUtils
@@ -18,7 +18,7 @@ import com.github.rooneyandshadows.lightbulb.dialogsdemo.utils.color.AppColorUti
 
 @FragmentScreen(screenName = "ColorPicker", screenGroup = "Demo")
 @FragmentConfiguration(layoutName = "fragment_demo_dialog_color_picker", hasLeftDrawer = true)
-class FragmentDialogColorPicker : BaseFragmentWithViewDataBinding<FragmentDemoDialogColorPickerBinding>() {
+class FragmentDialogColorPicker : BaseFragmentWithViewBinding<FragmentDemoDialogColorPickerBinding>() {
     private lateinit var colorPickerDialog: ColorPickerDialog
 
     companion object {
@@ -46,7 +46,8 @@ class FragmentDialogColorPicker : BaseFragmentWithViewDataBinding<FragmentDemoDi
     }
 
     @Override
-    override fun onViewBound(viewBinding: FragmentDemoDialogColorPickerBinding) {
+    override fun doOnViewBound(viewBinding: FragmentDemoDialogColorPickerBinding, savedInstanceState: Bundle?) {
+        super.doOnViewBound(viewBinding, savedInstanceState)
         viewBinding.dialogTypeDropdown.apply {
             setLifecycleOwner(this@FragmentDialogColorPicker)
             dialog = colorPickerDialog

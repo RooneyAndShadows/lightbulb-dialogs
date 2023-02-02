@@ -5,7 +5,7 @@ import android.view.View
 import com.github.rooneyandshadows.lightbulb.annotation_processors.annotations.FragmentConfiguration
 import com.github.rooneyandshadows.lightbulb.annotation_processors.annotations.FragmentScreen
 import com.github.rooneyandshadows.lightbulb.application.activity.slidermenu.drawable.ShowMenuDrawable
-import com.github.rooneyandshadows.lightbulb.application.fragment.base.BaseFragmentWithViewDataBinding
+import com.github.rooneyandshadows.lightbulb.application.fragment.base.BaseFragmentWithViewBinding
 import com.github.rooneyandshadows.lightbulb.application.fragment.cofiguration.ActionBarConfiguration
 import com.github.rooneyandshadows.lightbulb.commons.utils.BundleUtils
 import com.github.rooneyandshadows.lightbulb.commons.utils.ResourceUtils
@@ -21,7 +21,7 @@ import java.time.OffsetDateTime
 
 @FragmentScreen(screenName = "DateRange", screenGroup = "Demo")
 @FragmentConfiguration(layoutName = "fragment_demo_dialog_date_range_picker", hasLeftDrawer = true)
-class FragmentDialogDateRangePicker : BaseFragmentWithViewDataBinding<FragmentDemoDialogDateRangePickerBinding>() {
+class FragmentDialogDateRangePicker : BaseFragmentWithViewBinding<FragmentDemoDialogDateRangePickerBinding>() {
     private lateinit var dateRangePickerDialog: DateRangePickerDialog
 
     companion object {
@@ -46,7 +46,8 @@ class FragmentDialogDateRangePicker : BaseFragmentWithViewDataBinding<FragmentDe
     }
 
     @Override
-    override fun onViewBound(viewBinding: FragmentDemoDialogDateRangePickerBinding) {
+    override fun doOnViewBound(viewBinding: FragmentDemoDialogDateRangePickerBinding, savedInstanceState: Bundle?) {
+        super.doOnViewBound(viewBinding, savedInstanceState)
         viewBinding.dialogTypeDropdown.apply {
             setLifecycleOwner(this@FragmentDialogDateRangePicker)
             dialog = dateRangePickerDialog

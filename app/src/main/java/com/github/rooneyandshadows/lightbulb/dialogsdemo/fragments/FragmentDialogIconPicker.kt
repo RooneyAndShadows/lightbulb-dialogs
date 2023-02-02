@@ -5,7 +5,7 @@ import android.view.View
 import com.github.rooneyandshadows.lightbulb.annotation_processors.annotations.FragmentConfiguration
 import com.github.rooneyandshadows.lightbulb.annotation_processors.annotations.FragmentScreen
 import com.github.rooneyandshadows.lightbulb.application.activity.slidermenu.drawable.ShowMenuDrawable
-import com.github.rooneyandshadows.lightbulb.application.fragment.base.BaseFragmentWithViewDataBinding
+import com.github.rooneyandshadows.lightbulb.application.fragment.base.BaseFragmentWithViewBinding
 import com.github.rooneyandshadows.lightbulb.application.fragment.cofiguration.ActionBarConfiguration
 import com.github.rooneyandshadows.lightbulb.commons.utils.BundleUtils
 import com.github.rooneyandshadows.lightbulb.commons.utils.ResourceUtils
@@ -19,7 +19,7 @@ import com.github.rooneyandshadows.lightbulb.dialogsdemo.databinding.FragmentDem
 
 @FragmentScreen(screenName = "IconPicker", screenGroup = "Demo")
 @FragmentConfiguration(layoutName = "fragment_demo_dialog_icon_picker", hasLeftDrawer = true)
-class FragmentDialogIconPicker : BaseFragmentWithViewDataBinding<FragmentDemoDialogIconPickerBinding>() {
+class FragmentDialogIconPicker : BaseFragmentWithViewBinding<FragmentDemoDialogIconPickerBinding>() {
     private lateinit var iconPickerDialog: IconPickerDialog
 
     companion object {
@@ -46,7 +46,8 @@ class FragmentDialogIconPicker : BaseFragmentWithViewDataBinding<FragmentDemoDia
     }
 
     @Override
-    override fun onViewBound(viewBinding: FragmentDemoDialogIconPickerBinding) {
+    override fun doOnViewBound(viewBinding: FragmentDemoDialogIconPickerBinding, savedInstanceState: Bundle?) {
+        super.doOnViewBound(viewBinding, savedInstanceState)
         viewBinding.dialogTypeDropdown.apply {
             setLifecycleOwner(this@FragmentDialogIconPicker)
             dialog = iconPickerDialog
