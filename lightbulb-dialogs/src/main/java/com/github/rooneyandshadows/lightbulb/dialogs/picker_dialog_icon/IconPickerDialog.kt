@@ -44,12 +44,12 @@ class IconPickerDialog : AdapterPickerDialog<IconModel>() {
     }
 
     @Override
-    override fun doOnSaveInstanceState(outState: Bundle?) {
+    override fun doOnSaveInstanceState(outState: Bundle) {
         super.doOnSaveInstanceState(outState)
         val gridLayoutManager = recyclerView?.layoutManager as GridLayoutManager?
         if (gridLayoutManager != null)
-            outState!!.putInt(LAST_VISIBLE_ITEM_KEY, gridLayoutManager.findFirstVisibleItemPosition())
-        else outState!!.putInt(LAST_VISIBLE_ITEM_KEY, lastVisibleItemPosition)
+            outState.putInt(LAST_VISIBLE_ITEM_KEY, gridLayoutManager.findFirstVisibleItemPosition())
+        else outState.putInt(LAST_VISIBLE_ITEM_KEY, lastVisibleItemPosition)
     }
 
     @Override

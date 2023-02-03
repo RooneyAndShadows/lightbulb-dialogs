@@ -49,9 +49,9 @@ open class CustomDialog : BaseDialogFragment() {
     }
 
     @Override
-    override fun doOnSaveInstanceState(outState: Bundle?) {
+    override fun doOnSaveInstanceState(outState: Bundle) {
         super.doOnSaveInstanceState(outState)
-        outState?.apply {
+        outState.apply {
             putBoolean(IS_LOADING_KEY, isLoading)
         }
     }

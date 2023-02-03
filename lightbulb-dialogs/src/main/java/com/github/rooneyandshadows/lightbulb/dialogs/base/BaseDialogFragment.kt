@@ -123,7 +123,7 @@ abstract class BaseDialogFragment : DialogFragment(), DefaultLifecycleObserver {
      * restarted.
      * @param outState - Bundle in which to place your saved state.
      */
-    protected open fun doOnSaveInstanceState(outState: Bundle?) {}
+    protected open fun doOnSaveInstanceState(outState: Bundle) {}
 
     /**
      * Called to ask the fragment to restore its state. Called in onViewCreated.
