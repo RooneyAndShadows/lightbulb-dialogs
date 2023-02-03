@@ -4,5 +4,5 @@ import com.github.rooneyandshadows.lightbulb.dialogs.base.internal.DialogButtonC
 
 
 interface DialogButtonConfigurationCreator {
-    fun create(currentConfiguration: DialogButtonConfiguration?): DialogButtonConfiguration
+    fun create(currentConfiguration: DialogButtonConfiguration?): DialogButtonConfiguration?
 }
