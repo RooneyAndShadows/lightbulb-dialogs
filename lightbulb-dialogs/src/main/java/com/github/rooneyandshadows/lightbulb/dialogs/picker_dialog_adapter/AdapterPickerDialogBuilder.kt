@@ -59,7 +59,7 @@ class AdapterPickerDialogBuilder<DialogType : AdapterPickerDialog<out EasyAdapte
     @Override
     override fun withPositiveButton(
         configuration: DialogButtonConfiguration,
-        onClickListener: DialogButtonClickListener,
+        onClickListener: DialogButtonClickListener?,
     ): AdapterPickerDialogBuilder<DialogType> {
         return super.withPositiveButton(
             configuration,
@@ -70,7 +70,7 @@ class AdapterPickerDialogBuilder<DialogType : AdapterPickerDialog<out EasyAdapte
     @Override
     override fun withNegativeButton(
         configuration: DialogButtonConfiguration,
-        onClickListener: DialogButtonClickListener,
+        onClickListener: DialogButtonClickListener?,
     ): AdapterPickerDialogBuilder<DialogType> {
         return super.withNegativeButton(
             configuration,

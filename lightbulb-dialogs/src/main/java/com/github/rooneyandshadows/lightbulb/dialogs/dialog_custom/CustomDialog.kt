@@ -21,6 +21,8 @@ open class CustomDialog : BaseDialogFragment() {
 
     companion object {
         private const val IS_LOADING_KEY = "IS_LOADING_KEY"
+
+        @JvmStatic
         fun newCustomDialogInstance(): CustomDialog {
             return CustomDialog()
         }
@@ -72,7 +74,7 @@ open class CustomDialog : BaseDialogFragment() {
     }
 
     interface CustomDialogInflater {
-        fun inflateView(dialog: CustomDialog?, layoutInflater: LayoutInflater?): View?
+        fun inflateView(dialog: CustomDialog, layoutInflater: LayoutInflater): View?
     }
 
     private fun setupLoadingView() {

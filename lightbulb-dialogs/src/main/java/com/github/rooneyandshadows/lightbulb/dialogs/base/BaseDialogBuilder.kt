@@ -6,7 +6,7 @@ import androidx.lifecycle.LifecycleOwner
 import com.github.rooneyandshadows.lightbulb.dialogs.base.internal.*
 import com.github.rooneyandshadows.lightbulb.dialogs.base.internal.callbacks.*
 
-@Suppress("UNCHECKED_CAST")
+@Suppress("UNCHECKED_CAST", "MemberVisibilityCanBePrivate")
 abstract class BaseDialogBuilder<DialogType : BaseDialogFragment> @JvmOverloads constructor(
     protected val dialogLifecycleOwner: LifecycleOwner? = null,
     protected val dialogParentFragmentManager: FragmentManager,
@@ -47,7 +47,7 @@ abstract class BaseDialogBuilder<DialogType : BaseDialogFragment> @JvmOverloads 
 
     open fun withPositiveButton(
         configuration: DialogButtonConfiguration,
-        onClickListener: DialogButtonClickListener,
+        onClickListener: DialogButtonClickListener?,
     ): BaseDialogBuilder<DialogType> {
         this.positiveButtonConfiguration = configuration
         onPositiveClickListener = onClickListener
@@ -56,7 +56,7 @@ abstract class BaseDialogBuilder<DialogType : BaseDialogFragment> @JvmOverloads 
 
     open fun withNegativeButton(
         configuration: DialogButtonConfiguration,
-        onClickListener: DialogButtonClickListener,
+        onClickListener: DialogButtonClickListener?,
     ): BaseDialogBuilder<DialogType> {
         this.negativeButtonConfiguration = configuration
         onNegativeClickListener = onClickListener

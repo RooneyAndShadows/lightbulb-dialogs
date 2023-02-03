@@ -55,7 +55,7 @@ class TimePickerDialogBuilder @JvmOverloads constructor(
     @Override
     override fun withPositiveButton(
         configuration: DialogButtonConfiguration,
-        onClickListener: DialogButtonClickListener,
+        onClickListener: DialogButtonClickListener?,
     ): TimePickerDialogBuilder {
         return super.withPositiveButton(configuration, onClickListener) as TimePickerDialogBuilder
     }
@@ -63,7 +63,7 @@ class TimePickerDialogBuilder @JvmOverloads constructor(
     @Override
     override fun withNegativeButton(
         configuration: DialogButtonConfiguration,
-        onClickListener: DialogButtonClickListener,
+        onClickListener: DialogButtonClickListener?,
     ): TimePickerDialogBuilder {
         return super.withNegativeButton(configuration, onClickListener) as TimePickerDialogBuilder
     }

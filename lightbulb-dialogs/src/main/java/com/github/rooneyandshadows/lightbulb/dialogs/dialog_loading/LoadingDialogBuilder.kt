@@ -45,7 +45,7 @@ class LoadingDialogBuilder @JvmOverloads constructor(
     @Override
     override fun withPositiveButton(
         configuration: DialogButtonConfiguration,
-        onClickListener: DialogButtonClickListener,
+        onClickListener: DialogButtonClickListener?,
     ): LoadingDialogBuilder {
         return super.withPositiveButton(configuration, onClickListener) as LoadingDialogBuilder
     }
@@ -53,7 +53,7 @@ class LoadingDialogBuilder @JvmOverloads constructor(
     @Override
     override fun withNegativeButton(
         configuration: DialogButtonConfiguration,
-        onClickListener: DialogButtonClickListener,
+        onClickListener: DialogButtonClickListener?,
     ): LoadingDialogBuilder {
         return super.withNegativeButton(configuration, onClickListener) as LoadingDialogBuilder
     }

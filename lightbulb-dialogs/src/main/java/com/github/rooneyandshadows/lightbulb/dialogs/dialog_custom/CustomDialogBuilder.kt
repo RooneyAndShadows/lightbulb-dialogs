@@ -57,7 +57,7 @@ class CustomDialogBuilder<DialogType : CustomDialog> @JvmOverloads constructor(
     @Override
     override fun withPositiveButton(
         configuration: DialogButtonConfiguration,
-        onClickListener: DialogButtonClickListener,
+        onClickListener: DialogButtonClickListener?,
     ): CustomDialogBuilder<DialogType> {
         return super.withPositiveButton(configuration, onClickListener) as CustomDialogBuilder<DialogType>
     }
@@ -65,7 +65,7 @@ class CustomDialogBuilder<DialogType : CustomDialog> @JvmOverloads constructor(
     @Override
     override fun withNegativeButton(
         configuration: DialogButtonConfiguration,
-        onClickListener: DialogButtonClickListener,
+        onClickListener: DialogButtonClickListener?,
     ): CustomDialogBuilder<DialogType> {
         return super.withNegativeButton(configuration, onClickListener) as CustomDialogBuilder<DialogType>
     }

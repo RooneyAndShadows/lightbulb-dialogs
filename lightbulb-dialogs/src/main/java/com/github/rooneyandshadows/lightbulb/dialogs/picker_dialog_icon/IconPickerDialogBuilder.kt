@@ -54,7 +54,7 @@ class IconPickerDialogBuilder @JvmOverloads constructor(
     @Override
     override fun withPositiveButton(
         configuration: DialogButtonConfiguration,
-        onClickListener: DialogButtonClickListener,
+        onClickListener: DialogButtonClickListener?,
     ): IconPickerDialogBuilder {
         return super.withPositiveButton(configuration, onClickListener) as IconPickerDialogBuilder
     }
@@ -62,7 +62,7 @@ class IconPickerDialogBuilder @JvmOverloads constructor(
     @Override
     override fun withNegativeButton(
         configuration: DialogButtonConfiguration,
-        onClickListener: DialogButtonClickListener,
+        onClickListener: DialogButtonClickListener?,
     ): IconPickerDialogBuilder {
         return super.withNegativeButton(configuration, onClickListener) as IconPickerDialogBuilder
     }

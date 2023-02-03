@@ -54,7 +54,7 @@ class ColorPickerDialogBuilder @JvmOverloads constructor(
     @Override
     override fun withPositiveButton(
         configuration: DialogButtonConfiguration,
-        onClickListener: DialogButtonClickListener,
+        onClickListener: DialogButtonClickListener?,
     ): ColorPickerDialogBuilder {
         return super.withPositiveButton(configuration, onClickListener) as ColorPickerDialogBuilder
     }
@@ -62,7 +62,7 @@ class ColorPickerDialogBuilder @JvmOverloads constructor(
     @Override
     override fun withNegativeButton(
         configuration: DialogButtonConfiguration,
-        onClickListener: DialogButtonClickListener,
+        onClickListener: DialogButtonClickListener?,
     ): ColorPickerDialogBuilder {
         return super.withNegativeButton(configuration, onClickListener) as ColorPickerDialogBuilder
     }
