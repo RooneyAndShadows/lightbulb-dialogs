@@ -4,6 +4,7 @@ import android.os.Bundle
 import java.util.ArrayList
 import java.util.HashMap
 
+@JvmSuppressWildcards
 abstract class BaseDialogSelection<SelectionType>(current: SelectionType?, draft: SelectionType?) {
     private val selectionCurrentKey = "SELECTION_CURRENT"
     private val selectionDraftKey = "SELECTION_DRAFT"

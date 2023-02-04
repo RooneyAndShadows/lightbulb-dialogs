@@ -8,6 +8,7 @@ import com.github.rooneyandshadows.lightbulb.dialogs.base.internal.callbacks.Dia
 import com.github.rooneyandshadows.lightbulb.dialogs.base.internal.callbacks.DialogShowListener
 
 @Suppress("unused")
+@JvmSuppressWildcards
 abstract class BasePickerDialogFragment<SelectionType>(
     protected val selection: BaseDialogSelection<SelectionType>,
     private val synchronizeUiOnDraftChange: Boolean,

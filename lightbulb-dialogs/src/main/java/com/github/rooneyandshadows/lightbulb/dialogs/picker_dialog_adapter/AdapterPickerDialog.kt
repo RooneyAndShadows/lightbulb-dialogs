@@ -23,6 +23,7 @@ import com.github.rooneyandshadows.lightbulb.recycleradapters.abstraction.callba
 import java.util.Arrays
 
 @Suppress("unused")
+@JvmSuppressWildcards
 abstract class AdapterPickerDialog<ItemType : EasyAdapterDataModel> : BasePickerDialogFragment<IntArray>(
     AdapterPickerDialogSelection(null, null)
 ) {
