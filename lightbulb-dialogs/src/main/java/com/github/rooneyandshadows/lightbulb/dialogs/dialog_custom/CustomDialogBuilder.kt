@@ -17,25 +17,25 @@ class CustomDialogBuilder<DialogType : CustomDialog> @JvmOverloads constructor(
     dialogTag: String,
     private val dialogInitializer: CustomDialogInitializer<DialogType>,
     private val dialogInflater: CustomDialogInflater,
-) : BaseDialogBuilder<CustomDialog>(lifecycleOwner, dialogParentFragmentManager, dialogTag) {
+) : BaseDialogBuilder<DialogType>(lifecycleOwner, dialogParentFragmentManager, dialogTag) {
     private var loading = false
 
     @Override
-    override fun setupNonRetainableSettings(dialog: CustomDialog) {
+    override fun setupNonRetainableSettings(dialog: DialogType) {
         dialog.apply {
             setDialogInflater(dialogInflater)
         }
     }
 
     @Override
-    override fun setupRetainableSettings(dialog: CustomDialog) {
+    override fun setupRetainableSettings(dialog: DialogType) {
         dialog.apply {
             setLoading(loading)
         }
     }
 
     @Override
-    override fun initializeNewDialog(): CustomDialog {
+    override fun initializeNewDialog(): DialogType {
         return dialogInitializer.initialize()
     }
 
@@ -110,7 +110,7 @@ class CustomDialogBuilder<DialogType : CustomDialog> @JvmOverloads constructor(
         return this
     }
 
-    interface CustomDialogInitializer<DialogType : CustomDialog> {
+    interface CustomDialogInitializer<out DialogType : CustomDialog> {
         fun initialize(): DialogType
     }
 }

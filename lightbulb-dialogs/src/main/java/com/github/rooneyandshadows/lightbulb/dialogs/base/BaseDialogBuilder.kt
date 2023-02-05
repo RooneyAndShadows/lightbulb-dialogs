@@ -7,6 +7,7 @@ import com.github.rooneyandshadows.lightbulb.dialogs.base.internal.*
 import com.github.rooneyandshadows.lightbulb.dialogs.base.internal.callbacks.*
 
 @Suppress("UNCHECKED_CAST", "MemberVisibilityCanBePrivate")
+@JvmSuppressWildcards
 abstract class BaseDialogBuilder<DialogType : BaseDialogFragment> @JvmOverloads constructor(
     protected val dialogLifecycleOwner: LifecycleOwner? = null,
     protected val dialogParentFragmentManager: FragmentManager,
