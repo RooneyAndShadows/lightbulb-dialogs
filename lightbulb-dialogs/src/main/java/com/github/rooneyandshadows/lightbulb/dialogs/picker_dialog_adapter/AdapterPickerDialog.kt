@@ -79,8 +79,8 @@ abstract class AdapterPickerDialog<ItemType : EasyAdapterDataModel> : BasePicker
         super.doOnViewStateRestored(savedInstanceState)
         val selectionListener = object : EasyAdapterSelectionChangedListener {
             override fun onChanged(newSelection: IntArray?) {
-                if (isDialogShown) selection.setDraftSelection(newSelection)
-                else selection.setCurrentSelection(newSelection)
+                if (isDialogShown) dialogSelection.setDraftSelection(newSelection)
+                else dialogSelection.setCurrentSelection(newSelection)
             }
         }
         adapter.addOrReplaceSelectionChangedListener(selectionListener)

@@ -102,7 +102,7 @@ class DateRangePickerDialog : BasePickerDialogFragment<DateRange>(DateRangeSelec
 
     @Override
     override fun setupDialogContent(view: View, savedInstanceState: Bundle?) {
-        val activeSelection = selection.getActiveSelection()
+        val activeSelection = dialogSelection.getActiveSelection()
         selectViews(view)
         setupHeader(activeSelection)
         calendar?.apply {
@@ -146,8 +146,8 @@ class DateRangePickerDialog : BasePickerDialogFragment<DateRange>(DateRangeSelec
                 val newFrom = DateUtilsOffsetDate.date(first.year, first.month, first.day, 0, 0, 0, offsetFrom)
                 val newTo = DateUtilsOffsetDate.date(last.year, last.month, last.day, 23, 59, 59, offsetTo)
                 val range = DateRange(newFrom, newTo)
-                if (isDialogShown) selection.setDraftSelection(range)
-                else selection.setCurrentSelection(range)
+                if (isDialogShown) dialogSelection.setDraftSelection(range)
+                else dialogSelection.setCurrentSelection(range)
             }
         }
     }
@@ -182,7 +182,7 @@ class DateRangePickerDialog : BasePickerDialogFragment<DateRange>(DateRangeSelec
     @Override
     override fun setSelection(newSelection: DateRange?) {
         val validatedRange = prepareRangeForSet(newSelection)
-        selection.setCurrentSelection(validatedRange)
+        dialogSelection.setCurrentSelection(validatedRange)
         offsetFrom = validatedRange?.from?.offset ?: DEFAULT_OFFSET
         offsetTo = validatedRange?.from?.offset ?: DEFAULT_OFFSET
     }
@@ -193,7 +193,7 @@ class DateRangePickerDialog : BasePickerDialogFragment<DateRange>(DateRangeSelec
     }
 
     fun setDialogDateFormat(format: String?) {
-        val activeSelection = selection.getActiveSelection()
+        val activeSelection = dialogSelection.getActiveSelection()
         dialogDateFormat = format ?: DEFAULT_DATE_FORMAT
         setupHeader(activeSelection)
     }

@@ -38,7 +38,7 @@ class TimePickerDialog : BasePickerDialogFragment<Time>(
     @Override
     override fun doOnCreate(dialogArguments: Bundle?, savedInstanceState: Bundle?) {
         if (savedInstanceState != null) return
-        if (hasSelection()) selection.setCurrentSelection(selection.getCurrentSelection())
+        if (hasSelection()) dialogSelection.setCurrentSelection(dialogSelection.getCurrentSelection())
     }
 
     @Override
@@ -51,7 +51,7 @@ class TimePickerDialog : BasePickerDialogFragment<Time>(
         picker = view.findViewById(R.id.dialogTimePicker)
         picker.setIs24HourView(true)
         picker.isSaveEnabled = false
-        selection.getActiveSelection()?.apply {
+        dialogSelection.getActiveSelection()?.apply {
             picker.hour = hour
             picker.minute = minute
         }
@@ -88,28 +88,28 @@ class TimePickerDialog : BasePickerDialogFragment<Time>(
         super.doOnViewStateRestored(savedInstanceState)
         picker.setOnTimeChangedListener { _: TimePicker?, hourOfDay: Int, minutesOfHour: Int ->
             val newSelection = Time(hourOfDay, minutesOfHour)
-            if (isDialogShown) selection.setDraftSelection(newSelection)
-            else selection.setCurrentSelection(newSelection)
+            if (isDialogShown) dialogSelection.setDraftSelection(newSelection)
+            else dialogSelection.setCurrentSelection(newSelection)
         }
     }
 
     @Override
     override fun setSelection(newSelection: Time?) {
-        selection.apply {
+        dialogSelection.apply {
             if (newSelection == null) setCurrentSelection(null)
             else setCurrentSelection(newSelection)
         }
     }
 
     fun setSelection(hour: Int, minutes: Int) {
-        selection.apply {
+        dialogSelection.apply {
             val time = Time(hour, minutes)
             setCurrentSelection(time)
         }
     }
 
     fun setSelection(newSelection: OffsetDateTime?) {
-        selection.apply {
+        dialogSelection.apply {
             if (newSelection == null) setCurrentSelection(null)
             else setCurrentSelection(Time.fromDate(newSelection))
         }

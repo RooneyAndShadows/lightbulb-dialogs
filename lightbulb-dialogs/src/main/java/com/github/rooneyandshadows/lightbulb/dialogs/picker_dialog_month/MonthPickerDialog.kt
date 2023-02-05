@@ -43,7 +43,7 @@ class MonthPickerDialog : BasePickerDialogFragment<Month>(MonthSelection(null, n
     val selectionAsDate: OffsetDateTime?
         get() = selectionAsMonth?.toDate()
     val selectionAsMonth: Month?
-        get() = selection.getCurrentSelection()
+        get() = dialogSelection.getCurrentSelection()
     override var dialogType: DialogTypes
         get() = NORMAL
         set(value) {}
@@ -65,7 +65,7 @@ class MonthPickerDialog : BasePickerDialogFragment<Month>(MonthSelection(null, n
     @Override
     override fun doOnCreate(dialogArguments: Bundle?, savedInstanceState: Bundle?) {
         if (savedInstanceState != null) return
-        if (hasSelection()) selection.setCurrentSelection(selection.getCurrentSelection())
+        if (hasSelection()) dialogSelection.setCurrentSelection(dialogSelection.getCurrentSelection())
     }
 
     @Override
@@ -114,12 +114,12 @@ class MonthPickerDialog : BasePickerDialogFragment<Month>(MonthSelection(null, n
 
     @Override
     override fun setupDialogContent(view: View, savedInstanceState: Bundle?) {
-        val activeSelection = selection.getActiveSelection()
+        val activeSelection = dialogSelection.getActiveSelection()
         selectViews(view)
         setupHeader(activeSelection)
         monthCalendar?.apply {
             val dialog = this@MonthPickerDialog
-            val pendingSelection = dialog.selection.getActiveSelection()
+            val pendingSelection = dialog.dialogSelection.getActiveSelection()
             val disabledMonthEntries = monthsToMonthEntries(dialog.disabledMonths)
             val enabledMonthEntries = monthsToMonthEntries(dialog.enabledMonths)
             setDisabledMonths(disabledMonthEntries)
@@ -149,14 +149,14 @@ class MonthPickerDialog : BasePickerDialogFragment<Month>(MonthSelection(null, n
                 oldSelection: MonthEntry?,
             ) {
                 val selectedMonthEntry = newSelection?.let { monthEntry -> return@let monthEntrytoMonth(monthEntry) }
-                if (isDialogShown) selection.setDraftSelection(selectedMonthEntry)
-                else selection.setCurrentSelection(selectedMonthEntry)
+                if (isDialogShown) dialogSelection.setDraftSelection(selectedMonthEntry)
+                else dialogSelection.setCurrentSelection(selectedMonthEntry)
             }
         })
     }
 
     fun setDialogDateFormat(dateFormat: String?) {
-        val activeSelection = selection.getActiveSelection()
+        val activeSelection = dialogSelection.getActiveSelection()
         dialogDateFormat = dateFormat ?: DEFAULT_DATE_FORMAT
         setupHeader(activeSelection)
     }
@@ -174,7 +174,7 @@ class MonthPickerDialog : BasePickerDialogFragment<Month>(MonthSelection(null, n
     fun setDisabledMonths(disabledMonths: List<Month>) {
         this.disabledMonths = disabledMonths
         disabledMonths.apply {
-            val currentSelection = selection.getCurrentSelection()
+            val currentSelection = dialogSelection.getCurrentSelection()
             if (any { it.compare(currentSelection) })
                 clearSelection()
         }
@@ -193,7 +193,7 @@ class MonthPickerDialog : BasePickerDialogFragment<Month>(MonthSelection(null, n
                 var clearCurrentSelection = true
                 forEach { enabledMonth ->
                     val currentYear = enabledMonth.year
-                    if (enabledMonth.compare(selection.getCurrentSelection()))
+                    if (enabledMonth.compare(dialogSelection.getCurrentSelection()))
                         clearCurrentSelection = false
                     if (currentYear < minYear) minYear = currentYear
                     if (currentYear > maxYear) maxYear = currentYear
@@ -234,7 +234,7 @@ class MonthPickerDialog : BasePickerDialogFragment<Month>(MonthSelection(null, n
     @Override
     override fun setSelection(newSelection: Month?) {
         validateSelectionInput(newSelection).apply {
-            selection.setCurrentSelection(this)
+            dialogSelection.setCurrentSelection(this)
         }
     }
 
@@ -243,7 +243,7 @@ class MonthPickerDialog : BasePickerDialogFragment<Month>(MonthSelection(null, n
     }
 
     fun clearSelection() {
-        selection.setCurrentSelection(null)
+        dialogSelection.setCurrentSelection(null)
     }
 
     fun setCalendarBounds(min: Int, max: Int) {
@@ -256,8 +256,8 @@ class MonthPickerDialog : BasePickerDialogFragment<Month>(MonthSelection(null, n
         }
         val minDate = DateUtilsOffsetDate.date(minYear, 1)
         val maxDate = DateUtilsOffsetDate.date(maxYear, 12)
-        val currentDate = selection.getCurrentSelection()?.toDate()
-        val draftDate = selection.getDraftSelection()?.toDate()
+        val currentDate = dialogSelection.getCurrentSelection()?.toDate()
+        val draftDate = dialogSelection.getDraftSelection()?.toDate()
         val targetDate = if (isDialogShown) draftDate
         else currentDate
         if (targetDate != null && !DateUtilsOffsetDate.isDateInRange(targetDate, minDate, maxDate))

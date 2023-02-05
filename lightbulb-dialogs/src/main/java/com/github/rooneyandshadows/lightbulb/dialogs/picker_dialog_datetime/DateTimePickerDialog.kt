@@ -83,7 +83,7 @@ class DateTimePickerDialog : BasePickerDialogFragment<OffsetDateTime>(DateTimeSe
 
     @Override
     override fun setupDialogContent(view: View, savedInstanceState: Bundle?) {
-        val activeSelection = selection.getActiveSelection()
+        val activeSelection = dialogSelection.getActiveSelection()
         selectViews(view)
         setupHeader(activeSelection)
         val context = requireContext()
@@ -93,10 +93,10 @@ class DateTimePickerDialog : BasePickerDialogFragment<OffsetDateTime>(DateTimeSe
                 showingTimePicker = !showingTimePicker
                 syncPickerMode()
             }
-            visibility = if (selection.getDraftSelection() != null) View.VISIBLE else View.GONE
+            visibility = if (dialogSelection.getDraftSelection() != null) View.VISIBLE else View.GONE
         }
         calendarView?.apply {
-            val pendingSelection = selection.getActiveSelection()
+            val pendingSelection = dialogSelection.getActiveSelection()
             leftArrow.setTint(ResourceUtils.getColorByAttribute(context, R.attr.colorAccent))
             rightArrow.setTint(ResourceUtils.getColorByAttribute(context, R.attr.colorAccent))
             if (pendingSelection != null) {
@@ -138,7 +138,7 @@ class DateTimePickerDialog : BasePickerDialogFragment<OffsetDateTime>(DateTimeSe
         super.doOnViewStateRestored(savedInstanceState)
         calendarView!!.setOnDateChangedListener { _: MaterialCalendarView?, date: CalendarDay, _: Boolean ->
             if (isDialogShown) {
-                val draftDate = selection.getDraftSelection()
+                val draftDate = dialogSelection.getDraftSelection()
                 val hour: Int
                 val minute: Int
                 val second = 0
@@ -150,11 +150,11 @@ class DateTimePickerDialog : BasePickerDialogFragment<OffsetDateTime>(DateTimeSe
                     hour = DateUtilsOffsetDate.getHourOfDay(now)
                     minute = DateUtilsOffsetDate.getMinuteOfHour(now)
                 }
-                selection.setDraftSelection(
+                dialogSelection.setDraftSelection(
                     DateUtilsOffsetDate.date(date.year, date.month, date.day, hour, minute, second, zoneOffset)
                 )
             } else {
-                val currentDate = selection.getCurrentSelection()
+                val currentDate = dialogSelection.getCurrentSelection()
                 val hour: Int
                 val minute: Int
                 val second = 0
@@ -166,14 +166,14 @@ class DateTimePickerDialog : BasePickerDialogFragment<OffsetDateTime>(DateTimeSe
                     hour = DateUtilsOffsetDate.getHourOfDay(now)
                     minute = DateUtilsOffsetDate.getMinuteOfHour(now)
                 }
-                selection.setCurrentSelection(
+                dialogSelection.setCurrentSelection(
                     DateUtilsOffsetDate.date(date.year, date.month, date.day, hour, minute, second, zoneOffset)
                 )
             }
         }
         timePickerView!!.setOnTimeChangedListener { _: TimePicker?, hourOfDay: Int, minute: Int ->
-            val date = DateUtilsOffsetDate.setTimeToDate(selection.getDraftSelection(), hourOfDay, minute, 0)
-            if (isDialogShown) selection.setDraftSelection(date) else selection.setCurrentSelection(date)
+            val date = DateUtilsOffsetDate.setTimeToDate(dialogSelection.getDraftSelection(), hourOfDay, minute, 0)
+            if (isDialogShown) dialogSelection.setDraftSelection(date) else dialogSelection.setCurrentSelection(date)
         }
     }
 
@@ -184,7 +184,7 @@ class DateTimePickerDialog : BasePickerDialogFragment<OffsetDateTime>(DateTimeSe
     }
 
     fun setDialogDateFormat(dateFormat: String?) {
-        val activeSelection = selection.getActiveSelection()
+        val activeSelection = dialogSelection.getActiveSelection()
         dialogDateFormat = dateFormat ?: DEFAULT_DATE_FORMAT
         setupHeader(activeSelection)
     }

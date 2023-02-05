@@ -10,7 +10,7 @@ import com.github.rooneyandshadows.lightbulb.dialogs.base.internal.callbacks.Dia
 @Suppress("unused")
 @JvmSuppressWildcards
 abstract class BasePickerDialogFragment<SelectionType>(
-    protected val selection: BaseDialogSelection<SelectionType>,
+    protected val dialogSelection: BaseDialogSelection<SelectionType>,
     private val synchronizeUiOnDraftChange: Boolean,
 ) : BaseDialogFragment() {
     private val selectionStateKey = "DIALOG_SELECTION_STATE_KEY"
@@ -28,7 +28,7 @@ abstract class BasePickerDialogFragment<SelectionType>(
     override fun doOnSaveDialogProperties(outState: Bundle) {
         super.doOnSaveDialogProperties(outState)
         outState.apply {
-            putBundle(selectionStateKey, selection.saveState())
+            putBundle(selectionStateKey, dialogSelection.saveState())
         }
     }
 
@@ -37,7 +37,7 @@ abstract class BasePickerDialogFragment<SelectionType>(
         super.doOnRestoreDialogProperties(savedState)
         savedState.apply {
             getBundle(selectionStateKey)?.apply {
-                selection.restoreState(this)
+                dialogSelection.restoreState(this)
             }
         }
     }
@@ -51,15 +51,15 @@ abstract class BasePickerDialogFragment<SelectionType>(
     }
 
     open fun setSelection(newSelection: SelectionType?) {
-        selection.setCurrentSelection(newSelection)
+        dialogSelection.setCurrentSelection(newSelection)
     }
 
     fun getSelection(): SelectionType? {
-        return selection.getCurrentSelection()
+        return dialogSelection.getCurrentSelection()
     }
 
     fun hasSelection(): Boolean {
-        return selection.hasCurrentSelection()
+        return dialogSelection.hasCurrentSelection()
     }
 
     protected fun dispatchSelectionChangedEvent(newValue: SelectionType?, oldValue: SelectionType?) {
@@ -71,25 +71,25 @@ abstract class BasePickerDialogFragment<SelectionType>(
     private fun initializeListeners() {
         addOnShowListener(object : DialogShowListener {
             override fun doOnShow(dialogFragment: BaseDialogFragment) {
-                selection.startDraft()
+                dialogSelection.startDraft()
             }
         })
         addOnCancelListener(object : DialogCancelListener {
             override fun doOnCancel(dialogFragment: BaseDialogFragment) {
-                selection.revertDraft()
+                dialogSelection.revertDraft()
             }
         })
         addOnNegativeClickListeners(object : DialogButtonClickListener {
             override fun doOnClick(buttonView: View?, dialogFragment: BaseDialogFragment) {
-                selection.revertDraft()
+                dialogSelection.revertDraft()
             }
         })
         addOnPositiveClickListener(object : DialogButtonClickListener {
             override fun doOnClick(buttonView: View?, dialogFragment: BaseDialogFragment) {
-                selection.commitDraft()
+                dialogSelection.commitDraft()
             }
         })
-        selection.addSelectionListeners(object : PickerSelectionListeners<SelectionType> {
+        dialogSelection.addSelectionListeners(object : PickerSelectionListeners<SelectionType> {
             override fun onCurrentSelectionChangedListener(newValue: SelectionType?, oldValue: SelectionType?) {
                 if (isAttached) onSelectionChange(newValue)
                 dispatchSelectionChangedEvent(newValue, oldValue)
@@ -105,7 +105,7 @@ abstract class BasePickerDialogFragment<SelectionType>(
             }
 
             override fun onDraftReverted() {
-                if (isAttached) onSelectionChange(selection.getCurrentSelection())
+                if (isAttached) onSelectionChange(dialogSelection.getCurrentSelection())
             }
         })
     }
