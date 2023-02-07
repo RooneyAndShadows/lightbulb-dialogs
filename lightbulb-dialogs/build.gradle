@@ -62,6 +62,7 @@ dependencies {
     implementation "androidx.recyclerview:recyclerview:$versions.android_recyclerview"
     implementation "androidx.constraintlayout:constraintlayout:$versions.android_constraintlayout"
     implementation "com.google.android.material:material:$versions.material"
+    implementation "com.google.android.flexbox:flexbox:$versions.flexbox"
     implementation "com.github.rooneyandshadows:java-commons:$versions.java.commons"
     implementation "com.github.rooneyandshadows:lightbulb-commons:$versions.lightbulb.commons"
     implementation "com.github.rooneyandshadows:lightbulb-recycleradapters:$versions.lightbulb.recycleradapters"

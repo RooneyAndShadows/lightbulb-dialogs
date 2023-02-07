@@ -10,21 +10,19 @@ import com.github.rooneyandshadows.lightbulb.application.fragment.cofiguration.A
 import com.github.rooneyandshadows.lightbulb.commons.utils.BundleUtils
 import com.github.rooneyandshadows.lightbulb.commons.utils.ResourceUtils
 import com.github.rooneyandshadows.lightbulb.dialogs.base.internal.DialogButtonConfiguration
-import com.github.rooneyandshadows.lightbulb.dialogs.picker_dialog_icon.IconPickerAdapter.IconModel
-import com.github.rooneyandshadows.lightbulb.dialogs.picker_dialog_icon.IconPickerAdapter.IconSet.*
-import com.github.rooneyandshadows.lightbulb.dialogs.picker_dialog_icon.IconPickerDialog
-import com.github.rooneyandshadows.lightbulb.dialogs.picker_dialog_icon.IconPickerDialogBuilder
+import com.github.rooneyandshadows.lightbulb.dialogs.picker_dialog_chips.ChipsPickerDialog
+import com.github.rooneyandshadows.lightbulb.dialogs.picker_dialog_chips.ChipsPickerDialogBuilder
 import com.github.rooneyandshadows.lightbulb.dialogsdemo.*
-import com.github.rooneyandshadows.lightbulb.dialogsdemo.databinding.FragmentDemoDialogIconPickerBinding
+import com.github.rooneyandshadows.lightbulb.dialogsdemo.databinding.FragmentDemoDialogChipsPickerBinding
 
-@FragmentScreen(screenName = "IconPicker", screenGroup = "Demo")
-@FragmentConfiguration(layoutName = "fragment_demo_dialog_icon_picker", hasLeftDrawer = true)
-class FragmentDialogIconPicker : BaseFragmentWithViewBinding<FragmentDemoDialogIconPickerBinding>() {
-    private lateinit var iconPickerDialog: IconPickerDialog
+@FragmentScreen(screenName = "ChipsPicker", screenGroup = "Demo")
+@FragmentConfiguration(layoutName = "fragment_demo_dialog_chips_picker", hasLeftDrawer = true)
+class FragmentDialogChipsPicker : BaseFragmentWithViewBinding<FragmentDemoDialogChipsPickerBinding>() {
+    private lateinit var chipsPickerDialog: ChipsPickerDialog
 
     companion object {
-        private const val DIALOG_TAG = "ICON_PICKER_TAG"
-        private const val DIALOG_STATE_TAG = "ICON_PICKER_STATE_TAG"
+        private const val DIALOG_TAG = "CHIPS_PICKER_TAG"
+        private const val DIALOG_STATE_TAG = "CHIPS_PICKER_STATE_TAG"
     }
 
     @Override
@@ -36,29 +34,29 @@ class FragmentDialogIconPicker : BaseFragmentWithViewBinding<FragmentDemoDialogI
             dialogSavedState = BundleUtils.getParcelable(DIALOG_STATE_TAG, this, Bundle::class.java)
         }
         createDialog(dialogSavedState)
-        if (setInitialValues) iconPickerDialog.setData(IconModel.getAllForSet(FONTAWESOME))
+        if (setInitialValues) chipsPickerDialog.setData(generateChips())
     }
 
     @Override
     override fun doOnSaveInstanceState(outState: Bundle) {
         super.doOnSaveInstanceState(outState)
-        outState.putParcelable(DIALOG_STATE_TAG, iconPickerDialog.saveDialogState())
+        outState.putParcelable(DIALOG_STATE_TAG, chipsPickerDialog.saveDialogState())
     }
 
     @Override
-    override fun doOnViewBound(viewBinding: FragmentDemoDialogIconPickerBinding, savedInstanceState: Bundle?) {
+    override fun doOnViewBound(viewBinding: FragmentDemoDialogChipsPickerBinding, savedInstanceState: Bundle?) {
         super.doOnViewBound(viewBinding, savedInstanceState)
         viewBinding.dialogTypeDropdown.apply {
-            setLifecycleOwner(this@FragmentDialogIconPicker)
-            dialog = iconPickerDialog
+            setLifecycleOwner(this@FragmentDialogChipsPicker)
+            dialog = chipsPickerDialog
             animationTypeSpinner = viewBinding.dialogAnimationTypeDropdown
         }
         viewBinding.dialogAnimationTypeDropdown.apply {
-            setLifecycleOwner(this@FragmentDialogIconPicker)
-            dialog = iconPickerDialog
+            setLifecycleOwner(this@FragmentDialogChipsPicker)
+            dialog = chipsPickerDialog
             typeSpinner = viewBinding.dialogTypeDropdown
         }
-        viewBinding.dialog = iconPickerDialog
+        viewBinding.dialog = chipsPickerDialog
     }
 
     @Override
@@ -78,7 +76,7 @@ class FragmentDialogIconPicker : BaseFragmentWithViewBinding<FragmentDemoDialogI
     }
 
     private fun createDialog(dialogSavedState: Bundle?) {
-        iconPickerDialog = IconPickerDialogBuilder(this, childFragmentManager, DIALOG_TAG).apply {
+        chipsPickerDialog = ChipsPickerDialogBuilder(this, childFragmentManager, DIALOG_TAG).apply {
             val ctx = requireContext()
             val title = getDefaultDialogTitle(ctx)
             val message = getDefaultDialogMessage(ctx)

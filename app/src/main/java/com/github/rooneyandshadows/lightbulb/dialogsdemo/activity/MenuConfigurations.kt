@@ -115,6 +115,17 @@ object MenuConfigurations {
                 slider.closeSlider()
                 route().toDemoTime().replace()
             }
+        ).addMenuItem(
+            PrimaryMenuItem(
+                -1,
+                ResourceUtils.getPhrase(activity, R.string.demo_chips_title),
+                null,
+                null,
+                1
+            ) { slider: SliderMenu ->
+                slider.closeSlider()
+                route().toDemoChipsPicker().replace()
+            }
         )
         return configuration
     }
