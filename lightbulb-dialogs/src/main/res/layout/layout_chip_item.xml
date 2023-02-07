@@ -5,28 +5,28 @@
     android:layout_height="wrap_content"
     android:background="@drawable/bg_chip_picker_item"
     android:clickable="true"
-    android:focusable="false"
+    android:focusable="true"
     android:focusableInTouchMode="false"
-    android:orientation="horizontal"
-    android:paddingStart="@dimen/chips_picker_spacing_size"
-    android:paddingEnd="@dimen/chips_picker_spacing_size"
-    app:divider="@drawable/divider_horizontal_space_tiny"
-    app:showDividers="middle">
+    android:orientation="horizontal">
 
     <androidx.appcompat.widget.AppCompatImageView
         android:id="@+id/chip_selected_indicator"
         android:layout_width="@dimen/chips_picker_chip_remove_button_size"
         android:layout_height="@dimen/chips_picker_chip_remove_button_size"
         android:layout_gravity="center_vertical"
+        android:visibility="gone"
         tools:src="@drawable/chip_selected_icon" />
 
     <TextView
         android:id="@+id/chip_text_view"
-        android:layout_width="0dp"
-        android:layout_height="@dimen/chips_picker_chip_height"
-        android:layout_weight="1"
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
         android:ellipsize="none"
         android:gravity="center_vertical"
+        android:paddingStart="@dimen/spacing_size_small"
+        android:paddingTop="@dimen/spacing_size_tiny"
+        android:paddingEnd="@dimen/spacing_size_small"
+        android:paddingBottom="@dimen/spacing_size_tiny"
         android:singleLine="true"
         android:textStyle="bold"
         tools:text="Chip text" />

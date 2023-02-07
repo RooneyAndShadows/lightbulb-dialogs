@@ -19,6 +19,7 @@ import com.github.rooneyandshadows.lightbulb.dialogs.picker_dialog_adapter.Adapt
 import com.github.rooneyandshadows.lightbulb.dialogs.picker_dialog_chips.ChipsPickerAdapter.*
 import com.github.rooneyandshadows.lightbulb.recycleradapters.abstraction.EasyRecyclerAdapter
 import com.google.android.flexbox.FlexDirection
+import com.google.android.flexbox.FlexboxItemDecoration
 import com.google.android.flexbox.FlexboxLayoutManager
 import java.util.function.Predicate
 import kotlin.math.max
@@ -66,7 +67,7 @@ class ChipsPickerDialog : AdapterPickerDialog<ChipModel>() {
         super.setupDialogContent(view, savedInstanceState)
         this.recyclerView?.apply {
             val itemDecoration = FlexboxSpaceItemDecoration(ResourceUtils.dpToPx(10), this)
-           // addItemDecoration(itemDecoration)
+            addItemDecoration(itemDecoration)
             layoutParams.height = getMaxHeight()
             layoutManager = FlexboxLayoutManager(context, FlexDirection.ROW)
             clipToPadding = false
@@ -89,7 +90,7 @@ class ChipsPickerDialog : AdapterPickerDialog<ChipModel>() {
         constraints: RegularDialogConstraints,
         dialogWindow: Window,
         dialogLayout: View,
-        fgPadding: Rect
+        fgPadding: Rect,
     ) {
         val chipView = LayoutInflater.from(context).inflate(R.layout.layout_chip_item, null).apply {
             val widthMeasureSpec = View.MeasureSpec.makeMeasureSpec(0, View.MeasureSpec.UNSPECIFIED)
@@ -130,7 +131,8 @@ class ChipsPickerDialog : AdapterPickerDialog<ChipModel>() {
         val textView: TextView = chipView.findViewById(R.id.chip_text_view)
         val widthMeasureSpec = View.MeasureSpec.makeMeasureSpec(0, View.MeasureSpec.UNSPECIFIED)
         val heightMeasureSpec = View.MeasureSpec.makeMeasureSpec(0, View.MeasureSpec.UNSPECIFIED)
-        adapter.getItems().subList(0, 10).forEach {
+
+        adapter.getItems().forEach {
             textView.text = it.chipTitle
             chipView.measure(widthMeasureSpec, heightMeasureSpec)
             requiredWidth += chipView.measuredWidth

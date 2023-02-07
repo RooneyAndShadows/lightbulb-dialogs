@@ -7,6 +7,7 @@ import android.os.Parcelable
 import android.view.LayoutInflater
 import android.view.View
 import android.view.ViewGroup
+import android.view.ViewGroup.MarginLayoutParams
 import android.widget.Filter
 import android.widget.Filterable
 import android.widget.TextView
@@ -132,19 +133,22 @@ class ChipsPickerAdapter : EasyRecyclerAdapter<ChipModel>(SELECT_MULTIPLE), Filt
     inner class ChipVH internal constructor(private val chipView: LinearLayoutCompat) : RecyclerView.ViewHolder(chipView) {
         fun setItem(item: ChipModel) {
             chipView.apply {
+                val horPadding = ResourceUtils.getDimenById(context, R.dimen.spacing_size_small).toInt()
                 val position = absoluteAdapterPosition - headersCount
                 val selectedInAdapter = this@ChipsPickerAdapter.isItemSelected(position)
-                //isSelected = selectedInAdapter
+                isSelected = selectedInAdapter
                 findViewById<TextView>(R.id.chip_text_view)?.apply {
-                    val color = if (isSelected) R.attr.colorOnPrimary else R.attr.colorPrimary
-                    setTextColor(color)
+                    val color = if (selectedInAdapter) R.attr.colorOnPrimary else R.attr.colorPrimary
+                    setTextColor(ResourceUtils.getColorByAttribute(context, color))
                     text = item.itemName
                 }
-                findViewById<AppCompatImageView>(R.id.chip_selected_indicator).apply {
-                    val color = if (isSelected) R.attr.colorOnPrimary else R.attr.colorPrimary
+                findViewById<AppCompatImageView>(R.id.chip_selected_indicator).apply icon@{
                     visibility = if (selectedInAdapter) View.VISIBLE else View.GONE
-                    setColorFilter(color)
+                    val color = if (selectedInAdapter) R.attr.colorOnPrimary else R.attr.colorPrimary
+                    if (!selectedInAdapter) return@icon
+                    setColorFilter(ResourceUtils.getColorByAttribute(context, color))
                     setImageDrawable(ResourceUtils.getDrawable(context, R.drawable.chip_selected_icon))
+                    (layoutParams as MarginLayoutParams).leftMargin = horPadding
                 }
                 setOnClickListener {
                     val pos = absoluteAdapterPosition - headersCount
