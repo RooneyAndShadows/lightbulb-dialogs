@@ -214,7 +214,7 @@ abstract class AdapterPickerDialog<ItemType : EasyAdapterDataModel> : BasePicker
         recyclerView?.apply {
             isVerticalScrollBarEnabled = true
             isScrollbarFadingEnabled = false
-            itemAnimator = null
+            if (!withItemAnimator()) itemAnimator = null
             layoutManager = LinearLayoutManager(context)
             addMotionEventListener(object : DialogRecyclerView.MotionEventListener {
                 override fun onMotionEvent(event: MotionEvent) {

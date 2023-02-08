@@ -4,17 +4,10 @@ import android.annotation.SuppressLint
 import android.content.res.Configuration
 import android.graphics.Rect
 import android.os.Bundle
-import android.view.LayoutInflater
-import android.view.View
-import android.view.ViewGroup
-import android.view.ViewGroup.MarginLayoutParams
-import android.view.Window
-import android.view.WindowManager
-import android.widget.EditText
+import android.view.*
 import android.widget.TextView
-import androidx.appcompat.widget.AppCompatEditText
 import androidx.appcompat.widget.LinearLayoutCompat
-import androidx.core.widget.doOnTextChanged
+import androidx.core.view.setPadding
 import com.github.rooneyandshadows.lightbulb.commons.utils.ResourceUtils
 import com.github.rooneyandshadows.lightbulb.dialogs.R
 import com.github.rooneyandshadows.lightbulb.dialogs.base.constraints.bottomsheet.BottomSheetDialogConstraints
@@ -37,6 +30,7 @@ class ChipsPickerDialog : AdapterPickerDialog<ChipModel>() {
     private var maxRows = DEFAULT_MAX_ROWS
     private var isFilterable = true
     private var allowAddNewOptions = true
+    private var filterHintText: String? = null
     private var filterView: ChipsFilterView? = null
     private var cachedRecyclerHeight = -1
     private val chipsAdapter: ChipsPickerAdapter
@@ -55,9 +49,15 @@ class ChipsPickerDialog : AdapterPickerDialog<ChipModel>() {
         private const val DEFAULT_MAX_ROWS = 4
         private const val LAST_VISIBLE_ITEM_KEY = "LAST_VISIBLE_ITEM_KEY"
         private const val MAX_ROWS_KEY = "MAX_ROWS_KEY"
+        private const val FILTER_HINT_TEXT = "FILTER_HINT_TEXT"
         fun newInstance(): ChipsPickerDialog {
             return ChipsPickerDialog()
         }
+    }
+
+    @Override
+    override fun withItemAnimator(): Boolean {
+        return true
     }
 
     @Override
@@ -65,6 +65,7 @@ class ChipsPickerDialog : AdapterPickerDialog<ChipModel>() {
         super.doOnSaveInstanceState(outState)
         outState.apply {
             putInt(MAX_ROWS_KEY, maxRows)
+            putString(FILTER_HINT_TEXT, filterHintText)
             val layoutManager = recyclerView?.layoutManager as FlexboxLayoutManager?
             if (layoutManager != null) putInt(LAST_VISIBLE_ITEM_KEY, layoutManager.findFirstVisibleItemPosition())
             else putInt(LAST_VISIBLE_ITEM_KEY, lastVisibleItemPosition)
@@ -76,6 +77,7 @@ class ChipsPickerDialog : AdapterPickerDialog<ChipModel>() {
         super.doOnRestoreInstanceState(savedState)
         savedState.apply {
             lastVisibleItemPosition = savedState.getInt(LAST_VISIBLE_ITEM_KEY)
+            filterHintText = getString(FILTER_HINT_TEXT)
             maxRows = getInt(MAX_ROWS_KEY)
         }
     }
@@ -91,6 +93,7 @@ class ChipsPickerDialog : AdapterPickerDialog<ChipModel>() {
             } else {
                 filterView = ChipsFilterView(context)
                 addView(filterView, 0)
+                filterHintText?.apply { filterView!!.setHintText(this) }
                 filterView!!.dialog = this@ChipsPickerDialog
                 filterView!!.allowAddition = allowAddNewOptions
             }
@@ -99,6 +102,7 @@ class ChipsPickerDialog : AdapterPickerDialog<ChipModel>() {
             val spacing = ResourceUtils.getDimenPxById(context, R.dimen.chips_picker_spacing_size)
             val decoration = FlexboxSpaceItemDecoration(spacing, this)
             addItemDecoration(decoration)
+            setPadding(ResourceUtils.getDimenPxById(context, R.dimen.spacing_size_medium))
             layoutParams.height = 1//Fixes rendering all possible labels (later will be resized)
             layoutManager = FlexboxLayoutManager(context, FlexDirection.ROW)
             clipToPadding = false
@@ -194,10 +198,9 @@ class ChipsPickerDialog : AdapterPickerDialog<ChipModel>() {
         }
         calculatedRows = min(calculatedRows, maxRows)
         val rowsHeight = (calculatedRows * (chipHeight + itemDecorationSpace))
-        val desiredHeight = rowsHeight + recyclerView.paddingBottom + recyclerView.paddingTop
+        val desiredHeight = rowsHeight + recyclerView.paddingBottom + recyclerView.paddingTop - itemDecorationSpace * 2
         val desiredWidth = min(getMaxWidth(), totalRequiredWidth)
         return Pair(desiredWidth, desiredHeight)
-
     }
 
     @Override
@@ -209,6 +212,11 @@ class ChipsPickerDialog : AdapterPickerDialog<ChipModel>() {
             .withMaxWidth(maxWidth)
             .withMaxHeight(min(getPercentOfWindowHeight(85), ResourceUtils.dpToPx(450)))
             .build()
+    }
+
+    fun setFilterHintText(filterHintText: String) {
+        this.filterHintText = filterHintText
+        filterView?.setHintText(filterHintText)
     }
 
     fun setFilterable(isFilterable: Boolean) {

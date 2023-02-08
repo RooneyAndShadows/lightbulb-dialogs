@@ -11,7 +11,7 @@
         android:layout_width="0dp"
         android:layout_height="wrap_content"
         android:background="@drawable/bg_chip_filter_input"
-        android:hint="asfasfasf"
+        android:hint="@string/dialog_chips_picker_filter_hint"
         android:paddingStart="@dimen/spacing_size_medium"
         android:paddingTop="@dimen/spacing_size_small"
         android:paddingEnd="@dimen/spacing_size_medium"

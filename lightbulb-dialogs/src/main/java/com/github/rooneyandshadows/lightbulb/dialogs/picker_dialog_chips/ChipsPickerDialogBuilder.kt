@@ -16,7 +16,8 @@ class ChipsPickerDialogBuilder @JvmOverloads constructor(
 ) : BaseDialogBuilder<ChipsPickerDialog>(lifecycleOwner, manager, dialogTag) {
     private var isFilterable: Boolean = true
     private var allowOptionAddition: Boolean = true
-    private var maxRows: Int = -1
+    private var maxRows: Int? = null
+    private var filterHintText: String? = null
     private var changedCallback: SelectionChangedListener<IntArray>? = null
     private var selection: IntArray? = null
 
@@ -32,7 +33,8 @@ class ChipsPickerDialogBuilder @JvmOverloads constructor(
         dialog.apply {
             setFilterable(isFilterable)
             setAllowNewOptionCreation(allowOptionAddition)
-            if (maxRows != -1) setMaxRows(maxRows)
+            maxRows?.apply { setMaxRows(this) }
+            filterHintText?.apply { setFilterHintText(this) }
             setSelection(selection)
         }
     }
@@ -110,6 +112,11 @@ class ChipsPickerDialogBuilder @JvmOverloads constructor(
 
     fun withAllowNewOptions(allowNewOptions: Boolean): ChipsPickerDialogBuilder {
         this.allowOptionAddition = allowNewOptions
+        return this
+    }
+
+    fun withFilterHintText(hintText: String): ChipsPickerDialogBuilder {
+        this.filterHintText = hintText
         return this
     }
 

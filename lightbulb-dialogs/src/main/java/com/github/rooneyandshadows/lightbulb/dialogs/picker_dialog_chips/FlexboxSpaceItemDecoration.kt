@@ -12,13 +12,13 @@ class FlexboxSpaceItemDecoration : RecyclerView.ItemDecoration {
     constructor(spacing: Int, recyclerView: RecyclerView) {
         verticalSpacing = spacing / 2
         horizontalSpacing = spacing / 2
-        recyclerView.setPadding(horizontalSpacing, spacing, horizontalSpacing, 0)
+        //recyclerView.setPadding(horizontalSpacing, spacing, horizontalSpacing, 0)
     }
 
     constructor(verticalSpacing: Int, horizontalSpacing: Int, recyclerView: RecyclerView) {
         this.verticalSpacing = verticalSpacing / 2
         this.horizontalSpacing = horizontalSpacing / 2
-        recyclerView.setPadding(this.verticalSpacing, verticalSpacing, this.verticalSpacing, 0)
+        //recyclerView.setPadding(this.verticalSpacing, verticalSpacing, this.verticalSpacing, 0)
     }
 
     @Override

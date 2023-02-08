@@ -29,6 +29,12 @@ class ChipsPickerAdapter : EasyRecyclerAdapter<ChipModel>(SELECT_MULTIPLE) {
     }
 
     init {
+        setHasStableIds(true)
+    }
+
+    @Override
+    override fun getItemId(position: Int): Long {
+        return getItem(position).hashCode().toLong()
     }
 
     @Override

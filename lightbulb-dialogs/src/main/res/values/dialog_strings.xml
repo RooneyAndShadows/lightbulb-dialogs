@@ -7,4 +7,5 @@
     <string name="dialog_month_picker_empty_text">---- / --</string>
     <string name="dialog_range_picker_from_text">FROM</string>
     <string name="dialog_range_picker_to_text">TO</string>
+    <string name="dialog_chips_picker_filter_hint">Type to filter</string>
 </resources>

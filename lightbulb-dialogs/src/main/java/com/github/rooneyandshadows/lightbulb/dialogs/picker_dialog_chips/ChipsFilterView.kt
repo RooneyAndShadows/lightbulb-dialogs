@@ -63,6 +63,10 @@ class ChipsFilterView @JvmOverloads constructor(
         setPadding(padding, 0, padding, 0)
     }
 
+    fun setHintText(hintText: String) {
+        filterInput?.hint = hintText
+    }
+
     private fun handleAddButtonVisibillity() {
         if (allowAddition) {
             val currentQuery = filterInput?.text
