@@ -14,6 +14,9 @@ class ChipsPickerDialogBuilder @JvmOverloads constructor(
     manager: FragmentManager,
     dialogTag: String,
 ) : BaseDialogBuilder<ChipsPickerDialog>(lifecycleOwner, manager, dialogTag) {
+    private var isFilterable: Boolean = true
+    private var allowOptionAddition: Boolean = true
+    private var maxRows: Int = -1
     private var changedCallback: SelectionChangedListener<IntArray>? = null
     private var selection: IntArray? = null
 
@@ -27,6 +30,9 @@ class ChipsPickerDialogBuilder @JvmOverloads constructor(
     @Override
     override fun setupRetainableSettings(dialog: ChipsPickerDialog) {
         dialog.apply {
+            setFilterable(isFilterable)
+            setAllowNewOptionCreation(allowOptionAddition)
+            if (maxRows != -1) setMaxRows(maxRows)
             setSelection(selection)
         }
     }
@@ -100,6 +106,21 @@ class ChipsPickerDialogBuilder @JvmOverloads constructor(
     @Override
     override fun withDialogListeners(listeners: DialogListeners): ChipsPickerDialogBuilder {
         return super.withDialogListeners(listeners) as ChipsPickerDialogBuilder
+    }
+
+    fun withAllowNewOptions(allowNewOptions: Boolean): ChipsPickerDialogBuilder {
+        this.allowOptionAddition = allowNewOptions
+        return this
+    }
+
+    fun withFilterable(filterable: Boolean): ChipsPickerDialogBuilder {
+        this.isFilterable = filterable
+        return this
+    }
+
+    fun withMaxRows(maxRows: Int): ChipsPickerDialogBuilder {
+        this.maxRows = maxRows
+        return this
     }
 
     fun withSelectionCallback(listener: SelectionChangedListener<IntArray>): ChipsPickerDialogBuilder {

@@ -24,9 +24,10 @@ import com.github.rooneyandshadows.lightbulb.recycleradapters.abstraction.EasyRe
 import java.util.*
 import java.util.function.Predicate
 
+
 @Suppress("unused", "UNCHECKED_CAST")
 class ChipsPickerAdapter : EasyRecyclerAdapter<ChipModel>(SELECT_MULTIPLE), Filterable {
-    private var filteredItems: MutableList<ChipModel> = mutableListOf()
+    private var allItems: MutableList<ChipModel> = mutableListOf()
 
     companion object {
         private const val FILTERED_ITEMS_KEY = "FILTERED_ITEMS_KEY"
@@ -36,7 +37,7 @@ class ChipsPickerAdapter : EasyRecyclerAdapter<ChipModel>(SELECT_MULTIPLE), Filt
     override fun onSaveInstanceState(outState: Bundle): Bundle {
         val state: Bundle = super.onSaveInstanceState(outState)
         outState.apply {
-            BundleUtils.putParcelableArrayList(FILTERED_ITEMS_KEY, this, filteredItems as ArrayList<ChipModel>)
+            BundleUtils.putParcelableArrayList(FILTERED_ITEMS_KEY, this, allItems as ArrayList<ChipModel>)
         }
         return state
     }
@@ -45,7 +46,7 @@ class ChipsPickerAdapter : EasyRecyclerAdapter<ChipModel>(SELECT_MULTIPLE), Filt
     override fun onRestoreInstanceState(savedState: Bundle) {
         savedState.apply {
             BundleUtils.apply {
-                filteredItems = getParcelableArrayList(
+                allItems = getParcelableArrayList(
                     FILTERED_ITEMS_KEY,
                     savedState,
                     ChipModel::class.java
@@ -66,28 +67,31 @@ class ChipsPickerAdapter : EasyRecyclerAdapter<ChipModel>(SELECT_MULTIPLE), Filt
 
     @Override
     override fun onBindViewHolder(holder: RecyclerView.ViewHolder, position: Int) {
-        val item = filteredItems[position]
         val vHolder: ChipVH = holder as ChipsPickerAdapter.ChipVH
-        vHolder.setItem(item)
+        vHolder.setItem()
     }
 
     @Override
     override fun getItemCount(): Int {
-        return filteredItems.size
+        return allItems.size
     }
 
     @Override
     override fun setCollection(collection: List<ChipModel>) {
-        filteredItems = ArrayList(collection)
+        allItems = ArrayList(collection)
         super.setCollection(collection)
     }
 
     @Override
     override fun addItem(item: ChipModel) {
         if (hasItemWithName(item.itemName)) return
-        filteredItems.add(item)
+        allItems.add(item)
         super.addItem(item)
         selectItem(item, true)
+    }
+
+    fun getAllItems():List<ChipModel>{
+        return allItems.toList()
     }
 
     fun hasItemWithName(name: String): Boolean {
@@ -124,22 +128,26 @@ class ChipsPickerAdapter : EasyRecyclerAdapter<ChipModel>(SELECT_MULTIPLE), Filt
 
             @SuppressLint("NotifyDataSetChanged")
             override fun publishResults(charSequence: CharSequence, filterResults: FilterResults) {
-                filteredItems = filterResults.values as MutableList<ChipModel>
+                allItems = filterResults.values as MutableList<ChipModel>
                 notifyDataSetChanged()
             }
         }
     }
 
     inner class ChipVH internal constructor(private val chipView: LinearLayoutCompat) : RecyclerView.ViewHolder(chipView) {
-        fun setItem(item: ChipModel) {
+        private var initialized: Boolean = false
+        fun setItem() {
             chipView.apply {
                 val horPadding = ResourceUtils.getDimenById(context, R.dimen.spacing_size_small).toInt()
                 val position = absoluteAdapterPosition - headersCount
+                val item = getItem(position)!!
                 val selectedInAdapter = this@ChipsPickerAdapter.isItemSelected(position)
                 isSelected = selectedInAdapter
                 findViewById<TextView>(R.id.chip_text_view)?.apply {
                     val color = if (selectedInAdapter) R.attr.colorOnPrimary else R.attr.colorPrimary
                     setTextColor(ResourceUtils.getColorByAttribute(context, color))
+                    if (selectedInAdapter) setPadding(horPadding / 2, paddingTop, paddingRight, paddingBottom)
+                    else setPadding(horPadding, paddingTop, paddingRight, paddingBottom)
                     text = item.itemName
                 }
                 findViewById<AppCompatImageView>(R.id.chip_selected_indicator).apply icon@{
@@ -158,6 +166,20 @@ class ChipsPickerAdapter : EasyRecyclerAdapter<ChipModel>(SELECT_MULTIPLE), Filt
             }
         }
     }
+
+    /*private fun animateToWidth(view: View,show:Boolean) {
+        val from = if(show)0
+
+        val anim = ValueAnimator.ofInt(view.measuredHeight, -100)
+        anim.addUpdateListener { valueAnimator ->
+            val `val` = valueAnimator.animatedValue as Int
+            val layoutParams: ViewGroup.LayoutParams = view.layoutParams
+            layoutParams.height = `val`
+            view.layoutParams = layoutParams
+        }
+        anim.duration = 1000
+        anim.start()
+    }*/
 
     class ChipModel : EasyAdapterDataModel {
         val chipTitle: String

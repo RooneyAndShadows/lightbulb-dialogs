@@ -47,6 +47,10 @@ abstract class AdapterPickerDialog<ItemType : EasyAdapterDataModel> : BasePicker
         }
     }
 
+    protected open fun withItemAnimator(): Boolean {
+        return false
+    }
+
     @Override
     override fun getDialogLayout(layoutInflater: LayoutInflater): View {
         return View.inflate(context, R.layout.dialog_picker_normal, null)

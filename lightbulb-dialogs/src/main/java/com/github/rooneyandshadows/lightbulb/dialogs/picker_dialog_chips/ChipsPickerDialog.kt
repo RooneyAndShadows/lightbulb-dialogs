@@ -6,10 +6,14 @@ import android.graphics.Rect
 import android.os.Bundle
 import android.view.LayoutInflater
 import android.view.View
+import android.view.ViewGroup
 import android.view.Window
 import android.view.WindowManager
+import android.widget.EditText
 import android.widget.TextView
-import androidx.recyclerview.widget.GridLayoutManager
+import androidx.appcompat.widget.AppCompatEditText
+import androidx.appcompat.widget.LinearLayoutCompat
+import androidx.core.widget.doOnTextChanged
 import com.github.rooneyandshadows.lightbulb.commons.utils.ResourceUtils
 import com.github.rooneyandshadows.lightbulb.dialogs.R
 import com.github.rooneyandshadows.lightbulb.dialogs.base.constraints.bottomsheet.BottomSheetDialogConstraints
@@ -27,8 +31,13 @@ import kotlin.math.min
 
 @Suppress("unused", "UNUSED_PARAMETER")
 class ChipsPickerDialog : AdapterPickerDialog<ChipModel>() {
-    private var maxRows: Int = 4
     private var lastVisibleItemPosition = -1
+    private var maxRows = DEFAULT_MAX_ROWS
+    private var isFilterable = true
+    private var allowAddNewOptions = true
+    private var filterView: ChipsFilterView? = null
+    private val chipsAdapter: ChipsPickerAdapter
+        get() = adapter as ChipsPickerAdapter
     override var dialogType: DialogTypes
         get() = DialogTypes.BOTTOM_SHEET
         set(value) {}
@@ -40,8 +49,9 @@ class ChipsPickerDialog : AdapterPickerDialog<ChipModel>() {
         }
 
     companion object {
+        private const val DEFAULT_MAX_ROWS = 4
         private const val LAST_VISIBLE_ITEM_KEY = "LAST_VISIBLE_ITEM_KEY"
-
+        private const val MAX_ROWS_KEY = "MAX_ROWS_KEY"
         fun newInstance(): ChipsPickerDialog {
             return ChipsPickerDialog()
         }
@@ -50,21 +60,38 @@ class ChipsPickerDialog : AdapterPickerDialog<ChipModel>() {
     @Override
     override fun doOnSaveInstanceState(outState: Bundle) {
         super.doOnSaveInstanceState(outState)
-        val gridLayoutManager = recyclerView?.layoutManager as GridLayoutManager?
-        if (gridLayoutManager != null)
-            outState.putInt(LAST_VISIBLE_ITEM_KEY, gridLayoutManager.findFirstVisibleItemPosition())
-        else outState.putInt(LAST_VISIBLE_ITEM_KEY, lastVisibleItemPosition)
+        outState.apply {
+            putInt(MAX_ROWS_KEY, maxRows)
+            val layoutManager = recyclerView?.layoutManager as FlexboxLayoutManager?
+            if (layoutManager != null) putInt(LAST_VISIBLE_ITEM_KEY, layoutManager.findFirstVisibleItemPosition())
+            else putInt(LAST_VISIBLE_ITEM_KEY, lastVisibleItemPosition)
+        }
     }
 
     @Override
     override fun doOnRestoreInstanceState(savedState: Bundle) {
         super.doOnRestoreInstanceState(savedState)
-        lastVisibleItemPosition = savedState.getInt(LAST_VISIBLE_ITEM_KEY)
+        savedState.apply {
+            lastVisibleItemPosition = savedState.getInt(LAST_VISIBLE_ITEM_KEY)
+            maxRows = getInt(MAX_ROWS_KEY)
+        }
     }
 
     @Override
     override fun setupDialogContent(view: View, savedInstanceState: Bundle?) {
         super.setupDialogContent(view, savedInstanceState)
+        view.findViewById<LinearLayoutCompat>(R.id.dialogContent).apply {
+            if ((!allowAddNewOptions && !isFilterable)) return@apply
+            if (filterView != null) {
+                (filterView!!.parent as ViewGroup).removeView(filterView)
+                addView(filterView, 0)
+            } else {
+                filterView = ChipsFilterView(context)
+                addView(filterView, 0)
+                filterView!!.dialog = this@ChipsPickerDialog
+                filterView!!.allowAddition = allowAddNewOptions
+            }
+        }
         this.recyclerView?.apply {
             val spacing = ResourceUtils.getDimenPxById(context, R.dimen.spacing_size_small)
             val decoration = FlexboxSpaceItemDecoration(spacing, this)
@@ -86,6 +113,7 @@ class ChipsPickerDialog : AdapterPickerDialog<ChipModel>() {
         });*/
     }
 
+    @Override
     override fun setupBottomSheetDialog(
         constraints: BottomSheetDialogConstraints,
         dialogWindow: Window,
@@ -97,8 +125,6 @@ class ChipsPickerDialog : AdapterPickerDialog<ChipModel>() {
         dialogLayout.measure(widthMeasureSpec, heightMeasureSpec)
         val recyclerView = this.recyclerView!!
         val dialogHeightWithoutRecycler = dialogLayout.measuredHeight - recyclerView.measuredHeight
-        val dialogWidthWithoutRecycler = dialogLayout.measuredWidth
-        val desiredRecyclerWidth = recyclerDimens.first
         val desiredRecyclerHeight = recyclerDimens.second
         val maxRecyclerHeight = getMaxHeight() - dialogHeightWithoutRecycler
         val newRecyclerHeight = min(maxRecyclerHeight, desiredRecyclerHeight)
@@ -153,7 +179,7 @@ class ChipsPickerDialog : AdapterPickerDialog<ChipModel>() {
         val heightMeasureSpec = View.MeasureSpec.makeMeasureSpec(0, View.MeasureSpec.UNSPECIFIED)
         var totalRequiredWidth = 0
         var calculatedRows = 0
-        for (item in adapter.getItems()) {
+        for (item in chipsAdapter.getItems()) {
             textView.text = item.chipTitle
             chipView.measure(widthMeasureSpec, heightMeasureSpec)
             val widthToAdd = chipView.measuredWidth + itemDecorationSpace
@@ -180,12 +206,25 @@ class ChipsPickerDialog : AdapterPickerDialog<ChipModel>() {
             .build()
     }
 
+    fun setFilterable(isFilterable: Boolean) {
+        this.isFilterable = isFilterable
+    }
+
+    fun setAllowNewOptionCreation(allowCreation: Boolean) {
+        this.allowAddNewOptions = allowCreation
+    }
+
+    fun setMaxRows(maxRows: Int) {
+        if (maxRows <= 0) this.maxRows = DEFAULT_MAX_ROWS
+        else this.maxRows = maxRows
+    }
+
     fun getChips(predicate: Predicate<ChipModel>): List<ChipModel> {
-        return adapter.getItems(predicate)
+        return chipsAdapter.getItems(predicate)
     }
 
     private fun getChipsByNames(names: List<String>): List<ChipModel> {
-        return adapter.getItems(Predicate { chipModel ->
+        return chipsAdapter.getItems(Predicate { chipModel ->
             return@Predicate names.contains(chipModel.chipTitle)
         })
     }
