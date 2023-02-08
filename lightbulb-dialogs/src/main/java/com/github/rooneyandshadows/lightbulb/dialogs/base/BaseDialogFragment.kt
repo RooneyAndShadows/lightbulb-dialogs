@@ -709,7 +709,11 @@ abstract class BaseDialogFragment : DialogFragment(), DefaultLifecycleObserver {
             })
             parent.addView(child)
             parent.setOnTouchListener { _: View?, event: MotionEvent? ->
-                gesture.onTouchEvent(event!!)
+                try {
+                    gesture.onTouchEvent(event!!)
+                } catch (e: Exception) {
+                    return@setOnTouchListener true
+                }
             }
         }
         params.behavior = bottomSheetBehavior

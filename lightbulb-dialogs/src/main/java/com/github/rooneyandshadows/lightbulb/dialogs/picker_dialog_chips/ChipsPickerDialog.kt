@@ -28,6 +28,7 @@ import com.google.android.flexbox.FlexboxLayoutManager
 import java.util.function.Predicate
 import kotlin.math.max
 import kotlin.math.min
+import kotlin.streams.toList
 
 @Suppress("unused", "UNUSED_PARAMETER")
 class ChipsPickerDialog : AdapterPickerDialog<ChipModel>() {
@@ -36,6 +37,7 @@ class ChipsPickerDialog : AdapterPickerDialog<ChipModel>() {
     private var isFilterable = true
     private var allowAddNewOptions = true
     private var filterView: ChipsFilterView? = null
+    private var cachedRecyclerHeight = -1
     private val chipsAdapter: ChipsPickerAdapter
         get() = adapter as ChipsPickerAdapter
     override var dialogType: DialogTypes
@@ -124,10 +126,12 @@ class ChipsPickerDialog : AdapterPickerDialog<ChipModel>() {
         val heightMeasureSpec = View.MeasureSpec.makeMeasureSpec(0, View.MeasureSpec.UNSPECIFIED)
         dialogLayout.measure(widthMeasureSpec, heightMeasureSpec)
         val recyclerView = this.recyclerView!!
-        val dialogHeightWithoutRecycler = dialogLayout.measuredHeight - recyclerView.measuredHeight
+        val recyclerHeight = if (cachedRecyclerHeight == -1) recyclerView.measuredHeight else cachedRecyclerHeight
+        val dialogHeightWithoutRecycler = dialogLayout.measuredHeight - recyclerHeight
         val desiredRecyclerHeight = recyclerDimens.second
         val maxRecyclerHeight = getMaxHeight() - dialogHeightWithoutRecycler
         val newRecyclerHeight = min(maxRecyclerHeight, desiredRecyclerHeight)
+        cachedRecyclerHeight = newRecyclerHeight
         val desiredHeight = dialogHeightWithoutRecycler + newRecyclerHeight
         val newHeight = constraints.resolveHeight(desiredHeight)
         recyclerView.layoutParams.height = newRecyclerHeight
@@ -179,7 +183,7 @@ class ChipsPickerDialog : AdapterPickerDialog<ChipModel>() {
         val heightMeasureSpec = View.MeasureSpec.makeMeasureSpec(0, View.MeasureSpec.UNSPECIFIED)
         var totalRequiredWidth = 0
         var calculatedRows = 0
-        for (item in chipsAdapter.getItems()) {
+        for (item in chipsAdapter.getAllItems()) {
             textView.text = item.chipTitle
             chipView.measure(widthMeasureSpec, heightMeasureSpec)
             val widthToAdd = chipView.measuredWidth + itemDecorationSpace
@@ -220,13 +224,13 @@ class ChipsPickerDialog : AdapterPickerDialog<ChipModel>() {
     }
 
     fun getChips(predicate: Predicate<ChipModel>): List<ChipModel> {
-        return chipsAdapter.getItems(predicate)
+        return chipsAdapter.getAllItems().stream().filter(predicate).toList()
     }
 
     private fun getChipsByNames(names: List<String>): List<ChipModel> {
-        return chipsAdapter.getItems(Predicate { chipModel ->
+        return chipsAdapter.getAllItems().stream().filter(Predicate { chipModel ->
             return@Predicate names.contains(chipModel.chipTitle)
-        })
+        }).toList()
     }
 
     /*private class IconLayoutManager extends GridLayoutManager {

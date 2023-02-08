@@ -23,6 +23,7 @@ import com.github.rooneyandshadows.lightbulb.recycleradapters.abstraction.EasyAd
 import com.github.rooneyandshadows.lightbulb.recycleradapters.abstraction.EasyRecyclerAdapter
 import java.util.*
 import java.util.function.Predicate
+import kotlin.streams.toList
 
 
 @Suppress("unused", "UNCHECKED_CAST")
@@ -31,6 +32,10 @@ class ChipsPickerAdapter : EasyRecyclerAdapter<ChipModel>(SELECT_MULTIPLE), Filt
 
     companion object {
         private const val FILTERED_ITEMS_KEY = "FILTERED_ITEMS_KEY"
+    }
+
+    init {
+        setHasStableIds(true)
     }
 
     @Override
@@ -44,6 +49,7 @@ class ChipsPickerAdapter : EasyRecyclerAdapter<ChipModel>(SELECT_MULTIPLE), Filt
 
     @Override
     override fun onRestoreInstanceState(savedState: Bundle) {
+        super.onRestoreInstanceState(savedState)
         savedState.apply {
             BundleUtils.apply {
                 allItems = getParcelableArrayList(
@@ -53,7 +59,6 @@ class ChipsPickerAdapter : EasyRecyclerAdapter<ChipModel>(SELECT_MULTIPLE), Filt
                 ) as MutableList<ChipModel>
             }
         }
-        super.onRestoreInstanceState(savedState)
     }
 
     @Override
@@ -72,11 +77,6 @@ class ChipsPickerAdapter : EasyRecyclerAdapter<ChipModel>(SELECT_MULTIPLE), Filt
     }
 
     @Override
-    override fun getItemCount(): Int {
-        return allItems.size
-    }
-
-    @Override
     override fun setCollection(collection: List<ChipModel>) {
         allItems = ArrayList(collection)
         super.setCollection(collection)
@@ -90,13 +90,14 @@ class ChipsPickerAdapter : EasyRecyclerAdapter<ChipModel>(SELECT_MULTIPLE), Filt
         selectItem(item, true)
     }
 
-    fun getAllItems():List<ChipModel>{
+    fun getAllItems(): List<ChipModel> {
         return allItems.toList()
     }
 
     fun hasItemWithName(name: String): Boolean {
         if (name.isBlank()) return false
-        return getItems(Predicate { item -> return@Predicate item.itemName == name })
+        return allItems.stream().filter(Predicate { item -> return@Predicate item.itemName == name })
+            .toList()
             .isNotEmpty()
     }
 
@@ -112,7 +113,7 @@ class ChipsPickerAdapter : EasyRecyclerAdapter<ChipModel>(SELECT_MULTIPLE), Filt
             override fun performFiltering(charSequence: CharSequence): FilterResults {
                 val locale = Locale.getDefault()
                 val filterString = charSequence.toString().lowercase(locale)
-                val itemsInAdapter = getItems()
+                val itemsInAdapter = allItems
                 val result: MutableList<ChipModel> = mutableListOf()
                 if (filterString.isBlank()) result.addAll(itemsInAdapter)
                 else {
@@ -128,10 +129,14 @@ class ChipsPickerAdapter : EasyRecyclerAdapter<ChipModel>(SELECT_MULTIPLE), Filt
 
             @SuppressLint("NotifyDataSetChanged")
             override fun publishResults(charSequence: CharSequence, filterResults: FilterResults) {
-                allItems = filterResults.values as MutableList<ChipModel>
+                setFilteredValues(filterResults.values as MutableList<ChipModel>)
                 notifyDataSetChanged()
             }
         }
+    }
+
+    private fun setFilteredValues(collection: List<ChipModel>) {
+        super.setCollection(collection)
     }
 
     inner class ChipVH internal constructor(private val chipView: LinearLayoutCompat) : RecyclerView.ViewHolder(chipView) {
