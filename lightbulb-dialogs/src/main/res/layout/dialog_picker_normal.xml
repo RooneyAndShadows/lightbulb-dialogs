@@ -23,7 +23,7 @@
             tools:text="Message" />
     </androidx.appcompat.widget.LinearLayoutCompat>
 
-    <androidx.recyclerview.widget.RecyclerView
+    <com.github.rooneyandshadows.lightbulb.dialogs.base.DialogRecyclerView
         android:id="@+id/dialogRecycler"
         android:layout_width="match_parent"
         android:layout_height="match_parent"

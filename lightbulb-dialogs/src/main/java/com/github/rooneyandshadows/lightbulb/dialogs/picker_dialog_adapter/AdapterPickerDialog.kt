@@ -1,12 +1,11 @@
 package com.github.rooneyandshadows.lightbulb.dialogs.picker_dialog_adapter
 
+import android.annotation.SuppressLint
 import android.content.res.Configuration
 import android.graphics.Rect
 import android.os.Bundle
-import android.view.LayoutInflater
-import android.view.View
-import android.view.Window
-import android.view.WindowManager
+import android.view.*
+import android.view.MotionEvent.*
 import androidx.appcompat.widget.LinearLayoutCompat
 import androidx.recyclerview.widget.LinearLayoutManager
 import androidx.recyclerview.widget.RecyclerView
@@ -14,20 +13,22 @@ import androidx.recyclerview.widget.RecyclerView.ItemDecoration
 import com.github.rooneyandshadows.lightbulb.commons.utils.BundleUtils
 import com.github.rooneyandshadows.lightbulb.dialogs.R
 import com.github.rooneyandshadows.lightbulb.dialogs.base.BasePickerDialogFragment
+import com.github.rooneyandshadows.lightbulb.dialogs.base.DialogRecyclerView
 import com.github.rooneyandshadows.lightbulb.dialogs.base.constraints.bottomsheet.BottomSheetDialogConstraints
 import com.github.rooneyandshadows.lightbulb.dialogs.base.constraints.regular.RegularDialogConstraints
 import com.github.rooneyandshadows.lightbulb.dialogs.base.constraints.regular.RegularDialogConstraintsBuilder
 import com.github.rooneyandshadows.lightbulb.recycleradapters.abstraction.EasyAdapterDataModel
 import com.github.rooneyandshadows.lightbulb.recycleradapters.abstraction.EasyRecyclerAdapter
 import com.github.rooneyandshadows.lightbulb.recycleradapters.abstraction.callbacks.EasyAdapterSelectionChangedListener
-import java.util.Arrays
+import java.util.*
+
 
 @Suppress("unused")
 @JvmSuppressWildcards
 abstract class AdapterPickerDialog<ItemType : EasyAdapterDataModel> : BasePickerDialogFragment<IntArray>(
     AdapterPickerDialogSelection(null, null)
 ) {
-    protected var recyclerView: RecyclerView? = null
+    protected var recyclerView: DialogRecyclerView? = null
         private set
     var itemDecoration: ItemDecoration? = null
         private set
@@ -54,7 +55,7 @@ abstract class AdapterPickerDialog<ItemType : EasyAdapterDataModel> : BasePicker
     @Override
     override fun setupDialogContent(view: View, savedInstanceState: Bundle?) {
         recyclerView = view.findViewById(R.id.dialogRecycler)
-        configureRecyclerView(adapter)
+        configureRecyclerView()
     }
 
     @Override
@@ -204,15 +205,25 @@ abstract class AdapterPickerDialog<ItemType : EasyAdapterDataModel> : BasePicker
         }
     }
 
-    private fun configureRecyclerView(adapter: EasyRecyclerAdapter<ItemType>) {
-        val recyclerView = this.recyclerView!!
-        recyclerView.isVerticalScrollBarEnabled = true
-        recyclerView.isScrollbarFadingEnabled = false
-        recyclerView.itemAnimator = null
-        recyclerView.layoutManager = LinearLayoutManager(context)
-        if (recyclerView.itemDecorationCount > 0) recyclerView.removeItemDecorationAt(0)
-        if (itemDecoration != null) recyclerView.addItemDecoration(itemDecoration!!, 0)
-        recyclerView.adapter = adapter
+    @SuppressLint("ClickableViewAccessibility")
+    private fun configureRecyclerView() {
+        recyclerView?.apply {
+            isVerticalScrollBarEnabled = true
+            isScrollbarFadingEnabled = false
+            itemAnimator = null
+            layoutManager = LinearLayoutManager(context)
+            addMotionEventListener(object : DialogRecyclerView.MotionEventListener {
+                override fun onMotionEvent(event: MotionEvent) {
+                    when (event.action) {
+                        ACTION_DOWN, ACTION_MOVE -> enableBottomSheetDrag(false)
+                        ACTION_UP -> enableBottomSheetDrag(true)
+                    }
+                }
+            })
+            if (itemDecorationCount > 0) removeItemDecorationAt(0)
+            if (itemDecoration != null) addItemDecoration(itemDecoration!!, 0)
+            adapter = this@AdapterPickerDialog.adapter
+        }
     }
 
     interface AdapterCreator<ItemType : EasyAdapterDataModel> {

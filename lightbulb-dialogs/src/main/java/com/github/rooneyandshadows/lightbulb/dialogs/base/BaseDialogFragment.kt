@@ -30,6 +30,7 @@ import com.github.rooneyandshadows.lightbulb.dialogs.base.internal.*
 import com.github.rooneyandshadows.lightbulb.dialogs.base.internal.DialogAnimationTypes.*
 import com.github.rooneyandshadows.lightbulb.dialogs.base.internal.DialogTypes.*
 import com.github.rooneyandshadows.lightbulb.dialogs.base.internal.callbacks.*
+import com.github.rooneyandshadows.lightbulb.dialogs.picker_dialog_adapter.AdapterPickerDialog
 import com.google.android.material.bottomsheet.BottomSheetBehavior
 
 @Suppress("MemberVisibilityCanBePrivate")
@@ -47,6 +48,7 @@ abstract class BaseDialogFragment : DialogFragment(), DefaultLifecycleObserver {
     private val onCancelListeners: MutableList<DialogCancelListener> = mutableListOf()
     private var dialogCallbacks: DialogListeners? = null
     private var dialogLifecycleOwner: LifecycleOwner? = null
+    private var bottomSheetBehavior: LockableBottomSheetBehavior<View>? = null
     protected lateinit var headerViewHierarchy: DialogLayoutHierarchyHeading
         private set
     protected lateinit var footerViewHierarchy: DialogLayoutHierarchyFooter
@@ -371,6 +373,10 @@ abstract class BaseDialogFragment : DialogFragment(), DefaultLifecycleObserver {
             super.show(manager, tag)
     }
 
+    protected fun enableBottomSheetDrag(newState: Boolean) {
+        bottomSheetBehavior?.swipeEnabled = newState
+    }
+
     fun setDialogTitle(title: String?) {
         dialogTitle = title
         configureHeading()
@@ -666,47 +672,48 @@ abstract class BaseDialogFragment : DialogFragment(), DefaultLifecycleObserver {
             ViewGroup.LayoutParams.MATCH_PARENT,
             ViewGroup.LayoutParams.WRAP_CONTENT
         )
-        val behavior: BottomSheetBehavior<View> = BottomSheetBehavior<View>()
-        behavior.state = BottomSheetBehavior.STATE_EXPANDED
-        behavior.isFitToContents = true
-        val handlingFling = booleanArrayOf(false)
-        behavior.addBottomSheetCallback(object : BottomSheetBehavior.BottomSheetCallback() {
-            @Override
-            override fun onStateChanged(bottomSheet: View, newState: Int) {
-                if (handlingFling[0]) {
-                    handlingFling[0] = false
-                    return
-                }
-                if (newState == BottomSheetBehavior.STATE_COLLAPSED) {
-                    dismiss()
-                    return
-                }
-                if (newState == BottomSheetBehavior.STATE_DRAGGING) return
-                val threshold = (bottomSheet.height * 0.45).toFloat()
-                behavior.state =
-                    if (bottomSheet.top > threshold) BottomSheetBehavior.STATE_COLLAPSED else BottomSheetBehavior.STATE_EXPANDED
-            }
-
-            @Override
-            override fun onSlide(bottomSheet: View, slideOffset: Float) {
-            }
-        })
-        params.behavior = behavior
         val child = getDialogLayout(LayoutInflater.from(context))
-        child.layoutParams = params
-        parent.addView(child)
-        val gesture = GestureDetector(activity, object : GestureDetector.SimpleOnGestureListener() {
-            override fun onFling(e1: MotionEvent, e2: MotionEvent, velocityX: Float, velocityY: Float): Boolean {
-                if (velocityY > 2000) {
-                    handlingFling[0] = true
-                    behavior.setState(BottomSheetBehavior.STATE_COLLAPSED)
-                } else behavior.setState(BottomSheetBehavior.STATE_EXPANDED)
-                return super.onFling(e1, e2, velocityX, velocityY)
+        bottomSheetBehavior = LockableBottomSheetBehavior<View>().apply {
+            state = BottomSheetBehavior.STATE_EXPANDED
+            isFitToContents = true
+            val handlingFling = booleanArrayOf(false)
+            addBottomSheetCallback(object : BottomSheetBehavior.BottomSheetCallback() {
+                @Override
+                override fun onStateChanged(bottomSheet: View, newState: Int) {
+                    if (handlingFling[0]) {
+                        handlingFling[0] = false
+                        return
+                    }
+                    if (newState == BottomSheetBehavior.STATE_COLLAPSED) {
+                        dismiss()
+                        return
+                    }
+                    if (newState == BottomSheetBehavior.STATE_DRAGGING) return
+                    val threshold = (bottomSheet.height * 0.45).toFloat()
+                    state = if (bottomSheet.top > threshold) BottomSheetBehavior.STATE_COLLAPSED
+                    else BottomSheetBehavior.STATE_EXPANDED
+                }
+
+                @Override
+                override fun onSlide(bottomSheet: View, slideOffset: Float) {
+                }
+            })
+            val gesture = GestureDetector(activity, object : GestureDetector.SimpleOnGestureListener() {
+                override fun onFling(e1: MotionEvent, e2: MotionEvent, velocityX: Float, velocityY: Float): Boolean {
+                    if (velocityY > 2000) {
+                        handlingFling[0] = true
+                        setState(BottomSheetBehavior.STATE_COLLAPSED)
+                    } else setState(BottomSheetBehavior.STATE_EXPANDED)
+                    return super.onFling(e1, e2, velocityX, velocityY)
+                }
+            })
+            parent.addView(child)
+            parent.setOnTouchListener { _: View?, event: MotionEvent? ->
+                gesture.onTouchEvent(event!!)
             }
-        })
-        parent.setOnTouchListener { _: View?, event: MotionEvent? ->
-            gesture.onTouchEvent(event!!)
         }
+        params.behavior = bottomSheetBehavior
+        child.layoutParams = params
         return parent
     }
 

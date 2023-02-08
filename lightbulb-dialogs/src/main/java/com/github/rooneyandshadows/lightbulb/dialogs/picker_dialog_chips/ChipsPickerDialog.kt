@@ -5,12 +5,16 @@ import android.content.res.Configuration
 import android.graphics.Rect
 import android.os.Bundle
 import android.view.LayoutInflater
+import android.view.MotionEvent.ACTION_DOWN
+import android.view.MotionEvent.ACTION_UP
 import android.view.View
 import android.view.Window
+import android.view.WindowManager
 import android.widget.TextView
 import androidx.recyclerview.widget.GridLayoutManager
 import com.github.rooneyandshadows.lightbulb.commons.utils.ResourceUtils
 import com.github.rooneyandshadows.lightbulb.dialogs.R
+import com.github.rooneyandshadows.lightbulb.dialogs.base.constraints.bottomsheet.BottomSheetDialogConstraints
 import com.github.rooneyandshadows.lightbulb.dialogs.base.constraints.regular.RegularDialogConstraints
 import com.github.rooneyandshadows.lightbulb.dialogs.base.constraints.regular.RegularDialogConstraintsBuilder
 import com.github.rooneyandshadows.lightbulb.dialogs.base.internal.DialogTypes
@@ -22,14 +26,13 @@ import com.google.android.flexbox.FlexboxLayoutManager
 import java.util.function.Predicate
 import kotlin.math.max
 import kotlin.math.min
-import kotlin.system.measureTimeMillis
 
 @Suppress("unused", "UNUSED_PARAMETER")
 class ChipsPickerDialog : AdapterPickerDialog<ChipModel>() {
     private var rows: Int = 8
     private var lastVisibleItemPosition = -1
     override var dialogType: DialogTypes
-        get() = DialogTypes.NORMAL
+        get() = DialogTypes.BOTTOM_SHEET
         set(value) {}
     override val adapterCreator: AdapterCreator<ChipModel>
         get() = object : AdapterCreator<ChipModel> {
@@ -65,10 +68,10 @@ class ChipsPickerDialog : AdapterPickerDialog<ChipModel>() {
     override fun setupDialogContent(view: View, savedInstanceState: Bundle?) {
         super.setupDialogContent(view, savedInstanceState)
         this.recyclerView?.apply {
-            val itemDecoration =
-                FlexboxSpaceItemDecoration(ResourceUtils.getDimenPxById(context, R.dimen.spacing_size_small), this)
-            addItemDecoration(itemDecoration)
-            layoutParams.height = 1////Fixes rendering all possible labels (later will be resized)
+            val spacing = ResourceUtils.getDimenPxById(context, R.dimen.spacing_size_small)
+            val decoration = FlexboxSpaceItemDecoration(spacing, this)
+            addItemDecoration(decoration)
+            layoutParams.height = 1//Fixes rendering all possible labels (later will be resized)
             layoutManager = FlexboxLayoutManager(context, FlexDirection.ROW)
             clipToPadding = false
         }
@@ -83,6 +86,29 @@ class ChipsPickerDialog : AdapterPickerDialog<ChipModel>() {
                 }
             }
         });*/
+    }
+
+    override fun setupBottomSheetDialog(
+        constraints: BottomSheetDialogConstraints,
+        dialogWindow: Window,
+        dialogLayout: View,
+    ) {
+        val recyclerDimens = calculateRecyclerWidthAndHeight()
+        val widthMeasureSpec = View.MeasureSpec.makeMeasureSpec(0, View.MeasureSpec.UNSPECIFIED)
+        val heightMeasureSpec = View.MeasureSpec.makeMeasureSpec(0, View.MeasureSpec.UNSPECIFIED)
+        dialogLayout.measure(widthMeasureSpec, heightMeasureSpec)
+        val recyclerView = this.recyclerView!!
+        val dialogHeightWithoutRecycler = dialogLayout.measuredHeight - recyclerView.measuredHeight
+        val dialogWidthWithoutRecycler = dialogLayout.measuredWidth
+        val desiredRecyclerWidth = recyclerDimens.first
+        val desiredRecyclerHeight = recyclerDimens.second
+        val maxRecyclerHeight = getMaxHeight() - dialogHeightWithoutRecycler
+        val newRecyclerHeight = min(maxRecyclerHeight, desiredRecyclerHeight)
+        val desiredHeight = dialogHeightWithoutRecycler + newRecyclerHeight
+        val newHeight = constraints.resolveHeight(desiredHeight)
+        recyclerView.layoutParams.height = newRecyclerHeight
+        dialogWindow.setLayout(WindowManager.LayoutParams.MATCH_PARENT, newHeight)
+        if (lastVisibleItemPosition != -1) recyclerView.scrollToPosition(lastVisibleItemPosition)
     }
 
     @SuppressLint("InflateParams")
