@@ -10,7 +10,7 @@ android {
         targetSdkVersion 33
         testInstrumentationRunner "androidx.test.runner.AndroidJUnitRunner"
         consumerProguardFiles "consumer-rules.pro"
-        versionName "2.0.0-RC13"
+        versionName "2.0.0-RC14"
     }
     buildFeatures {
         dataBinding true
@@ -57,17 +57,16 @@ afterEvaluate {
 dependencies {
     implementation fileTree(dir: "libs", include: ["*.jar"])
     coreLibraryDesugaring 'com.android.tools:desugar_jdk_libs:1.1.6'
-    implementation "androidx.core:core-ktx:$versions.ktx.core"
-    implementation "androidx.appcompat:appcompat:$versions.android_appcompat"
-    implementation "androidx.recyclerview:recyclerview:$versions.android_recyclerview"
-    implementation "androidx.constraintlayout:constraintlayout:$versions.android_constraintlayout"
-    implementation "com.google.android.material:material:$versions.material"
-    implementation "com.google.android.flexbox:flexbox:$versions.flexbox"
-    implementation "com.github.rooneyandshadows:java-commons:$versions.java.commons"
+    implementation "androidx.core:core-ktx:$versions.ktx_core"
+    implementation "androidx.appcompat:appcompat:$versions.android.appcompat"
+    implementation "androidx.recyclerview:recyclerview:$versions.android.recyclerview"
+    implementation "androidx.constraintlayout:constraintlayout:$versions.android.constraint_layout"
+    implementation "com.google.android.material:material:$versions.android.material"
+    implementation "com.google.android.flexbox:flexbox:$versions.android.flexbox"
+    implementation "com.github.rooneyandshadows:java-commons:$versions.java_commons"
     implementation "com.github.rooneyandshadows:lightbulb-commons:$versions.lightbulb.commons"
-    implementation "com.github.rooneyandshadows:lightbulb-recycleradapters:$versions.lightbulb.recycleradapters"
+    implementation "com.github.rooneyandshadows:lightbulb-recycleradapters:$versions.lightbulb.recycler_adapters"
     implementation "com.github.rooneyandshadows:lightbulb-calendars:$versions.lightbulb.calendars"
     implementation 'com.github.simonebortolin:FlowLayoutManager:1.8.0'
     implementation "com.github.prolificinteractive:material-calendarview:$versions.material_calendarview"
-    implementation "org.jetbrains.kotlin:kotlin-stdlib-jdk7:$versions.kotlin"
 }
