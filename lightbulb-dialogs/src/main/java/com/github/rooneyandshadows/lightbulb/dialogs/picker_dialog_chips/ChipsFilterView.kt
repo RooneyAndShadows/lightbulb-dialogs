@@ -9,6 +9,7 @@ import androidx.appcompat.widget.AppCompatImageButton
 import androidx.constraintlayout.widget.ConstraintLayout
 import androidx.core.widget.doOnTextChanged
 import com.github.rooneyandshadows.lightbulb.commons.utils.KeyboardUtils
+import com.github.rooneyandshadows.lightbulb.commons.utils.ResourceUtils
 import com.github.rooneyandshadows.lightbulb.dialogs.R
 
 
@@ -58,6 +59,8 @@ class ChipsFilterView @JvmOverloads constructor(
         inflate(context, R.layout.chip_filter_layot, this)
         filterInput = findViewById(R.id.dialogPickerFilter)
         addButton = findViewById(R.id.addButton)
+        val padding = ResourceUtils.getDimenById(context, R.dimen.spacing_size_medium).toInt()
+        setPadding(padding, 0, padding, 0)
     }
 
     private fun handleAddButtonVisibillity() {

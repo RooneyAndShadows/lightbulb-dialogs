@@ -1,25 +1,20 @@
 package com.github.rooneyandshadows.lightbulb.dialogs.picker_dialog_chips
 
-import android.annotation.SuppressLint
-import android.os.Bundle
 import android.os.Parcel
 import android.os.Parcelable
 import android.view.LayoutInflater
 import android.view.View
 import android.view.ViewGroup
 import android.view.ViewGroup.MarginLayoutParams
-import android.widget.Filter
-import android.widget.Filterable
 import android.widget.TextView
 import androidx.appcompat.widget.AppCompatImageView
 import androidx.appcompat.widget.LinearLayoutCompat
 import androidx.recyclerview.widget.RecyclerView
-import com.github.rooneyandshadows.lightbulb.commons.utils.BundleUtils
 import com.github.rooneyandshadows.lightbulb.commons.utils.ResourceUtils
 import com.github.rooneyandshadows.lightbulb.dialogs.R
-import com.github.rooneyandshadows.lightbulb.dialogs.picker_dialog_chips.ChipsPickerAdapter.*
+import com.github.rooneyandshadows.lightbulb.dialogs.picker_dialog_chips.ChipsPickerAdapter.ChipModel
 import com.github.rooneyandshadows.lightbulb.recycleradapters.abstraction.EasyAdapterDataModel
-import com.github.rooneyandshadows.lightbulb.recycleradapters.abstraction.EasyAdapterSelectableModes.*
+import com.github.rooneyandshadows.lightbulb.recycleradapters.abstraction.EasyAdapterSelectableModes.SELECT_MULTIPLE
 import com.github.rooneyandshadows.lightbulb.recycleradapters.abstraction.EasyRecyclerAdapter
 import java.util.*
 import java.util.function.Predicate
@@ -27,38 +22,13 @@ import kotlin.streams.toList
 
 
 @Suppress("unused", "UNCHECKED_CAST")
-class ChipsPickerAdapter : EasyRecyclerAdapter<ChipModel>(SELECT_MULTIPLE), Filterable {
-    private var allItems: MutableList<ChipModel> = mutableListOf()
+class ChipsPickerAdapter : EasyRecyclerAdapter<ChipModel>(SELECT_MULTIPLE) {
 
     companion object {
         private const val FILTERED_ITEMS_KEY = "FILTERED_ITEMS_KEY"
     }
 
     init {
-        setHasStableIds(true)
-    }
-
-    @Override
-    override fun onSaveInstanceState(outState: Bundle): Bundle {
-        val state: Bundle = super.onSaveInstanceState(outState)
-        outState.apply {
-            BundleUtils.putParcelableArrayList(FILTERED_ITEMS_KEY, this, allItems as ArrayList<ChipModel>)
-        }
-        return state
-    }
-
-    @Override
-    override fun onRestoreInstanceState(savedState: Bundle) {
-        super.onRestoreInstanceState(savedState)
-        savedState.apply {
-            BundleUtils.apply {
-                allItems = getParcelableArrayList(
-                    FILTERED_ITEMS_KEY,
-                    savedState,
-                    ChipModel::class.java
-                ) as MutableList<ChipModel>
-            }
-        }
     }
 
     @Override
@@ -76,30 +46,20 @@ class ChipsPickerAdapter : EasyRecyclerAdapter<ChipModel>(SELECT_MULTIPLE), Filt
         vHolder.setItem()
     }
 
-    @Override
-    override fun setCollection(collection: List<ChipModel>) {
-        allItems = ArrayList(collection)
-        super.setCollection(collection)
-    }
 
     @Override
     override fun addItem(item: ChipModel) {
-        if (hasItemWithName(item.itemName)) return
-        allItems.add(item)
         super.addItem(item)
         selectItem(item, true)
     }
 
-    fun getAllItems(): List<ChipModel> {
-        return allItems.toList()
-    }
-
     fun hasItemWithName(name: String): Boolean {
         if (name.isBlank()) return false
-        return allItems.stream().filter(Predicate { item -> return@Predicate item.itemName == name })
+        return getItems().stream().filter(Predicate { item -> return@Predicate item.itemName == name })
             .toList()
             .isNotEmpty()
     }
+
 
     @Override
     override fun getItemName(item: ChipModel): String {
@@ -107,36 +67,11 @@ class ChipsPickerAdapter : EasyRecyclerAdapter<ChipModel>(SELECT_MULTIPLE), Filt
     }
 
     @Override
-    override fun getFilter(): Filter {
-        return object : Filter() {
-            @Override
-            override fun performFiltering(charSequence: CharSequence): FilterResults {
-                val locale = Locale.getDefault()
-                val filterString = charSequence.toString().lowercase(locale)
-                val itemsInAdapter = allItems
-                val result: MutableList<ChipModel> = mutableListOf()
-                if (filterString.isBlank()) result.addAll(itemsInAdapter)
-                else {
-                    itemsInAdapter.forEach { item ->
-                        val itemName = item.itemName.lowercase(locale)
-                        if (itemName.contains(filterString)) result.add(item)
-                    }
-                }
-                val filterResults = FilterResults()
-                filterResults.values = result
-                return filterResults
-            }
-
-            @SuppressLint("NotifyDataSetChanged")
-            override fun publishResults(charSequence: CharSequence, filterResults: FilterResults) {
-                setFilteredValues(filterResults.values as MutableList<ChipModel>)
-                notifyDataSetChanged()
-            }
-        }
-    }
-
-    private fun setFilteredValues(collection: List<ChipModel>) {
-        super.setCollection(collection)
+    override fun filterItem(item: ChipModel, filterQuery: String): Boolean {
+        val locale = Locale.getDefault()
+        val filterString = filterQuery.lowercase(locale)
+        val itemName = item.itemName.lowercase(locale)
+        return itemName.contains(filterString)
     }
 
     inner class ChipVH internal constructor(private val chipView: LinearLayoutCompat) : RecyclerView.ViewHolder(chipView) {
@@ -145,8 +80,8 @@ class ChipsPickerAdapter : EasyRecyclerAdapter<ChipModel>(SELECT_MULTIPLE), Filt
             chipView.apply {
                 val horPadding = ResourceUtils.getDimenById(context, R.dimen.spacing_size_small).toInt()
                 val position = absoluteAdapterPosition - headersCount
-                val item = getItem(position)!!
-                val selectedInAdapter = this@ChipsPickerAdapter.isItemSelected(position)
+                val item = getFilteredItems()[position]
+                val selectedInAdapter = this@ChipsPickerAdapter.isItemSelected(item)
                 isSelected = selectedInAdapter
                 findViewById<TextView>(R.id.chip_text_view)?.apply {
                     val color = if (selectedInAdapter) R.attr.colorOnPrimary else R.attr.colorPrimary
@@ -166,7 +101,8 @@ class ChipsPickerAdapter : EasyRecyclerAdapter<ChipModel>(SELECT_MULTIPLE), Filt
                 setOnClickListener {
                     val pos = absoluteAdapterPosition - headersCount
                     val selected = this@ChipsPickerAdapter.isItemSelected(pos)
-                    selectItem(item, !selected)
+                    selectItem(item, !selected, false)
+                    notifyItemChanged(pos, false)
                 }
             }
         }

@@ -7,6 +7,7 @@ import android.os.Bundle
 import android.view.LayoutInflater
 import android.view.View
 import android.view.ViewGroup
+import android.view.ViewGroup.MarginLayoutParams
 import android.view.Window
 import android.view.WindowManager
 import android.widget.EditText
@@ -95,7 +96,7 @@ class ChipsPickerDialog : AdapterPickerDialog<ChipModel>() {
             }
         }
         this.recyclerView?.apply {
-            val spacing = ResourceUtils.getDimenPxById(context, R.dimen.spacing_size_small)
+            val spacing = ResourceUtils.getDimenPxById(context, R.dimen.chips_picker_spacing_size)
             val decoration = FlexboxSpaceItemDecoration(spacing, this)
             addItemDecoration(decoration)
             layoutParams.height = 1//Fixes rendering all possible labels (later will be resized)
@@ -183,7 +184,7 @@ class ChipsPickerDialog : AdapterPickerDialog<ChipModel>() {
         val heightMeasureSpec = View.MeasureSpec.makeMeasureSpec(0, View.MeasureSpec.UNSPECIFIED)
         var totalRequiredWidth = 0
         var calculatedRows = 0
-        for (item in chipsAdapter.getAllItems()) {
+        for (item in chipsAdapter.getItems()) {
             textView.text = item.chipTitle
             chipView.measure(widthMeasureSpec, heightMeasureSpec)
             val widthToAdd = chipView.measuredWidth + itemDecorationSpace
@@ -224,11 +225,11 @@ class ChipsPickerDialog : AdapterPickerDialog<ChipModel>() {
     }
 
     fun getChips(predicate: Predicate<ChipModel>): List<ChipModel> {
-        return chipsAdapter.getAllItems().stream().filter(predicate).toList()
+        return chipsAdapter.getItems().stream().filter(predicate).toList()
     }
 
     private fun getChipsByNames(names: List<String>): List<ChipModel> {
-        return chipsAdapter.getAllItems().stream().filter(Predicate { chipModel ->
+        return chipsAdapter.getItems().stream().filter(Predicate { chipModel ->
             return@Predicate names.contains(chipModel.chipTitle)
         }).toList()
     }
