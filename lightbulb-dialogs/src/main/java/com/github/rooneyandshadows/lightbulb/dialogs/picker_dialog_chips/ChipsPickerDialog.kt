@@ -8,7 +8,6 @@ import android.view.LayoutInflater
 import android.view.View
 import android.view.Window
 import android.widget.TextView
-import androidx.appcompat.widget.LinearLayoutCompat
 import androidx.recyclerview.widget.GridLayoutManager
 import com.github.rooneyandshadows.lightbulb.commons.utils.ResourceUtils
 import com.github.rooneyandshadows.lightbulb.dialogs.R
@@ -19,15 +18,15 @@ import com.github.rooneyandshadows.lightbulb.dialogs.picker_dialog_adapter.Adapt
 import com.github.rooneyandshadows.lightbulb.dialogs.picker_dialog_chips.ChipsPickerAdapter.*
 import com.github.rooneyandshadows.lightbulb.recycleradapters.abstraction.EasyRecyclerAdapter
 import com.google.android.flexbox.FlexDirection
-import com.google.android.flexbox.FlexboxItemDecoration
 import com.google.android.flexbox.FlexboxLayoutManager
 import java.util.function.Predicate
 import kotlin.math.max
 import kotlin.math.min
+import kotlin.system.measureTimeMillis
 
 @Suppress("unused", "UNUSED_PARAMETER")
 class ChipsPickerDialog : AdapterPickerDialog<ChipModel>() {
-    private var rows: Int = 4
+    private var rows: Int = 8
     private var lastVisibleItemPosition = -1
     override var dialogType: DialogTypes
         get() = DialogTypes.NORMAL
@@ -66,9 +65,10 @@ class ChipsPickerDialog : AdapterPickerDialog<ChipModel>() {
     override fun setupDialogContent(view: View, savedInstanceState: Bundle?) {
         super.setupDialogContent(view, savedInstanceState)
         this.recyclerView?.apply {
-            val itemDecoration = FlexboxSpaceItemDecoration(ResourceUtils.dpToPx(10), this)
+            val itemDecoration =
+                FlexboxSpaceItemDecoration(ResourceUtils.getDimenPxById(context, R.dimen.spacing_size_small), this)
             addItemDecoration(itemDecoration)
-            layoutParams.height = getMaxHeight()
+            layoutParams.height = 1////Fixes rendering all possible labels (later will be resized)
             layoutManager = FlexboxLayoutManager(context, FlexDirection.ROW)
             clipToPadding = false
         }
@@ -92,53 +92,52 @@ class ChipsPickerDialog : AdapterPickerDialog<ChipModel>() {
         dialogLayout: View,
         fgPadding: Rect,
     ) {
+        val recyclerDimens = calculateRecyclerWidthAndHeight()
+        val widthMeasureSpec = View.MeasureSpec.makeMeasureSpec(0, View.MeasureSpec.UNSPECIFIED)
+        val heightMeasureSpec = View.MeasureSpec.makeMeasureSpec(0, View.MeasureSpec.UNSPECIFIED)
+        dialogLayout.measure(widthMeasureSpec, heightMeasureSpec)
+        val recyclerView = this.recyclerView!!
+        val horPadding = fgPadding.left + fgPadding.right
+        val verPadding = fgPadding.top + fgPadding.bottom
+        val dialogHeightWithoutRecycler = dialogLayout.measuredHeight - recyclerView.measuredHeight
+        val dialogWidthWithoutRecycler = dialogLayout.measuredWidth
+        val desiredRecyclerWidth = recyclerDimens.first
+        val desiredRecyclerHeight = recyclerDimens.second
+        val maxRecyclerHeight = getMaxHeight() - dialogHeightWithoutRecycler
+        val newRecyclerHeight = min(maxRecyclerHeight, desiredRecyclerHeight)
+        val desiredWidth = max(dialogWidthWithoutRecycler, desiredRecyclerWidth)
+        val desiredHeight = dialogHeightWithoutRecycler + newRecyclerHeight
+        val newWidth = constraints.resolveWidth(desiredWidth)
+        val newHeight = constraints.resolveHeight(desiredHeight)
+        recyclerView.layoutParams.height = newRecyclerHeight
+        dialogWindow.setLayout(newWidth + horPadding, newHeight + verPadding)
+        if (lastVisibleItemPosition != -1) recyclerView.scrollToPosition(lastVisibleItemPosition)
+    }
+
+    @SuppressLint("InflateParams")
+    private fun calculateRecyclerWidthAndHeight(): Pair<Int, Int> {
+        val recyclerView = this.recyclerView!!
         val chipView = LayoutInflater.from(context).inflate(R.layout.layout_chip_item, null).apply {
             val widthMeasureSpec = View.MeasureSpec.makeMeasureSpec(0, View.MeasureSpec.UNSPECIFIED)
             val heightMeasureSpec = View.MeasureSpec.makeMeasureSpec(0, View.MeasureSpec.UNSPECIFIED)
             measure(widthMeasureSpec, heightMeasureSpec)
         }
-        val recyclerView = this.recyclerView!!
-        val widthMeasureSpec = View.MeasureSpec.makeMeasureSpec(0, View.MeasureSpec.UNSPECIFIED)
-        val heightMeasureSpec = View.MeasureSpec.makeMeasureSpec(0, View.MeasureSpec.UNSPECIFIED)
-        dialogLayout.measure(widthMeasureSpec, heightMeasureSpec)
-        val horPadding = fgPadding.left + fgPadding.right
-        val verPadding = fgPadding.top + fgPadding.bottom
-        var dialogLayoutHeight = dialogLayout.measuredHeight
-        var recyclerHeight = rows * chipView.measuredHeight + recyclerView.paddingBottom + recyclerView.paddingTop
-        var recyclerWidth =
-            getRequiredWidth(chipView as LinearLayoutCompat) + recyclerView.paddingRight + recyclerView.paddingLeft
-        val maxHeight = constraints.getMaxHeight()
-        dialogLayoutHeight -= recyclerHeight
-        val desiredWidth = max(recyclerWidth, dialogLayout.measuredWidth)
-        var desiredHeight = dialogLayoutHeight + recyclerHeight
-        if (desiredHeight > maxHeight) {
-            desiredHeight -= recyclerHeight
-            recyclerHeight = maxHeight - desiredHeight
-            desiredHeight += recyclerHeight
-        }
-        val newWidth = constraints.resolveWidth(desiredWidth)
-        val newHeight = constraints.resolveHeight(desiredHeight)
-        recyclerView.layoutParams.height = recyclerHeight
-        dialogWindow.setLayout(newWidth + horPadding, newHeight + verPadding)
-        //dialogLayout.setLayoutParams(new ViewGroup.LayoutParams(newWidth, newHeight));
-        if (lastVisibleItemPosition != -1) recyclerView.scrollToPosition(lastVisibleItemPosition)
-    }
-
-    @SuppressLint("InflateParams")
-    private fun getRequiredWidth(chipView: LinearLayoutCompat): Int {
-        var requiredWidth = 0
-
+        val chipHeight = chipView.measuredHeight
+        val itemDecorationSpace = ResourceUtils.getDimenPxById(requireContext(), R.dimen.spacing_size_small)
+        val rowsHeight = rows * (chipHeight + itemDecorationSpace)
+        val desiredHeight = rowsHeight + recyclerView.paddingBottom + recyclerView.paddingTop
+        var desiredWidth = 0
         val textView: TextView = chipView.findViewById(R.id.chip_text_view)
         val widthMeasureSpec = View.MeasureSpec.makeMeasureSpec(0, View.MeasureSpec.UNSPECIFIED)
         val heightMeasureSpec = View.MeasureSpec.makeMeasureSpec(0, View.MeasureSpec.UNSPECIFIED)
-
         adapter.getItems().forEach {
             textView.text = it.chipTitle
             chipView.measure(widthMeasureSpec, heightMeasureSpec)
-            requiredWidth += chipView.measuredWidth
-            if (requiredWidth >= getMaxWidth()) return@forEach
+            desiredWidth += chipView.measuredWidth + itemDecorationSpace
+            if (desiredWidth >= getMaxWidth()) return@forEach
         }
-        return requiredWidth
+        return Pair(desiredWidth, desiredHeight)
+
     }
 
     @Override
