@@ -106,7 +106,7 @@ class ChipsPickerAdapter : EasyRecyclerAdapter<ChipModel>(SELECT_MULTIPLE) {
                 }
                 setOnClickListener {
                     val pos = absoluteAdapterPosition - headersCount
-                    val selected = this@ChipsPickerAdapter.isItemSelected(pos)
+                    val selected = this@ChipsPickerAdapter.isItemSelected(item)
                     selectItem(item, !selected, false)
                     notifyItemChanged(pos, false)
                 }
