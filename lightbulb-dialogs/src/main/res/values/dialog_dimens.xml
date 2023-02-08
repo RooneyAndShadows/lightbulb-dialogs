@@ -27,7 +27,7 @@
     <dimen name="chips_picker_chip_height">32dp</dimen>
     <dimen name="chips_picker_chip_option_height">40dp</dimen>
     <dimen name="chips_picker_chip_remove_button_size">24dp</dimen>
-    <dimen name="chips_picker_spacing_size">10dp</dimen>
+    <dimen name="chips_picker_spacing_size">8dp</dimen>
     <dimen name="chips_picker_recycler_height">300dp</dimen>
     <dimen name="chips_picker_chip_group_padding">15dp</dimen>
 </resources>

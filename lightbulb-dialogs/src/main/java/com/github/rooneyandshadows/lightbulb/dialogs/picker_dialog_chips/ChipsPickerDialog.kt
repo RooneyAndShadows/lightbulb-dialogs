@@ -5,8 +5,6 @@ import android.content.res.Configuration
 import android.graphics.Rect
 import android.os.Bundle
 import android.view.LayoutInflater
-import android.view.MotionEvent.ACTION_DOWN
-import android.view.MotionEvent.ACTION_UP
 import android.view.View
 import android.view.Window
 import android.view.WindowManager
@@ -29,7 +27,7 @@ import kotlin.math.min
 
 @Suppress("unused", "UNUSED_PARAMETER")
 class ChipsPickerDialog : AdapterPickerDialog<ChipModel>() {
-    private var rows: Int = 8
+    private var maxRows: Int = 4
     private var lastVisibleItemPosition = -1
     override var dialogType: DialogTypes
         get() = DialogTypes.BOTTOM_SHEET
@@ -149,19 +147,24 @@ class ChipsPickerDialog : AdapterPickerDialog<ChipModel>() {
             measure(widthMeasureSpec, heightMeasureSpec)
         }
         val chipHeight = chipView.measuredHeight
-        val itemDecorationSpace = ResourceUtils.getDimenPxById(requireContext(), R.dimen.spacing_size_small)
-        val rowsHeight = rows * (chipHeight + itemDecorationSpace)
-        val desiredHeight = rowsHeight + recyclerView.paddingBottom + recyclerView.paddingTop
-        var desiredWidth = 0
+        val itemDecorationSpace = ResourceUtils.getDimenPxById(requireContext(), R.dimen.chips_picker_spacing_size)
         val textView: TextView = chipView.findViewById(R.id.chip_text_view)
         val widthMeasureSpec = View.MeasureSpec.makeMeasureSpec(0, View.MeasureSpec.UNSPECIFIED)
         val heightMeasureSpec = View.MeasureSpec.makeMeasureSpec(0, View.MeasureSpec.UNSPECIFIED)
-        adapter.getItems().forEach {
-            textView.text = it.chipTitle
+        var totalRequiredWidth = 0
+        var calculatedRows = 0
+        for (item in adapter.getItems()) {
+            textView.text = item.chipTitle
             chipView.measure(widthMeasureSpec, heightMeasureSpec)
-            desiredWidth += chipView.measuredWidth + itemDecorationSpace
-            if (desiredWidth >= getMaxWidth()) return@forEach
+            val widthToAdd = chipView.measuredWidth + itemDecorationSpace
+            totalRequiredWidth += widthToAdd
+            calculatedRows = totalRequiredWidth / getMaxWidth()
+            if (calculatedRows >= maxRows) break
         }
+        calculatedRows = min(calculatedRows, maxRows)
+        val rowsHeight = (calculatedRows * (chipHeight + itemDecorationSpace))
+        val desiredHeight = rowsHeight + recyclerView.paddingBottom + recyclerView.paddingTop
+        val desiredWidth = min(getMaxWidth(), totalRequiredWidth)
         return Pair(desiredWidth, desiredHeight)
 
     }

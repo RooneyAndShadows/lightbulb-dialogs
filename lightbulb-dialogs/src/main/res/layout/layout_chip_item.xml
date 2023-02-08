@@ -5,6 +5,8 @@
     android:layout_height="wrap_content"
     android:background="@drawable/bg_chip_picker_item"
     android:clickable="true"
+    android:clipChildren="true"
+    android:clipToOutline="true"
     android:focusable="true"
     android:focusableInTouchMode="false"
     android:orientation="horizontal">
