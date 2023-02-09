@@ -49,7 +49,7 @@ class ChipsPickerAdapter : EasyRecyclerAdapter<ChipModel>(SELECT_MULTIPLE) {
     @Override
     override fun onBindViewHolder(holder: RecyclerView.ViewHolder, position: Int) {
         val vHolder: ChipVH = holder as ChipsPickerAdapter.ChipVH
-        vHolder.setItem()
+        vHolder.init()
     }
 
 
@@ -59,13 +59,12 @@ class ChipsPickerAdapter : EasyRecyclerAdapter<ChipModel>(SELECT_MULTIPLE) {
         selectItem(item, true)
     }
 
-    fun hasItemWithName(name: String): Boolean {
-        if (name.isBlank()) return false
-        return getItems().stream().filter(Predicate { item -> return@Predicate item.itemName == name })
-            .toList()
-            .isNotEmpty()
+    @Override
+    override fun onViewRecycled(holder: RecyclerView.ViewHolder) {
+        super.onViewRecycled(holder)
+        val vHolder = holder as ChipVH
+        vHolder.recycle()
     }
-
 
     @Override
     override fun getItemName(item: ChipModel): String {
@@ -80,23 +79,55 @@ class ChipsPickerAdapter : EasyRecyclerAdapter<ChipModel>(SELECT_MULTIPLE) {
         return itemName.contains(filterString)
     }
 
+    fun hasItemWithName(name: String): Boolean {
+        if (name.isBlank()) return false
+        return getItems().stream().filter(Predicate { item -> return@Predicate item.itemName == name })
+            .toList()
+            .isNotEmpty()
+    }
+
     inner class ChipVH internal constructor(private val chipView: LinearLayoutCompat) : RecyclerView.ViewHolder(chipView) {
         private var initialized: Boolean = false
-        fun setItem() {
+        private val context = itemView.context
+        private val textView = itemView.findViewById<TextView>(R.id.chip_text_view)
+        private val iconView = itemView.findViewById<AppCompatImageView>(R.id.chip_selected_indicator)
+        private val horPadding = ResourceUtils.getDimenById(context, R.dimen.spacing_size_small).toInt()
+        private val filteredPosition
+            get() = absoluteAdapterPosition - headersCount
+
+        init {
             chipView.apply {
-                val horPadding = ResourceUtils.getDimenById(context, R.dimen.spacing_size_small).toInt()
-                val position = absoluteAdapterPosition - headersCount
-                val item = getFilteredItems()[position]
-                val selectedInAdapter = this@ChipsPickerAdapter.isItemSelected(item)
+                setOnClickListener {
+                    val item = getFilteredItems()[filteredPosition]
+                    val newState = !this@ChipsPickerAdapter.isItemSelected(item)
+                    selectItem(item, newState, false)
+                    notifyItemChanged(filteredPosition, false)
+                    //update item decoration before/after element
+                    if (newState) {
+                        val isLast = filteredPosition == itemCount - 1
+                        if (!isLast) notifyItemChanged(filteredPosition + 1, false)
+                    } else {
+                        val isFirst = filteredPosition == 0
+                        if (!isFirst) notifyItemChanged(filteredPosition - 1, false)
+                    }
+                }
+            }
+        }
+
+        fun init() {
+            val item = getFilteredItems()[filteredPosition]
+            val originalPosition = getPosition(item)
+            val selectedInAdapter = isItemSelected(originalPosition)
+            chipView.apply {
                 isSelected = selectedInAdapter
-                findViewById<TextView>(R.id.chip_text_view)?.apply {
+                textView.apply {
                     val color = if (selectedInAdapter) R.attr.colorOnPrimary else R.attr.colorPrimary
                     setTextColor(ResourceUtils.getColorByAttribute(context, color))
                     if (selectedInAdapter) setPadding(horPadding / 2, paddingTop, paddingRight, paddingBottom)
                     else setPadding(horPadding, paddingTop, paddingRight, paddingBottom)
                     text = item.itemName
                 }
-                findViewById<AppCompatImageView>(R.id.chip_selected_indicator).apply icon@{
+                iconView.apply icon@{
                     visibility = if (selectedInAdapter) View.VISIBLE else View.GONE
                     val color = if (selectedInAdapter) R.attr.colorOnPrimary else R.attr.colorPrimary
                     if (!selectedInAdapter) return@icon
@@ -104,29 +135,28 @@ class ChipsPickerAdapter : EasyRecyclerAdapter<ChipModel>(SELECT_MULTIPLE) {
                     setImageDrawable(ResourceUtils.getDrawable(context, R.drawable.chip_selected_icon))
                     (layoutParams as MarginLayoutParams).leftMargin = horPadding
                 }
-                setOnClickListener {
-                    val pos = absoluteAdapterPosition - headersCount
-                    val selected = this@ChipsPickerAdapter.isItemSelected(item)
-                    selectItem(item, !selected, false)
-                    notifyItemChanged(pos, false)
-                }
+                initialized = true
             }
+        }
+
+        fun recycle() {
+            iconView.setImageDrawable(null)
         }
     }
 
-    /*private fun animateToWidth(view: View,show:Boolean) {
-        val from = if(show)0
+/*private fun animateToWidth(view: View,show:Boolean) {
+    val from = if(show)0
 
-        val anim = ValueAnimator.ofInt(view.measuredHeight, -100)
-        anim.addUpdateListener { valueAnimator ->
-            val `val` = valueAnimator.animatedValue as Int
-            val layoutParams: ViewGroup.LayoutParams = view.layoutParams
-            layoutParams.height = `val`
-            view.layoutParams = layoutParams
-        }
-        anim.duration = 1000
-        anim.start()
-    }*/
+    val anim = ValueAnimator.ofInt(view.measuredHeight, -100)
+    anim.addUpdateListener { valueAnimator ->
+        val `val` = valueAnimator.animatedValue as Int
+        val layoutParams: ViewGroup.LayoutParams = view.layoutParams
+        layoutParams.height = `val`
+        view.layoutParams = layoutParams
+    }
+    anim.duration = 1000
+    anim.start()
+}*/
 
     class ChipModel : EasyAdapterDataModel {
         val chipTitle: String

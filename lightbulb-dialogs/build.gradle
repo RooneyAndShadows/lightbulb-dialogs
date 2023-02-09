@@ -67,6 +67,5 @@ dependencies {
     implementation "com.github.rooneyandshadows:lightbulb-commons:$versions.lightbulb.commons"
     implementation "com.github.rooneyandshadows:lightbulb-recycleradapters:$versions.lightbulb.recycler_adapters"
     implementation "com.github.rooneyandshadows:lightbulb-calendars:$versions.lightbulb.calendars"
-    implementation 'com.github.simonebortolin:FlowLayoutManager:1.8.0'
     implementation "com.github.prolificinteractive:material-calendarview:$versions.material_calendarview"
 }
