@@ -4,8 +4,11 @@ import android.animation.LayoutTransition
 import android.content.Context
 import android.util.AttributeSet
 import android.view.View
+import android.view.View.MeasureSpec.*
+import android.widget.RelativeLayout
 import androidx.appcompat.widget.AppCompatEditText
 import androidx.appcompat.widget.AppCompatImageButton
+import androidx.appcompat.widget.LinearLayoutCompat
 import androidx.constraintlayout.widget.ConstraintLayout
 import androidx.core.widget.doOnTextChanged
 import com.github.rooneyandshadows.lightbulb.commons.utils.KeyboardUtils
@@ -17,7 +20,7 @@ class ChipsFilterView @JvmOverloads constructor(
     context: Context,
     attrs: AttributeSet? = null,
     defStyleAttr: Int = 0,
-) : ConstraintLayout(context, attrs, defStyleAttr) {
+) : LinearLayoutCompat(context, attrs, defStyleAttr) {
     private var filterInput: AppCompatEditText? = null
     private var addButton: AppCompatImageButton? = null
     private val adapter: ChipsPickerAdapter
@@ -59,12 +62,21 @@ class ChipsFilterView @JvmOverloads constructor(
         inflate(context, R.layout.chip_filter_layot, this)
         filterInput = findViewById(R.id.dialogPickerFilter)
         addButton = findViewById(R.id.addButton)
-        val padding = ResourceUtils.getDimenById(context, R.dimen.spacing_size_medium).toInt()
-        setPadding(padding, 0, padding, 0)
+        setupSizes()
     }
 
     fun setHintText(hintText: String) {
         filterInput?.hint = hintText
+    }
+
+    private fun setupSizes() {
+        val padding = ResourceUtils.getDimenById(context, R.dimen.spacing_size_medium).toInt()
+        setPadding(padding, 0, padding, 0)
+        val widthMeasureSpec = makeMeasureSpec(0, UNSPECIFIED)
+        val heightMeasureSpec = makeMeasureSpec(0, UNSPECIFIED)
+        this.measure(widthMeasureSpec, heightMeasureSpec)
+        addButton!!.layoutParams.width = filterInput!!.measuredHeight
+        addButton!!.layoutParams.height = filterInput!!.measuredHeight
     }
 
     private fun handleAddButtonVisibillity() {

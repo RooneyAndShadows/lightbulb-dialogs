@@ -19,7 +19,7 @@ class MainActivity : BaseActivity() {
             updateMenuConfiguration(this, MainActivity::class.java) { activity: BaseActivity ->
                 MenuConfigurations.getConfiguration(activity)
             }
-            MainActivityNavigator.route().toDemoChipsPicker().newRootScreen()
+            MainActivityNavigator.route().toDemoAdapter().newRootScreen()
         }
     }
 }

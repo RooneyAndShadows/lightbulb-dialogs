@@ -6,6 +6,8 @@ import android.graphics.Rect
 import android.os.Bundle
 import android.os.Parcelable
 import android.view.*
+import android.view.ViewGroup.LayoutParams.MATCH_PARENT
+import android.view.ViewGroup.LayoutParams.WRAP_CONTENT
 import android.widget.TextView
 import androidx.appcompat.widget.LinearLayoutCompat
 import androidx.core.view.setPadding
@@ -58,7 +60,7 @@ class ChipsPickerDialog : AdapterPickerDialog<ChipModel>() {
 
     @Override
     override fun withItemAnimator(): Boolean {
-        return false
+        return true
     }
 
     @Override
@@ -93,10 +95,10 @@ class ChipsPickerDialog : AdapterPickerDialog<ChipModel>() {
             if ((!allowAddNewOptions && !isFilterable)) return@apply
             if (filterView != null) {
                 (filterView!!.parent as ViewGroup).removeView(filterView)
-                addView(filterView, 0)
+                addView(filterView, 0, LinearLayoutCompat.LayoutParams(MATCH_PARENT, WRAP_CONTENT))
             } else {
                 filterView = ChipsFilterView(context)
-                addView(filterView, 0)
+                addView(filterView, 0, LinearLayoutCompat.LayoutParams(MATCH_PARENT, WRAP_CONTENT))
                 filterHintText?.apply { filterView!!.setHintText(this) }
                 filterView!!.dialog = this@ChipsPickerDialog
                 filterView!!.allowAddition = allowAddNewOptions
@@ -110,12 +112,14 @@ class ChipsPickerDialog : AdapterPickerDialog<ChipModel>() {
                 override fun onFirstLineDrawnWhileScrollingUp() {
                     adapter?.apply {
                         post {
+                            val animator = itemAnimator
+                            itemAnimator = null
                             //fixes drawing from bottom to top on items
                             if (itemCount > 0) notifyItemChanged(0, false)
+                            itemAnimator = animator
                         }
                     }
                 }
-
             }).apply {
                 setSpacingBetweenItems(spacing)
                 setSpacingBetweenLines(spacing)
@@ -136,19 +140,21 @@ class ChipsPickerDialog : AdapterPickerDialog<ChipModel>() {
         dialogWindow: Window,
         dialogLayout: View,
     ) {
+        val recyclerView = this.recyclerView!!
         val widthMeasureSpec = View.MeasureSpec.makeMeasureSpec(0, View.MeasureSpec.UNSPECIFIED)
         val heightMeasureSpec = View.MeasureSpec.makeMeasureSpec(0, View.MeasureSpec.UNSPECIFIED)
         dialogLayout.measure(widthMeasureSpec, heightMeasureSpec)
-        val recyclerView = this.recyclerView!!
+        filterView?.measure(widthMeasureSpec, heightMeasureSpec)
+        val headerHeight = headerViewHierarchy.titleAndMessageContainer?.measuredHeight ?: 0
+        val footerHeight = footerViewHierarchy.buttonsContainer?.measuredHeight ?: 0
+        val filterViewHeight = filterView?.measuredHeight ?: 0
+        val dialogHeightWithoutRecycler = headerHeight + footerHeight + filterViewHeight
         val recyclerDimens = calculateRecyclerWidthAndHeight()
-        val recyclerHeight = recyclerView.measuredHeight
-        val dialogHeightWithoutRecycler = dialogLayout.measuredHeight - recyclerHeight
         val desiredRecyclerHeight = recyclerDimens.second
         val maxRecyclerHeight = getMaxHeight() - dialogHeightWithoutRecycler
         val newRecyclerHeight = min(maxRecyclerHeight, desiredRecyclerHeight)
         val desiredHeight = dialogHeightWithoutRecycler + newRecyclerHeight
         val newHeight = constraints.resolveHeight(desiredHeight)
-        println(newRecyclerHeight)
         recyclerView.layoutParams.height = newRecyclerHeight
         dialogWindow.setLayout(WindowManager.LayoutParams.MATCH_PARENT, newHeight)
         if (lastVisibleItemPosition != -1) recyclerView.scrollToPosition(lastVisibleItemPosition)
@@ -209,7 +215,6 @@ class ChipsPickerDialog : AdapterPickerDialog<ChipModel>() {
         calculatedRows = min(calculatedRows, maxRows)
         val rowsHeight = (calculatedRows * (chipHeight + itemDecorationSpace))
         val desiredHeight = rowsHeight + recyclerView.paddingBottom + recyclerView.paddingTop - (itemDecorationSpace * 2)
-        println(desiredHeight)
         val desiredWidth = min(getMaxWidth(), totalRequiredWidth)
         return Pair(desiredWidth, desiredHeight)
     }
