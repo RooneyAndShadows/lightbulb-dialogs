@@ -6,6 +6,7 @@ import android.view.View
 import androidx.databinding.BindingAdapter
 import androidx.databinding.InverseBindingAdapter
 import androidx.databinding.InverseBindingListener
+import com.github.rooneyandshadows.lightbulb.application.activity.slidermenu.drawable.ShowMenuDrawable
 import com.github.rooneyandshadows.lightbulb.commons.utils.DrawableUtils
 import com.github.rooneyandshadows.lightbulb.commons.utils.InteractionUtils
 import com.github.rooneyandshadows.lightbulb.commons.utils.ResourceUtils
@@ -23,6 +24,13 @@ import com.github.rooneyandshadows.lightbulb.dialogsdemo.utils.icon.AppIconUtils
 import com.github.rooneyandshadows.lightbulb.recycleradapters.implementation.CheckBoxSelectableAdapter
 import com.github.rooneyandshadows.lightbulb.recycleradapters.implementation.RadioButtonSelectableAdapter
 import com.github.rooneyandshadows.lightbulb.textinputview.TextInputView
+
+fun getHomeDrawable(context: Context): Drawable {
+    return ShowMenuDrawable(context).apply {
+        setEnabled(false)
+        backgroundColor = ResourceUtils.getColorByAttribute(context, R.attr.colorError)
+    }
+}
 
 fun DialogTypes.Companion.getAllAsDialogPropertyItems(): Array<DialogPropertyItem> {
     return DialogTypes.values().asList()

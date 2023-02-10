@@ -3,13 +3,13 @@ package com.github.rooneyandshadows.lightbulb.dialogs.picker_dialog_chips
 import android.animation.LayoutTransition
 import android.content.Context
 import android.util.AttributeSet
-import android.view.View
-import android.view.View.MeasureSpec.*
-import android.widget.RelativeLayout
+import android.view.View.MeasureSpec.UNSPECIFIED
+import android.view.View.MeasureSpec.makeMeasureSpec
+import android.view.View.OnFocusChangeListener
 import androidx.appcompat.widget.AppCompatEditText
 import androidx.appcompat.widget.AppCompatImageButton
 import androidx.appcompat.widget.LinearLayoutCompat
-import androidx.constraintlayout.widget.ConstraintLayout
+import androidx.core.view.isVisible
 import androidx.core.widget.doOnTextChanged
 import com.github.rooneyandshadows.lightbulb.commons.utils.KeyboardUtils
 import com.github.rooneyandshadows.lightbulb.commons.utils.ResourceUtils
@@ -23,13 +23,14 @@ class ChipsFilterView @JvmOverloads constructor(
 ) : LinearLayoutCompat(context, attrs, defStyleAttr) {
     private var filterInput: AppCompatEditText? = null
     private var addButton: AppCompatImageButton? = null
+    private var allowAddition: Boolean = false
     private val adapter: ChipsPickerAdapter
         get() = (dialog!!.adapter as ChipsPickerAdapter)
     var dialog: ChipsPickerDialog? = null
         set(value) {
             field = value
             filterInput?.onFocusChangeListener =
-                OnFocusChangeListener { v, hasFocus -> if (!hasFocus) KeyboardUtils.hideKeyboard(filterInput) }
+                OnFocusChangeListener { _, hasFocus -> if (!hasFocus) KeyboardUtils.hideKeyboard(filterInput) }
             filterInput?.doOnTextChanged { text, _, _, _ ->
                 adapter.filter.filter(text)
                 handleAddButtonVisibillity()
@@ -43,7 +44,6 @@ class ChipsFilterView @JvmOverloads constructor(
                 handleAddButtonVisibillity()
             }
         }
-    var allowAddition: Boolean = false
 
     init {
         isSaveEnabled = true
@@ -55,7 +55,7 @@ class ChipsFilterView @JvmOverloads constructor(
         customTransition.enableTransitionType(LayoutTransition.DISAPPEARING)
         customTransition.enableTransitionType(LayoutTransition.CHANGE_APPEARING)
         customTransition.enableTransitionType(LayoutTransition.CHANGE_DISAPPEARING)
-        layoutTransition = customTransition;
+        layoutTransition = customTransition
     }
 
     private fun renderLayout() {
@@ -63,6 +63,13 @@ class ChipsFilterView @JvmOverloads constructor(
         filterInput = findViewById(R.id.dialogPickerFilter)
         addButton = findViewById(R.id.addButton)
         setupSizes()
+    }
+
+    fun setAllowAddition(newValue: Boolean) {
+        allowAddition = newValue
+        addButton?.apply {
+            if (!newValue && isVisible) isVisible = false
+        }
     }
 
     fun setHintText(hintText: String) {

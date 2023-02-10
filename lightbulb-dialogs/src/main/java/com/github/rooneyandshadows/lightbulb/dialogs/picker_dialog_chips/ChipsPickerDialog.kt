@@ -2,14 +2,15 @@ package com.github.rooneyandshadows.lightbulb.dialogs.picker_dialog_chips
 
 import android.annotation.SuppressLint
 import android.content.res.Configuration
-import android.graphics.Rect
 import android.os.Bundle
 import android.os.Parcelable
 import android.view.*
+import android.view.View.*
 import android.view.ViewGroup.LayoutParams.MATCH_PARENT
 import android.view.ViewGroup.LayoutParams.WRAP_CONTENT
 import android.widget.TextView
 import androidx.appcompat.widget.LinearLayoutCompat
+import androidx.core.view.isVisible
 import androidx.core.view.setPadding
 import com.github.rooneyandshadows.lightbulb.commons.utils.BundleUtils
 import com.github.rooneyandshadows.lightbulb.commons.utils.ResourceUtils
@@ -22,7 +23,6 @@ import com.github.rooneyandshadows.lightbulb.dialogs.picker_dialog_adapter.Adapt
 import com.github.rooneyandshadows.lightbulb.dialogs.picker_dialog_chips.ChipsPickerAdapter.*
 import com.github.rooneyandshadows.lightbulb.recycleradapters.abstraction.EasyRecyclerAdapter
 import java.util.function.Predicate
-import kotlin.math.max
 import kotlin.math.min
 import kotlin.streams.toList
 
@@ -31,8 +31,10 @@ import kotlin.streams.toList
 class ChipsPickerDialog : AdapterPickerDialog<ChipModel>() {
     private var lastVisibleItemPosition = -1
     private var maxRows = DEFAULT_MAX_ROWS
-    private var isFilterable = true
-    private var allowAddNewOptions = true
+    var isFilterable = true
+        private set
+    var allowAddNewOptions = true
+        private set
     private var filterHintText: String? = null
     private var filterView: ChipsFilterView? = null
     private var cachedRecyclerHeight = -1
@@ -92,7 +94,6 @@ class ChipsPickerDialog : AdapterPickerDialog<ChipModel>() {
     override fun setupDialogContent(view: View, savedInstanceState: Bundle?) {
         super.setupDialogContent(view, savedInstanceState)
         view.findViewById<LinearLayoutCompat>(R.id.dialogContent).apply {
-            if ((!allowAddNewOptions && !isFilterable)) return@apply
             if (filterView != null) {
                 (filterView!!.parent as ViewGroup).removeView(filterView)
                 addView(filterView, 0, LinearLayoutCompat.LayoutParams(MATCH_PARENT, WRAP_CONTENT))
@@ -101,14 +102,21 @@ class ChipsPickerDialog : AdapterPickerDialog<ChipModel>() {
                 addView(filterView, 0, LinearLayoutCompat.LayoutParams(MATCH_PARENT, WRAP_CONTENT))
                 filterHintText?.apply { filterView!!.setHintText(this) }
                 filterView!!.dialog = this@ChipsPickerDialog
-                filterView!!.allowAddition = allowAddNewOptions
+                filterView!!.setAllowAddition(allowAddNewOptions)
+                filterView!!.isVisible = isFilterable
             }
         }
         this.recyclerView?.apply {
             val spacing = ResourceUtils.getDimenPxById(context, R.dimen.chips_picker_spacing_size)
             setPadding(ResourceUtils.getDimenPxById(context, R.dimen.spacing_size_medium))
-            layoutParams.height = 1//Fixes rendering all possible labels (later will be resized)
-            layoutManager = FlowLayoutManager(FlowLayoutManager.VERTICAL, object : FlowLayoutManager.Listeners {
+            layoutParams.height = 1 //Fixes rendering all possible labels (later will be resized)
+            layoutManager = FlowLayoutManager(FlowLayoutManager.VERTICAL).apply {
+                setSpacingBetweenItems(spacing)
+                setSpacingBetweenLines(spacing)
+            }
+            clipToPadding = false
+            /* fixes drawing from bottom to top
+            object : FlowLayoutManager.Listeners {
                 override fun onFirstLineDrawnWhileScrollingUp() {
                     adapter?.apply {
                         post {
@@ -120,17 +128,14 @@ class ChipsPickerDialog : AdapterPickerDialog<ChipModel>() {
                         }
                     }
                 }
-            }).apply {
-                setSpacingBetweenItems(spacing)
-                setSpacingBetweenLines(spacing)
             }
-            clipToPadding = false
-            //FlexboxItemDecoration(context).apply {
-            //    setOrientation(FlexboxItemDecoration.BOTH)
-            //    setDrawable(ResourceUtils.getDrawable(context, R.drawable.divider_space_small))
-            //    addItemDecoration(this)
-            //    layoutManager = FlexboxLayoutManager(context, FlexDirection.ROW)
-            //}
+            */
+            /*FlexboxItemDecoration(context).apply {
+                setOrientation(FlexboxItemDecoration.BOTH)
+                setDrawable(ResourceUtils.getDrawable(context, R.drawable.divider_space_small))
+                addItemDecoration(this)
+                layoutManager = FlexboxLayoutManager(context, FlexDirection.ROW)
+            }*/
         }
     }
 
@@ -140,14 +145,26 @@ class ChipsPickerDialog : AdapterPickerDialog<ChipModel>() {
         dialogWindow: Window,
         dialogLayout: View,
     ) {
+        filterView?.apply {
+            val paddingTop = if (headerViewHierarchy.isVisible()) 0
+            else ResourceUtils.getDimenPxById(
+                requireContext(),
+                R.dimen.spacing_size_medium
+            )
+            setPadding(paddingLeft, paddingTop, paddingRight, paddingBottom)
+        }
         val recyclerView = this.recyclerView!!
-        val widthMeasureSpec = View.MeasureSpec.makeMeasureSpec(0, View.MeasureSpec.UNSPECIFIED)
-        val heightMeasureSpec = View.MeasureSpec.makeMeasureSpec(0, View.MeasureSpec.UNSPECIFIED)
+        val widthMeasureSpec = MeasureSpec.makeMeasureSpec(0, MeasureSpec.UNSPECIFIED)
+        val heightMeasureSpec = MeasureSpec.makeMeasureSpec(0, MeasureSpec.UNSPECIFIED)
         dialogLayout.measure(widthMeasureSpec, heightMeasureSpec)
-        filterView?.measure(widthMeasureSpec, heightMeasureSpec)
+
         val headerHeight = headerViewHierarchy.titleAndMessageContainer?.measuredHeight ?: 0
         val footerHeight = footerViewHierarchy.buttonsContainer?.measuredHeight ?: 0
-        val filterViewHeight = filterView?.measuredHeight ?: 0
+        val filterViewHeight = filterView.let {
+            if (it == null || !it.isVisible) return@let 0
+            it.measure(widthMeasureSpec, heightMeasureSpec)
+            return@let it.measuredHeight
+        }
         val dialogHeightWithoutRecycler = headerHeight + footerHeight + filterViewHeight
         val recyclerDimens = calculateRecyclerWidthAndHeight()
         val desiredRecyclerHeight = recyclerDimens.second
@@ -161,47 +178,18 @@ class ChipsPickerDialog : AdapterPickerDialog<ChipModel>() {
     }
 
     @SuppressLint("InflateParams")
-    override fun setupRegularDialog(
-        constraints: RegularDialogConstraints,
-        dialogWindow: Window,
-        dialogLayout: View,
-        fgPadding: Rect,
-    ) {
-        val recyclerDimens = calculateRecyclerWidthAndHeight()
-        val widthMeasureSpec = View.MeasureSpec.makeMeasureSpec(0, View.MeasureSpec.UNSPECIFIED)
-        val heightMeasureSpec = View.MeasureSpec.makeMeasureSpec(0, View.MeasureSpec.UNSPECIFIED)
-        dialogLayout.measure(widthMeasureSpec, heightMeasureSpec)
-        val recyclerView = this.recyclerView!!
-        val horPadding = fgPadding.left + fgPadding.right
-        val verPadding = fgPadding.top + fgPadding.bottom
-        val dialogHeightWithoutRecycler = dialogLayout.measuredHeight - recyclerView.measuredHeight
-        val dialogWidthWithoutRecycler = dialogLayout.measuredWidth
-        val desiredRecyclerWidth = recyclerDimens.first
-        val desiredRecyclerHeight = recyclerDimens.second
-        val maxRecyclerHeight = getMaxHeight() - dialogHeightWithoutRecycler
-        val newRecyclerHeight = min(maxRecyclerHeight, desiredRecyclerHeight)
-        val desiredWidth = max(dialogWidthWithoutRecycler, desiredRecyclerWidth)
-        val desiredHeight = dialogHeightWithoutRecycler + newRecyclerHeight
-        val newWidth = constraints.resolveWidth(desiredWidth)
-        val newHeight = constraints.resolveHeight(desiredHeight)
-        recyclerView.layoutParams.height = newRecyclerHeight
-        dialogWindow.setLayout(newWidth + horPadding, newHeight + verPadding)
-        if (lastVisibleItemPosition != -1) recyclerView.scrollToPosition(lastVisibleItemPosition)
-    }
-
-    @SuppressLint("InflateParams")
     private fun calculateRecyclerWidthAndHeight(): Pair<Int, Int> {
         val recyclerView = this.recyclerView!!
         val chipView = LayoutInflater.from(context).inflate(R.layout.layout_chip_item, null).apply {
-            val widthMeasureSpec = View.MeasureSpec.makeMeasureSpec(0, View.MeasureSpec.UNSPECIFIED)
-            val heightMeasureSpec = View.MeasureSpec.makeMeasureSpec(0, View.MeasureSpec.UNSPECIFIED)
+            val widthMeasureSpec = MeasureSpec.makeMeasureSpec(0, MeasureSpec.UNSPECIFIED)
+            val heightMeasureSpec = MeasureSpec.makeMeasureSpec(0, MeasureSpec.UNSPECIFIED)
             measure(widthMeasureSpec, heightMeasureSpec)
         }
         val chipHeight = chipView.measuredHeight
         val itemDecorationSpace = ResourceUtils.getDimenPxById(requireContext(), R.dimen.chips_picker_spacing_size)
         val textView: TextView = chipView.findViewById(R.id.chip_text_view)
-        val widthMeasureSpec = View.MeasureSpec.makeMeasureSpec(0, View.MeasureSpec.UNSPECIFIED)
-        val heightMeasureSpec = View.MeasureSpec.makeMeasureSpec(0, View.MeasureSpec.UNSPECIFIED)
+        val widthMeasureSpec = MeasureSpec.makeMeasureSpec(0, MeasureSpec.UNSPECIFIED)
+        val heightMeasureSpec = MeasureSpec.makeMeasureSpec(0, MeasureSpec.UNSPECIFIED)
         var totalRequiredWidth = 0
         var calculatedRows = 0
         for (item in chipsAdapter.getItems()) {
@@ -237,15 +225,22 @@ class ChipsPickerDialog : AdapterPickerDialog<ChipModel>() {
 
     fun setFilterable(isFilterable: Boolean) {
         this.isFilterable = isFilterable
+        filterView?.visibility = if (isFilterable) VISIBLE else GONE
+        if (isDialogShown) measureDialogLayout()
     }
 
-    fun setAllowNewOptionCreation(allowCreation: Boolean) {
+    fun setAllowAddNewOptions(allowCreation: Boolean) {
         this.allowAddNewOptions = allowCreation
+        filterView?.setAllowAddition(allowCreation)
     }
 
     fun setMaxRows(maxRows: Int) {
         if (maxRows <= 0) this.maxRows = DEFAULT_MAX_ROWS
         else this.maxRows = maxRows
+    }
+
+    fun getFilteredChips(): List<ChipModel> {
+        return chipsAdapter.getFilteredItems().toList()
     }
 
     fun getChips(predicate: Predicate<ChipModel>): List<ChipModel> {

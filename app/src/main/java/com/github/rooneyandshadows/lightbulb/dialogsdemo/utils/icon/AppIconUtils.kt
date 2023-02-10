@@ -5,7 +5,6 @@ import androidx.annotation.AttrRes
 import androidx.annotation.DimenRes
 import com.github.rooneyandshadows.lightbulb.commons.utils.IconUtils
 import com.github.rooneyandshadows.lightbulb.commons.utils.ResourceUtils
-import com.github.rooneyandshadows.lightbulb.dialogs.picker_dialog_icon.IconPickerAdapter
 import com.github.rooneyandshadows.lightbulb.dialogs.picker_dialog_icon.IconPickerAdapter.IconModel
 import com.github.rooneyandshadows.lightbulb.dialogs.picker_dialog_icon.IconPickerAdapter.IconSet
 import com.github.rooneyandshadows.lightbulb.dialogsdemo.R

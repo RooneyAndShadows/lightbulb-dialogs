@@ -45,6 +45,48 @@
                 android:clipToPadding="false"
                 android:orientation="vertical">
 
+                <com.github.rooneyandshadows.lightbulb.textinputview.TextInputView
+                    android:id="@+id/dialog_title_textview"
+                    android:layout_width="match_parent"
+                    android:layout_height="wrap_content"
+                    android:layout_marginBottom="@dimen/spacing_size_medium"
+                    app:textInputHintText="@string/demo_dialog_title_option_text"
+                    app:textInputText="@={dialog.dialogTitle}" />
+
+                <com.github.rooneyandshadows.lightbulb.textinputview.TextInputView
+                    android:id="@+id/dialog_message_textview"
+                    android:layout_width="match_parent"
+                    android:layout_height="wrap_content"
+                    android:layout_marginBottom="@dimen/spacing_size_medium"
+                    app:textInputHintText="@string/demo_dialog_message_option_text"
+                    app:textInputText="@={dialog.dialogMessage}" />
+
+                <androidx.appcompat.widget.LinearLayoutCompat
+                    android:layout_width="match_parent"
+                    android:layout_height="wrap_content"
+                    android:layout_marginBottom="@dimen/spacing_size_medium"
+                    android:orientation="horizontal"
+                    app:divider="@drawable/divider_horizontal_space_medium"
+                    app:showDividers="middle">
+
+                    <com.github.rooneyandshadows.lightbulb.textinputview.TextInputView
+                        android:id="@+id/dialog_positive_button_textview"
+                        android:layout_width="wrap_content"
+                        android:layout_height="wrap_content"
+                        android:layout_weight="1"
+                        app:dialogButtonText="@={dialog.dialogPositiveButton}"
+                        app:textInputHintText="@string/demo_dialog_positive_button_option_text" />
+
+                    <com.github.rooneyandshadows.lightbulb.textinputview.TextInputView
+                        android:id="@+id/dialog_negative_button_textview"
+                        android:layout_width="wrap_content"
+                        android:layout_height="wrap_content"
+                        android:layout_weight="1"
+                        app:dialogButtonText="@={dialog.dialogNegativeButton}"
+                        app:textInputHintText="@string/demo_dialog_negative_button_option_text" />
+
+                </androidx.appcompat.widget.LinearLayoutCompat>
+
                 <androidx.appcompat.widget.LinearLayoutCompat
                     android:layout_width="match_parent"
                     android:layout_height="wrap_content"
@@ -96,6 +138,21 @@
                         android:text="@string/demo_dialog_cancelable_option_text"
                         android:textSize="@dimen/text_size_checkbox" />
 
+                    <com.google.android.material.switchmaterial.SwitchMaterial
+                        android:id="@+id/dialog_filterable_dropdown"
+                        android:layout_width="match_parent"
+                        android:layout_height="wrap_content"
+                        android:checked="@={dialog.filterable}"
+                        android:text="@string/demo_dialog_filterable_option_text"
+                        android:textSize="@dimen/text_size_checkbox" />
+
+                    <com.google.android.material.switchmaterial.SwitchMaterial
+                        android:id="@+id/dialog_add_new_options_dropdown"
+                        android:layout_width="match_parent"
+                        android:layout_height="wrap_content"
+                        android:checked="@={dialog.allowAddNewOptions}"
+                        android:text="@string/demo_dialog_allow_new_items_option_text"
+                        android:textSize="@dimen/text_size_checkbox" />
                 </androidx.appcompat.widget.LinearLayoutCompat>
 
                 <include

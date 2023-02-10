@@ -20,6 +20,8 @@
     <string name="demo_dialog_animation_type_option_text">DIALOG ANIMATION</string>
     <string name="demo_dialog_other_options_text">OTHER</string>
     <string name="demo_dialog_cancelable_option_text">CANCELABLE</string>
+    <string name="demo_dialog_filterable_option_text">FILTERABLE</string>
+    <string name="demo_dialog_allow_new_items_option_text">ALLOW ITEM CREATION</string>
     <string name="demo_dialog_show_button_text">SHOW DIALOG</string>
     <string name="demo_dialog_default_title_text">Demo dialog title</string>
     <string name="demo_dialog_default_message_text">Demo dialog message</string>

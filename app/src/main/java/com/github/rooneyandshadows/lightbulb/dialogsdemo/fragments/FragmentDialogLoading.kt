@@ -1,10 +1,8 @@
 package com.github.rooneyandshadows.lightbulb.dialogsdemo.fragments
 
 import android.os.Bundle
-import android.view.View
 import com.github.rooneyandshadows.lightbulb.annotation_processors.annotations.FragmentConfiguration
 import com.github.rooneyandshadows.lightbulb.annotation_processors.annotations.FragmentScreen
-import com.github.rooneyandshadows.lightbulb.application.activity.slidermenu.drawable.ShowMenuDrawable
 import com.github.rooneyandshadows.lightbulb.application.fragment.base.BaseFragmentWithViewBinding
 import com.github.rooneyandshadows.lightbulb.application.fragment.cofiguration.ActionBarConfiguration
 import com.github.rooneyandshadows.lightbulb.commons.utils.BundleUtils
@@ -18,6 +16,7 @@ import com.github.rooneyandshadows.lightbulb.dialogsdemo.R
 import com.github.rooneyandshadows.lightbulb.dialogsdemo.databinding.FragmentDemoDialogLoadingBinding
 import com.github.rooneyandshadows.lightbulb.dialogsdemo.getDefaultDialogMessage
 import com.github.rooneyandshadows.lightbulb.dialogsdemo.getDefaultDialogTitle
+import com.github.rooneyandshadows.lightbulb.dialogsdemo.getHomeDrawable
 
 @FragmentScreen(screenName = "Loading", screenGroup = "Demo")
 @FragmentConfiguration(layoutName = "fragment_demo_dialog_loading", hasLeftDrawer = true)
@@ -27,6 +26,18 @@ class FragmentDialogLoading : BaseFragmentWithViewBinding<FragmentDemoDialogLoad
     companion object {
         private const val DIALOG_TAG = "LOADING_DIALOG_TAG"
         private const val DIALOG_STATE_TAG = "LOADING_DIALOG_STATE_TAG"
+    }
+
+    @Override
+    override fun configureActionBar(): ActionBarConfiguration {
+        val title = ResourceUtils.getPhrase(requireContext(), R.string.demo_loading_title)
+        val subTitle = ResourceUtils.getPhrase(requireContext(), R.string.app_name)
+        val homeIcon = getHomeDrawable(requireContext())
+        return ActionBarConfiguration(R.id.toolbar)
+            .withActionButtons(true)
+            .withHomeIcon(homeIcon)
+            .withTitle(title)
+            .withSubTitle(subTitle)
     }
 
     @Override
@@ -55,22 +66,6 @@ class FragmentDialogLoading : BaseFragmentWithViewBinding<FragmentDemoDialogLoad
         viewBinding.dialog = loadingDialog
     }
 
-    @Override
-    override fun configureActionBar(): ActionBarConfiguration {
-        val title = ResourceUtils.getPhrase(requireContext(), R.string.demo_loading_title)
-        val subTitle = ResourceUtils.getPhrase(requireContext(), R.string.app_name)
-        return ActionBarConfiguration(R.id.toolbar)
-            .withActionButtons(true)
-            .attachToDrawer(true)
-            .withTitle(title)
-            .withSubTitle(subTitle)
-    }
-
-    @Override
-    override fun doOnViewCreated(fragmentView: View, savedInstanceState: Bundle?) {
-        setupDrawerButton()
-    }
-
     private fun createDialog(dialogSavedState: Bundle?) {
         loadingDialog = LoadingDialogBuilder(this, childFragmentManager, DIALOG_TAG).apply {
             val ctx = requireContext()
@@ -90,12 +85,5 @@ class FragmentDialogLoading : BaseFragmentWithViewBinding<FragmentDemoDialogLoad
             withMessage(message)
             withOnShowListener(onShowListener)
         }.buildDialog()
-    }
-
-    private fun setupDrawerButton() {
-        val actionBarDrawable = ShowMenuDrawable(requireContext())
-        actionBarDrawable.setEnabled(false)
-        actionBarDrawable.backgroundColor = ResourceUtils.getColorByAttribute(requireContext(), R.attr.colorError)
-        actionBarManager.setHomeIcon(actionBarDrawable)
     }
 }

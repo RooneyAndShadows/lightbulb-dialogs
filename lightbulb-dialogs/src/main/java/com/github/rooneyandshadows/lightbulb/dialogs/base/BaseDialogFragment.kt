@@ -30,7 +30,6 @@ import com.github.rooneyandshadows.lightbulb.dialogs.base.internal.*
 import com.github.rooneyandshadows.lightbulb.dialogs.base.internal.DialogAnimationTypes.*
 import com.github.rooneyandshadows.lightbulb.dialogs.base.internal.DialogTypes.*
 import com.github.rooneyandshadows.lightbulb.dialogs.base.internal.callbacks.*
-import com.github.rooneyandshadows.lightbulb.dialogs.picker_dialog_adapter.AdapterPickerDialog
 import com.google.android.material.bottomsheet.BottomSheetBehavior
 
 @Suppress("MemberVisibilityCanBePrivate")

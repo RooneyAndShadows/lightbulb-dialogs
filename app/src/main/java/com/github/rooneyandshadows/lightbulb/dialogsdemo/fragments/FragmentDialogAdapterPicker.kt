@@ -1,10 +1,8 @@
 package com.github.rooneyandshadows.lightbulb.dialogsdemo.fragments
 
 import android.os.Bundle
-import android.view.View
 import com.github.rooneyandshadows.lightbulb.annotation_processors.annotations.FragmentConfiguration
 import com.github.rooneyandshadows.lightbulb.annotation_processors.annotations.FragmentScreen
-import com.github.rooneyandshadows.lightbulb.application.activity.slidermenu.drawable.NavigateBackDrawable
 import com.github.rooneyandshadows.lightbulb.application.fragment.base.BaseFragmentWithViewBinding
 import com.github.rooneyandshadows.lightbulb.application.fragment.cofiguration.ActionBarConfiguration
 import com.github.rooneyandshadows.lightbulb.commons.utils.BundleUtils
@@ -12,12 +10,9 @@ import com.github.rooneyandshadows.lightbulb.commons.utils.ResourceUtils
 import com.github.rooneyandshadows.lightbulb.dialogs.base.internal.DialogButtonConfiguration
 import com.github.rooneyandshadows.lightbulb.dialogs.picker_dialog_adapter.AdapterPickerDialogBuilder
 import com.github.rooneyandshadows.lightbulb.dialogs.picker_dialog_adapter.AdapterPickerDialogBuilder.AdapterPickerDialogInitializer
-import com.github.rooneyandshadows.lightbulb.dialogsdemo.R
+import com.github.rooneyandshadows.lightbulb.dialogsdemo.*
 import com.github.rooneyandshadows.lightbulb.dialogsdemo.databinding.FragmentDemoDialogAdapterPickerBinding
 import com.github.rooneyandshadows.lightbulb.dialogsdemo.dialogs.DemoSingleSelectionDialog
-import com.github.rooneyandshadows.lightbulb.dialogsdemo.getDefaultNegativeButtonClickListener
-import com.github.rooneyandshadows.lightbulb.dialogsdemo.getDefaultPositiveButtonClickListener
-import com.github.rooneyandshadows.lightbulb.dialogsdemo.getDefaultSelectionChangedListener
 import com.github.rooneyandshadows.lightbulb.dialogsdemo.models.DemoModel
 
 @FragmentScreen(screenName = "Adapter", screenGroup = "Demo")
@@ -34,8 +29,10 @@ class FragmentDialogAdapterPicker : BaseFragmentWithViewBinding<FragmentDemoDial
     override fun configureActionBar(): ActionBarConfiguration {
         val title = ResourceUtils.getPhrase(requireContext(), R.string.demo_adapter_title)
         val subTitle = ResourceUtils.getPhrase(requireContext(), R.string.app_name)
+        val homeIcon = getHomeDrawable(requireContext())
         return ActionBarConfiguration(R.id.toolbar)
             .withActionButtons(true)
+            .withHomeIcon(homeIcon)
             .withTitle(title)
             .withSubTitle(subTitle)
     }
@@ -72,11 +69,6 @@ class FragmentDialogAdapterPicker : BaseFragmentWithViewBinding<FragmentDemoDial
         BundleUtils.putParcelable(DIALOG_STATE_TAG, outState, adapterPickerDialog.saveDialogState())
     }
 
-    @Override
-    override fun doOnViewCreated(fragmentView: View, savedInstanceState: Bundle?) {
-        setupDrawerButton()
-    }
-
     private fun createDialog(savedInstanceState: Bundle?) {
         val ctx = requireContext()
         val title = ResourceUtils.getPhrase(ctx, R.string.demo_dialog_default_title_text)
@@ -107,12 +99,5 @@ class FragmentDialogAdapterPicker : BaseFragmentWithViewBinding<FragmentDemoDial
             val savedState = BundleUtils.getParcelable(DIALOG_STATE_TAG, savedInstanceState, Bundle::class.java)
             restoreDialogState(savedState)
         }
-    }
-
-    private fun setupDrawerButton() {
-        val actionBarDrawable = NavigateBackDrawable(requireContext())
-        actionBarDrawable.setEnabled(false)
-        actionBarDrawable.backgroundColor = ResourceUtils.getColorByAttribute(requireContext(), R.attr.colorError)
-        actionBarManager.setHomeIcon(actionBarDrawable)
     }
 }

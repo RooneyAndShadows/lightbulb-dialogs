@@ -32,7 +32,7 @@ class ChipsPickerDialogBuilder @JvmOverloads constructor(
     override fun setupRetainableSettings(dialog: ChipsPickerDialog) {
         dialog.apply {
             setFilterable(isFilterable)
-            setAllowNewOptionCreation(allowOptionAddition)
+            setAllowAddNewOptions(allowOptionAddition)
             maxRows?.apply { setMaxRows(this) }
             filterHintText?.apply { setFilterHintText(this) }
             setSelection(selection)

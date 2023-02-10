@@ -1,10 +1,8 @@
 package com.github.rooneyandshadows.lightbulb.dialogsdemo.fragments
 
 import android.os.Bundle
-import android.view.View
 import com.github.rooneyandshadows.lightbulb.annotation_processors.annotations.FragmentConfiguration
 import com.github.rooneyandshadows.lightbulb.annotation_processors.annotations.FragmentScreen
-import com.github.rooneyandshadows.lightbulb.application.activity.slidermenu.drawable.ShowMenuDrawable
 import com.github.rooneyandshadows.lightbulb.application.fragment.base.BaseFragmentWithViewBinding
 import com.github.rooneyandshadows.lightbulb.application.fragment.cofiguration.ActionBarConfiguration
 import com.github.rooneyandshadows.lightbulb.commons.utils.BundleUtils
@@ -24,6 +22,18 @@ class FragmentDialogTimePicker : BaseFragmentWithViewBinding<FragmentDemoDialogT
     companion object {
         private const val DIALOG_TAG = "DIALOG_TIME_PICKER_TAG"
         private const val DIALOG_STATE_TAG = "DIALOG_TIME_PICKER_STATE_TAG"
+    }
+
+    @Override
+    override fun configureActionBar(): ActionBarConfiguration {
+        val title = ResourceUtils.getPhrase(requireContext(), R.string.demo_time_title)
+        val subTitle = ResourceUtils.getPhrase(requireContext(), R.string.app_name)
+        val homeIcon = getHomeDrawable(requireContext())
+        return ActionBarConfiguration(R.id.toolbar)
+            .withActionButtons(true)
+            .withHomeIcon(homeIcon)
+            .withTitle(title)
+            .withSubTitle(subTitle)
     }
 
     @Override
@@ -58,22 +68,6 @@ class FragmentDialogTimePicker : BaseFragmentWithViewBinding<FragmentDemoDialogT
         viewBinding.dialog = timePickerDialog
     }
 
-    @Override
-    override fun configureActionBar(): ActionBarConfiguration {
-        val title = ResourceUtils.getPhrase(requireContext(), R.string.demo_time_title)
-        val subTitle = ResourceUtils.getPhrase(requireContext(), R.string.app_name)
-        return ActionBarConfiguration(R.id.toolbar)
-            .withActionButtons(true)
-            .attachToDrawer(true)
-            .withTitle(title)
-            .withSubTitle(subTitle)
-    }
-
-    @Override
-    override fun doOnViewCreated(fragmentView: View, savedInstanceState: Bundle?) {
-        setupDrawerButton()
-    }
-
     private fun createDialog(dialogSavedState: Bundle?) {
         val ctx = requireContext()
         val positiveButtonText = getDefaultPositiveButtonText(ctx)
@@ -87,12 +81,5 @@ class FragmentDialogTimePicker : BaseFragmentWithViewBinding<FragmentDemoDialogT
             withNegativeButton(DialogButtonConfiguration(negativeButtonText), negativeButtonClickListener)
             withOnDateSelectedEvent(onSelectionChanged)
         }.buildDialog()
-    }
-
-    private fun setupDrawerButton() {
-        val actionBarDrawable = ShowMenuDrawable(requireContext())
-        actionBarDrawable.setEnabled(false)
-        actionBarDrawable.backgroundColor = ResourceUtils.getColorByAttribute(requireContext(), R.attr.colorError)
-        actionBarManager.setHomeIcon(actionBarDrawable)
     }
 }

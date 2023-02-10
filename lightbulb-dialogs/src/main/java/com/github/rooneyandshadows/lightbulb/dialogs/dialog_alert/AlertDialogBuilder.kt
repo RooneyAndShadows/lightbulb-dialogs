@@ -8,7 +8,6 @@ import com.github.rooneyandshadows.lightbulb.dialogs.base.internal.DialogAnimati
 import com.github.rooneyandshadows.lightbulb.dialogs.base.internal.DialogButtonConfiguration
 import com.github.rooneyandshadows.lightbulb.dialogs.base.internal.DialogTypes
 import com.github.rooneyandshadows.lightbulb.dialogs.base.internal.callbacks.*
-import com.github.rooneyandshadows.lightbulb.dialogs.dialog_custom.CustomDialogBuilder
 
 class AlertDialogBuilder @JvmOverloads constructor(
     lifecycleOwner: LifecycleOwner? = null,
