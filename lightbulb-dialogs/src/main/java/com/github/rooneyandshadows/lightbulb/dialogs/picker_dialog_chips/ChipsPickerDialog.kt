@@ -23,7 +23,9 @@ import com.github.rooneyandshadows.lightbulb.dialogs.picker_dialog_adapter.Adapt
 import com.github.rooneyandshadows.lightbulb.dialogs.picker_dialog_chips.ChipsFilterView.*
 import com.github.rooneyandshadows.lightbulb.dialogs.picker_dialog_chips.ChipsPickerAdapter.*
 import com.github.rooneyandshadows.lightbulb.recycleradapters.abstraction.EasyRecyclerAdapter
+import com.github.rooneyandshadows.lightbulb.recycleradapters.abstraction.callbacks.EasyAdapterCollectionChangedListener
 import java.util.function.Predicate
+import kotlin.math.ceil
 import kotlin.math.min
 import kotlin.streams.toList
 
@@ -60,6 +62,14 @@ class ChipsPickerDialog : AdapterPickerDialog<ChipModel>() {
         fun newInstance(): ChipsPickerDialog {
             return ChipsPickerDialog()
         }
+    }
+
+    init {
+        adapter.addOnCollectionChangedListener(object : EasyAdapterCollectionChangedListener {
+            override fun onChanged() {
+                measureDialogLayout()
+            }
+        })
     }
 
     @Override
@@ -160,7 +170,6 @@ class ChipsPickerDialog : AdapterPickerDialog<ChipModel>() {
         val widthMeasureSpec = MeasureSpec.makeMeasureSpec(0, MeasureSpec.UNSPECIFIED)
         val heightMeasureSpec = MeasureSpec.makeMeasureSpec(0, MeasureSpec.UNSPECIFIED)
         dialogLayout.measure(widthMeasureSpec, heightMeasureSpec)
-
         val headerHeight = headerViewHierarchy.titleAndMessageContainer?.measuredHeight ?: 0
         val footerHeight = footerViewHierarchy.buttonsContainer?.measuredHeight ?: 0
         val filterViewHeight = filterView.let {
@@ -188,24 +197,26 @@ class ChipsPickerDialog : AdapterPickerDialog<ChipModel>() {
             val heightMeasureSpec = MeasureSpec.makeMeasureSpec(0, MeasureSpec.UNSPECIFIED)
             measure(widthMeasureSpec, heightMeasureSpec)
         }
-        val chipHeight = chipView.measuredHeight
         val itemDecorationSpace = ResourceUtils.getDimenPxById(requireContext(), R.dimen.chips_picker_spacing_size)
+        val chipHeight = chipView.measuredHeight + itemDecorationSpace
         val textView: TextView = chipView.findViewById(R.id.chip_text_view)
         val widthMeasureSpec = MeasureSpec.makeMeasureSpec(0, MeasureSpec.UNSPECIFIED)
         val heightMeasureSpec = MeasureSpec.makeMeasureSpec(0, MeasureSpec.UNSPECIFIED)
         var totalRequiredWidth = 0
         var calculatedRows = 0
+        val maxWidth = getMaxWidth() - recyclerView.paddingStart - recyclerView.paddingEnd
         for (item in chipsAdapter.getItems()) {
             textView.text = item.chipTitle
             chipView.measure(widthMeasureSpec, heightMeasureSpec)
             val widthToAdd = chipView.measuredWidth + itemDecorationSpace
             totalRequiredWidth += widthToAdd
-            calculatedRows = totalRequiredWidth / getMaxWidth()
+            calculatedRows = ceil(totalRequiredWidth.toDouble() / maxWidth).toInt()
             if (calculatedRows >= maxRows) break
         }
+        println(calculatedRows)
         calculatedRows = min(calculatedRows, maxRows)
-        val rowsHeight = (calculatedRows * (chipHeight + itemDecorationSpace))
-        val desiredHeight = rowsHeight + recyclerView.paddingBottom + recyclerView.paddingTop - (itemDecorationSpace * 2)
+        val rowsHeight = (calculatedRows * chipHeight)
+        val desiredHeight = rowsHeight + recyclerView.paddingBottom
         val desiredWidth = min(getMaxWidth(), totalRequiredWidth)
         return Pair(desiredWidth, desiredHeight)
     }
