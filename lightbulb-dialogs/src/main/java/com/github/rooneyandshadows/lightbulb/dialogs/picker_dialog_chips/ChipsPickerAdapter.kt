@@ -10,6 +10,7 @@ import android.widget.TextView
 import androidx.appcompat.widget.AppCompatImageView
 import androidx.appcompat.widget.LinearLayoutCompat
 import androidx.recyclerview.widget.RecyclerView
+import com.github.rooneyandshadows.lightbulb.commons.utils.ParcelUtils
 import com.github.rooneyandshadows.lightbulb.commons.utils.ResourceUtils
 import com.github.rooneyandshadows.lightbulb.dialogs.R
 import com.github.rooneyandshadows.lightbulb.dialogs.picker_dialog_chips.ChipsPickerAdapter.ChipModel
@@ -160,6 +161,12 @@ class ChipsPickerAdapter : EasyRecyclerAdapter<ChipModel>(SELECT_MULTIPLE) {
 
     class ChipModel : EasyAdapterDataModel {
         val chipTitle: String
+        var id: UUID
+            private set
+
+        init {
+            id = UUID.randomUUID()
+        }
 
         override val itemName: String
             get() = chipTitle
@@ -171,11 +178,13 @@ class ChipsPickerAdapter : EasyRecyclerAdapter<ChipModel>(SELECT_MULTIPLE) {
         // Parcelling part
         constructor(parcel: Parcel) : super() {
             chipTitle = parcel.readString()!!
+            id = ParcelUtils.readUUID(parcel)!!
         }
 
         @Override
         override fun writeToParcel(dest: Parcel, i: Int) {
             dest.writeString(chipTitle)
+            ParcelUtils.writeUUID(dest, id)
         }
 
         @Override
