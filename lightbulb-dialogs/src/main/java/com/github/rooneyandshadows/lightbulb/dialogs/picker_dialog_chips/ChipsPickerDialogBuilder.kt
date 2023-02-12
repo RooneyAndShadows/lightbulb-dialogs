@@ -7,6 +7,7 @@ import androidx.fragment.app.FragmentManager
 import com.github.rooneyandshadows.lightbulb.dialogs.base.BaseDialogBuilder
 import com.github.rooneyandshadows.lightbulb.dialogs.base.internal.*
 import com.github.rooneyandshadows.lightbulb.dialogs.base.internal.callbacks.*
+import com.github.rooneyandshadows.lightbulb.dialogs.picker_dialog_chips.ChipsFilterView.OnOptionCreatedListener
 
 @Suppress("unused")
 class ChipsPickerDialogBuilder @JvmOverloads constructor(
@@ -19,12 +20,14 @@ class ChipsPickerDialogBuilder @JvmOverloads constructor(
     private var maxRows: Int? = null
     private var filterHintText: String? = null
     private var changedCallback: SelectionChangedListener<IntArray>? = null
+    private var onChipCreatedListener: OnOptionCreatedListener? = null
     private var selection: IntArray? = null
 
     @Override
     override fun setupNonRetainableSettings(dialog: ChipsPickerDialog) {
         dialog.apply {
             changedCallback?.apply { addOnSelectionChangedListener(this) }
+            onChipCreatedListener?.apply { setOnNewOptionListener(this) }
         }
     }
 
@@ -108,6 +111,11 @@ class ChipsPickerDialogBuilder @JvmOverloads constructor(
     @Override
     override fun withDialogListeners(listeners: DialogListeners): ChipsPickerDialogBuilder {
         return super.withDialogListeners(listeners) as ChipsPickerDialogBuilder
+    }
+
+    fun withOnChipCreatedListener(listener: OnOptionCreatedListener): ChipsPickerDialogBuilder {
+        this.onChipCreatedListener = listener
+        return this
     }
 
     fun withAllowNewOptions(allowNewOptions: Boolean): ChipsPickerDialogBuilder {

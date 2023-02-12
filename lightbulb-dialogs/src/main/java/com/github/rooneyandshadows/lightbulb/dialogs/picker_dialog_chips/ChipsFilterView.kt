@@ -14,6 +14,7 @@ import androidx.core.widget.doOnTextChanged
 import com.github.rooneyandshadows.lightbulb.commons.utils.KeyboardUtils
 import com.github.rooneyandshadows.lightbulb.commons.utils.ResourceUtils
 import com.github.rooneyandshadows.lightbulb.dialogs.R
+import com.github.rooneyandshadows.lightbulb.dialogs.picker_dialog_chips.ChipsPickerAdapter.ChipModel
 
 
 class ChipsFilterView @JvmOverloads constructor(
@@ -24,6 +25,7 @@ class ChipsFilterView @JvmOverloads constructor(
     private var filterInput: AppCompatEditText? = null
     private var addButton: AppCompatImageButton? = null
     private var allowAddition: Boolean = false
+    private var onOptionCreatedListener: OnOptionCreatedListener? = null
     private val adapter: ChipsPickerAdapter
         get() = (dialog!!.adapter as ChipsPickerAdapter)
     var dialog: ChipsPickerDialog? = null
@@ -39,8 +41,10 @@ class ChipsFilterView @JvmOverloads constructor(
                 if (!allowAddition) return@setOnClickListener
                 val currentQuery = filterInput?.text.toString()
                 if (currentQuery.isBlank()) return@setOnClickListener
-                adapter.addItem(ChipsPickerAdapter.ChipModel(currentQuery))
+                val newChip = ChipModel(currentQuery)
+                adapter.addItem(ChipModel(currentQuery))
                 filterInput?.setText("")
+                onOptionCreatedListener?.execute(newChip)
                 handleAddButtonVisibillity()
             }
         }
@@ -63,6 +67,10 @@ class ChipsFilterView @JvmOverloads constructor(
         filterInput = findViewById(R.id.dialogPickerFilter)
         addButton = findViewById(R.id.addButton)
         setupSizes()
+    }
+
+    fun setOnOptionCreatedListener(onOptionCreatedListener: OnOptionCreatedListener?) {
+        this.onOptionCreatedListener = onOptionCreatedListener
     }
 
     fun setAllowAddition(newValue: Boolean) {
@@ -95,5 +103,9 @@ class ChipsFilterView @JvmOverloads constructor(
         } else {
             addButton?.visibility = GONE
         }
+    }
+
+    interface OnOptionCreatedListener {
+        fun execute(option: ChipModel)
     }
 }

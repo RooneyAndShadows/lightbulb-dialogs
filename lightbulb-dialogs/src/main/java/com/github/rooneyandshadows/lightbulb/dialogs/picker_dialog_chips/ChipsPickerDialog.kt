@@ -20,6 +20,7 @@ import com.github.rooneyandshadows.lightbulb.dialogs.base.constraints.regular.Re
 import com.github.rooneyandshadows.lightbulb.dialogs.base.constraints.regular.RegularDialogConstraintsBuilder
 import com.github.rooneyandshadows.lightbulb.dialogs.base.internal.DialogTypes
 import com.github.rooneyandshadows.lightbulb.dialogs.picker_dialog_adapter.AdapterPickerDialog
+import com.github.rooneyandshadows.lightbulb.dialogs.picker_dialog_chips.ChipsFilterView.*
 import com.github.rooneyandshadows.lightbulb.dialogs.picker_dialog_chips.ChipsPickerAdapter.*
 import com.github.rooneyandshadows.lightbulb.recycleradapters.abstraction.EasyRecyclerAdapter
 import java.util.function.Predicate
@@ -35,6 +36,7 @@ class ChipsPickerDialog : AdapterPickerDialog<ChipModel>() {
         private set
     var allowAddNewOptions = true
         private set
+    private var onChipCreatedListener: OnOptionCreatedListener? = null
     private var filterHintText: String? = null
     private var filterView: ChipsFilterView? = null
     private var cachedRecyclerHeight = -1
@@ -104,6 +106,7 @@ class ChipsPickerDialog : AdapterPickerDialog<ChipModel>() {
                 filterView!!.dialog = this@ChipsPickerDialog
                 filterView!!.setAllowAddition(allowAddNewOptions)
                 filterView!!.isVisible = isFilterable
+                filterView!!.setOnOptionCreatedListener(onChipCreatedListener)
             }
         }
         this.recyclerView?.apply {
@@ -216,6 +219,11 @@ class ChipsPickerDialog : AdapterPickerDialog<ChipModel>() {
             .withMaxWidth(maxWidth)
             .withMaxHeight(min(getPercentOfWindowHeight(85), ResourceUtils.dpToPx(450)))
             .build()
+    }
+
+    fun setOnNewOptionListener(listener: OnOptionCreatedListener?) {
+        this.onChipCreatedListener = listener
+        filterView?.setOnOptionCreatedListener(onChipCreatedListener)
     }
 
     fun setFilterHintText(filterHintText: String) {
