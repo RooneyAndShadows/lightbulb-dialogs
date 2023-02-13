@@ -666,7 +666,8 @@ abstract class BaseDialogFragment : DialogFragment(), DefaultLifecycleObserver {
     @SuppressLint("ClickableViewAccessibility")
     private fun getBottomSheetDialogLayout(): View {
         val context = requireContext()
-        if (!isCancelable) return getDialogLayout(LayoutInflater.from(context))
+        if (!isCancelable || this@BaseDialogFragment is AdapterPickerDialog<*>)
+            return getDialogLayout(LayoutInflater.from(context))
         val parent = CoordinatorLayout(context)
         val params: CoordinatorLayout.LayoutParams = CoordinatorLayout.LayoutParams(
             ViewGroup.LayoutParams.MATCH_PARENT,
@@ -715,8 +716,7 @@ abstract class BaseDialogFragment : DialogFragment(), DefaultLifecycleObserver {
                     return@setOnTouchListener true
                 }
             }
-            if (this@BaseDialogFragment !is AdapterPickerDialog<*>)//Ignore bottom sheet drag for adapter picker dialogs
-                params.behavior = bottomSheetBehavior
+            params.behavior = bottomSheetBehavior
         }
         child.layoutParams = params
         return parent
