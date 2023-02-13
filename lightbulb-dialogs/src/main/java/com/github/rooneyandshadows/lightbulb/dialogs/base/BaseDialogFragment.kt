@@ -30,6 +30,7 @@ import com.github.rooneyandshadows.lightbulb.dialogs.base.internal.*
 import com.github.rooneyandshadows.lightbulb.dialogs.base.internal.DialogAnimationTypes.*
 import com.github.rooneyandshadows.lightbulb.dialogs.base.internal.DialogTypes.*
 import com.github.rooneyandshadows.lightbulb.dialogs.base.internal.callbacks.*
+import com.github.rooneyandshadows.lightbulb.dialogs.picker_dialog_adapter.AdapterPickerDialog
 import com.google.android.material.bottomsheet.BottomSheetBehavior
 
 @Suppress("MemberVisibilityCanBePrivate")
@@ -672,7 +673,7 @@ abstract class BaseDialogFragment : DialogFragment(), DefaultLifecycleObserver {
             ViewGroup.LayoutParams.WRAP_CONTENT
         )
         val child = getDialogLayout(LayoutInflater.from(context))
-        bottomSheetBehavior = LockableBottomSheetBehavior<View>().apply {
+        LockableBottomSheetBehavior<View>().apply {
             state = BottomSheetBehavior.STATE_EXPANDED
             isFitToContents = true
             val handlingFling = booleanArrayOf(false)
@@ -714,8 +715,9 @@ abstract class BaseDialogFragment : DialogFragment(), DefaultLifecycleObserver {
                     return@setOnTouchListener true
                 }
             }
+            if (this@BaseDialogFragment !is AdapterPickerDialog<*>)//Ignore bottom sheet drag for adapter picker dialogs
+                params.behavior = bottomSheetBehavior
         }
-        params.behavior = bottomSheetBehavior
         child.layoutParams = params
         return parent
     }
