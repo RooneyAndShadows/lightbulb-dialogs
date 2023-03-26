@@ -16,14 +16,13 @@ import com.github.rooneyandshadows.lightbulb.dialogs.R
 import com.github.rooneyandshadows.lightbulb.dialogs.picker_dialog_chips.ChipsPickerAdapter.ChipModel
 import com.github.rooneyandshadows.lightbulb.recycleradapters.abstraction.EasyAdapterDataModel
 import com.github.rooneyandshadows.lightbulb.recycleradapters.abstraction.EasyAdapterSelectableModes.SELECT_MULTIPLE
-import com.github.rooneyandshadows.lightbulb.recycleradapters.abstraction.EasyRecyclerAdapter
+import com.github.rooneyandshadows.lightbulb.recycleradapters.abstraction.EasyRecyclerFilterableAdapter
 import java.util.*
 import java.util.function.Predicate
 import kotlin.streams.toList
 
-
 @Suppress("unused", "UNCHECKED_CAST")
-class ChipsPickerAdapter : EasyRecyclerAdapter<ChipModel>(SELECT_MULTIPLE) {
+class ChipsPickerAdapter : EasyRecyclerFilterableAdapter<ChipModel>(SELECT_MULTIPLE) {
 
     companion object {
         private const val FILTERED_ITEMS_KEY = "FILTERED_ITEMS_KEY"
