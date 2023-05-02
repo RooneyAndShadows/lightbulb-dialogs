@@ -28,9 +28,8 @@ abstract class AdapterPickerDialog<ItemType : EasyAdapterDataModel>
     private val internalAdapter: DialogPickerAdapter<ItemType> by lazy {
         return@lazy adapterCreator.createAdapter()
     }
-    protected val recyclerView: DialogRecyclerView by lazy {
-        return@lazy requireView().findViewById(R.id.dialogRecycler)
-    }
+    protected lateinit var recyclerView: DialogRecyclerView
+        private set
     var itemDecoration: ItemDecoration? = null
         private set
     open val adapter: DialogPickerAdapter<ItemType>
@@ -52,6 +51,7 @@ abstract class AdapterPickerDialog<ItemType : EasyAdapterDataModel>
 
     @Override
     override fun setupDialogContent(view: View, savedInstanceState: Bundle?) {
+        recyclerView = requireView().findViewById(R.id.dialogRecycler)
         recyclerView.apply {
             isVerticalScrollBarEnabled = true
             isScrollbarFadingEnabled = false

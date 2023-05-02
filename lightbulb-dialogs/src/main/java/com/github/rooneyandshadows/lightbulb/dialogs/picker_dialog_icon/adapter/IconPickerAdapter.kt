@@ -19,6 +19,13 @@ import com.mikepenz.iconics.typeface.IIcon
 @Suppress("unused")
 class IconPickerAdapter @JvmOverloads constructor(private val selectableMode: SelectableModes = SELECT_SINGLE) :
     DialogPickerAdapter<IconModel>() {
+    override val collection: IconsCollection
+        get() = super.collection as IconsCollection
+
+    @Override
+    override fun createCollection(): IconsCollection {
+        return IconsCollection(this, selectableMode)
+    }
 
     @Override
     override fun onCreateViewHolder(parent: ViewGroup, viewType: Int): RecyclerView.ViewHolder {
