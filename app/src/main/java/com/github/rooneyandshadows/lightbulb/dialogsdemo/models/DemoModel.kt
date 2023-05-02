@@ -1,12 +1,12 @@
 package com.github.rooneyandshadows.lightbulb.dialogsdemo.models
 
 import com.github.rooneyandshadows.lightbulb.commons.utils.ParcelUtils.Companion.writeString
-import com.github.rooneyandshadows.lightbulb.recycleradapters.abstraction.EasyAdapterDataModel
 import com.github.rooneyandshadows.lightbulb.dialogsdemo.utils.icon.icons.DemoIcons
 import com.github.rooneyandshadows.lightbulb.dialogsdemo.utils.color.colors.DemoColors
 import android.os.Parcel
 import android.os.Parcelable.Creator
 import com.github.rooneyandshadows.lightbulb.commons.utils.ParcelUtils
+import com.github.rooneyandshadows.lightbulb.recycleradapters.abstraction.data.EasyAdapterDataModel
 import java.util.*
 
 class DemoModel : EasyAdapterDataModel {

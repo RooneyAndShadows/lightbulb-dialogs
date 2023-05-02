@@ -1,6 +1,5 @@
 package com.github.rooneyandshadows.lightbulb.dialogs.picker_dialog_adapter
 
-import android.annotation.SuppressLint
 import android.content.res.Configuration
 import android.graphics.Rect
 import android.os.Bundle
@@ -16,34 +15,30 @@ import com.github.rooneyandshadows.lightbulb.dialogs.base.DialogRecyclerView
 import com.github.rooneyandshadows.lightbulb.dialogs.base.constraints.bottomsheet.BottomSheetDialogConstraints
 import com.github.rooneyandshadows.lightbulb.dialogs.base.constraints.regular.RegularDialogConstraints
 import com.github.rooneyandshadows.lightbulb.dialogs.base.constraints.regular.RegularDialogConstraintsBuilder
-import com.github.rooneyandshadows.lightbulb.recycleradapters.abstraction.EasyAdapterDataModel
-import com.github.rooneyandshadows.lightbulb.recycleradapters.abstraction.EasyRecyclerAdapter
-import com.github.rooneyandshadows.lightbulb.recycleradapters.abstraction.callbacks.EasyAdapterSelectionChangedListener
+import com.github.rooneyandshadows.lightbulb.dialogs.picker_dialog_adapter.adapter.DialogPickerAdapter
+import com.github.rooneyandshadows.lightbulb.recycleradapters.abstraction.data.EasyAdapterDataModel
+import com.github.rooneyandshadows.lightbulb.recycleradapters.implementation.collection.ExtendedCollection.SelectionChangeListener
 import java.util.*
 
 
 @Suppress("unused")
 @JvmSuppressWildcards
-abstract class AdapterPickerDialog<ItemType : EasyAdapterDataModel> : BasePickerDialogFragment<IntArray>(
-    AdapterPickerDialogSelection(null, null)
-) {
-    protected var recyclerView: DialogRecyclerView? = null
-        private set
-    var itemDecoration: ItemDecoration? = null
-        private set
-    val adapter: EasyRecyclerAdapter<ItemType> by lazy {
+abstract class AdapterPickerDialog<ItemType : EasyAdapterDataModel>
+    : BasePickerDialogFragment<IntArray>(AdapterPickerDialogSelection(null, null)) {
+    private val internalAdapter: DialogPickerAdapter<ItemType> by lazy {
         return@lazy adapterCreator.createAdapter()
     }
+    protected val recyclerView: DialogRecyclerView by lazy {
+        return@lazy requireView().findViewById(R.id.dialogRecycler)
+    }
+    var itemDecoration: ItemDecoration? = null
+        private set
+    open val adapter: DialogPickerAdapter<ItemType>
+        get() = internalAdapter
     protected abstract val adapterCreator: AdapterCreator<ItemType>
 
     companion object {
         private const val ADAPTER_STATE_TAG = "ADAPTER_STATE_TAG"
-        fun <ItemType : EasyAdapterDataModel> newInstance(adapterCreator: AdapterCreator<ItemType>): AdapterPickerDialog<ItemType> {
-            return object : AdapterPickerDialog<ItemType>() {
-                override val adapterCreator: AdapterCreator<ItemType>
-                    get() = adapterCreator
-            }
-        }
     }
 
     protected open fun withItemAnimator(): Boolean {
@@ -57,8 +52,23 @@ abstract class AdapterPickerDialog<ItemType : EasyAdapterDataModel> : BasePicker
 
     @Override
     override fun setupDialogContent(view: View, savedInstanceState: Bundle?) {
-        recyclerView = view.findViewById(R.id.dialogRecycler)
-        configureRecyclerView()
+        recyclerView.apply {
+            isVerticalScrollBarEnabled = true
+            isScrollbarFadingEnabled = false
+            if (!withItemAnimator()) itemAnimator = null
+            layoutManager = LinearLayoutManager(context)
+            addMotionEventListener(object : DialogRecyclerView.MotionEventListener {
+                override fun onMotionEvent(event: MotionEvent) {
+                    when (event.action) {
+                        ACTION_DOWN, ACTION_MOVE -> enableBottomSheetDrag(false)
+                        ACTION_UP -> enableBottomSheetDrag(true)
+                    }
+                }
+            })
+            if (itemDecorationCount > 0) removeItemDecorationAt(0)
+            if (itemDecoration != null) addItemDecoration(itemDecoration!!, 0)
+            adapter = this@AdapterPickerDialog.internalAdapter
+        }
     }
 
     @Override
@@ -73,21 +83,26 @@ abstract class AdapterPickerDialog<ItemType : EasyAdapterDataModel> : BasePicker
 
     @Override
     override fun onSelectionChange(newSelection: IntArray?) {
-        val currentAdapterSelection = adapter.selectedPositionsAsArray
-        val needAdapterSync = !Arrays.equals(newSelection, currentAdapterSelection)
-        if (needAdapterSync) adapter.selectPositions(newSelection, newState = true, incremental = false)
+        val selection = newSelection ?: intArrayOf()
+        with(internalAdapter.collection) {
+            val currentAdapterSelection = selectedPositionsAsArray
+            val needAdapterSync = !selection.contentEquals(currentAdapterSelection)
+            if (!needAdapterSync) return@with
+            selectPositions(selection, newState = true, incremental = false)
+        }
     }
 
     @Override
     override fun doOnViewStateRestored(savedInstanceState: Bundle?) {
         super.doOnViewStateRestored(savedInstanceState)
-        val selectionListener = object : EasyAdapterSelectionChangedListener {
-            override fun onChanged(newSelection: IntArray?) {
-                if (isDialogShown) dialogSelection.setDraftSelection(newSelection)
-                else dialogSelection.setCurrentSelection(newSelection)
-            }
+        with(internalAdapter.collection) {
+            addOnSelectionChangeListener(object : SelectionChangeListener {
+                override fun onChanged(newSelection: IntArray?) {
+                    if (isDialogShown) dialogSelection.setDraftSelection(newSelection)
+                    else dialogSelection.setCurrentSelection(newSelection)
+                }
+            })
         }
-        adapter.addOrReplaceSelectionChangedListener(selectionListener)
     }
 
     @Override
@@ -97,7 +112,6 @@ abstract class AdapterPickerDialog<ItemType : EasyAdapterDataModel> : BasePicker
         dialogLayout: View,
         fgPadding: Rect,
     ) {
-        val recyclerView = this.recyclerView!!
         val widthMeasureSpec = View.MeasureSpec.makeMeasureSpec(constraints.getMaxWidth(), View.MeasureSpec.AT_MOST)
         val heightMeasureSpec = View.MeasureSpec.makeMeasureSpec(constraints.getMaxHeight(), View.MeasureSpec.AT_MOST)
         dialogLayout.measure(widthMeasureSpec, heightMeasureSpec)
@@ -119,7 +133,6 @@ abstract class AdapterPickerDialog<ItemType : EasyAdapterDataModel> : BasePicker
 
     @Override
     override fun setupFullScreenDialog(dialogWindow: Window, dialogLayout: View) {
-        val recyclerView = this.recyclerView!!
         val parameters = recyclerView.layoutParams as LinearLayoutCompat.LayoutParams
         parameters.weight = 1f
         val maxHeight = getWindowHeight()
@@ -137,7 +150,6 @@ abstract class AdapterPickerDialog<ItemType : EasyAdapterDataModel> : BasePicker
         dialogWindow: Window,
         dialogLayout: View,
     ) {
-        val recyclerView = this.recyclerView!!
         val widthMeasureSpec = View.MeasureSpec.makeMeasureSpec(getWindowWidth(), View.MeasureSpec.EXACTLY)
         val heightMeasureSpec = View.MeasureSpec.makeMeasureSpec(0, View.MeasureSpec.UNSPECIFIED)
         dialogLayout.measure(widthMeasureSpec, heightMeasureSpec)
@@ -157,7 +169,7 @@ abstract class AdapterPickerDialog<ItemType : EasyAdapterDataModel> : BasePicker
     override fun doOnSaveDialogProperties(outState: Bundle) {
         super.doOnSaveDialogProperties(outState)
         outState.apply {
-            putParcelable(ADAPTER_STATE_TAG, adapter.saveAdapterState())
+            putParcelable(ADAPTER_STATE_TAG, internalAdapter.saveAdapterState())
         }
     }
 
@@ -166,19 +178,26 @@ abstract class AdapterPickerDialog<ItemType : EasyAdapterDataModel> : BasePicker
         super.doOnRestoreDialogProperties(savedState)
         savedState.apply {
             val adapterState = BundleUtils.getParcelable(ADAPTER_STATE_TAG, this, Bundle::class.java)!!
-            adapter.restoreAdapterState(adapterState)
+            internalAdapter.restoreAdapterState(adapterState)
         }
     }
 
     @Override
     override fun setSelection(newSelection: IntArray?) {
         super.setSelection(newSelection)
-        adapter.selectPositions(positions = newSelection, newState = true, incremental = false)
+        with(internalAdapter.collection) {
+            val selection = newSelection ?: intArrayOf()
+            selectPositions(positions = selection, newState = true, incremental = false)
+        }
+    }
+
+    fun setData(data: List<ItemType>?) {
+        internalAdapter.collection.set(data ?: mutableListOf())
     }
 
     fun selectItem(item: ItemType?) {
         if (item == null) return
-        val position = adapter.getPosition(item)
+        val position = internalAdapter.collection.getPosition(item)
         if (position != -1) setSelection(intArrayOf(position))
     }
 
@@ -188,48 +207,21 @@ abstract class AdapterPickerDialog<ItemType : EasyAdapterDataModel> : BasePicker
 
     fun setItemDecoration(itemDecoration: ItemDecoration?) {
         this.itemDecoration = itemDecoration
-        recyclerView?.apply {
-            (0 until itemDecorationCount).forEach {
-                removeItemDecorationAt(0)
-            }
-            if (itemDecoration != null) addItemDecoration(itemDecoration)
-        }
-    }
-
-    fun setData(data: List<ItemType>?) {
-        adapter.setCollection(data ?: mutableListOf())
+        if (view == null) return
+        clearItemDecorations()
+        if (itemDecoration == null) return
+        recyclerView.addItemDecoration(itemDecoration)
     }
 
     private fun clearItemDecorations() {
-        recyclerView?.apply {
-            (0 until itemDecorationCount).forEach {
+        recyclerView.apply {
+            (0 until itemDecorationCount).forEach { _ ->
                 removeItemDecorationAt(0)
             }
-        }
-    }
-
-    @SuppressLint("ClickableViewAccessibility")
-    private fun configureRecyclerView() {
-        recyclerView?.apply {
-            isVerticalScrollBarEnabled = true
-            isScrollbarFadingEnabled = false
-            if (!withItemAnimator()) itemAnimator = null
-            layoutManager = LinearLayoutManager(context)
-            addMotionEventListener(object : DialogRecyclerView.MotionEventListener {
-                override fun onMotionEvent(event: MotionEvent) {
-                    when (event.action) {
-                        ACTION_DOWN, ACTION_MOVE -> enableBottomSheetDrag(false)
-                        ACTION_UP -> enableBottomSheetDrag(true)
-                    }
-                }
-            })
-            if (itemDecorationCount > 0) removeItemDecorationAt(0)
-            if (itemDecoration != null) addItemDecoration(itemDecoration!!, 0)
-            adapter = this@AdapterPickerDialog.adapter
         }
     }
 
     interface AdapterCreator<ItemType : EasyAdapterDataModel> {
-        fun createAdapter(): EasyRecyclerAdapter<ItemType>
+        fun createAdapter(): DialogPickerAdapter<ItemType>
     }
 }

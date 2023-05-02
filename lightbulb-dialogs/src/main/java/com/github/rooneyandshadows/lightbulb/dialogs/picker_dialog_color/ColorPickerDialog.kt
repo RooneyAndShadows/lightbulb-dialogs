@@ -13,9 +13,9 @@ import com.github.rooneyandshadows.lightbulb.dialogs.base.constraints.regular.Re
 import com.github.rooneyandshadows.lightbulb.dialogs.base.internal.DialogTypes
 import com.github.rooneyandshadows.lightbulb.dialogs.base.internal.DialogTypes.NORMAL
 import com.github.rooneyandshadows.lightbulb.dialogs.picker_dialog_adapter.AdapterPickerDialog
-import com.github.rooneyandshadows.lightbulb.dialogs.picker_dialog_color.ColorPickerAdapter.ColorModel
-import com.github.rooneyandshadows.lightbulb.recycleradapters.abstraction.EasyAdapterSelectableModes.SELECT_SINGLE
-import com.github.rooneyandshadows.lightbulb.recycleradapters.abstraction.EasyRecyclerAdapter
+import com.github.rooneyandshadows.lightbulb.dialogs.picker_dialog_color.adapter.ColorModel
+import com.github.rooneyandshadows.lightbulb.dialogs.picker_dialog_color.adapter.ColorPickerAdapter
+import com.github.rooneyandshadows.lightbulb.recycleradapters.implementation.collection.ExtendedCollection.SelectableModes.*
 import java.util.function.Predicate
 import kotlin.math.ceil
 import kotlin.math.max
@@ -29,9 +29,11 @@ class ColorPickerDialog : AdapterPickerDialog<ColorModel>() {
     override var dialogType: DialogTypes
         get() = NORMAL
         set(value) {}
+    override val adapter: ColorPickerAdapter
+        get() = super.adapter as ColorPickerAdapter
     override val adapterCreator: AdapterCreator<ColorModel>
         get() = object : AdapterCreator<ColorModel> {
-            override fun createAdapter(): EasyRecyclerAdapter<ColorModel> {
+            override fun createAdapter(): ColorPickerAdapter {
                 return ColorPickerAdapter(SELECT_SINGLE)
             }
         }
@@ -46,7 +48,7 @@ class ColorPickerDialog : AdapterPickerDialog<ColorModel>() {
     @Override
     override fun doOnSaveInstanceState(outState: Bundle) {
         super.doOnSaveInstanceState(outState)
-        val gridLayoutManager = recyclerView?.layoutManager as GridLayoutManager?
+        val gridLayoutManager = recyclerView.layoutManager as GridLayoutManager?
         if (gridLayoutManager != null)
             outState.putInt(LAST_VISIBLE_ITEM_KEY, gridLayoutManager.findFirstVisibleItemPosition())
         else outState.putInt(LAST_VISIBLE_ITEM_KEY, lastVisibleItemPosition)
@@ -61,7 +63,7 @@ class ColorPickerDialog : AdapterPickerDialog<ColorModel>() {
     @Override
     override fun setupDialogContent(view: View, savedInstanceState: Bundle?) {
         super.setupDialogContent(view, savedInstanceState)
-        val recyclerView = this.recyclerView!!
+        val recyclerView = this.recyclerView
         recyclerView.layoutParams.height = 1 //Fixes rendering all possible icons (later will be resized)
         val maxWidth = getMaxWidth()
         spans = min(7, maxWidth / iconSize)
@@ -88,13 +90,12 @@ class ColorPickerDialog : AdapterPickerDialog<ColorModel>() {
         dialogLayout: View,
         fgPadding: Rect,
     ) {
-        val recyclerView = this.recyclerView!!
         val widthMeasureSpec = View.MeasureSpec.makeMeasureSpec(0, View.MeasureSpec.UNSPECIFIED)
         val heightMeasureSpec = View.MeasureSpec.makeMeasureSpec(0, View.MeasureSpec.UNSPECIFIED)
         dialogLayout.measure(widthMeasureSpec, heightMeasureSpec)
         val horPadding = fgPadding.left + fgPadding.right
         val verPadding = fgPadding.top + fgPadding.bottom
-        val items = adapter.getItems().size
+        val items = adapter.collection.getItems().size
         val rows = ceil(items.toDouble() / spans).toInt()
         var dialogLayoutHeight = dialogLayout.measuredHeight
         val recyclerRequiredHeight = rows * iconSize + recyclerView.paddingBottom + recyclerView.paddingTop
@@ -123,17 +124,17 @@ class ColorPickerDialog : AdapterPickerDialog<ColorModel>() {
     }
 
     fun getColors(predicate: Predicate<ColorModel>): List<ColorModel> {
-        return adapter.getItems(predicate)
+        return adapter.collection.getItems(predicate)
     }
 
     fun getColorsByExternalNames(externalNames: List<String>): List<ColorModel> {
-        return adapter.getItems(Predicate { colorModel ->
+        return adapter.collection.getItems(Predicate { colorModel ->
             return@Predicate externalNames.contains(colorModel.externalName)
         })
     }
 
     fun getAdapterIconsByHexCodes(hexCodes: List<String>): List<ColorModel> {
-        return adapter.getItems(Predicate { colorModel ->
+        return adapter.collection.getItems(Predicate { colorModel ->
             return@Predicate hexCodes.contains(colorModel.colorHex)
         })
     }

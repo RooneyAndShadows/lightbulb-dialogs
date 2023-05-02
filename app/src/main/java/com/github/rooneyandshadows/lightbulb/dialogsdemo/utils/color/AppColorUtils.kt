@@ -1,6 +1,6 @@
 package com.github.rooneyandshadows.lightbulb.dialogsdemo.utils.color
 
-import com.github.rooneyandshadows.lightbulb.dialogs.picker_dialog_color.ColorPickerAdapter.ColorModel
+import com.github.rooneyandshadows.lightbulb.dialogs.picker_dialog_color.adapter.ColorModel
 import com.github.rooneyandshadows.lightbulb.dialogsdemo.utils.color.colors.DemoColors
 
 @Suppress("unused")

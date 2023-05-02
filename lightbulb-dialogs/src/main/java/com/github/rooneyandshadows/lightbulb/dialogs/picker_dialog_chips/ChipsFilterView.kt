@@ -14,8 +14,8 @@ import androidx.core.widget.doOnTextChanged
 import com.github.rooneyandshadows.lightbulb.commons.utils.KeyboardUtils
 import com.github.rooneyandshadows.lightbulb.commons.utils.ResourceUtils
 import com.github.rooneyandshadows.lightbulb.dialogs.R
-import com.github.rooneyandshadows.lightbulb.dialogs.picker_dialog_chips.ChipsPickerAdapter.ChipModel
-
+import com.github.rooneyandshadows.lightbulb.dialogs.picker_dialog_chips.adapter.ChipModel
+import com.github.rooneyandshadows.lightbulb.dialogs.picker_dialog_chips.adapter.ChipsPickerAdapter
 
 class ChipsFilterView @JvmOverloads constructor(
     context: Context,
@@ -27,14 +27,15 @@ class ChipsFilterView @JvmOverloads constructor(
     private var allowAddition: Boolean = false
     private var onOptionCreatedListener: OnOptionCreatedListener? = null
     private val adapter: ChipsPickerAdapter
-        get() = (dialog!!.adapter as ChipsPickerAdapter)
+        get() = dialog!!.adapter
     var dialog: ChipsPickerDialog? = null
         set(value) {
             field = value
-            filterInput?.onFocusChangeListener =
-                OnFocusChangeListener { _, hasFocus -> if (!hasFocus) KeyboardUtils.hideKeyboard(filterInput) }
+            filterInput?.onFocusChangeListener = OnFocusChangeListener { _, hasFocus ->
+                if (!hasFocus) KeyboardUtils.hideKeyboard(filterInput)
+            }
             filterInput?.doOnTextChanged { text, _, _, _ ->
-                adapter.filter.filter(text)
+                adapter.collection.filter.filter(text)
                 handleAddButtonVisibillity()
             }
             addButton?.setOnClickListener {
@@ -42,7 +43,7 @@ class ChipsFilterView @JvmOverloads constructor(
                 val currentQuery = filterInput?.text.toString()
                 if (currentQuery.isBlank()) return@setOnClickListener
                 val newChip = ChipModel(currentQuery)
-                adapter.addItem(ChipModel(currentQuery))
+                adapter.collection.add(ChipModel(currentQuery))
                 filterInput?.setText("")
                 onOptionCreatedListener?.execute(newChip)
                 handleAddButtonVisibillity()
@@ -97,7 +98,7 @@ class ChipsFilterView @JvmOverloads constructor(
     private fun handleAddButtonVisibillity() {
         if (allowAddition) {
             val currentQuery = filterInput?.text
-            if (!currentQuery.isNullOrBlank() && !adapter.hasItemWithName(currentQuery.toString()))
+            if (!currentQuery.isNullOrBlank() && !adapter.collection.hasItemWithName(currentQuery.toString()))
                 addButton?.visibility = VISIBLE
             else addButton?.visibility = GONE
         } else {

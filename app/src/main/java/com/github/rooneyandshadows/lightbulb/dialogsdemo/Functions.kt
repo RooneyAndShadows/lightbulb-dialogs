@@ -7,7 +7,6 @@ import androidx.databinding.BindingAdapter
 import androidx.databinding.InverseBindingAdapter
 import androidx.databinding.InverseBindingListener
 import com.github.rooneyandshadows.lightbulb.application.activity.slidermenu.drawable.ShowMenuDrawable
-import com.github.rooneyandshadows.lightbulb.commons.utils.DrawableUtils
 import com.github.rooneyandshadows.lightbulb.commons.utils.InteractionUtils
 import com.github.rooneyandshadows.lightbulb.commons.utils.ResourceUtils
 import com.github.rooneyandshadows.lightbulb.dialogs.base.BaseDialogFragment
@@ -17,12 +16,8 @@ import com.github.rooneyandshadows.lightbulb.dialogs.base.internal.DialogAnimati
 import com.github.rooneyandshadows.lightbulb.dialogs.base.internal.DialogButtonConfiguration
 import com.github.rooneyandshadows.lightbulb.dialogs.base.internal.DialogTypes
 import com.github.rooneyandshadows.lightbulb.dialogs.base.internal.callbacks.DialogButtonClickListener
-import com.github.rooneyandshadows.lightbulb.dialogs.picker_dialog_chips.ChipsPickerAdapter.ChipModel
-import com.github.rooneyandshadows.lightbulb.dialogsdemo.models.DemoModel
+import com.github.rooneyandshadows.lightbulb.dialogs.picker_dialog_chips.adapter.ChipModel
 import com.github.rooneyandshadows.lightbulb.dialogsdemo.spinner.base.adapter.DialogPropertyItem
-import com.github.rooneyandshadows.lightbulb.dialogsdemo.utils.icon.AppIconUtils
-import com.github.rooneyandshadows.lightbulb.recycleradapters.implementation.CheckBoxSelectableAdapter
-import com.github.rooneyandshadows.lightbulb.recycleradapters.implementation.RadioButtonSelectableAdapter
 import com.github.rooneyandshadows.lightbulb.textinputview.TextInputView
 
 fun getHomeDrawable(context: Context): Drawable {
@@ -114,50 +109,6 @@ fun setPickerSelection(view: TextInputView, newButtonConfiguration: DialogButton
 fun bindPickerEvent(view: TextInputView, bindingListener: InverseBindingListener) {
     view.addTextChangedCallback { _, _ ->
         bindingListener.onChange()
-    }
-}
-
-fun getRadioButtonAdapter(): RadioButtonSelectableAdapter<DemoModel> {
-    return object : RadioButtonSelectableAdapter<DemoModel>() {
-        @Override
-        override fun getItemIcon(context: Context, item: DemoModel): Drawable {
-            return AppIconUtils.getIconWithAttributeColor(
-                context,
-                item.icon,
-                R.attr.colorOnSurface,
-                R.dimen.ICON_SIZE_RECYCLER_ITEM
-            )
-        }
-
-        @Override
-        override fun getItemIconBackground(context: Context, item: DemoModel): Drawable {
-            return DrawableUtils.getRoundedCornersDrawable(
-                item.iconBackgroundColor.color,
-                ResourceUtils.dpToPx(100)
-            )
-        }
-    }
-}
-
-fun getCheckboxAdapter(): CheckBoxSelectableAdapter<DemoModel> {
-    return object : CheckBoxSelectableAdapter<DemoModel>() {
-        @Override
-        override fun getItemIcon(context: Context, item: DemoModel): Drawable {
-            return AppIconUtils.getIconWithAttributeColor(
-                context,
-                item.icon,
-                R.attr.colorOnSurface,
-                R.dimen.ICON_SIZE_RECYCLER_ITEM
-            )
-        }
-
-        @Override
-        override fun getItemIconBackground(context: Context, item: DemoModel): Drawable {
-            return DrawableUtils.getRoundedCornersDrawable(
-                item.iconBackgroundColor.color,
-                ResourceUtils.dpToPx(100)
-            )
-        }
     }
 }
 

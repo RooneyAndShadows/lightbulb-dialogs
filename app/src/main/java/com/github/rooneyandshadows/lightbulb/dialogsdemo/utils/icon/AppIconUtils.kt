@@ -5,8 +5,8 @@ import androidx.annotation.AttrRes
 import androidx.annotation.DimenRes
 import com.github.rooneyandshadows.lightbulb.commons.utils.IconUtils
 import com.github.rooneyandshadows.lightbulb.commons.utils.ResourceUtils
-import com.github.rooneyandshadows.lightbulb.dialogs.picker_dialog_icon.IconPickerAdapter.IconModel
-import com.github.rooneyandshadows.lightbulb.dialogs.picker_dialog_icon.IconPickerAdapter.IconSet
+import com.github.rooneyandshadows.lightbulb.dialogs.picker_dialog_icon.adapter.IconModel
+import com.github.rooneyandshadows.lightbulb.dialogs.picker_dialog_icon.adapter.IconSet.*
 import com.github.rooneyandshadows.lightbulb.dialogsdemo.R
 import com.github.rooneyandshadows.lightbulb.dialogsdemo.utils.icon.icons.DemoIcons
 import com.mikepenz.iconics.IconicsDrawable
@@ -63,7 +63,7 @@ object AppIconUtils {
         get() {
             val result: MutableList<IconModel> = mutableListOf()
             for (demoIcon in DemoIcons.values())
-                result.add(IconModel(demoIcon.icon.name, IconSet.FONTAWESOME))
+                result.add(IconModel(demoIcon.icon.name, FONTAWESOME))
             return result
         }
 }

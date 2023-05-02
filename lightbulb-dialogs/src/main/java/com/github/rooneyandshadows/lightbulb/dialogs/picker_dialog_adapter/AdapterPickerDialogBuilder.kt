@@ -8,14 +8,14 @@ import com.github.rooneyandshadows.lightbulb.dialogs.base.BaseDialogBuilder
 import com.github.rooneyandshadows.lightbulb.dialogs.base.BasePickerDialogFragment.SelectionChangedListener
 import com.github.rooneyandshadows.lightbulb.dialogs.base.internal.*
 import com.github.rooneyandshadows.lightbulb.dialogs.base.internal.callbacks.*
-import com.github.rooneyandshadows.lightbulb.recycleradapters.abstraction.EasyAdapterDataModel
+import com.github.rooneyandshadows.lightbulb.recycleradapters.abstraction.data.EasyAdapterDataModel
 
 @Suppress("UNCHECKED_CAST", "unused")
 class AdapterPickerDialogBuilder<DialogType : AdapterPickerDialog<out EasyAdapterDataModel>> @JvmOverloads constructor(
     lifecycleOwner: LifecycleOwner? = null,
     manager: FragmentManager,
     dialogTag: String,
-    private val dialogInitializer: AdapterPickerDialogInitializer<DialogType>
+    private val dialogInitializer: AdapterPickerDialogInitializer<DialogType>,
 ) : BaseDialogBuilder<DialogType>(lifecycleOwner, manager, dialogTag) {
     private var changedCallback: SelectionChangedListener<IntArray>? = null
     private var itemDecoration: RecyclerView.ItemDecoration? = null

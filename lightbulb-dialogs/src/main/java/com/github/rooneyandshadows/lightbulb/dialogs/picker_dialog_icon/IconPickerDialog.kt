@@ -12,9 +12,9 @@ import com.github.rooneyandshadows.lightbulb.dialogs.base.constraints.regular.Re
 import com.github.rooneyandshadows.lightbulb.dialogs.base.constraints.regular.RegularDialogConstraintsBuilder
 import com.github.rooneyandshadows.lightbulb.dialogs.base.internal.DialogTypes
 import com.github.rooneyandshadows.lightbulb.dialogs.picker_dialog_adapter.AdapterPickerDialog
-import com.github.rooneyandshadows.lightbulb.dialogs.picker_dialog_icon.IconPickerAdapter.*
-import com.github.rooneyandshadows.lightbulb.recycleradapters.abstraction.EasyAdapterSelectableModes
-import com.github.rooneyandshadows.lightbulb.recycleradapters.abstraction.EasyRecyclerAdapter
+import com.github.rooneyandshadows.lightbulb.dialogs.picker_dialog_icon.adapter.IconModel
+import com.github.rooneyandshadows.lightbulb.dialogs.picker_dialog_icon.adapter.IconPickerAdapter
+import com.github.rooneyandshadows.lightbulb.recycleradapters.implementation.collection.ExtendedCollection.SelectableModes.SELECT_SINGLE
 import java.util.function.Predicate
 import kotlin.math.ceil
 import kotlin.math.max
@@ -28,10 +28,12 @@ class IconPickerDialog : AdapterPickerDialog<IconModel>() {
     override var dialogType: DialogTypes
         get() = DialogTypes.NORMAL
         set(value) {}
+    override val adapter: IconPickerAdapter
+        get() = super.adapter as IconPickerAdapter
     override val adapterCreator: AdapterCreator<IconModel>
         get() = object : AdapterCreator<IconModel> {
-            override fun createAdapter(): EasyRecyclerAdapter<IconModel> {
-                return IconPickerAdapter(EasyAdapterSelectableModes.SELECT_SINGLE)
+            override fun createAdapter(): IconPickerAdapter {
+                return IconPickerAdapter(SELECT_SINGLE)
             }
         }
 
@@ -46,7 +48,7 @@ class IconPickerDialog : AdapterPickerDialog<IconModel>() {
     @Override
     override fun doOnSaveInstanceState(outState: Bundle) {
         super.doOnSaveInstanceState(outState)
-        val gridLayoutManager = recyclerView?.layoutManager as GridLayoutManager?
+        val gridLayoutManager = recyclerView.layoutManager as GridLayoutManager?
         if (gridLayoutManager != null)
             outState.putInt(LAST_VISIBLE_ITEM_KEY, gridLayoutManager.findFirstVisibleItemPosition())
         else outState.putInt(LAST_VISIBLE_ITEM_KEY, lastVisibleItemPosition)
@@ -61,7 +63,6 @@ class IconPickerDialog : AdapterPickerDialog<IconModel>() {
     @Override
     override fun setupDialogContent(view: View, savedInstanceState: Bundle?) {
         super.setupDialogContent(view, savedInstanceState)
-        val recyclerView = this.recyclerView!!
         recyclerView.layoutParams.height = 1 //Fixes rendering all possible icons (later will be resized)
         spans = min(7, getMaxWidth() / iconSize)
         recyclerView.layoutManager = GridLayoutManager(context, spans, RecyclerView.VERTICAL, false)
@@ -98,13 +99,12 @@ class IconPickerDialog : AdapterPickerDialog<IconModel>() {
         dialogLayout: View,
         fgPadding: Rect,
     ) {
-        val recyclerView = this.recyclerView!!
         val widthMeasureSpec = View.MeasureSpec.makeMeasureSpec(0, View.MeasureSpec.UNSPECIFIED)
         val heightMeasureSpec = View.MeasureSpec.makeMeasureSpec(0, View.MeasureSpec.UNSPECIFIED)
         dialogLayout.measure(widthMeasureSpec, heightMeasureSpec)
         val horPadding = fgPadding.left + fgPadding.right
         val verPadding = fgPadding.top + fgPadding.bottom
-        val items = adapter.getItems().size
+        val items = adapter.collection.getItems().size
         val rows = ceil(items.toDouble() / spans).toInt()
         var dialogLayoutHeight = dialogLayout.measuredHeight
         val recyclerRequiredHeight = rows * iconSize + recyclerView.paddingBottom + recyclerView.paddingTop
@@ -133,11 +133,11 @@ class IconPickerDialog : AdapterPickerDialog<IconModel>() {
     }
 
     fun getIcons(predicate: Predicate<IconModel>): List<IconModel> {
-        return adapter.getItems(predicate)
+        return adapter.collection.getItems(predicate)
     }
 
     private fun getIconsByNames(iconNames: List<String>): List<IconModel> {
-        return adapter.getItems(Predicate { iconModel ->
+        return adapter.collection.getItems(Predicate { iconModel ->
             return@Predicate iconNames.contains(iconModel.iconName)
         })
     }

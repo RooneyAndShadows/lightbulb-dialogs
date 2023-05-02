@@ -51,6 +51,7 @@ dependencies {
     implementation "androidx.appcompat:appcompat:$versions.android.appcompat"
     implementation "com.google.android.material:material:$versions.android.material"
     implementation "androidx.constraintlayout:constraintlayout:$versions.android.constraint_layout"
+    implementation "com.github.rooneyandshadows:lightbulb-commons:$versions.lightbulb.commons"
     implementation "com.github.rooneyandshadows:lightbulb-application:$versions.lightbulb.application"
     implementation "com.github.rooneyandshadows:lightbulb-textinputview:$versions.lightbulb.textinputview"
     implementation "com.github.rooneyandshadows:lightbulb-recycleradapters:$versions.lightbulb.recycler_adapters"

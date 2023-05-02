@@ -1,7 +1,5 @@
-package com.github.rooneyandshadows.lightbulb.dialogs.picker_dialog_chips
+package com.github.rooneyandshadows.lightbulb.dialogs.picker_dialog_chips.adapter
 
-import android.os.Parcel
-import android.os.Parcelable
 import android.view.LayoutInflater
 import android.view.View
 import android.view.ViewGroup
@@ -10,31 +8,28 @@ import android.widget.TextView
 import androidx.appcompat.widget.AppCompatImageView
 import androidx.appcompat.widget.LinearLayoutCompat
 import androidx.recyclerview.widget.RecyclerView
-import com.github.rooneyandshadows.lightbulb.commons.utils.ParcelUtils
 import com.github.rooneyandshadows.lightbulb.commons.utils.ResourceUtils
 import com.github.rooneyandshadows.lightbulb.dialogs.R
-import com.github.rooneyandshadows.lightbulb.dialogs.picker_dialog_chips.ChipsPickerAdapter.ChipModel
-import com.github.rooneyandshadows.lightbulb.recycleradapters.abstraction.EasyAdapterDataModel
-import com.github.rooneyandshadows.lightbulb.recycleradapters.abstraction.EasyAdapterSelectableModes.SELECT_MULTIPLE
-import com.github.rooneyandshadows.lightbulb.recycleradapters.abstraction.EasyRecyclerFilterableAdapter
-import java.util.*
-import java.util.function.Predicate
-import kotlin.streams.toList
+import com.github.rooneyandshadows.lightbulb.dialogs.picker_dialog_adapter.adapter.DialogPickerAdapter
+import com.github.rooneyandshadows.lightbulb.recycleradapters.implementation.collection.ExtendedCollection
 
 @Suppress("unused", "UNCHECKED_CAST")
-class ChipsPickerAdapter : EasyRecyclerFilterableAdapter<ChipModel>(SELECT_MULTIPLE) {
-
-    companion object {
-        private const val FILTERED_ITEMS_KEY = "FILTERED_ITEMS_KEY"
-    }
+class ChipsPickerAdapter : DialogPickerAdapter<ChipModel>() {
+    override val collection: ChipsCollection
+        get() = super.collection as ChipsCollection
 
     init {
         setHasStableIds(true)
     }
 
     @Override
+    override fun createCollection(): ExtendedCollection<ChipModel> {
+        return ChipsCollection(this)
+    }
+
+    @Override
     override fun getItemId(position: Int): Long {
-        return getItem(position).hashCode().toLong()
+        return collection.getItem(position).hashCode().toLong()
     }
 
     @Override
@@ -48,15 +43,8 @@ class ChipsPickerAdapter : EasyRecyclerFilterableAdapter<ChipModel>(SELECT_MULTI
 
     @Override
     override fun onBindViewHolder(holder: RecyclerView.ViewHolder, position: Int) {
-        val vHolder: ChipVH = holder as ChipsPickerAdapter.ChipVH
+        val vHolder: ChipVH = holder as ChipVH
         vHolder.init()
-    }
-
-
-    @Override
-    override fun addItem(item: ChipModel) {
-        super.addItem(item)
-        selectItem(item, true)
     }
 
     @Override
@@ -64,26 +52,6 @@ class ChipsPickerAdapter : EasyRecyclerFilterableAdapter<ChipModel>(SELECT_MULTI
         super.onViewRecycled(holder)
         val vHolder = holder as ChipVH
         vHolder.recycle()
-    }
-
-    @Override
-    override fun getItemName(item: ChipModel): String {
-        return item.itemName
-    }
-
-    @Override
-    override fun filterItem(item: ChipModel, filterQuery: String): Boolean {
-        val locale = Locale.getDefault()
-        val filterString = filterQuery.lowercase(locale)
-        val itemName = item.itemName.lowercase(locale)
-        return itemName.contains(filterString)
-    }
-
-    fun hasItemWithName(name: String): Boolean {
-        if (name.isBlank()) return false
-        return getItems().stream().filter(Predicate { item -> return@Predicate item.itemName == name })
-            .toList()
-            .isNotEmpty()
     }
 
     inner class ChipVH internal constructor(private val chipView: LinearLayoutCompat) : RecyclerView.ViewHolder(chipView) {
@@ -98,9 +66,9 @@ class ChipsPickerAdapter : EasyRecyclerFilterableAdapter<ChipModel>(SELECT_MULTI
         init {
             chipView.apply {
                 setOnClickListener {
-                    val item = getFilteredItems()[filteredPosition]
-                    val newState = !this@ChipsPickerAdapter.isItemSelected(item)
-                    selectItem(item, newState, false)
+                    val item = collection.filteredItems[filteredPosition]
+                    val newState = !collection.isItemSelected(item)
+                    collection.selectItem(item, newState, false)
                     notifyItemChanged(filteredPosition, false)
                     //update item decoration before/after element
                     if (newState) {
@@ -115,9 +83,9 @@ class ChipsPickerAdapter : EasyRecyclerFilterableAdapter<ChipModel>(SELECT_MULTI
         }
 
         fun init() {
-            val item = getFilteredItems()[filteredPosition]
-            val originalPosition = getPosition(item)
-            val selectedInAdapter = isItemSelected(originalPosition)
+            val item = collection.filteredItems[filteredPosition]
+            val position = absoluteAdapterPosition - headersCount
+            val selectedInAdapter = collection.isItemSelected(position)
             chipView.apply {
                 isSelected = selectedInAdapter
                 textView.apply {
@@ -141,64 +109,6 @@ class ChipsPickerAdapter : EasyRecyclerFilterableAdapter<ChipModel>(SELECT_MULTI
 
         fun recycle() {
             iconView.setImageDrawable(null)
-        }
-    }
-
-/*private fun animateToWidth(view: View,show:Boolean) {
-    val from = if(show)0
-
-    val anim = ValueAnimator.ofInt(view.measuredHeight, -100)
-    anim.addUpdateListener { valueAnimator ->
-        val `val` = valueAnimator.animatedValue as Int
-        val layoutParams: ViewGroup.LayoutParams = view.layoutParams
-        layoutParams.height = `val`
-        view.layoutParams = layoutParams
-    }
-    anim.duration = 1000
-    anim.start()
-}*/
-
-    class ChipModel : EasyAdapterDataModel {
-        val chipTitle: String
-        var id: UUID
-            private set
-
-        init {
-            id = UUID.randomUUID()
-        }
-
-        override val itemName: String
-            get() = chipTitle
-
-        constructor(title: String) : super() {
-            this.chipTitle = title
-        }
-
-        // Parcelling part
-        constructor(parcel: Parcel) : super() {
-            chipTitle = parcel.readString()!!
-            id = ParcelUtils.readUUID(parcel)!!
-        }
-
-        @Override
-        override fun writeToParcel(dest: Parcel, i: Int) {
-            dest.writeString(chipTitle)
-            ParcelUtils.writeUUID(dest, id)
-        }
-
-        @Override
-        override fun describeContents(): Int {
-            return 0
-        }
-
-        companion object CREATOR : Parcelable.Creator<ChipModel> {
-            override fun createFromParcel(parcel: Parcel): ChipModel {
-                return ChipModel(parcel)
-            }
-
-            override fun newArray(size: Int): Array<ChipModel?> {
-                return arrayOfNulls(size)
-            }
         }
     }
 }

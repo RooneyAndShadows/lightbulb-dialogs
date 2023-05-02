@@ -74,16 +74,8 @@ class MonthPickerDialog : BasePickerDialogFragment<Month>(MonthSelection(null, n
         outState.apply bundle@{
             putInt(PICKER_MIN_YEAR, minYear)
             putInt(PICKER_MAX_YEAR, maxYear)
-            enabledMonths.apply {
-                val arrayList = arrayListOf<Month>()
-                arrayList.addAll(this)
-                BundleUtils.putParcelableArrayList(PICKER_ENABLED_MONTHS, this@bundle, arrayList)
-            }
-            disabledMonths.apply {
-                val arrayList = arrayListOf<Month>()
-                arrayList.addAll(this)
-                BundleUtils.putParcelableArrayList(PICKER_DISABLED_MONTHS, this@bundle, arrayList)
-            }
+            BundleUtils.putParcelableList(PICKER_ENABLED_MONTHS, this, enabledMonths)
+            BundleUtils.putParcelableList(PICKER_DISABLED_MONTHS, this, disabledMonths)
             putString(DATE_FORMAT_TAG, dialogDateFormat)
         }
     }
@@ -95,10 +87,10 @@ class MonthPickerDialog : BasePickerDialogFragment<Month>(MonthSelection(null, n
             minYear = savedState.getInt(PICKER_MIN_YEAR)
             maxYear = savedState.getInt(PICKER_MAX_YEAR)
             dialogDateFormat = savedState.getString(DATE_FORMAT_TAG, dialogDateFormat)
-            BundleUtils.getParcelableArrayList(PICKER_ENABLED_MONTHS, this, Month::class.java)?.apply {
+            BundleUtils.getParcelableList(PICKER_ENABLED_MONTHS, this, Month::class.java)?.apply {
                 enabledMonths = this
             }
-            BundleUtils.getParcelableArrayList(PICKER_DISABLED_MONTHS, this, Month::class.java)?.apply {
+            BundleUtils.getParcelableList(PICKER_DISABLED_MONTHS, this, Month::class.java)?.apply {
                 disabledMonths = this
             }
         }

@@ -8,10 +8,10 @@ import com.github.rooneyandshadows.lightbulb.application.fragment.cofiguration.A
 import com.github.rooneyandshadows.lightbulb.commons.utils.BundleUtils
 import com.github.rooneyandshadows.lightbulb.commons.utils.ResourceUtils
 import com.github.rooneyandshadows.lightbulb.dialogs.base.internal.DialogButtonConfiguration
-import com.github.rooneyandshadows.lightbulb.dialogs.picker_dialog_icon.IconPickerAdapter.IconModel
-import com.github.rooneyandshadows.lightbulb.dialogs.picker_dialog_icon.IconPickerAdapter.IconSet.FONTAWESOME
 import com.github.rooneyandshadows.lightbulb.dialogs.picker_dialog_icon.IconPickerDialog
 import com.github.rooneyandshadows.lightbulb.dialogs.picker_dialog_icon.IconPickerDialogBuilder
+import com.github.rooneyandshadows.lightbulb.dialogs.picker_dialog_icon.adapter.IconModel
+import com.github.rooneyandshadows.lightbulb.dialogs.picker_dialog_icon.adapter.IconSet.*
 import com.github.rooneyandshadows.lightbulb.dialogsdemo.*
 import com.github.rooneyandshadows.lightbulb.dialogsdemo.databinding.FragmentDemoDialogIconPickerBinding
 

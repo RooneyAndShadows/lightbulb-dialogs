@@ -10,7 +10,7 @@ android {
         targetSdkVersion 33
         testInstrumentationRunner "androidx.test.runner.AndroidJUnitRunner"
         consumerProguardFiles "consumer-rules.pro"
-        versionName "2.0.0-RC21"
+        versionName "2.0.0-RC22"
     }
     buildFeatures {
         dataBinding true
@@ -67,6 +67,7 @@ dependencies {
     implementation "com.github.rooneyandshadows:java-commons:$versions.java_commons"
     implementation "com.github.rooneyandshadows:lightbulb-commons:$versions.lightbulb.commons"
     implementation "com.github.rooneyandshadows:lightbulb-recycleradapters:$versions.lightbulb.recycler_adapters"
+    implementation "com.github.rooneyandshadows:lightbulb-selectableview:$versions.lightbulb.selectableview"
     implementation "com.github.rooneyandshadows:lightbulb-calendars:$versions.lightbulb.calendars"
     implementation "com.github.prolificinteractive:material-calendarview:$versions.material_calendarview"
 }

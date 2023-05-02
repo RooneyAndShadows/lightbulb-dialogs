@@ -21,9 +21,10 @@ import com.github.rooneyandshadows.lightbulb.dialogs.base.constraints.regular.Re
 import com.github.rooneyandshadows.lightbulb.dialogs.base.internal.DialogTypes
 import com.github.rooneyandshadows.lightbulb.dialogs.picker_dialog_adapter.AdapterPickerDialog
 import com.github.rooneyandshadows.lightbulb.dialogs.picker_dialog_chips.ChipsFilterView.*
-import com.github.rooneyandshadows.lightbulb.dialogs.picker_dialog_chips.ChipsPickerAdapter.*
-import com.github.rooneyandshadows.lightbulb.recycleradapters.abstraction.EasyRecyclerAdapter
-import com.github.rooneyandshadows.lightbulb.recycleradapters.abstraction.callbacks.EasyAdapterCollectionChangedListener
+import com.github.rooneyandshadows.lightbulb.dialogs.picker_dialog_chips.adapter.ChipModel
+import com.github.rooneyandshadows.lightbulb.dialogs.picker_dialog_chips.adapter.ChipsPickerAdapter
+import com.github.rooneyandshadows.lightbulb.dialogs.picker_dialog_chips.adapter.ChipsPickerAdapter.*
+import com.github.rooneyandshadows.lightbulb.recycleradapters.abstraction.collection.EasyRecyclerAdapterCollection.CollectionChangeListener
 import java.util.function.Predicate
 import kotlin.math.ceil
 import kotlin.math.min
@@ -42,14 +43,14 @@ class ChipsPickerDialog : AdapterPickerDialog<ChipModel>() {
     private var filterHintText: String? = null
     private var filterView: ChipsFilterView? = null
     private var cachedRecyclerHeight = -1
-    private val chipsAdapter: ChipsPickerAdapter
-        get() = adapter as ChipsPickerAdapter
+    override val adapter: ChipsPickerAdapter
+        get() = super.adapter as ChipsPickerAdapter
     override var dialogType: DialogTypes
         get() = DialogTypes.BOTTOM_SHEET
         set(value) {}
     override val adapterCreator: AdapterCreator<ChipModel>
         get() = object : AdapterCreator<ChipModel> {
-            override fun createAdapter(): EasyRecyclerAdapter<ChipModel> {
+            override fun createAdapter(): ChipsPickerAdapter {
                 return ChipsPickerAdapter()
             }
         }
@@ -59,17 +60,20 @@ class ChipsPickerDialog : AdapterPickerDialog<ChipModel>() {
         private const val LAST_VISIBLE_ITEM_KEY = "LAST_VISIBLE_ITEM_KEY"
         private const val MAX_ROWS_KEY = "MAX_ROWS_KEY"
         private const val FILTER_HINT_TEXT = "FILTER_HINT_TEXT"
+        private const val LAYOUT_MANAGER_STATE = "LAYOUT_MANAGER_STATE"
         fun newInstance(): ChipsPickerDialog {
             return ChipsPickerDialog()
         }
     }
 
     init {
-        adapter.addOnCollectionChangedListener(object : EasyAdapterCollectionChangedListener {
-            override fun onChanged() {
-                measureDialogLayout()
-            }
-        })
+        with(adapter.collection) {
+            addOnCollectionChangedListener(object : CollectionChangeListener {
+                override fun onChanged() {
+                    measureDialogLayout()
+                }
+            })
+        }
     }
 
     @Override
@@ -83,8 +87,8 @@ class ChipsPickerDialog : AdapterPickerDialog<ChipModel>() {
         outState.apply {
             putInt(MAX_ROWS_KEY, maxRows)
             putString(FILTER_HINT_TEXT, filterHintText)
-            (recyclerView?.layoutManager as FlowLayoutManager).apply {
-                putParcelable("LAYOUT_MANAGER_STATE", onSaveInstanceState())
+            (recyclerView.layoutManager as FlowLayoutManager).apply {
+                putParcelable(LAYOUT_MANAGER_STATE, onSaveInstanceState())
             }
         }
     }
@@ -95,8 +99,8 @@ class ChipsPickerDialog : AdapterPickerDialog<ChipModel>() {
         savedState.apply bundle@{
             filterHintText = getString(FILTER_HINT_TEXT)
             maxRows = getInt(MAX_ROWS_KEY)
-            (recyclerView?.layoutManager as FlowLayoutManager).apply {
-                val layoutState = BundleUtils.getParcelable("LAYOUT_MANAGER_STATE", this@bundle, Parcelable::class.java)!!
+            (recyclerView.layoutManager as FlowLayoutManager).apply {
+                val layoutState = BundleUtils.getParcelable(LAYOUT_MANAGER_STATE, this@bundle, Parcelable::class.java)!!
                 onRestoreInstanceState(layoutState)
             }
         }
@@ -119,7 +123,7 @@ class ChipsPickerDialog : AdapterPickerDialog<ChipModel>() {
                 filterView!!.setOnOptionCreatedListener(onChipCreatedListener)
             }
         }
-        this.recyclerView?.apply {
+        this.recyclerView.apply {
             val spacing = ResourceUtils.getDimenPxById(context, R.dimen.chips_picker_spacing_size)
             setPadding(ResourceUtils.getDimenPxById(context, R.dimen.spacing_size_medium))
             layoutParams.height = 1 //Fixes rendering all possible labels (later will be resized)
@@ -129,26 +133,26 @@ class ChipsPickerDialog : AdapterPickerDialog<ChipModel>() {
             }
             clipToPadding = false
             /* fixes drawing from bottom to top
-            object : FlowLayoutManager.Listeners {
-                override fun onFirstLineDrawnWhileScrollingUp() {
-                    adapter?.apply {
-                        post {
-                            val animator = itemAnimator
-                            itemAnimator = null
-                            //fixes drawing from bottom to top on items
-                            if (itemCount > 0) notifyItemChanged(0, false)
-                            itemAnimator = animator
+                object : FlowLayoutManager.Listeners {
+                    override fun onFirstLineDrawnWhileScrollingUp() {
+                        adapter?.apply {
+                            post {
+                                val animator = itemAnimator
+                                itemAnimator = null
+                                //fixes drawing from bottom to top on items
+                                if (itemCount > 0) notifyItemChanged(0, false)
+                                itemAnimator = animator
+                            }
                         }
                     }
                 }
-            }
-            */
+                */
             /*FlexboxItemDecoration(context).apply {
-                setOrientation(FlexboxItemDecoration.BOTH)
-                setDrawable(ResourceUtils.getDrawable(context, R.drawable.divider_space_small))
-                addItemDecoration(this)
-                layoutManager = FlexboxLayoutManager(context, FlexDirection.ROW)
-            }*/
+                    setOrientation(FlexboxItemDecoration.BOTH)
+                    setDrawable(ResourceUtils.getDrawable(context, R.drawable.divider_space_small))
+                    addItemDecoration(this)
+                    layoutManager = FlexboxLayoutManager(context, FlexDirection.ROW)
+                }*/
         }
     }
 
@@ -166,7 +170,7 @@ class ChipsPickerDialog : AdapterPickerDialog<ChipModel>() {
             )
             setPadding(paddingLeft, paddingTop, paddingRight, paddingBottom)
         }
-        val recyclerView = this.recyclerView!!
+        val recyclerView = this.recyclerView
         val widthMeasureSpec = MeasureSpec.makeMeasureSpec(0, MeasureSpec.UNSPECIFIED)
         val heightMeasureSpec = MeasureSpec.makeMeasureSpec(0, MeasureSpec.UNSPECIFIED)
         dialogLayout.measure(widthMeasureSpec, heightMeasureSpec)
@@ -191,7 +195,7 @@ class ChipsPickerDialog : AdapterPickerDialog<ChipModel>() {
 
     @SuppressLint("InflateParams")
     private fun calculateRecyclerWidthAndHeight(): Pair<Int, Int> {
-        val recyclerView = this.recyclerView!!
+        val recyclerView = this.recyclerView
         val chipView = LayoutInflater.from(context).inflate(R.layout.layout_chip_item, null).apply {
             val widthMeasureSpec = MeasureSpec.makeMeasureSpec(0, MeasureSpec.UNSPECIFIED)
             val heightMeasureSpec = MeasureSpec.makeMeasureSpec(0, MeasureSpec.UNSPECIFIED)
@@ -205,7 +209,7 @@ class ChipsPickerDialog : AdapterPickerDialog<ChipModel>() {
         var totalRequiredWidth = 0
         var calculatedRows = 0
         val maxWidth = getMaxWidth() - recyclerView.paddingStart - recyclerView.paddingEnd
-        for (item in chipsAdapter.getItems()) {
+        for (item in adapter.collection.getItems()) {
             textView.text = item.chipTitle
             chipView.measure(widthMeasureSpec, heightMeasureSpec)
             val widthToAdd = chipView.measuredWidth + itemDecorationSpace
@@ -259,15 +263,15 @@ class ChipsPickerDialog : AdapterPickerDialog<ChipModel>() {
     }
 
     fun getFilteredChips(): List<ChipModel> {
-        return chipsAdapter.getFilteredItems().toList()
+        return adapter.collection.filteredItems
     }
 
     fun getChips(predicate: Predicate<ChipModel>): List<ChipModel> {
-        return chipsAdapter.getItems().stream().filter(predicate).toList()
+        return adapter.collection.getItems(predicate)
     }
 
     private fun getChipsByNames(names: List<String>): List<ChipModel> {
-        return chipsAdapter.getItems().stream().filter(Predicate { chipModel ->
+        return adapter.collection.getItems().stream().filter(Predicate { chipModel ->
             return@Predicate names.contains(chipModel.chipTitle)
         }).toList()
     }
