@@ -13,14 +13,14 @@ buildscript {
                         flexbox          : "3.0.0",
                 ],
                 lightbulb            : [
-                        commons              : "1.1.0",
-                        application          : "1.4.0",
-                        recycler_adapters    : "2.0.0-RC18",
+                        commons              : "[1.1.1,1.2.0[",
+                        application          : "[1.4.0,1.5.0[",
+                        recycler_adapters    : "[2.0.0,2.1.0[",
                         textinputview        : "1.0.11",
-                        calendars            : "2.0.0-RC2",
+                        calendars            : "[2.0.0,2.1.0[",
                         annotation_processors: "1.0.6-RC3"
                 ],
-                java_commons         : "1.0.7",
+                java_commons         : "[1.0.7,1.1.0[",
                 material_calendarview: "2.0.1",
 
         ]
