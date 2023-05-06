@@ -74,8 +74,8 @@ class MonthPickerDialog : BasePickerDialogFragment<Month>(MonthSelection(null, n
         outState.apply bundle@{
             putInt(PICKER_MIN_YEAR, minYear)
             putInt(PICKER_MAX_YEAR, maxYear)
-            BundleUtils.putParcelableList(PICKER_ENABLED_MONTHS, this, enabledMonths)
-            BundleUtils.putParcelableList(PICKER_DISABLED_MONTHS, this, disabledMonths)
+            BundleUtils.putParcelableArrayList(PICKER_ENABLED_MONTHS, this, ArrayList(enabledMonths))
+            BundleUtils.putParcelableArrayList(PICKER_DISABLED_MONTHS, this, ArrayList(disabledMonths))
             putString(DATE_FORMAT_TAG, dialogDateFormat)
         }
     }
@@ -87,10 +87,10 @@ class MonthPickerDialog : BasePickerDialogFragment<Month>(MonthSelection(null, n
             minYear = savedState.getInt(PICKER_MIN_YEAR)
             maxYear = savedState.getInt(PICKER_MAX_YEAR)
             dialogDateFormat = savedState.getString(DATE_FORMAT_TAG, dialogDateFormat)
-            BundleUtils.getParcelableList(PICKER_ENABLED_MONTHS, this, Month::class.java)?.apply {
+            BundleUtils.getParcelableArrayList(PICKER_ENABLED_MONTHS, this, Month::class.java)?.apply {
                 enabledMonths = this
             }
-            BundleUtils.getParcelableList(PICKER_DISABLED_MONTHS, this, Month::class.java)?.apply {
+            BundleUtils.getParcelableArrayList(PICKER_DISABLED_MONTHS, this, Month::class.java)?.apply {
                 disabledMonths = this
             }
         }

@@ -33,6 +33,11 @@ class ChipsPickerAdapter : DialogPickerAdapter<ChipModel>() {
     }
 
     @Override
+    override fun getItemCount(): Int {
+        return collection.filteredItems.size
+    }
+
+    @Override
     override fun onCreateViewHolder(parent: ViewGroup, viewType: Int): RecyclerView.ViewHolder {
         val ctx = parent.context
         val layoutId = R.layout.layout_chip_item
@@ -66,7 +71,7 @@ class ChipsPickerAdapter : DialogPickerAdapter<ChipModel>() {
         init {
             chipView.apply {
                 setOnClickListener {
-                    val item = collection.filteredItems[filteredPosition]
+                    val item = collection.getFilteredItem(filteredPosition) ?: return@setOnClickListener
                     val newState = !collection.isItemSelected(item)
                     collection.selectItem(item, newState, false)
                     notifyItemChanged(filteredPosition, false)
@@ -83,9 +88,8 @@ class ChipsPickerAdapter : DialogPickerAdapter<ChipModel>() {
         }
 
         fun init() {
-            val item = collection.filteredItems[filteredPosition]
-            val position = absoluteAdapterPosition - headersCount
-            val selectedInAdapter = collection.isItemSelected(position)
+            val item = collection.getFilteredItem(filteredPosition) ?: return
+            val selectedInAdapter = collection.isItemSelected(item)
             chipView.apply {
                 isSelected = selectedInAdapter
                 textView.apply {
