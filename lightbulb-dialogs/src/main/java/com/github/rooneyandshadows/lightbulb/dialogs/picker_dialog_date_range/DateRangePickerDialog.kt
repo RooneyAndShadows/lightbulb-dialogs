@@ -117,7 +117,6 @@ class DateRangePickerDialog : BasePickerDialogFragment<DateRange>(DateRangeSelec
                 val end = dateToCalendarDay(activeSelection.to)
                 selectRange(start, end)
                 calendar?.setCurrentDate(end, false)
-
             }
         }
     }

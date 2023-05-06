@@ -11,6 +11,8 @@ import com.github.rooneyandshadows.lightbulb.recycleradapters.abstraction.EasyRe
 import com.github.rooneyandshadows.lightbulb.recycleradapters.implementation.collection.ExtendedCollection
 import com.github.rooneyandshadows.lightbulb.recycleradapters.implementation.collection.ExtendedCollection.SelectableModes.SELECT_MULTIPLE
 import com.github.rooneyandshadows.lightbulb.selectableview.CheckBoxView
+import com.github.rooneyandshadows.lightbulb.selectableview.CheckBoxView.OnCheckedChangeListener
+import com.github.rooneyandshadows.lightbulb.selectableview.RadioButtonView
 
 @Suppress("UNUSED_PARAMETER", "unused", "MemberVisibilityCanBePrivate")
 open class DialogPickerCheckBoxAdapter<ItemType : EasyAdapterDataModel> : DialogPickerAdapter<ItemType>() {
@@ -69,6 +71,14 @@ open class DialogPickerCheckBoxAdapter<ItemType : EasyAdapterDataModel> : Dialog
 
     inner class CheckBoxViewHolder internal constructor(checkBoxView: CheckBoxView) : ViewHolder(checkBoxView) {
         private var selectableView: CheckBoxView = itemView as CheckBoxView
+        private val onCheckedListener = OnCheckedChangeListener { cbv, isChecked ->
+            cbv?.apply {
+                post {
+                    val position = bindingAdapterPosition - headersCount
+                    collection.selectItemAt(position, isChecked)
+                }
+            }
+        }
 
         fun bindItem() {
             selectableView.apply {
@@ -80,20 +90,14 @@ open class DialogPickerCheckBoxAdapter<ItemType : EasyAdapterDataModel> : Dialog
                 if (isChecked != isSelectedInAdapter) isChecked = isSelectedInAdapter
                 text = itemText
                 setIcon(itemIcon, itemIconBackground)
+                setOnCheckedListener(onCheckedListener)
             }
         }
 
         fun recycle() {
-            selectableView.setIcon(null, null)
-        }
-
-        init {
-            with(selectableView) {
-                setOnCheckedListener { _: CheckBoxView?, isChecked: Boolean ->
-                    post {
-                        collection.selectItemAt(bindingAdapterPosition, isChecked)
-                    }
-                }
+            selectableView.apply {
+                setIcon(null, null)
+                setOnCheckedListener(null)
             }
         }
     }

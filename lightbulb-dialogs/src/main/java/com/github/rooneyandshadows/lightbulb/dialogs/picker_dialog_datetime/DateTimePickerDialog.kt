@@ -93,24 +93,29 @@ class DateTimePickerDialog : BasePickerDialogFragment<OffsetDateTime>(DateTimeSe
                 showingTimePicker = !showingTimePicker
                 syncPickerMode()
             }
-            visibility = if (dialogSelection.getDraftSelection() != null) View.VISIBLE else View.GONE
         }
         calendarView?.apply {
-            val pendingSelection = dialogSelection.getActiveSelection()
             leftArrow.setTint(ResourceUtils.getColorByAttribute(context, R.attr.colorAccent))
             rightArrow.setTint(ResourceUtils.getColorByAttribute(context, R.attr.colorAccent))
-            if (pendingSelection != null) {
-                val selectedDate = dateToCalendarDay(pendingSelection)
+            if (activeSelection == null) clearSelection()
+            else {
+                val selectedDate = dateToCalendarDay(activeSelection)
                 setDateSelected(selectedDate, true)
                 setCurrentDate(selectedDate, false)
-            } else clearSelection()
+            }
+        }
+        activeSelection?.apply selectedDate@{
+            timePickerView?.apply {
+                hour = DateUtilsOffsetDate.getHourOfDay(this@selectedDate)
+                minute = DateUtilsOffsetDate.getMinuteOfHour(this@selectedDate)
+            }
         }
         syncPickerMode()
     }
 
     private fun checkIfCalendarNeedsSync(currentValue: OffsetDateTime?): Boolean {
         val calendarValue = calendarView!!.selectedDate?.let {
-            calendarDayToDate(it)
+            calendarDayToDate(it, currentValue ?: DateUtilsOffsetDate.nowLocal())
         }
         if (currentValue == null && calendarValue == null) return false
         if (currentValue == null || calendarValue == null) return true
@@ -122,9 +127,12 @@ class DateTimePickerDialog : BasePickerDialogFragment<OffsetDateTime>(DateTimeSe
         setupHeader(newSelection)
         if (!checkIfCalendarNeedsSync(newSelection)) return
         calendarView?.apply {
-            val selectedDate = dateToCalendarDay(newSelection)
-            setDateSelected(selectedDate, true)
-            setCurrentDate(selectedDate, false)
+            if (newSelection == null) clearSelection()
+            else {
+                val selectedDate = dateToCalendarDay(newSelection)
+                setDateSelected(selectedDate, true)
+                setCurrentDate(selectedDate, false)
+            }
         }
         timePickerView?.apply {
             if (newSelection == null) return@apply
@@ -215,12 +223,19 @@ class DateTimePickerDialog : BasePickerDialogFragment<OffsetDateTime>(DateTimeSe
         return CalendarDay.from(year, month, day)
     }
 
-    private fun calendarDayToDate(calendarDay: CalendarDay?): OffsetDateTime? {
+    private fun calendarDayToDate(
+        calendarDay: CalendarDay?,
+        currentSelection: OffsetDateTime,
+    ): OffsetDateTime? {
         if (calendarDay == null) return null
-        return DateUtilsOffsetDate.date(calendarDay.year, calendarDay.month, calendarDay.day)
+        val hour = currentSelection.hour
+        val minute = currentSelection.minute
+        return DateUtilsOffsetDate.date(calendarDay.year, calendarDay.month, calendarDay.day, hour, minute, 0)
     }
 
     private fun syncPickerMode() {
+        val activeSelection = dialogSelection.getActiveSelection()
+        if (showingTimePicker && activeSelection == null) showingTimePicker = false
         val modeIconRes = if (showingTimePicker) R.drawable.calendar_icon else R.drawable.time_icon
         val modeIcon = ResourceUtils.getDrawable(modeChangeButton!!.context, modeIconRes).apply {
             this!!.setTint(ResourceUtils.getColorByAttribute(modeChangeButton!!.context, R.attr.colorOnPrimary))

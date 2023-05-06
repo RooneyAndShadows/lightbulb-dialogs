@@ -217,7 +217,6 @@ class ChipsPickerDialog : AdapterPickerDialog<ChipModel>() {
             calculatedRows = ceil(totalRequiredWidth.toDouble() / maxWidth).toInt()
             if (calculatedRows >= maxRows) break
         }
-        println(calculatedRows)
         calculatedRows = min(calculatedRows, maxRows)
         val rowsHeight = (calculatedRows * chipHeight)
         val desiredHeight = rowsHeight + recyclerView.paddingBottom

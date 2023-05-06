@@ -10,6 +10,7 @@ import com.github.rooneyandshadows.lightbulb.recycleradapters.abstraction.data.E
 import com.github.rooneyandshadows.lightbulb.recycleradapters.implementation.collection.ExtendedCollection
 import com.github.rooneyandshadows.lightbulb.recycleradapters.implementation.collection.ExtendedCollection.SelectableModes.SELECT_SINGLE
 import com.github.rooneyandshadows.lightbulb.selectableview.RadioButtonView
+import com.github.rooneyandshadows.lightbulb.selectableview.RadioButtonView.OnCheckedChangeListener
 
 @Suppress("UNUSED_PARAMETER", "unused", "MemberVisibilityCanBePrivate")
 open class DialogPickerRadioButtonAdapter<ItemType : EasyAdapterDataModel> : DialogPickerAdapter<ItemType>() {
@@ -70,10 +71,18 @@ open class DialogPickerRadioButtonAdapter<ItemType : EasyAdapterDataModel> : Dia
 
     inner class RadioButtonViewHolder(radioButtonView: RadioButtonView) : RecyclerView.ViewHolder(radioButtonView) {
         private var selectableView: RadioButtonView = itemView as RadioButtonView
+        private val onCheckedListener = OnCheckedChangeListener { rbv, isChecked ->
+            rbv?.apply {
+                post {
+                    val position = bindingAdapterPosition - headersCount
+                    collection.selectItemAt(position, isChecked)
+                }
+            }
+        }
 
         fun bindItem() {
             selectableView.apply {
-                val item = collection.getItem(bindingAdapterPosition) ?: return
+                val item = collection.getItem(bindingAdapterPosition - headersCount) ?: return
                 val isSelectedInAdapter = collection.isItemSelected(item)
                 val itemText = collection.getItemName(item)
                 val itemIcon = getItemIcon(context, item)
@@ -81,20 +90,14 @@ open class DialogPickerRadioButtonAdapter<ItemType : EasyAdapterDataModel> : Dia
                 if (isChecked != isSelectedInAdapter) isChecked = isSelectedInAdapter
                 text = itemText
                 setIcon(itemIcon, itemIconBackground)
+                setOnCheckedListener(onCheckedListener)
             }
         }
 
         fun recycle() {
-            selectableView.setIcon(null, null)
-        }
-
-        init {
-            with(selectableView) {
-                setOnCheckedListener { _: RadioButtonView?, isChecked: Boolean ->
-                    post {
-                        collection.selectItemAt(bindingAdapterPosition, isChecked)
-                    }
-                }
+            selectableView.apply {
+                setIcon(null, null)
+                setOnCheckedListener(null)
             }
         }
     }
