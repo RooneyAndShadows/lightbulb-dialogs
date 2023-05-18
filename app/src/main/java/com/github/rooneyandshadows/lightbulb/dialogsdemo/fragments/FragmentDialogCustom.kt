@@ -27,7 +27,7 @@ class FragmentDialogCustom : BaseFragmentWithViewBinding<FragmentDemoDialogCusto
 
     @Override
     override fun configureActionBar(): ActionBarConfiguration {
-        val title = ResourceUtils.getPhrase(requireContext(), R.string.demo_alert_title)
+        val title = ResourceUtils.getPhrase(requireContext(), R.string.demo_custom_title)
         val subTitle = ResourceUtils.getPhrase(requireContext(), R.string.app_name)
         val homeIcon = getHomeDrawable(requireContext())
         return ActionBarConfiguration(R.id.toolbar)
@@ -96,7 +96,7 @@ class FragmentDialogCustom : BaseFragmentWithViewBinding<FragmentDemoDialogCusto
             val negativeButtonClickListener = getDefaultNegativeButtonClickListener()
             withInitialDialogState(dialogSavedState)
             withTitle(title)
-           // withMessage(message)
+            withMessage(message)
             withPositiveButton(DialogButtonConfiguration(positiveButtonText), positiveButtonClickListener)
             withNegativeButton(DialogButtonConfiguration(negativeButtonText), negativeButtonClickListener)
         }.buildDialog()

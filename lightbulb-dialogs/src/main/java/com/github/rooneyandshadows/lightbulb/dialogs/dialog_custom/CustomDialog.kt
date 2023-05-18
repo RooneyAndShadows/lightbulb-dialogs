@@ -1,14 +1,17 @@
 package com.github.rooneyandshadows.lightbulb.dialogs.dialog_custom
 
+import android.graphics.Rect
 import android.os.Bundle
 import android.view.LayoutInflater
 import android.view.View
+import android.view.Window
 import android.widget.ProgressBar
 import com.github.rooneyandshadows.lightbulb.dialogs.base.BaseDialogFragment
 import androidx.appcompat.widget.LinearLayoutCompat
 import androidx.appcompat.widget.AppCompatTextView
 import com.github.rooneyandshadows.lightbulb.commons.utils.ResourceUtils
 import com.github.rooneyandshadows.lightbulb.dialogs.R
+import com.github.rooneyandshadows.lightbulb.dialogs.base.constraints.regular.RegularDialogConstraints
 import com.github.rooneyandshadows.lightbulb.dialogs.base.internal.*
 
 @Suppress("unused")
@@ -46,6 +49,26 @@ open class CustomDialog : BaseDialogFragment() {
         loadingIndicator = requireView().findViewById(R.id.loadingIndicator)
         titleView = requireView().findViewById(R.id.dialogTitleTextView)
         setupLoadingView()
+    }
+
+    @Override
+    override fun setupRegularDialog(
+        constraints: RegularDialogConstraints,
+        dialogWindow: Window,
+        dialogLayout: View,
+        fgPadding: Rect,
+    ) {
+        val widthMeasureSpec = View.MeasureSpec.makeMeasureSpec(constraints.getMaxWidth(), View.MeasureSpec.AT_MOST)
+        val heightMeasureSpec = View.MeasureSpec.makeMeasureSpec(constraints.getMaxHeight(), View.MeasureSpec.AT_MOST)
+        //val params = ViewGroup.LayoutParams(0, 0)
+        dialogLayout.measure(widthMeasureSpec, heightMeasureSpec)
+        val horPadding = fgPadding.left + fgPadding.right
+        val verPadding = fgPadding.top + fgPadding.bottom
+        var desiredWidth = dialogLayout.measuredWidth
+        var desiredHeight = dialogLayout.measuredHeight
+        desiredWidth = constraints.resolveWidth(desiredWidth)
+        desiredHeight = constraints.resolveHeight(desiredHeight)
+        dialogWindow.setLayout(desiredWidth + horPadding, desiredHeight + verPadding)
     }
 
     @Override

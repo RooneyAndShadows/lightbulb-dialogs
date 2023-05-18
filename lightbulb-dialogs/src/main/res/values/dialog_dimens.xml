@@ -30,4 +30,6 @@
     <dimen name="chips_picker_spacing_size">8dp</dimen>
     <dimen name="chips_picker_recycler_height">300dp</dimen>
     <dimen name="chips_picker_chip_group_padding">15dp</dimen>
+    <!-- Custom dialog -->
+    <dimen name="custom_dialog_progress_bar_height">3dp</dimen>
 </resources>
