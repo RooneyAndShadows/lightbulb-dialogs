@@ -9,6 +9,7 @@
     <androidx.appcompat.widget.LinearLayoutCompat
         android:id="@+id/dialogTitleAndMessageContainer"
         style="@style/DialogTitleAndMessageContainer"
+        app:layout_constrainedHeight="true"
         app:layout_constraintBottom_toTopOf="@+id/customDialogContentContainer"
         app:layout_constraintEnd_toEndOf="parent"
         app:layout_constraintHorizontal_chainStyle="packed"

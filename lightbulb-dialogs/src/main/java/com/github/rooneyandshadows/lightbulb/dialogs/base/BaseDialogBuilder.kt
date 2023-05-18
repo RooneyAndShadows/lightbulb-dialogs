@@ -23,8 +23,8 @@ abstract class BaseDialogBuilder<DialogType : BaseDialogFragment> @JvmOverloads 
     protected var onShowListener: DialogShowListener? = null
     protected var onHideListener: DialogHideListener? = null
     protected var onCancelListener: DialogCancelListener? = null
-    protected var animation: DialogAnimationTypes = DialogAnimationTypes.NO_ANIMATION
-    protected var type: DialogTypes = DialogTypes.NORMAL
+    protected var animation: DialogAnimationTypes? = null
+    protected var type: DialogTypes? = null
     protected var dialogListeners: DialogListeners? = null
     protected var cancelableOnClickOutside = true
     protected abstract fun setupNonRetainableSettings(dialog: DialogType)
@@ -126,8 +126,8 @@ abstract class BaseDialogBuilder<DialogType : BaseDialogFragment> @JvmOverloads 
             setDialogMessage(message)
             setDialogPositiveButton(positiveButtonConfiguration)
             setDialogNegativeButton(negativeButtonConfiguration)
-            dialogType = type
-            dialogAnimationType = animation
+            type?.apply { dialogType = this }
+            animation?.apply { dialogAnimationType = this }
             isCancelable = cancelableOnClickOutside
             setupRetainableSettings(this)
         }

@@ -22,7 +22,7 @@ class MainActivity : BaseActivity() {
     @Override
     override fun doOnCreate(savedInstanceState: Bundle?) {
         if (savedInstanceState == null) {
-            MainActivityNavigator.route().toDemoChipsPicker().newRootScreen()
+            MainActivityNavigator.route().toDemoCustom().newRootScreen()
         }
     }
 }

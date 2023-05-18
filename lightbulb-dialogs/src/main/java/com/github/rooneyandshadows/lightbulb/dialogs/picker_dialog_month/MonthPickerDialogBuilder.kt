@@ -39,7 +39,6 @@ class MonthPickerDialogBuilder @JvmOverloads constructor(
             setDialogDateFormat(dateFormat)
             setCalendarBounds(minYear, maxYear)
             setSelection(initialSelection)
-            dialogAnimationType = animation
         }
     }
 

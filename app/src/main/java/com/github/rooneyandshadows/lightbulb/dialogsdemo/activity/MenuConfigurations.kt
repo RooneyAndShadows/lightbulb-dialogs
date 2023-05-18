@@ -42,6 +42,18 @@ object MenuConfigurations {
                 add(
                     PrimaryMenuItem(
                         -1,
+                        ResourceUtils.getPhrase(activity, R.string.demo_custom_title),
+                        null,
+                        null,
+                        1
+                    ) { slider: SliderMenu ->
+                        slider.closeSlider()
+                        route().toDemoCustom().replace()
+                    }
+                )
+                add(
+                    PrimaryMenuItem(
+                        -1,
                         ResourceUtils.getPhrase(activity, R.string.demo_adapter_title),
                         null,
                         null,
