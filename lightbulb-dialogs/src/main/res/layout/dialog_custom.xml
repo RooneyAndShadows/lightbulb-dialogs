@@ -9,17 +9,16 @@
     <androidx.appcompat.widget.LinearLayoutCompat
         android:id="@+id/dialogTitleAndMessageContainer"
         style="@style/DialogTitleAndMessageContainer"
-        app:layout_constrainedHeight="true"
+        app:layout_constraintBottom_toTopOf="@+id/customDialogContentContainer"
         app:layout_constraintEnd_toEndOf="parent"
+        app:layout_constraintHorizontal_chainStyle="packed"
         app:layout_constraintStart_toStartOf="parent"
         app:layout_constraintTop_toTopOf="parent"
-        tools:layout_height="wrap_content">
-
+        app:layout_constraintVertical_chainStyle="spread_inside">
 
         <androidx.constraintlayout.widget.ConstraintLayout
             android:layout_width="match_parent"
-            android:layout_height="wrap_content"
-            android:orientation="horizontal">
+            android:layout_height="wrap_content">
 
             <ProgressBar
                 android:id="@+id/loadingIndicator"
@@ -27,6 +26,8 @@
                 android:layout_width="0dp"
                 android:layout_height="0dp"
                 android:indeterminate="true"
+                app:layout_constrainedHeight="true"
+                app:layout_constrainedWidth="true"
                 app:layout_constraintBottom_toBottomOf="parent"
                 app:layout_constraintDimensionRatio="1:1"
                 app:layout_constraintEnd_toEndOf="parent"
@@ -36,6 +37,8 @@
                 android:id="@+id/dialogTitleTextView"
                 style="@style/DialogTitle"
                 android:layout_width="0dp"
+                app:layout_constrainedHeight="true"
+                app:layout_constrainedWidth="true"
                 app:layout_constraintBottom_toBottomOf="parent"
                 app:layout_constraintEnd_toStartOf="@id/loadingIndicator"
                 app:layout_constraintStart_toStartOf="parent"
@@ -44,7 +47,6 @@
                 tools:text="Title" />
 
         </androidx.constraintlayout.widget.ConstraintLayout>
-
 
         <androidx.core.widget.NestedScrollView
             android:layout_width="match_parent"
@@ -63,19 +65,20 @@
         android:layout_width="match_parent"
         android:layout_height="wrap_content"
         android:orientation="vertical"
-        app:layout_constraintBottom_toTopOf="@id/dialogButtonsContainer"
+        app:layout_constrainedHeight="true"
+        app:layout_constraintBottom_toTopOf="@+id/dialogButtonsContainer"
         app:layout_constraintEnd_toEndOf="parent"
         app:layout_constraintStart_toStartOf="parent"
-        app:layout_constraintTop_toBottomOf="@id/dialogTitleAndMessageContainer">
-
-    </androidx.appcompat.widget.LinearLayoutCompat>
+        app:layout_constraintTop_toBottomOf="@+id/dialogTitleAndMessageContainer" />
 
     <androidx.appcompat.widget.LinearLayoutCompat
         android:id="@+id/dialogButtonsContainer"
         style="@style/DialogButtonsContainer"
         app:layout_constraintBottom_toBottomOf="parent"
         app:layout_constraintEnd_toEndOf="parent"
-        app:layout_constraintStart_toStartOf="parent">
+        app:layout_constraintHorizontal_chainStyle="spread_inside"
+        app:layout_constraintStart_toStartOf="parent"
+        app:layout_constraintTop_toBottomOf="@+id/customDialogContentContainer">
 
         <Button
             android:id="@+id/dialogNegativeButton"
