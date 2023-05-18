@@ -14,27 +14,27 @@ you to create engaging and functional applications with little effort.
 
 ### 📋 Features
 
-**Configuration change state handling.**
-Different dialog layout types support: Regular, Fullscreen, BottomSheet.
-Different show/hide animations support.
-Width/height Constraints support.
-**Custom dialog** - Gives you the ability to implement your unique dialog if the existing ones
+- **Configuration change state handling.**
+- Different dialog layout types support: Regular, Fullscreen, BottomSheet.
+- Different show/hide animations support.
+- Width/height Constraints support.
+- **Custom dialog** - Gives you the ability to implement your unique dialog if the existing ones
   does not meet your requirements.
-**Adapter picker dialog** - Gives you the ability to implement picker dialog using recycler
+- **Adapter picker dialog** - Gives you the ability to implement picker dialog using recycler
   adapter without the need to write the heavy selection logic... It's already there :)
-Predefined implementations:
-- **Alert dialog** - Dialog that shows a title, message and set of buttons to interact with the
-  user.
-**Loading dialog** - Provides a user-friendly way to indicate to the user that the application
-  is working on a task and needs a moment to complete the action.
-**Picker dialogs** - Set of dialogs that allow the user to choose between different values.
-- **Chips picker dialog** - Picker dialog showing available options in Material chips.
-- **Color picker dialog** - Gives you the ability to pick colors from predefined set.
-- **Icon picker dialog** - Gives you the ability to pick icons from predefined set.
-- **Date range picker dialog** - Gives you the ability to pick date range.
-- **Date&Time picker dialog** - Gives you the ability to pick date with time.
-- **Time picker dialog** - Gives you the ability to pick time.
-- **Month picker dialog** - Gives you the ability to pick month of year.
+- Predefined implementations
+    - **Alert dialog** - Dialog that shows a title, message and set of buttons to interact with the
+      user.
+    - **Loading dialog** - Provides a user-friendly way to indicate to the user that the application
+      is working on a task and needs a moment to complete the action.
+    - **Picker dialogs** - Set of dialogs that allow the user to choose between different values.
+        - **Chips picker dialog** - Picker dialog showing available options in Material chips.
+        - **Color picker dialog** - Gives you the ability to pick colors from predefined set.
+        - **Icon picker dialog** - Gives you the ability to pick icons from predefined set.
+        - **Date range picker dialog** - Gives you the ability to pick date range.
+        - **Date&Time picker dialog** - Gives you the ability to pick date with time.
+        - **Time picker dialog** - Gives you the ability to pick time.
+        - **Month picker dialog** - Gives you the ability to pick month of year.
 
 -------
 
