@@ -14,27 +14,27 @@ you to create engaging and functional applications with little effort.
 
 ### 📋 Features
 
-- **Configuration change state handling.**
-- Different dialog layout types support: Regular, Fullscreen, BottomSheet.
-- Different show/hide animations support.
-- Width/height Constraints support.
-- **Custom dialog** - Gives you the ability to implement your unique dialog if the existing ones
+1. **Configuration change state handling.**
+2. Different dialog layout types support: Regular, Fullscreen, BottomSheet.
+3. Different show/hide animations support.
+4. Width/height Constraints support.
+5. **Custom dialog** - Gives you the ability to implement your unique dialog if the existing ones
   does not meet your requirements.
-- **Adapter picker dialog** - Gives you the ability to implement picker dialog using recycler
+6. **Adapter picker dialog** - Gives you the ability to implement picker dialog using recycler
   adapter without the need to write the heavy selection logic... It's already there :)
 - Predefined implementations
-    - **Alert dialog** - Dialog that shows a title, message and set of buttons to interact with the
-      user.
-    - **Loading dialog** - Provides a user-friendly way to indicate to the user that the application
-      is working on a task and needs a moment to complete the action.
-    - **Picker dialogs** - Set of dialogs that allow the user to choose between different values.
-        - **Chips picker dialog** - Picker dialog showing available options in Material chips.
-        - **Color picker dialog** - Gives you the ability to pick colors from predefined set.
-        - **Icon picker dialog** - Gives you the ability to pick icons from predefined set.
-        - **Date range picker dialog** - Gives you the ability to pick date range.
-        - **Date&Time picker dialog** - Gives you the ability to pick date with time.
-        - **Time picker dialog** - Gives you the ability to pick time.
-        - **Month picker dialog** - Gives you the ability to pick month of year.
+7. **Alert dialog** - Dialog that shows a title, message and set of buttons to interact with the
+  user.
+8. **Loading dialog** - Provides a user-friendly way to indicate to the user that the application
+  is working on a task and needs a moment to complete the action.
+9. **Picker dialogs** - Set of dialogs that allow the user to choose between different values.
+- **Chips picker dialog** - Picker dialog showing available options in Material chips.
+- **Color picker dialog** - Gives you the ability to pick colors from predefined set.
+- **Icon picker dialog** - Gives you the ability to pick icons from predefined set.
+- **Date range picker dialog** - Gives you the ability to pick date range.
+- **Date&Time picker dialog** - Gives you the ability to pick date with time.
+- **Time picker dialog** - Gives you the ability to pick time.
+- **Month picker dialog** - Gives you the ability to pick month of year.
 
 -------
 
@@ -45,7 +45,7 @@ you to create engaging and functional applications with little effort.
 ## Latest releases 🛠
 
 - Kotlin
-  | [v2.0.2](https://github.com/RooneyAndShadows/lightbulb-dialogs/tree/2.0.2)
+  | [v2.0.3](https://github.com/RooneyAndShadows/lightbulb-dialogs/tree/2.0.3)
 
 # Setup
 
@@ -63,7 +63,7 @@ repositories {
 ### 2. Provide the gradle dependency
 
 ```gradle
-implementation 'com.github.rooneyandshadows:lightbulb-dialogs:2.0.2'
+implementation 'com.github.rooneyandshadows:lightbulb-dialogs:2.0.3'
 ```
 
 ### 3. General usage
