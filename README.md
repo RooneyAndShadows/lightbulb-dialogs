@@ -14,20 +14,20 @@ you to create engaging and functional applications with little effort.
 
 ### 📋 Features
 
-1. **Configuration change state handling.**
-2. Different dialog layout types support: Regular, Fullscreen, BottomSheet.
-3. Different show/hide animations support.
-4. Width/height Constraints support.
-5. **Custom dialog** - Gives you the ability to implement your unique dialog if the existing ones
+**Configuration change state handling.**
+Different dialog layout types support: Regular, Fullscreen, BottomSheet.
+Different show/hide animations support.
+Width/height Constraints support.
+**Custom dialog** - Gives you the ability to implement your unique dialog if the existing ones
   does not meet your requirements.
-6. **Adapter picker dialog** - Gives you the ability to implement picker dialog using recycler
+**Adapter picker dialog** - Gives you the ability to implement picker dialog using recycler
   adapter without the need to write the heavy selection logic... It's already there :)
-- Predefined implementations
-7. **Alert dialog** - Dialog that shows a title, message and set of buttons to interact with the
+Predefined implementations:
+- **Alert dialog** - Dialog that shows a title, message and set of buttons to interact with the
   user.
-8. **Loading dialog** - Provides a user-friendly way to indicate to the user that the application
+**Loading dialog** - Provides a user-friendly way to indicate to the user that the application
   is working on a task and needs a moment to complete the action.
-9. **Picker dialogs** - Set of dialogs that allow the user to choose between different values.
+**Picker dialogs** - Set of dialogs that allow the user to choose between different values.
 - **Chips picker dialog** - Picker dialog showing available options in Material chips.
 - **Color picker dialog** - Gives you the ability to pick colors from predefined set.
 - **Icon picker dialog** - Gives you the ability to pick icons from predefined set.
