@@ -15,12 +15,6 @@ class DialogFooterView @JvmOverloads constructor(
     attrs: AttributeSet? = null,
     defStyleAttr: Int = 0,
 ) : RelativeLayout(context, attrs, defStyleAttr) {
-    val positiveButton: Button by lazy {
-        return@lazy findViewById<Button>(R.id.dialog_positive_button)!!
-    }
-    val negativeButton: Button by lazy {
-        return@lazy findViewById<Button>(R.id.dialog_negative_button)!!
-    }
     val buttonsContainer: LinearLayoutCompat by lazy {
         return@lazy findViewById<LinearLayoutCompat>(R.id.dialog_buttons_container)!!
     }
@@ -32,24 +26,25 @@ class DialogFooterView @JvmOverloads constructor(
 
     fun initialize(dialog: BaseDialogFragment) {
         this.dialog = dialog
-        dialog.dialogButtons.forEach {
-            syncButton(positiveButton, dialog.dialogNegativeButtonConfiguration)
+        buttonsContainer.apply {
+            removeAllViews()
+            dialog.dialogButtons.forEach {
+                val button = inflateButton(it)
+                addView(button)
+            }
         }
-
-        syncButton(negativeButton, dialog.dialogPositiveButtonConfiguration)
+        buttonsContainer.removeAllViews()
+        visibility = if (buttonsContainer.childCount > 0) VISIBLE else GONE
     }
 
-    private fun syncButton(target: Button, config: DialogButtonConfiguration?) {
-        target.apply {
-            if (config == null || config.buttonTitle.isBlank()) {
-                visibility = GONE
-                return@apply
-            }
+    private fun inflateButton(config: DialogButtonConfiguration): Button {
+        return Button(context, null, 0, R.style.DialogButton).apply {
             val alpha = if (config.buttonEnabled) 255 else 140
-            val textColor = target.textColors.withAlpha(alpha)
+            val textColor = textColors.withAlpha(alpha)
             setTextColor(textColor)
             isEnabled = config.buttonEnabled
             text = config.buttonTitle
+            tag = config.buttonTag
             setOnClickListener { view: View? ->
                 dialog?.apply {
                     for (listener in config.onClickListeners) listener.doOnClick(view, this)
@@ -57,10 +52,5 @@ class DialogFooterView @JvmOverloads constructor(
                 }
             }
         }
-    }
-
-    private fun syncVisibility() {
-        visibility = if (dialog!!.dialogPositiveButtonConfiguration == null && dialog!!.dialogNegativeButtonConfiguration == null) GONE
-        else VISIBLE
     }
 }

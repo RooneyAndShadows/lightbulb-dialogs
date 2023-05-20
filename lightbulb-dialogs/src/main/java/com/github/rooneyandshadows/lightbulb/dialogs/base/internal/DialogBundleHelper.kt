@@ -16,18 +16,8 @@ class DialogBundleHelper(val bundle: Bundle = defaultBundle()) {
         get() = DialogTypes.valueOf(bundle.getInt(dialogTypeTag))
     val animationType: DialogAnimationTypes
         get() = DialogAnimationTypes.valueOf(bundle.getInt(dialogAnimationTag))
-    val positiveButtonConfig: DialogButtonConfiguration?
-        get() = BundleUtils.getParcelable(
-            dialogPositiveButtonConfigTag,
-            bundle,
-            DialogButtonConfiguration::class.java
-        )
-    val negativeButtonConfig: DialogButtonConfiguration?
-        get() = BundleUtils.getParcelable(
-            dialogNegativeButtonConfigTag,
-            bundle,
-            DialogButtonConfiguration::class.java
-        )
+    val buttonConfigurations: List<DialogButtonConfiguration>?
+        get() = BundleUtils.getParcelableArrayList(dialogButtonsConfigTag, bundle, DialogButtonConfiguration::class.java)
 
     companion object {
         private const val dialogTitleTextTag = "DIALOG_TITLE_TEXT_TAG"
@@ -36,8 +26,7 @@ class DialogBundleHelper(val bundle: Bundle = defaultBundle()) {
         private const val dialogShowingTag = "DIALOG_SHOWING_TAG"
         private const val dialogTypeTag = "DIALOG_TYPE_TAG"
         private const val dialogAnimationTag = "DIALOG_ANIMATION_TAG"
-        private const val dialogPositiveButtonConfigTag = "DIALOG_POSITIVE_BUTTON_CONFIG_TAG"
-        private const val dialogNegativeButtonConfigTag = "DIALOG_NEGATIVE_BUTTON_CONFIG_TAG"
+        private const val dialogButtonsConfigTag = "DIALOG_POSITIVE_BUTTON_CONFIG_TAG"
 
         private fun defaultBundle(): Bundle {
             return Bundle().apply {
@@ -77,13 +66,8 @@ class DialogBundleHelper(val bundle: Bundle = defaultBundle()) {
         return this
     }
 
-    fun withPositiveButtonConfig(positiveButtonConfig: DialogButtonConfiguration?): DialogBundleHelper {
-        bundle.putParcelable(dialogPositiveButtonConfigTag, positiveButtonConfig)
-        return this
-    }
-
-    fun withNegativeButtonConfig(negativeButtonConfig: DialogButtonConfiguration?): DialogBundleHelper {
-        bundle.putParcelable(dialogNegativeButtonConfigTag, negativeButtonConfig)
+    fun withButtonConfigurations(buttonConfigurations: List<DialogButtonConfiguration>): DialogBundleHelper {
+        bundle.putParcelableArrayList(dialogButtonsConfigTag, ArrayList(buttonConfigurations))
         return this
     }
 }

@@ -6,6 +6,7 @@ import com.github.rooneyandshadows.lightbulb.commons.utils.ParcelUtils
 import com.github.rooneyandshadows.lightbulb.dialogs.base.internal.callbacks.DialogButtonClickListener
 
 class DialogButtonConfiguration @JvmOverloads constructor(
+    val buttonTag: String,
     val buttonTitle: String = "Action",
     val buttonEnabled: Boolean = true,
     val closeDialogOnClick: Boolean = true,
@@ -15,9 +16,16 @@ class DialogButtonConfiguration @JvmOverloads constructor(
 
     constructor(parcel: Parcel) : this(
         ParcelUtils.readString(parcel)!!,
+        ParcelUtils.readString(parcel)!!,
         ParcelUtils.readBoolean(parcel)!!,
         ParcelUtils.readBoolean(parcel)!!
     )
+
+    fun addOnClickListeners(listeners: List<DialogButtonClickListener>) {
+        listeners.forEach {
+            addOnClickListener(it)
+        }
+    }
 
     fun addOnClickListener(listener: DialogButtonClickListener) {
         if (!onClickListeners.contains(listener))
@@ -30,7 +38,8 @@ class DialogButtonConfiguration @JvmOverloads constructor(
 
     @Override
     override fun writeToParcel(dest: Parcel, flags: Int) {
-        ParcelUtils.writeString(dest, buttonTitle)
+        ParcelUtils.writeString(dest, buttonTag)
+            .writeString(dest, buttonTitle)
             .writeBoolean(dest, buttonEnabled)
             .writeBoolean(dest, closeDialogOnClick)
     }

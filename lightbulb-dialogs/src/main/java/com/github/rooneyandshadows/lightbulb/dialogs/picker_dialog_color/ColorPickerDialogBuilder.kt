@@ -52,19 +52,8 @@ class ColorPickerDialogBuilder @JvmOverloads constructor(
     }
 
     @Override
-    override fun withPositiveButton(
-        configuration: DialogButtonConfiguration,
-        onClickListener: DialogButtonClickListener?,
-    ): ColorPickerDialogBuilder {
-        return super.withPositiveButton(configuration, onClickListener) as ColorPickerDialogBuilder
-    }
-
-    @Override
-    override fun withNegativeButton(
-        configuration: DialogButtonConfiguration,
-        onClickListener: DialogButtonClickListener?,
-    ): ColorPickerDialogBuilder {
-        return super.withNegativeButton(configuration, onClickListener) as ColorPickerDialogBuilder
+    override fun withButton(configuration: DialogButtonConfiguration): ColorPickerDialogBuilder {
+        return super.withButton(configuration) as ColorPickerDialogBuilder
     }
 
     @Override

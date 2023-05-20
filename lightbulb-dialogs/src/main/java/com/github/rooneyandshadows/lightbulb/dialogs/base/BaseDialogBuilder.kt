@@ -16,10 +16,7 @@ abstract class BaseDialogBuilder<DialogType : BaseDialogFragment> @JvmOverloads 
     protected var initialDialogState: Bundle? = null
     protected var title: String? = null
     protected var message: String? = null
-    protected var positiveButtonConfiguration: DialogButtonConfiguration? = null
-    protected var negativeButtonConfiguration: DialogButtonConfiguration? = null
-    protected var onPositiveClickListener: DialogButtonClickListener? = null
-    protected var onNegativeClickListener: DialogButtonClickListener? = null
+    protected var buttonConfigurations: List<DialogButtonConfiguration> = mutableListOf()
     protected var onShowListener: DialogShowListener? = null
     protected var onHideListener: DialogHideListener? = null
     protected var onCancelListener: DialogCancelListener? = null
@@ -46,21 +43,9 @@ abstract class BaseDialogBuilder<DialogType : BaseDialogFragment> @JvmOverloads 
         return this
     }
 
-    open fun withPositiveButton(
-        configuration: DialogButtonConfiguration,
-        onClickListener: DialogButtonClickListener?,
-    ): BaseDialogBuilder<DialogType> {
-        this.positiveButtonConfiguration = configuration
-        onPositiveClickListener = onClickListener
-        return this
-    }
-
-    open fun withNegativeButton(
-        configuration: DialogButtonConfiguration,
-        onClickListener: DialogButtonClickListener?,
-    ): BaseDialogBuilder<DialogType> {
-        this.negativeButtonConfiguration = configuration
-        onNegativeClickListener = onClickListener
+    open fun withButton(configuration: DialogButtonConfiguration): BaseDialogBuilder<DialogType> {
+        val buttons = buttonConfigurations as MutableList<DialogButtonConfiguration>
+        buttons.add(configuration)
         return this
     }
 
@@ -105,11 +90,10 @@ abstract class BaseDialogBuilder<DialogType : BaseDialogFragment> @JvmOverloads 
             setLifecycleOwner(dialogLifecycleOwner)
             setParentFragManager(dialogParentFragmentManager)
             setDialogCallbacks(dialogListeners)
+            buttonConfigurations.forEach { addDialogButton(it) }
             onShowListener?.apply { addOnShowListener(this) }
             onHideListener?.apply { addOnHideListener(this) }
             onCancelListener?.apply { addOnCancelListener(this) }
-            if (onNegativeClickListener != null) dialogNegativeButtonConfiguration?.addOnClickListener(onNegativeClickListener!!)
-            if (onPositiveClickListener != null) dialogPositiveButtonConfiguration?.addOnClickListener(onPositiveClickListener!!)
             setupNonRetainableSettings(this)
         }
     }
@@ -124,8 +108,6 @@ abstract class BaseDialogBuilder<DialogType : BaseDialogFragment> @JvmOverloads 
             }
             setDialogTitle(title)
             setDialogMessage(message)
-            setDialogPositiveButton(positiveButtonConfiguration)
-            setDialogNegativeButton(negativeButtonConfiguration)
             type?.apply { dialogType = this }
             animation?.apply { dialogAnimationType = this }
             isCancelable = cancelableOnClickOutside

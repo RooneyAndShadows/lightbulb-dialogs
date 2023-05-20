@@ -1,9 +1,7 @@
 package com.github.rooneyandshadows.lightbulb.dialogs.base
 
 import android.os.Bundle
-import android.view.View
 import com.github.rooneyandshadows.lightbulb.dialogs.base.BaseDialogSelection.PickerSelectionListeners
-import com.github.rooneyandshadows.lightbulb.dialogs.base.internal.callbacks.DialogButtonClickListener
 import com.github.rooneyandshadows.lightbulb.dialogs.base.internal.callbacks.DialogCancelListener
 import com.github.rooneyandshadows.lightbulb.dialogs.base.internal.callbacks.DialogShowListener
 
@@ -19,7 +17,6 @@ abstract class BasePickerDialogFragment<SelectionType>(
     protected constructor(selection: BaseDialogSelection<SelectionType>) : this(selection, true)
 
     init {
-        //TODO ADD POSITIVE AND NEGATIVE BUTTONS FOR PICKERS
         initializeListeners()
     }
 
@@ -55,6 +52,16 @@ abstract class BasePickerDialogFragment<SelectionType>(
         dialogSelection.setCurrentSelection(newSelection)
     }
 
+    fun confirmSelection() {
+        dialogSelection.commitDraft()
+        dismiss()
+    }
+
+    fun cancelSelection() {
+        dialogSelection.revertDraft()
+        dismiss()
+    }
+
     fun getSelection(): SelectionType? {
         return dialogSelection.getCurrentSelection()
     }
@@ -80,7 +87,7 @@ abstract class BasePickerDialogFragment<SelectionType>(
                 dialogSelection.revertDraft()
             }
         })
-        addOnNegativeClickListeners(object : DialogButtonClickListener {
+        /*addOnNegativeClickListeners(object : DialogButtonClickListener {
             override fun doOnClick(buttonView: View?, dialogFragment: BaseDialogFragment) {
                 dialogSelection.revertDraft()
             }
@@ -89,7 +96,7 @@ abstract class BasePickerDialogFragment<SelectionType>(
             override fun doOnClick(buttonView: View?, dialogFragment: BaseDialogFragment) {
                 dialogSelection.commitDraft()
             }
-        })
+        })*/
         dialogSelection.addSelectionListeners(object : PickerSelectionListeners<SelectionType> {
             override fun onCurrentSelectionChangedListener(newValue: SelectionType?, oldValue: SelectionType?) {
                 if (isAttached) onSelectionChange(newValue)

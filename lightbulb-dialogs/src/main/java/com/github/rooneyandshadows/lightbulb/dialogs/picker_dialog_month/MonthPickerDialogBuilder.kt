@@ -63,19 +63,8 @@ class MonthPickerDialogBuilder @JvmOverloads constructor(
     }
 
     @Override
-    override fun withPositiveButton(
-        configuration: DialogButtonConfiguration,
-        onClickListener: DialogButtonClickListener?,
-    ): MonthPickerDialogBuilder {
-        return super.withPositiveButton(configuration, onClickListener) as MonthPickerDialogBuilder
-    }
-
-    @Override
-    override fun withNegativeButton(
-        configuration: DialogButtonConfiguration,
-        onClickListener: DialogButtonClickListener?,
-    ): MonthPickerDialogBuilder {
-        return super.withNegativeButton(configuration, onClickListener) as MonthPickerDialogBuilder
+    override fun withButton(configuration: DialogButtonConfiguration): MonthPickerDialogBuilder {
+        return super.withButton(configuration) as MonthPickerDialogBuilder
     }
 
     @Override

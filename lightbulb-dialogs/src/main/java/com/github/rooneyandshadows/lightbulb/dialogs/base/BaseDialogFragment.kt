@@ -230,12 +230,11 @@ abstract class BaseDialogFragment : DialogFragment(), DefaultLifecycleObserver {
         DialogBundleHelper(outState).apply {
             withTitle(dialogTitle)
             withMessage(dialogMessage)
-            withPositiveButtonConfig(dialogPositiveButtonConfiguration)
-            withNegativeButtonConfig(dialogNegativeButtonConfiguration)
             withCancelable(isCancelable)
             withShowing(isDialogShown)
             withDialogType(dialogType)
             withAnimation(dialogAnimationType)
+            withButtonConfigurations(dialogButtons)
         }.bundle.apply {
             doOnSaveDialogProperties(this)
         }
@@ -246,12 +245,18 @@ abstract class BaseDialogFragment : DialogFragment(), DefaultLifecycleObserver {
             val helper = DialogBundleHelper(this)
             dialogTitle = helper.title
             dialogMessage = helper.message
-            dialogPositiveButtonConfiguration = helper.positiveButtonConfig
-            dialogNegativeButtonConfiguration = helper.negativeButtonConfig
             isCancelable = helper.cancelable
             isDialogShown = helper.showing
             dialogType = helper.type
             dialogAnimationType = helper.animationType
+            helper.buttonConfigurations?.forEach { savedButtonConfig ->
+                getButtonConfiguration(savedButtonConfig.buttonTag)?.apply {
+                    removeDialogButtonInternally(buttonTag, false)
+                    savedButtonConfig.addOnClickListeners(onClickListeners)
+                    addDialogButtonInternally(savedButtonConfig, false)
+                }
+            }
+            configureButtons()
             doOnRestoreDialogProperties(savedState)
         }
     }
@@ -384,26 +389,28 @@ abstract class BaseDialogFragment : DialogFragment(), DefaultLifecycleObserver {
     }
 
     fun addDialogButton(buttonConfig: DialogButtonConfiguration) {
-        if (dialogButtons.contains(buttonConfig)) return
-        (dialogButtons as MutableList<DialogButtonConfiguration>).add(buttonConfig)
-        configureButtons()
+        addDialogButtonInternally(buttonConfig, true)
+    }
+
+    fun addOrReplaceDialogButton(buttonConfig: DialogButtonConfiguration) {
+        removeDialogButtonInternally(buttonConfig.buttonTag, false)
+        addDialogButtonInternally(buttonConfig, true)
     }
 
     fun removeDialogButton(index: Int) {
-        if (dialogButtons.size <= index) return
-        (dialogButtons as MutableList<DialogButtonConfiguration>).removeAt(index)
-        configureButtons()
+        removeDialogButtonInternally(index, true)
     }
 
     fun removeDialogButton(buttonConfig: DialogButtonConfiguration) {
-        (dialogButtons as MutableList<DialogButtonConfiguration>).remove(buttonConfig)
-        configureButtons()
+        removeDialogButtonInternally(buttonConfig, true)
     }
 
-    fun editButtonAt(index: Int, newButtonConfiguration: DialogButtonConfiguration) {
-        if (dialogButtons.size <= index) return
-        (dialogButtons as MutableList<DialogButtonConfiguration>)[index] = newButtonConfiguration
-        configureButtons()
+    fun removeDialogButton(buttonTag: String) {
+        removeDialogButtonInternally(buttonTag, true)
+    }
+
+    fun getButtonConfiguration(buttonTag: String): DialogButtonConfiguration? {
+        return dialogButtons.singleOrNull { it.buttonTag == buttonTag }
     }
 
     fun saveDialogState(): Bundle {
@@ -574,6 +581,35 @@ abstract class BaseDialogFragment : DialogFragment(), DefaultLifecycleObserver {
         dialogFooterView = dialogView.findViewById<DialogFooterView>(R.id.dialogButtonsContainer).apply {
             initialize(this@BaseDialogFragment)
         }
+    }
+
+    private fun addDialogButtonInternally(buttonConfig: DialogButtonConfiguration, syncButtons: Boolean) {
+        if (dialogButtons.contains(buttonConfig)) return
+        if (dialogButtons.any { it.buttonTag == buttonConfig.buttonTag }) return
+        (dialogButtons as MutableList<DialogButtonConfiguration>).add(buttonConfig)
+        if (!syncButtons) return
+        configureButtons()
+    }
+
+    private fun removeDialogButtonInternally(index: Int, syncButtons: Boolean) {
+        if (dialogButtons.size <= index) return
+        (dialogButtons as MutableList<DialogButtonConfiguration>).removeAt(index)
+        if (!syncButtons) return
+        configureButtons()
+    }
+
+    private fun removeDialogButtonInternally(buttonTag: String, syncButtons: Boolean) {
+        val buttons = (dialogButtons as MutableList<DialogButtonConfiguration>)
+        if (!buttons.removeIf { it.buttonTag == buttonTag }) return
+        if (!syncButtons) return
+        configureButtons()
+    }
+
+    private fun removeDialogButtonInternally(buttonConfig: DialogButtonConfiguration, syncButtons: Boolean) {
+        val buttons = (dialogButtons as MutableList<DialogButtonConfiguration>)
+        if (!buttons.remove(buttonConfig)) return
+        if (!syncButtons) return
+        configureButtons()
     }
 
     @SuppressLint("ClickableViewAccessibility")

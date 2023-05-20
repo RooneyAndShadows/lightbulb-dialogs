@@ -59,19 +59,8 @@ class DateRangePickerDialogBuilder @JvmOverloads constructor(
     }
 
     @Override
-    override fun withPositiveButton(
-        configuration: DialogButtonConfiguration,
-        onClickListener: DialogButtonClickListener?,
-    ): DateRangePickerDialogBuilder {
-        return super.withPositiveButton(configuration, onClickListener) as DateRangePickerDialogBuilder
-    }
-
-    @Override
-    override fun withNegativeButton(
-        configuration: DialogButtonConfiguration,
-        onClickListener: DialogButtonClickListener?,
-    ): DateRangePickerDialogBuilder {
-        return super.withNegativeButton(configuration, onClickListener) as DateRangePickerDialogBuilder
+    override fun withButton(configuration: DialogButtonConfiguration): DateRangePickerDialogBuilder {
+        return super.withButton(configuration) as DateRangePickerDialogBuilder
     }
 
     @Override

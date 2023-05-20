@@ -12,13 +12,11 @@ import androidx.appcompat.app.AppCompatActivity
 import androidx.fragment.app.FragmentManager
 import com.github.rooneyandshadows.lightbulb.commons.utils.ResourceUtils
 import com.github.rooneyandshadows.lightbulb.dialogs.R
-import com.github.rooneyandshadows.lightbulb.dialogs.base.BaseDialogFragment
 import com.github.rooneyandshadows.lightbulb.dialogs.base.internal.DialogAnimationTypes
 import com.github.rooneyandshadows.lightbulb.dialogs.base.internal.DialogAnimationTypes.*
 import com.github.rooneyandshadows.lightbulb.dialogs.base.internal.DialogButtonConfiguration
 import com.github.rooneyandshadows.lightbulb.dialogs.base.internal.DialogTypes
 import com.github.rooneyandshadows.lightbulb.dialogs.base.internal.DialogTypes.*
-import com.github.rooneyandshadows.lightbulb.dialogs.base.internal.callbacks.DialogButtonClickListener
 
 @Suppress("unused", "MemberVisibilityCanBePrivate", "UNUSED_PARAMETER")
 class AlertDialogView @JvmOverloads constructor(
@@ -57,18 +55,23 @@ class AlertDialogView @JvmOverloads constructor(
         initializeDialog()
     }
 
+    companion object {
+        private const val POSITIVE_BUTTON_TAG = "POSITIVE_BUTTON_TAG"
+        private const val NEGATIVE_BUTTON_TAG = "NEGATIVE_BUTTON_TAG"
+    }
+
     fun initializeDialog() {
         dialog = AlertDialogBuilder(null, fragmentManager, dialogTag).apply {
             dialogTitle?.apply { withTitle(this) }
             dialogMessage?.apply { withMessage(this) }
             dialogPositiveButtonText?.apply {
-                withPositiveButton(generateButtonConfig(this)!!, object : DialogButtonClickListener {
-                    override fun doOnClick(buttonView: View?, dialogFragment: BaseDialogFragment) {}
+                withButton(generateButtonConfig(POSITIVE_BUTTON_TAG, this).apply {
+                    //TODO ADD CLICK LISTENER
                 })
             }
             dialogNegativeButtonText?.apply {
-                withNegativeButton(generateButtonConfig(this)!!, object : DialogButtonClickListener {
-                    override fun doOnClick(buttonView: View?, dialogFragment: BaseDialogFragment) {}
+                withButton(generateButtonConfig(NEGATIVE_BUTTON_TAG, this).apply {
+                    //TODO ADD CLICK LISTENER
                 })
             }
             withCancelOnClickOutside(dialogCancelable)
@@ -99,14 +102,14 @@ class AlertDialogView @JvmOverloads constructor(
         dialog.setDialogMessage(dialogMessage)
     }
 
-    fun setPositiveButtonText(buttonText: String?) {
+    fun setPositiveButtonText(buttonText: String) {
         this.dialogPositiveButtonText = buttonText
-        dialog.setDialogPositiveButton(generateButtonConfig(buttonText))
+        dialog.addOrReplaceDialogButton(generateButtonConfig(POSITIVE_BUTTON_TAG, buttonText))
     }
 
-    fun setNegativeButtonText(buttonText: String?) {
+    fun setNegativeButtonText(buttonText: String) {
         this.dialogNegativeButtonText = buttonText
-        dialog.setDialogNegativeButton(generateButtonConfig(buttonText))
+        dialog.addOrReplaceDialogButton(generateButtonConfig(NEGATIVE_BUTTON_TAG, buttonText))
     }
 
     fun setCancelable(isCancelable: Boolean) {
@@ -132,9 +135,13 @@ class AlertDialogView @JvmOverloads constructor(
         }
     }
 
-    private fun generateButtonConfig(buttonText: String?): DialogButtonConfiguration? {
-        if (buttonText.isNullOrBlank()) return null
-        return DialogButtonConfiguration(buttonTitle = buttonText, buttonEnabled = true, closeDialogOnClick = true)
+    private fun generateButtonConfig(buttonTag: String, buttonText: String): DialogButtonConfiguration {
+        return DialogButtonConfiguration(
+            buttonTag = buttonTag,
+            buttonTitle = buttonText,
+            buttonEnabled = true,
+            closeDialogOnClick = true
+        )
     }
 
 

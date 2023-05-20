@@ -63,19 +63,8 @@ class ChipsPickerDialogBuilder @JvmOverloads constructor(
     }
 
     @Override
-    override fun withPositiveButton(
-        configuration: DialogButtonConfiguration,
-        onClickListener: DialogButtonClickListener?,
-    ): ChipsPickerDialogBuilder {
-        return super.withPositiveButton(configuration, onClickListener) as ChipsPickerDialogBuilder
-    }
-
-    @Override
-    override fun withNegativeButton(
-        configuration: DialogButtonConfiguration,
-        onClickListener: DialogButtonClickListener?,
-    ): ChipsPickerDialogBuilder {
-        return super.withNegativeButton(configuration, onClickListener) as ChipsPickerDialogBuilder
+    override fun withButton(configuration: DialogButtonConfiguration): ChipsPickerDialogBuilder {
+        return super.withButton(configuration) as ChipsPickerDialogBuilder
     }
 
     @Override
