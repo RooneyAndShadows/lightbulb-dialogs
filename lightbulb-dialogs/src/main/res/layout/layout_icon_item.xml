@@ -3,5 +3,5 @@
     android:id="@+id/icon"
     android:layout_width="50dp"
     android:layout_height="50dp"
-    android:background="@drawable/background_round_corners_transparent"
+    android:background="@drawable/dialogs_bg_round_corners_transparent_ripple"
     android:gravity="center" />

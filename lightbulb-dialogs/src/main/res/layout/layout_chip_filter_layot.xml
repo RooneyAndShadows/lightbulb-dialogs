@@ -10,7 +10,7 @@
         android:layout_width="wrap_content"
         android:layout_height="wrap_content"
         android:layout_weight="1"
-        android:background="@drawable/bg_chip_filter_input"
+        android:background="@drawable/dialogs_bg_chip_filter_input"
         android:hint="@string/dialog_chips_picker_filter_hint"
         android:paddingStart="@dimen/spacing_size_medium"
         android:paddingTop="@dimen/spacing_size_small"
@@ -25,7 +25,7 @@
         android:layout_marginStart="@dimen/spacing_size_small"
         android:background="@null"
         android:scaleType="fitXY"
-        android:src="@drawable/icon_add"
+        android:src="@drawable/dialogs_ic_add"
         android:tint="?colorAccent"
         tools:tint="#000" />
 </merge>

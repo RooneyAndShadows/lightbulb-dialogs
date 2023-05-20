@@ -47,7 +47,7 @@ class ColorPickerAdapter @JvmOverloads constructor(private val selectableMode: S
 
     fun getColorDrawable(context: Context, colorModel: ColorModel?): Drawable? {
         if (colorModel == null) return null
-        val colorDrawable: Drawable = ResourceUtils.getDrawable(context, R.drawable.color_icon)!!.mutate()
+        val colorDrawable: Drawable = ResourceUtils.getDrawable(context, R.drawable.dialogs_ic_color)!!.mutate()
         colorDrawable.setTint(Color.parseColor(colorModel.colorHex))
         return colorDrawable
     }
@@ -60,7 +60,7 @@ class ColorPickerAdapter @JvmOverloads constructor(private val selectableMode: S
             this.item = item
             val ctx: Context = colorView.context
             val isItemSelected: Boolean = adapter.collection.isItemSelected(position)
-            val drawableId = if (isItemSelected) R.drawable.color_selected_icon else R.drawable.color_icon
+            val drawableId = if (isItemSelected) R.drawable.dialogs_ic_color_selected else R.drawable.dialogs_ic_color
             val iconDrawable: Drawable = ResourceUtils.getDrawable(ctx, drawableId)!!.mutate()
             iconDrawable.setTint(Color.parseColor(item.colorHex))
             //colorView.setColorFilter(Color.parseColor(item.colorHex));

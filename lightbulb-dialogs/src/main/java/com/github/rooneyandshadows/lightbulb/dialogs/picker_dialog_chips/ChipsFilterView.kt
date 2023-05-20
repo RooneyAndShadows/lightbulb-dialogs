@@ -64,7 +64,7 @@ class ChipsFilterView @JvmOverloads constructor(
     }
 
     private fun renderLayout() {
-        inflate(context, R.layout.chip_filter_layot, this)
+        inflate(context, R.layout.layout_chip_filter_layot, this)
         filterInput = findViewById(R.id.dialogPickerFilter)
         addButton = findViewById(R.id.addButton)
         setupSizes()

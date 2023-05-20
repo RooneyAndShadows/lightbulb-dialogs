@@ -14,7 +14,7 @@
         android:layout_width="match_parent"
         android:layout_height="wrap_content"
         android:gravity="center"
-        app:divider="@drawable/divider_horizontal_space_small">
+        app:divider="@drawable/dialogs_divider_horizontal_space_small">
 
         <View
             style="@style/HorizontalDelimiter"

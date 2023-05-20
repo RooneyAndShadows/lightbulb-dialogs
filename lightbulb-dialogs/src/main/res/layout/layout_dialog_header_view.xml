@@ -1,0 +1,27 @@
+<?xml version="1.0" encoding="utf-8"?>
+<merge xmlns:android="http://schemas.android.com/apk/res/android"
+    xmlns:app="http://schemas.android.com/apk/res-auto"
+    xmlns:tools="http://schemas.android.com/tools"
+    android:layout_width="match_parent"
+    android:layout_height="match_parent"
+    tools:parentTag="androidx.core.widget.NestedScrollView">
+
+    <androidx.appcompat.widget.LinearLayoutCompat
+        android:id="@+id/dialog_title_and_message_container"
+        style="@style/DialogTitleAndMessageContainer"
+        app:divider="@drawable/dialogs_divider_vertical_space_small"
+        app:showDividers="middle">
+
+        <TextView
+            android:id="@+id/dialog_title_text_view"
+            style="@style/DialogTitle"
+            tools:ignore="HardcodedText"
+            tools:text="Title" />
+
+        <TextView
+            android:id="@+id/dialog_message_text_view"
+            style="@style/DialogSubtitle"
+            tools:ignore="HardcodedText"
+            tools:text="Message" />
+    </androidx.appcompat.widget.LinearLayoutCompat>
+</merge>

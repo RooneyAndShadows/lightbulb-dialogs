@@ -100,7 +100,7 @@ abstract class BaseDialogBuilder<DialogType : BaseDialogFragment> @JvmOverloads 
     }
 
     fun buildDialog(): DialogType {
-        return getExistingDialogOrCreate().apply {
+        return getExistingDialogOrCreate().apply dialog@{
             setDialogTag(dialogTag)
             setLifecycleOwner(dialogLifecycleOwner)
             setParentFragManager(dialogParentFragmentManager)
@@ -108,8 +108,8 @@ abstract class BaseDialogBuilder<DialogType : BaseDialogFragment> @JvmOverloads 
             onShowListener?.apply { addOnShowListener(this) }
             onHideListener?.apply { addOnHideListener(this) }
             onCancelListener?.apply { addOnCancelListener(this) }
-            onNegativeClickListener?.apply { addOnNegativeClickListeners(this) }
-            onPositiveClickListener?.apply { addOnPositiveClickListener(this) }
+            if (onNegativeClickListener != null) dialogNegativeButtonConfiguration?.addOnClickListener(onNegativeClickListener!!)
+            if (onPositiveClickListener != null) dialogPositiveButtonConfiguration?.addOnClickListener(onPositiveClickListener!!)
             setupNonRetainableSettings(this)
         }
     }

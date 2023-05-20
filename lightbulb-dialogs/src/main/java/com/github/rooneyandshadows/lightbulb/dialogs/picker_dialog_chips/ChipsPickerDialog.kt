@@ -163,19 +163,16 @@ class ChipsPickerDialog : AdapterPickerDialog<ChipModel>() {
         dialogLayout: View,
     ) {
         filterView?.apply {
-            val paddingTop = if (headerViewHierarchy.isVisible()) 0
-            else ResourceUtils.getDimenPxById(
-                requireContext(),
-                R.dimen.spacing_size_medium
-            )
+            val paddingTop = if (dialogHeaderView.isVisible) 0
+            else ResourceUtils.getDimenPxById(requireContext(), R.dimen.spacing_size_medium)
             setPadding(paddingLeft, paddingTop, paddingRight, paddingBottom)
         }
         val recyclerView = this.recyclerView
         val widthMeasureSpec = MeasureSpec.makeMeasureSpec(0, MeasureSpec.UNSPECIFIED)
         val heightMeasureSpec = MeasureSpec.makeMeasureSpec(0, MeasureSpec.UNSPECIFIED)
         dialogLayout.measure(widthMeasureSpec, heightMeasureSpec)
-        val headerHeight = headerViewHierarchy.titleAndMessageContainer?.measuredHeight ?: 0
-        val footerHeight = footerViewHierarchy.buttonsContainer?.measuredHeight ?: 0
+        val headerHeight = dialogHeaderView.titleAndMessageContainer.measuredHeight
+        val footerHeight = dialogFooterView.buttonsContainer?.measuredHeight ?: 0
         val filterViewHeight = filterView.let {
             if (it == null || !it.isVisible) return@let 0
             it.measure(widthMeasureSpec, heightMeasureSpec)

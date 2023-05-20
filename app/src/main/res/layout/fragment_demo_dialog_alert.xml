@@ -66,7 +66,7 @@
                     android:layout_height="wrap_content"
                     android:layout_marginBottom="@dimen/spacing_size_medium"
                     android:orientation="horizontal"
-                    app:divider="@drawable/divider_horizontal_space_medium"
+                    app:divider="@drawable/dialogs_divider_horizontal_space_medium"
                     app:showDividers="middle">
 
                     <com.github.rooneyandshadows.lightbulb.textinputview.TextInputView
@@ -74,7 +74,7 @@
                         android:layout_width="wrap_content"
                         android:layout_height="wrap_content"
                         android:layout_weight="1"
-                        app:dialogButtonText="@={dialog.dialogPositiveButton}"
+                        app:dialogButtonText="@={dialog.dialogPositiveButtonConfiguration}"
                         app:textInputHintText="@string/demo_dialog_positive_button_option_text" />
 
                     <com.github.rooneyandshadows.lightbulb.textinputview.TextInputView
@@ -82,7 +82,7 @@
                         android:layout_width="wrap_content"
                         android:layout_height="wrap_content"
                         android:layout_weight="1"
-                        app:dialogButtonText="@={dialog.dialogNegativeButton}"
+                        app:dialogButtonText="@={dialog.dialogNegativeButtonConfiguration}"
                         app:textInputHintText="@string/demo_dialog_negative_button_option_text" />
 
                 </androidx.appcompat.widget.LinearLayoutCompat>

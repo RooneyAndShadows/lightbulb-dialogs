@@ -104,7 +104,7 @@ class ChipsPickerAdapter : DialogPickerAdapter<ChipModel>() {
                     val color = if (selectedInAdapter) R.attr.colorOnPrimary else R.attr.colorPrimary
                     if (!selectedInAdapter) return@icon
                     setColorFilter(ResourceUtils.getColorByAttribute(context, color))
-                    setImageDrawable(ResourceUtils.getDrawable(context, R.drawable.chip_selected_icon))
+                    setImageDrawable(ResourceUtils.getDrawable(context, R.drawable.dialogs_ic_chip_selected))
                     (layoutParams as MarginLayoutParams).leftMargin = horPadding
                 }
                 initialized = true

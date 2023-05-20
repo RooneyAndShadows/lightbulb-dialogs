@@ -19,6 +19,7 @@ abstract class BasePickerDialogFragment<SelectionType>(
     protected constructor(selection: BaseDialogSelection<SelectionType>) : this(selection, true)
 
     init {
+        //TODO ADD POSITIVE AND NEGATIVE BUTTONS FOR PICKERS
         initializeListeners()
     }
 

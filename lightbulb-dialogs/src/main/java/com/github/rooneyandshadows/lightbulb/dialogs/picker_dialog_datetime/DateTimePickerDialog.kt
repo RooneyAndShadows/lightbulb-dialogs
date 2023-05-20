@@ -88,7 +88,7 @@ class DateTimePickerDialog : BasePickerDialogFragment<OffsetDateTime>(DateTimeSe
         setupHeader(activeSelection)
         val context = requireContext()
         modeChangeButton?.apply {
-            background = ResourceUtils.getDrawable(context, R.drawable.background_round_corners_transparent)
+            background = ResourceUtils.getDrawable(context, R.drawable.dialogs_bg_round_corners_transparent_ripple)
             setOnClickListener {
                 showingTimePicker = !showingTimePicker
                 syncPickerMode()
@@ -236,7 +236,7 @@ class DateTimePickerDialog : BasePickerDialogFragment<OffsetDateTime>(DateTimeSe
     private fun syncPickerMode() {
         val activeSelection = dialogSelection.getActiveSelection()
         if (showingTimePicker && activeSelection == null) showingTimePicker = false
-        val modeIconRes = if (showingTimePicker) R.drawable.calendar_icon else R.drawable.time_icon
+        val modeIconRes = if (showingTimePicker) R.drawable.dialogs_ic_calendar else R.drawable.dialogs_ic_time
         val modeIcon = ResourceUtils.getDrawable(modeChangeButton!!.context, modeIconRes).apply {
             this!!.setTint(ResourceUtils.getColorByAttribute(modeChangeButton!!.context, R.attr.colorOnPrimary))
         }

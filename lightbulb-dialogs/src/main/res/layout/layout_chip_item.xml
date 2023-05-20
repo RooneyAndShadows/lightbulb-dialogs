@@ -4,7 +4,7 @@
     android:layout_width="wrap_content"
     android:layout_height="wrap_content"
     android:animateLayoutChanges="true"
-    android:background="@drawable/bg_chip_picker_item"
+    android:background="@drawable/dialogs_bg_chip_picker_item"
     android:clickable="true"
     android:focusable="true"
     android:focusableInTouchMode="false"
@@ -16,7 +16,7 @@
         android:layout_height="@dimen/chips_picker_chip_remove_button_size"
         android:visibility="gone"
         android:layout_gravity="center_vertical"
-        tools:src="@drawable/chip_selected_icon" />
+        tools:src="@drawable/dialogs_ic_chip_selected" />
 
     <TextView
         android:id="@+id/chip_text_view"

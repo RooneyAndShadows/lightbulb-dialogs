@@ -10,10 +10,6 @@ import android.graphics.drawable.ColorDrawable
 import android.os.Bundle
 import android.util.Log
 import android.view.*
-import android.view.View.GONE
-import android.widget.Button
-import android.widget.TextView
-import androidx.appcompat.widget.LinearLayoutCompat
 import androidx.coordinatorlayout.widget.CoordinatorLayout
 import androidx.fragment.app.DialogFragment
 import androidx.fragment.app.FragmentManager
@@ -30,6 +26,8 @@ import com.github.rooneyandshadows.lightbulb.dialogs.base.internal.*
 import com.github.rooneyandshadows.lightbulb.dialogs.base.internal.DialogAnimationTypes.*
 import com.github.rooneyandshadows.lightbulb.dialogs.base.internal.DialogTypes.*
 import com.github.rooneyandshadows.lightbulb.dialogs.base.internal.callbacks.*
+import com.github.rooneyandshadows.lightbulb.dialogs.base.view.DialogFooterView
+import com.github.rooneyandshadows.lightbulb.dialogs.base.view.DialogHeaderView
 import com.github.rooneyandshadows.lightbulb.dialogs.picker_dialog_adapter.AdapterPickerDialog
 import com.google.android.material.bottomsheet.BottomSheetBehavior
 
@@ -41,17 +39,15 @@ abstract class BaseDialogFragment : DialogFragment(), DefaultLifecycleObserver {
     private lateinit var rootView: View
     private var dialogTag: String = javaClass.name.plus("_TAG")
     private var isLifecycleOwnerInStateAllowingShow = false
-    private val onPositiveClickListeners: MutableList<DialogButtonClickListener> = mutableListOf()
-    private val onNegativeClickListeners: MutableList<DialogButtonClickListener> = mutableListOf()
     private val onShowListeners: MutableList<DialogShowListener> = mutableListOf()
     private val onHideListeners: MutableList<DialogHideListener> = mutableListOf()
     private val onCancelListeners: MutableList<DialogCancelListener> = mutableListOf()
     private var dialogCallbacks: DialogListeners? = null
     private var dialogLifecycleOwner: LifecycleOwner? = null
     private var bottomSheetBehavior: LockableBottomSheetBehavior<View>? = null
-    protected lateinit var headerViewHierarchy: DialogLayoutHierarchyHeading
+    protected lateinit var dialogHeaderView: DialogHeaderView
         private set
-    protected lateinit var footerViewHierarchy: DialogLayoutHierarchyFooter
+    protected lateinit var dialogFooterView: DialogFooterView
         private set
     protected var isAttached = false
     var isDialogShown = false
@@ -72,10 +68,8 @@ abstract class BaseDialogFragment : DialogFragment(), DefaultLifecycleObserver {
         private set
     var dialogMessage: String? = null
         private set
-    var dialogPositiveButton: DialogButtonConfiguration? = null
-        private set
-    var dialogNegativeButton: DialogButtonConfiguration? = null
-        private set
+    val dialogButtons: List<DialogButtonConfiguration> = mutableListOf()
+        get() = field.toList()
 
     /**
      * Used to create layout for the dialog.
@@ -236,8 +230,8 @@ abstract class BaseDialogFragment : DialogFragment(), DefaultLifecycleObserver {
         DialogBundleHelper(outState).apply {
             withTitle(dialogTitle)
             withMessage(dialogMessage)
-            withPositiveButtonConfig(dialogPositiveButton)
-            withNegativeButtonConfig(dialogNegativeButton)
+            withPositiveButtonConfig(dialogPositiveButtonConfiguration)
+            withNegativeButtonConfig(dialogNegativeButtonConfiguration)
             withCancelable(isCancelable)
             withShowing(isDialogShown)
             withDialogType(dialogType)
@@ -252,8 +246,8 @@ abstract class BaseDialogFragment : DialogFragment(), DefaultLifecycleObserver {
             val helper = DialogBundleHelper(this)
             dialogTitle = helper.title
             dialogMessage = helper.message
-            dialogPositiveButton = helper.positiveButtonConfig
-            dialogNegativeButton = helper.negativeButtonConfig
+            dialogPositiveButtonConfiguration = helper.positiveButtonConfig
+            dialogNegativeButtonConfiguration = helper.negativeButtonConfig
             isCancelable = helper.cancelable
             isDialogShown = helper.showing
             dialogType = helper.type
@@ -389,22 +383,26 @@ abstract class BaseDialogFragment : DialogFragment(), DefaultLifecycleObserver {
         measureDialogLayout()
     }
 
-    fun setDialogPositiveButton(positiveButtonConfig: DialogButtonConfiguration?) {
-        dialogPositiveButton = positiveButtonConfig
+    fun addDialogButton(buttonConfig: DialogButtonConfiguration) {
+        if (dialogButtons.contains(buttonConfig)) return
+        (dialogButtons as MutableList<DialogButtonConfiguration>).add(buttonConfig)
         configureButtons()
     }
 
-    fun setDialogNegativeButton(negativeButtonConfig: DialogButtonConfiguration?) {
-        dialogNegativeButton = negativeButtonConfig
+    fun removeDialogButton(index: Int) {
+        if (dialogButtons.size <= index) return
+        (dialogButtons as MutableList<DialogButtonConfiguration>).removeAt(index)
         configureButtons()
     }
 
-    fun setDialogButtons(
-        positiveButtonConfig: DialogButtonConfiguration?,
-        negativeButtonConfig: DialogButtonConfiguration?,
-    ) {
-        dialogPositiveButton = positiveButtonConfig
-        dialogNegativeButton = negativeButtonConfig
+    fun removeDialogButton(buttonConfig: DialogButtonConfiguration) {
+        (dialogButtons as MutableList<DialogButtonConfiguration>).remove(buttonConfig)
+        configureButtons()
+    }
+
+    fun editButtonAt(index: Int, newButtonConfiguration: DialogButtonConfiguration) {
+        if (dialogButtons.size <= index) return
+        (dialogButtons as MutableList<DialogButtonConfiguration>)[index] = newButtonConfiguration
         configureButtons()
     }
 
@@ -453,25 +451,6 @@ abstract class BaseDialogFragment : DialogFragment(), DefaultLifecycleObserver {
         measureDialogLayout()
     }
 
-    fun configurePositiveButton(configurationCreator: DialogButtonConfigurationCreator) {
-        dialogPositiveButton = configurationCreator.create(dialogPositiveButton)
-        configureButtons()
-    }
-
-    fun configureNegativeButton(configurationCreator: DialogButtonConfigurationCreator) {
-        dialogNegativeButton = configurationCreator.create(dialogNegativeButton)
-        configureButtons()
-    }
-
-    fun addOnPositiveClickListener(onPositiveClickListener: DialogButtonClickListener) {
-        if (!onPositiveClickListeners.contains(onPositiveClickListener))
-            onPositiveClickListeners.add(onPositiveClickListener)
-    }
-
-    fun addOnNegativeClickListeners(onNegativeClickListener: DialogButtonClickListener) {
-        if (!onNegativeClickListeners.contains(onNegativeClickListener))
-            onNegativeClickListeners.add(onNegativeClickListener)
-    }
 
     fun addOnCancelListener(onCancelListener: DialogCancelListener) {
         if (!onCancelListeners.contains(onCancelListener))
@@ -486,14 +465,6 @@ abstract class BaseDialogFragment : DialogFragment(), DefaultLifecycleObserver {
     fun addOnHideListener(hideListener: DialogHideListener) {
         if (!onHideListeners.contains(hideListener))
             onHideListeners.add(hideListener)
-    }
-
-    fun removeOnPositiveClickListener(onPositiveClickListener: DialogButtonClickListener) {
-        onPositiveClickListeners.remove(onPositiveClickListener)
-    }
-
-    fun removeOnNegativeClickListeners(onNegativeClickListener: DialogButtonClickListener) {
-        onNegativeClickListeners.remove(onNegativeClickListener)
     }
 
     fun removeOnCancelListener(onCancelListener: DialogCancelListener) {
@@ -588,78 +559,20 @@ abstract class BaseDialogFragment : DialogFragment(), DefaultLifecycleObserver {
         return !isDialogShown && canShowDialog(dialogLifecycleOwner)
     }
 
-    private fun handleDismiss() {
-        if (!isDialogShown) return
-        dismiss()
-    }
-
     private fun configureHeading() {
         if (!this::rootView.isInitialized) return
         val dialogView = rootView
-        val titleAndMessageContainer = dialogView.findViewById<LinearLayoutCompat?>(R.id.dialogTitleAndMessageContainer)
-        val titleTextView = dialogView.findViewById<TextView?>(R.id.dialogTitleTextView)
-        val messageTextView = dialogView.findViewById<TextView?>(R.id.dialogMessageTextView)
-        headerViewHierarchy = DialogLayoutHierarchyHeading(titleAndMessageContainer, titleTextView, messageTextView)
-        if (titleAndMessageContainer == null) return
-        if (titleTextView == null && messageTextView == null || dialogTitle.isNullOrBlank() && dialogMessage.isNullOrBlank())
-            titleAndMessageContainer.visibility = GONE
-        else
-            titleAndMessageContainer.visibility = View.VISIBLE
-        if (titleTextView != null) {
-            if (dialogTitle.isNullOrBlank()) titleTextView.visibility = GONE
-            else {
-                titleTextView.visibility = View.VISIBLE
-                titleTextView.text = dialogTitle
-            }
-        }
-        if (messageTextView != null) {
-            if (dialogMessage.isNullOrBlank()) messageTextView.visibility = GONE
-            else {
-                messageTextView.visibility = View.VISIBLE
-                messageTextView.text = dialogMessage
-            }
+        dialogHeaderView = dialogView.findViewById<DialogHeaderView>(R.id.dialogTitleAndMessageContainer).apply {
+            title = dialogTitle
+            message = dialogMessage
         }
     }
 
     private fun configureButtons() {
         if (!this::rootView.isInitialized) return
         val dialogView = rootView
-        val buttonsContainer = dialogView.findViewById<LinearLayoutCompat?>(R.id.dialogButtonsContainer)
-        val buttonPositive = dialogView.findViewById<Button?>(R.id.dialogPositiveButton)
-        val buttonNegative = dialogView.findViewById<Button?>(R.id.dialogNegativeButton)
-        footerViewHierarchy = DialogLayoutHierarchyFooter(buttonsContainer, buttonPositive, buttonNegative)
-        if (buttonsContainer == null) return
-        if (buttonPositive == null && buttonNegative == null || dialogPositiveButton == null && dialogNegativeButton == null)
-            buttonsContainer.visibility = GONE
-        if (buttonPositive != null && dialogPositiveButton == null)
-            buttonPositive.visibility = GONE
-        if (buttonNegative != null && dialogNegativeButton == null)
-            buttonNegative.visibility = GONE
-        if (buttonPositive != null && dialogPositiveButton != null) {
-            buttonPositive.isEnabled = dialogPositiveButton!!.buttonEnabled
-            buttonPositive.setTextColor(buttonPositive.textColors.withAlpha(if (dialogPositiveButton!!.buttonEnabled) 255 else 140))
-            if (dialogPositiveButton!!.buttonTitle.isBlank()) buttonPositive.visibility = GONE
-            else {
-                buttonPositive.text = dialogPositiveButton!!.buttonTitle
-                buttonPositive.setOnClickListener { view: View? ->
-                    for (listener in onPositiveClickListeners)
-                        listener.doOnClick(view, this)
-                    if (dialogPositiveButton!!.closeDialogOnClick)
-                        handleDismiss()
-                }
-            }
-        }
-        if (buttonNegative != null && dialogNegativeButton != null) {
-            buttonNegative.isEnabled = dialogNegativeButton!!.buttonEnabled
-            buttonNegative.setTextColor(buttonNegative.textColors.withAlpha(if (dialogNegativeButton!!.buttonEnabled) 255 else 140))
-            if (dialogNegativeButton!!.buttonTitle.isBlank()) buttonNegative.visibility = GONE
-            else {
-                buttonNegative.text = dialogNegativeButton!!.buttonTitle
-                buttonNegative.setOnClickListener { view: View? ->
-                    for (listener in onNegativeClickListeners) listener.doOnClick(view, this)
-                    if (dialogNegativeButton!!.closeDialogOnClick) handleDismiss()
-                }
-            }
+        dialogFooterView = dialogView.findViewById<DialogFooterView>(R.id.dialogButtonsContainer).apply {
+            initialize(this@BaseDialogFragment)
         }
     }
 
