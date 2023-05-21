@@ -6,6 +6,7 @@
     style="@style/Dialog">
 
     <androidx.appcompat.widget.LinearLayoutCompat
+        android:id="@+id/content_container"
         android:layout_width="wrap_content"
         android:layout_height="wrap_content"
         android:orientation="horizontal"
@@ -81,10 +82,10 @@
 
     <com.github.rooneyandshadows.lightbulb.dialogs.base.view.DialogFooterView
         android:id="@+id/dialogButtonsContainer"
-        android:layout_width="match_parent"
+        android:layout_width="0dp"
         android:layout_height="wrap_content"
         app:layout_constraintBottom_toBottomOf="parent"
-        app:layout_constraintEnd_toEndOf="parent"
-        app:layout_constraintStart_toStartOf="parent" />
+        app:layout_constraintEnd_toEndOf="@id/content_container"
+        app:layout_constraintStart_toStartOf="@id/content_container" />
 
 </androidx.constraintlayout.widget.ConstraintLayout>

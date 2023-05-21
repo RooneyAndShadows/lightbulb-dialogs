@@ -85,8 +85,8 @@ class FragmentDialogChipsPicker : BaseFragmentWithViewBinding<FragmentDemoDialog
             withInitialDialogState(dialogSavedState)
             withTitle(title)
             withMessage(message)
-            withButton(cancelSelectionButton(positiveButtonText, positiveButtonClickListener))
-            withButton(confirmSelectionButton(negativeButtonText, negativeButtonClickListener))
+            withButton(cancelSelectionButton(negativeButtonText, positiveButtonClickListener))
+            withButton(confirmSelectionButton(positiveButtonText, negativeButtonClickListener))
             withSelectionCallback(onSelectionChanged)
         }.buildDialog()
     }

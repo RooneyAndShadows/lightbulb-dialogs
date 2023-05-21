@@ -88,8 +88,8 @@ class FragmentDialogColorPicker : BaseFragmentWithViewBinding<FragmentDemoDialog
             withInitialDialogState(dialogSavedState)
             withTitle(title)
             withMessage(message)
-            withButton(cancelSelectionButton(positiveButtonText, negativeButtonClickListener))
-            withButton(confirmSelectionButton(negativeButtonText, positiveButtonClickListener))
+            withButton(cancelSelectionButton(negativeButtonText, negativeButtonClickListener))
+            withButton(confirmSelectionButton(positiveButtonText, positiveButtonClickListener))
             withSelectionCallback(onSelectionChanged)
         }.buildDialog()
     }

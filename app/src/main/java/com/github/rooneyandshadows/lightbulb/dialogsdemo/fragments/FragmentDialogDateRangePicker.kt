@@ -80,8 +80,8 @@ class FragmentDialogDateRangePicker : BaseFragmentWithViewBinding<FragmentDemoDi
         val onSelectionChanged = getDefaultSelectionChangedListener<DateRange>(ctx)
         dateRangePickerDialog = DateRangePickerDialogBuilder(this, childFragmentManager, DIALOG_TAG).apply {
             withInitialDialogState(dialogSavedState)
-            withButton(cancelSelectionButton(positiveButtonText, negativeButtonClickListener))
-            withButton(confirmSelectionButton(negativeButtonText, positiveButtonClickListener))
+            withButton(cancelSelectionButton(negativeButtonText, negativeButtonClickListener))
+            withButton(confirmSelectionButton(positiveButtonText, positiveButtonClickListener))
             withOnDateSelectedEvent(onSelectionChanged)
         }.buildDialog()
     }

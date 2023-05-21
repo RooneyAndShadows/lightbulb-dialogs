@@ -41,7 +41,11 @@ class FragmentDialogAdapterPicker : BaseFragmentWithViewBinding<FragmentDemoDial
     @Override
     override fun doOnCreate(savedInstanceState: Bundle?) {
         super.doOnCreate(savedInstanceState)
-        createDialog(savedInstanceState)
+        var dialogSavedState: Bundle? = null
+        savedInstanceState?.apply {
+            dialogSavedState = BundleUtils.getParcelable(DIALOG_STATE_TAG, this, Bundle::class.java)
+        }
+        createDialog(dialogSavedState)
         if (savedInstanceState == null)
             adapterPickerDialog.setData(DemoModel.generateDemoCollection())
     }
@@ -90,16 +94,12 @@ class FragmentDialogAdapterPicker : BaseFragmentWithViewBinding<FragmentDemoDial
                 }
             }
         ).apply {
+            withInitialDialogState(savedInstanceState)
             withTitle(title)
             withMessage(message)
             withButton(cancelSelectionButton(negativeText, onNegativeButtonClick))
             withButton(confirmSelectionButton(positiveText, onPositiveButtonClick))
             withSelectionCallback(selectionCallback)
-        }.buildDialog().apply {
-            //TODO withInitialDialogState
-            if (savedInstanceState == null) return@apply
-            val savedState = BundleUtils.getParcelable(DIALOG_STATE_TAG, savedInstanceState, Bundle::class.java)
-            restoreDialogState(savedState)
-        }
+        }.buildDialog()
     }
 }
