@@ -7,12 +7,9 @@ import com.github.rooneyandshadows.lightbulb.application.fragment.base.BaseFragm
 import com.github.rooneyandshadows.lightbulb.application.fragment.cofiguration.ActionBarConfiguration
 import com.github.rooneyandshadows.lightbulb.commons.utils.BundleUtils
 import com.github.rooneyandshadows.lightbulb.commons.utils.ResourceUtils
-import com.github.rooneyandshadows.lightbulb.dialogs.base.internal.DialogButton
 import com.github.rooneyandshadows.lightbulb.dialogs.dialog_alert.AlertDialog
 import com.github.rooneyandshadows.lightbulb.dialogs.dialog_alert.AlertDialogBuilder
 import com.github.rooneyandshadows.lightbulb.dialogsdemo.*
-import com.github.rooneyandshadows.lightbulb.dialogsdemo.Constants.DIALOG_NEGATIVE_BUTTON_TAG
-import com.github.rooneyandshadows.lightbulb.dialogsdemo.Constants.DIALOG_POSITIVE_BUTTON_TAG
 import com.github.rooneyandshadows.lightbulb.dialogsdemo.databinding.FragmentDemoDialogAlertBinding
 
 @FragmentScreen(screenName = "Alert", screenGroup = "Demo")
@@ -74,11 +71,9 @@ class FragmentDialogAlert : BaseFragmentWithViewBinding<FragmentDemoDialogAlertB
     private fun createDialog(dialogSavedState: Bundle?) {
         alertDialog = AlertDialogBuilder(this, childFragmentManager, DIALOG_TAG).apply {
             val ctx = requireContext()
-            val title = getDefaultDialogTitle(ctx)
-            val message = getDefaultDialogMessage(ctx)
             withInitialDialogState(dialogSavedState)
-            withTitle(title)
-            withMessage(message)
+            withTitle(getDefaultDialogTitle(ctx))
+            withMessage(getDefaultDialogMessage(ctx))
             withButton(getDefaultNegativeButton(ctx))
             withButton(getDefaultPositiveButton(ctx))
         }.buildDialog()

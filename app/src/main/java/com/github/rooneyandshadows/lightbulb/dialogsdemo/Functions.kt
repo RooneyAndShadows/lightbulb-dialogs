@@ -12,6 +12,8 @@ import com.github.rooneyandshadows.lightbulb.dialogs.base.internal.DialogButton
 import com.github.rooneyandshadows.lightbulb.dialogs.base.internal.DialogTypes
 import com.github.rooneyandshadows.lightbulb.dialogs.base.internal.callbacks.DialogButtonClickListener
 import com.github.rooneyandshadows.lightbulb.dialogs.picker_dialog_chips.adapter.ChipModel
+import com.github.rooneyandshadows.lightbulb.dialogsdemo.Constants.DIALOG_NEGATIVE_BUTTON_TAG
+import com.github.rooneyandshadows.lightbulb.dialogsdemo.Constants.DIALOG_POSITIVE_BUTTON_TAG
 import com.github.rooneyandshadows.lightbulb.dialogsdemo.spinner.base.adapter.DialogPropertyItem
 
 object Constants {
@@ -71,13 +73,16 @@ fun getDefaultNegativeButtonClickListener(): DialogButtonClickListener {
 }
 
 fun getDefaultPositiveButton(context: Context): DialogButton {
-    return DialogButton(Constants.DIALOG_POSITIVE_BUTTON_TAG, getDefaultPositiveButtonText(context)).apply {
+    return DialogButton(DIALOG_POSITIVE_BUTTON_TAG, getDefaultPositiveButtonText(context)).apply {
         addOnClickListener(getDefaultPositiveButtonClickListener())
     }
 }
 
 fun getDefaultNegativeButton(context: Context): DialogButton {
-    return DialogButton(Constants.DIALOG_NEGATIVE_BUTTON_TAG, getDefaultNegativeButtonText(context)).apply {
+    return DialogButton(
+        buttonTag = DIALOG_NEGATIVE_BUTTON_TAG,
+        buttonTitle = getDefaultNegativeButtonText(context)
+    ).apply {
         addOnClickListener(getDefaultNegativeButtonClickListener())
     }
 }

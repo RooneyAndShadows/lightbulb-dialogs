@@ -388,24 +388,19 @@ abstract class BaseDialogFragment : DialogFragment(), DefaultLifecycleObserver {
         measureDialogLayout()
     }
 
-    fun addDialogButton(buttonConfig: DialogButton) {
+    fun addButton(buttonConfig: DialogButton) {
         addDialogButtonInternally(buttonConfig, true)
     }
 
-    fun addOrReplaceDialogButton(buttonConfig: DialogButton) {
-        removeDialogButtonInternally(buttonConfig.buttonTag, false)
-        addDialogButtonInternally(buttonConfig, true)
-    }
-
-    fun removeDialogButton(index: Int) {
+    fun removeButton(index: Int) {
         removeDialogButtonInternally(index, true)
     }
 
-    fun removeDialogButton(buttonConfig: DialogButton) {
+    fun removeButton(buttonConfig: DialogButton) {
         removeDialogButtonInternally(buttonConfig, true)
     }
 
-    fun removeDialogButton(buttonTag: String) {
+    fun removeButton(buttonTag: String) {
         removeDialogButtonInternally(buttonTag, true)
     }
 
@@ -587,6 +582,7 @@ abstract class BaseDialogFragment : DialogFragment(), DefaultLifecycleObserver {
         }
     }
 
+    @Suppress("SameParameterValue")
     private fun addDialogButtonInternally(buttonConfig: DialogButton, syncButtons: Boolean) {
         if (dialogButtons.contains(buttonConfig)) return
         if (dialogButtons.any { it.buttonTag == buttonConfig.buttonTag }) return
@@ -595,6 +591,7 @@ abstract class BaseDialogFragment : DialogFragment(), DefaultLifecycleObserver {
         configureButtons()
     }
 
+    @Suppress("SameParameterValue")
     private fun removeDialogButtonInternally(index: Int, syncButtons: Boolean) {
         if (dialogButtons.size <= index) return
         dialogButtons.removeAt(index)
@@ -602,6 +599,7 @@ abstract class BaseDialogFragment : DialogFragment(), DefaultLifecycleObserver {
         configureButtons()
     }
 
+    @Suppress("SameParameterValue")
     private fun removeDialogButtonInternally(buttonTag: String, syncButtons: Boolean) {
         val buttons = dialogButtons
         if (!buttons.removeIf { it.buttonTag == buttonTag }) return
@@ -609,6 +607,7 @@ abstract class BaseDialogFragment : DialogFragment(), DefaultLifecycleObserver {
         configureButtons()
     }
 
+    @Suppress("SameParameterValue")
     private fun removeDialogButtonInternally(buttonConfig: DialogButton, syncButtons: Boolean) {
         val buttons = dialogButtons
         if (!buttons.remove(buttonConfig)) return
@@ -681,7 +680,7 @@ abstract class BaseDialogFragment : DialogFragment(), DefaultLifecycleObserver {
                 javaClass.name,
                 "You are using dialog without lifecycle owner. This may produce unexpected behaviour when trying to " +
                         "show the dialog in specific lifecycle states. It is highly recommended to build your dialog with a " +
-                        "lifecycle ownner."
+                        "lifecycle owner."
             )
         if (dialogLifecycleOwner != null && !isLifecycleOwnerInStateAllowingShow) {
             Log.w(

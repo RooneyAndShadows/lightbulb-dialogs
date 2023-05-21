@@ -90,7 +90,7 @@ abstract class BaseDialogBuilder<DialogType : BaseDialogFragment> @JvmOverloads 
             setLifecycleOwner(dialogLifecycleOwner)
             setParentFragManager(dialogParentFragmentManager)
             setDialogCallbacks(dialogListeners)
-            buttonConfigurations.forEach { addDialogButton(it) }
+            buttonConfigurations.forEach { addButton(it) }
             onShowListener?.apply { addOnShowListener(this) }
             onHideListener?.apply { addOnHideListener(this) }
             onCancelListener?.apply { addOnCancelListener(this) }
