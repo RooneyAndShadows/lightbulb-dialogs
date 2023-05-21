@@ -5,7 +5,7 @@ import androidx.fragment.app.FragmentManager
 import androidx.lifecycle.LifecycleOwner
 import com.github.rooneyandshadows.lightbulb.dialogs.base.BaseDialogBuilder
 import com.github.rooneyandshadows.lightbulb.dialogs.base.internal.DialogAnimationTypes
-import com.github.rooneyandshadows.lightbulb.dialogs.base.internal.DialogButtonConfiguration
+import com.github.rooneyandshadows.lightbulb.dialogs.base.internal.DialogButton
 import com.github.rooneyandshadows.lightbulb.dialogs.base.internal.DialogTypes
 import com.github.rooneyandshadows.lightbulb.dialogs.base.internal.callbacks.*
 
@@ -47,7 +47,7 @@ class AlertDialogBuilder @JvmOverloads constructor(
     }
 
     @Override
-    override fun withButton(configuration: DialogButtonConfiguration): AlertDialogBuilder {
+    override fun withButton(configuration: DialogButton): AlertDialogBuilder {
         return super.withButton(configuration) as AlertDialogBuilder
     }
 

@@ -6,30 +6,30 @@
     tools:layout_height="match_parent"
     tools:layout_width="match_parent">
 
-    <androidx.appcompat.widget.LinearLayoutCompat
+    <com.github.rooneyandshadows.lightbulb.dialogs.base.view.DialogHeaderView
         android:id="@+id/dialogTitleAndMessageContainer"
-        style="@style/DialogTitleAndMessageContainer"
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content"
         app:layout_constraintBottom_toBottomOf="parent"
         app:layout_constraintEnd_toEndOf="parent"
         app:layout_constraintStart_toStartOf="parent"
-        app:layout_constraintTop_toTopOf="parent">
+        app:layout_constraintTop_toTopOf="parent" />
 
-        <TextView
-            android:id="@+id/dialogTitleTextView"
-            style="@style/DialogTitle"
-            tools:text="Title" />
+    <RelativeLayout
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content"
+        android:paddingStart="@dimen/dialog_header_padding"
+        android:paddingEnd="@dimen/dialog_header_padding"
+        android:paddingBottom="@dimen/dialog_header_padding"
+        app:layout_constraintEnd_toEndOf="parent"
+        app:layout_constraintStart_toStartOf="parent"
+        app:layout_constraintTop_toBottomOf="@id/dialogTitleAndMessageContainer">
 
-        <TextView
-            android:id="@+id/dialogMessageTextView"
-            style="@style/DialogSubtitle"
-            tools:text="Message" />
-
-        <ProgressBar
+        <com.google.android.material.progressindicator.LinearProgressIndicator
             android:id="@+id/progressbar"
-            style="@style/Widget.AppCompat.ProgressBar.Horizontal"
             android:layout_width="match_parent"
             android:layout_height="wrap_content"
-            android:layout_marginTop="@dimen/dialog_spacing_size_small"
             android:indeterminate="true" />
-    </androidx.appcompat.widget.LinearLayoutCompat>
+    </RelativeLayout>
+
 </androidx.constraintlayout.widget.ConstraintLayout>

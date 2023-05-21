@@ -7,6 +7,10 @@
         <variable
             name="dialog"
             type="com.github.rooneyandshadows.lightbulb.dialogs.dialog_alert.AlertDialog" />
+
+        <import
+            alias="consts"
+            type="com.github.rooneyandshadows.lightbulb.dialogsdemo.Constants" />
     </data>
 
     <RelativeLayout
@@ -74,7 +78,7 @@
                         android:layout_width="wrap_content"
                         android:layout_height="wrap_content"
                         android:layout_weight="1"
-                        app:dialogButtonText="@={dialog.dialogPositiveButtonConfiguration}"
+                        app:textInputText="@={dialog.getButtonConfiguration(consts.DIALOG_POSITIVE_BUTTON_TAG).buttonTitle}"
                         app:textInputHintText="@string/demo_dialog_positive_button_option_text" />
 
                     <com.github.rooneyandshadows.lightbulb.textinputview.TextInputView
@@ -82,7 +86,7 @@
                         android:layout_width="wrap_content"
                         android:layout_height="wrap_content"
                         android:layout_weight="1"
-                        app:dialogButtonText="@={dialog.dialogNegativeButtonConfiguration}"
+                        app:textInputText="@={dialog.getButtonConfiguration(consts.DIALOG_NEGATIVE_BUTTON_TAG).buttonTitle}"
                         app:textInputHintText="@string/demo_dialog_negative_button_option_text" />
 
                 </androidx.appcompat.widget.LinearLayoutCompat>

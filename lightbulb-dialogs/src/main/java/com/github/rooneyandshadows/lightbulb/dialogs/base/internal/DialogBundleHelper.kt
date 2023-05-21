@@ -16,8 +16,8 @@ class DialogBundleHelper(val bundle: Bundle = defaultBundle()) {
         get() = DialogTypes.valueOf(bundle.getInt(dialogTypeTag))
     val animationType: DialogAnimationTypes
         get() = DialogAnimationTypes.valueOf(bundle.getInt(dialogAnimationTag))
-    val buttonConfigurations: List<DialogButtonConfiguration>?
-        get() = BundleUtils.getParcelableArrayList(dialogButtonsConfigTag, bundle, DialogButtonConfiguration::class.java)
+    val buttonConfigurations: List<DialogButton>?
+        get() = BundleUtils.getParcelableArrayList(dialogButtonsConfigTag, bundle, DialogButton::class.java)
 
     companion object {
         private const val dialogTitleTextTag = "DIALOG_TITLE_TEXT_TAG"
@@ -66,7 +66,7 @@ class DialogBundleHelper(val bundle: Bundle = defaultBundle()) {
         return this
     }
 
-    fun withButtonConfigurations(buttonConfigurations: List<DialogButtonConfiguration>): DialogBundleHelper {
+    fun withButtonConfigurations(buttonConfigurations: List<DialogButton>): DialogBundleHelper {
         bundle.putParcelableArrayList(dialogButtonsConfigTag, ArrayList(buttonConfigurations))
         return this
     }

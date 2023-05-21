@@ -2,6 +2,8 @@ package com.github.rooneyandshadows.lightbulb.dialogs.base
 
 import android.os.Bundle
 import com.github.rooneyandshadows.lightbulb.dialogs.base.BaseDialogSelection.PickerSelectionListeners
+import com.github.rooneyandshadows.lightbulb.dialogs.base.internal.DialogButton
+import com.github.rooneyandshadows.lightbulb.dialogs.base.internal.callbacks.DialogButtonClickListener
 import com.github.rooneyandshadows.lightbulb.dialogs.base.internal.callbacks.DialogCancelListener
 import com.github.rooneyandshadows.lightbulb.dialogs.base.internal.callbacks.DialogShowListener
 
@@ -11,7 +13,6 @@ abstract class BasePickerDialogFragment<SelectionType>(
     protected val dialogSelection: BaseDialogSelection<SelectionType>,
     private val synchronizeUiOnDraftChange: Boolean,
 ) : BaseDialogFragment() {
-    private val selectionStateKey = "DIALOG_SELECTION_STATE_KEY"
     private var onSelectionChangedListeners: MutableList<SelectionChangedListener<SelectionType>> = mutableListOf()
 
     protected constructor(selection: BaseDialogSelection<SelectionType>) : this(selection, true)
@@ -20,13 +21,17 @@ abstract class BasePickerDialogFragment<SelectionType>(
         initializeListeners()
     }
 
+    companion object {
+        private val SELECTION_STATE_KEY = "SELECTION_STATE_KEY"
+    }
+
     protected abstract fun onSelectionChange(newSelection: SelectionType?)
 
     @Override
     override fun doOnSaveDialogProperties(outState: Bundle) {
         super.doOnSaveDialogProperties(outState)
         outState.apply {
-            putBundle(selectionStateKey, dialogSelection.saveState())
+            putBundle(SELECTION_STATE_KEY, dialogSelection.saveState())
         }
     }
 
@@ -34,7 +39,7 @@ abstract class BasePickerDialogFragment<SelectionType>(
     override fun doOnRestoreDialogProperties(savedState: Bundle) {
         super.doOnRestoreDialogProperties(savedState)
         savedState.apply {
-            getBundle(selectionStateKey)?.apply {
+            getBundle(SELECTION_STATE_KEY)?.apply {
                 dialogSelection.restoreState(this)
             }
         }
@@ -124,5 +129,42 @@ abstract class BasePickerDialogFragment<SelectionType>(
             newValue: SelectionType?,
             oldValue: SelectionType?,
         )
+    }
+
+    class Buttons {
+        companion object {
+            private const val CANCEL_SELECTION_BUTTON_TAG = "CANCEL_SELECTION_BUTTON_TAG"
+            private const val CONFIRM_SELECTION_BUTTON_TAG = "CONFIRM_SELECTION_BUTTON_TAG"
+
+            @JvmStatic
+            @JvmOverloads
+            fun confirmSelectionButton(
+                buttonText: String,
+                onClick: DialogButtonClickListener? = null,
+            ): DialogButton {
+                return DialogButton(CONFIRM_SELECTION_BUTTON_TAG, buttonText).apply {
+                    addOnClickListener { _, dialog ->
+                        if (dialog !is BasePickerDialogFragment<*>) return@addOnClickListener
+                        dialog.confirmSelection()
+                    }
+                    onClick?.apply { addOnClickListener(this) }
+                }
+            }
+
+            @JvmStatic
+            @JvmOverloads
+            fun cancelSelectionButton(
+                buttonText: String,
+                onClick: DialogButtonClickListener? = null,
+            ): DialogButton {
+                return DialogButton(CANCEL_SELECTION_BUTTON_TAG, buttonText).apply {
+                    addOnClickListener { _, dialog ->
+                        if (dialog !is BasePickerDialogFragment<*>) return@addOnClickListener
+                        dialog.cancelSelection()
+                    }
+                    onClick?.apply { addOnClickListener(this) }
+                }
+            }
+        }
     }
 }

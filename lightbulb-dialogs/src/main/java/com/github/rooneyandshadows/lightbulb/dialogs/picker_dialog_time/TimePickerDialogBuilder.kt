@@ -53,7 +53,7 @@ class TimePickerDialogBuilder @JvmOverloads constructor(
     }
 
     @Override
-    override fun withButton(configuration: DialogButtonConfiguration): TimePickerDialogBuilder {
+    override fun withButton(configuration: DialogButton): TimePickerDialogBuilder {
         return super.withButton(configuration) as TimePickerDialogBuilder
     }
 

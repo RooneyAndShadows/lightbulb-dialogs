@@ -57,7 +57,7 @@ class AdapterPickerDialogBuilder<DialogType : AdapterPickerDialog<out EasyAdapte
     }
 
     @Override
-    override fun withButton(configuration: DialogButtonConfiguration): AdapterPickerDialogBuilder<DialogType> {
+    override fun withButton(configuration: DialogButton): AdapterPickerDialogBuilder<DialogType> {
         return super.withButton(configuration) as AdapterPickerDialogBuilder<DialogType>
     }
 

@@ -59,7 +59,7 @@ class DateTimePickerDialogBuilder @JvmOverloads constructor(
     }
 
     @Override
-    override fun withButton(configuration: DialogButtonConfiguration): DateTimePickerDialogBuilder {
+    override fun withButton(configuration: DialogButton): DateTimePickerDialogBuilder {
         return super.withButton(configuration) as DateTimePickerDialogBuilder
     }
 

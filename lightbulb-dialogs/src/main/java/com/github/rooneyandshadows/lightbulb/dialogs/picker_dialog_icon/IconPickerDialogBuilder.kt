@@ -52,7 +52,7 @@ class IconPickerDialogBuilder @JvmOverloads constructor(
     }
 
     @Override
-    override fun withButton(configuration: DialogButtonConfiguration): IconPickerDialogBuilder {
+    override fun withButton(configuration: DialogButton): IconPickerDialogBuilder {
         return super.withButton(configuration) as IconPickerDialogBuilder
     }
 

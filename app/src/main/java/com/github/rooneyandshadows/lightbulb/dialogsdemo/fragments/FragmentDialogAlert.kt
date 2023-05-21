@@ -7,10 +7,12 @@ import com.github.rooneyandshadows.lightbulb.application.fragment.base.BaseFragm
 import com.github.rooneyandshadows.lightbulb.application.fragment.cofiguration.ActionBarConfiguration
 import com.github.rooneyandshadows.lightbulb.commons.utils.BundleUtils
 import com.github.rooneyandshadows.lightbulb.commons.utils.ResourceUtils
-import com.github.rooneyandshadows.lightbulb.dialogs.base.internal.DialogButtonConfiguration
+import com.github.rooneyandshadows.lightbulb.dialogs.base.internal.DialogButton
 import com.github.rooneyandshadows.lightbulb.dialogs.dialog_alert.AlertDialog
 import com.github.rooneyandshadows.lightbulb.dialogs.dialog_alert.AlertDialogBuilder
 import com.github.rooneyandshadows.lightbulb.dialogsdemo.*
+import com.github.rooneyandshadows.lightbulb.dialogsdemo.Constants.DIALOG_NEGATIVE_BUTTON_TAG
+import com.github.rooneyandshadows.lightbulb.dialogsdemo.Constants.DIALOG_POSITIVE_BUTTON_TAG
 import com.github.rooneyandshadows.lightbulb.dialogsdemo.databinding.FragmentDemoDialogAlertBinding
 
 @FragmentScreen(screenName = "Alert", screenGroup = "Demo")
@@ -74,15 +76,11 @@ class FragmentDialogAlert : BaseFragmentWithViewBinding<FragmentDemoDialogAlertB
             val ctx = requireContext()
             val title = getDefaultDialogTitle(ctx)
             val message = getDefaultDialogMessage(ctx)
-            val positiveButtonText = getDefaultPositiveButtonText(ctx)
-            val negativeButtonText = getDefaultNegativeButtonText(ctx)
-            val positiveButtonClickListener = getDefaultPositiveButtonClickListener()
-            val negativeButtonClickListener = getDefaultNegativeButtonClickListener()
             withInitialDialogState(dialogSavedState)
             withTitle(title)
             withMessage(message)
-            withPositiveButton(DialogButtonConfiguration(positiveButtonText), positiveButtonClickListener)
-            withNegativeButton(DialogButtonConfiguration(negativeButtonText), negativeButtonClickListener)
+            withButton(getDefaultNegativeButton(ctx))
+            withButton(getDefaultPositiveButton(ctx))
         }.buildDialog()
     }
 }

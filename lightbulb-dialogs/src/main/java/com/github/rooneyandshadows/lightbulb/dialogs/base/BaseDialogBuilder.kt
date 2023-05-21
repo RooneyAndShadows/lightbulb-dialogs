@@ -16,7 +16,7 @@ abstract class BaseDialogBuilder<DialogType : BaseDialogFragment> @JvmOverloads 
     protected var initialDialogState: Bundle? = null
     protected var title: String? = null
     protected var message: String? = null
-    protected var buttonConfigurations: List<DialogButtonConfiguration> = mutableListOf()
+    protected var buttonConfigurations: List<DialogButton> = mutableListOf()
     protected var onShowListener: DialogShowListener? = null
     protected var onHideListener: DialogHideListener? = null
     protected var onCancelListener: DialogCancelListener? = null
@@ -43,8 +43,8 @@ abstract class BaseDialogBuilder<DialogType : BaseDialogFragment> @JvmOverloads 
         return this
     }
 
-    open fun withButton(configuration: DialogButtonConfiguration): BaseDialogBuilder<DialogType> {
-        val buttons = buttonConfigurations as MutableList<DialogButtonConfiguration>
+    open fun withButton(configuration: DialogButton): BaseDialogBuilder<DialogType> {
+        val buttons = buttonConfigurations as MutableList<DialogButton>
         buttons.add(configuration)
         return this
     }

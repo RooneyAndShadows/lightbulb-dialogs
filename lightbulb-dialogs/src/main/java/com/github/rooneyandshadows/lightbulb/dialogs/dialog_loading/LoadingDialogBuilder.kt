@@ -5,7 +5,7 @@ import androidx.fragment.app.FragmentManager
 import androidx.lifecycle.LifecycleOwner
 import com.github.rooneyandshadows.lightbulb.dialogs.base.BaseDialogBuilder
 import com.github.rooneyandshadows.lightbulb.dialogs.base.internal.DialogAnimationTypes
-import com.github.rooneyandshadows.lightbulb.dialogs.base.internal.DialogButtonConfiguration
+import com.github.rooneyandshadows.lightbulb.dialogs.base.internal.DialogButton
 import com.github.rooneyandshadows.lightbulb.dialogs.base.internal.DialogTypes
 import com.github.rooneyandshadows.lightbulb.dialogs.base.internal.callbacks.*
 
@@ -43,7 +43,7 @@ class LoadingDialogBuilder @JvmOverloads constructor(
     }
 
     @Override
-    override fun withButton(configuration: DialogButtonConfiguration): LoadingDialogBuilder {
+    override fun withButton(configuration: DialogButton): LoadingDialogBuilder {
         return super.withButton(configuration) as LoadingDialogBuilder
     }
 

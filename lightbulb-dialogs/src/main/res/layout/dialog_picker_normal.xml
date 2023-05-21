@@ -1,31 +1,16 @@
 <?xml version="1.0" encoding="utf-8"?>
 <androidx.appcompat.widget.LinearLayoutCompat xmlns:android="http://schemas.android.com/apk/res/android"
-    xmlns:app="http://schemas.android.com/apk/res-auto"
-    xmlns:tools="http://schemas.android.com/tools"
     style="@style/Dialog"
+    android:layout_width="match_parent"
+    android:layout_height="match_parent"
     android:clickable="true"
     android:focusable="true"
-    android:focusableInTouchMode="true"
-    android:layout_width="match_parent"
-    android:layout_height="match_parent">
+    android:focusableInTouchMode="true">
 
-    <androidx.appcompat.widget.LinearLayoutCompat
+    <com.github.rooneyandshadows.lightbulb.dialogs.base.view.DialogHeaderView
         android:id="@+id/dialogTitleAndMessageContainer"
-        style="@style/DialogTitleAndMessageContainer"
-        app:layout_constraintEnd_toEndOf="parent"
-        app:layout_constraintStart_toStartOf="parent"
-        app:layout_constraintTop_toTopOf="parent">
-
-        <TextView
-            android:id="@+id/dialogTitleTextView"
-            style="@style/DialogTitle"
-            tools:text="Title" />
-
-        <TextView
-            android:id="@+id/dialogMessageTextView"
-            style="@style/DialogSubtitle"
-            tools:text="Message" />
-    </androidx.appcompat.widget.LinearLayoutCompat>
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content" />
 
     <androidx.appcompat.widget.LinearLayoutCompat
         android:id="@+id/dialogContent"
@@ -42,19 +27,8 @@
             android:scrollbars="vertical|horizontal" />
     </androidx.appcompat.widget.LinearLayoutCompat>
 
-    <androidx.appcompat.widget.LinearLayoutCompat
+    <com.github.rooneyandshadows.lightbulb.dialogs.base.view.DialogFooterView
         android:id="@+id/dialogButtonsContainer"
-        style="@style/DialogButtonsContainer">
-
-        <Button
-            android:id="@+id/dialogNegativeButton"
-            style="@style/DialogButton"
-            tools:text="negative" />
-
-        <Button
-            android:id="@+id/dialogPositiveButton"
-            style="@style/DialogButton"
-            android:layout_marginStart="@dimen/dialog_buttons_spacing"
-            tools:text="positive" />
-    </androidx.appcompat.widget.LinearLayoutCompat>
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content" />
 </androidx.appcompat.widget.LinearLayoutCompat>

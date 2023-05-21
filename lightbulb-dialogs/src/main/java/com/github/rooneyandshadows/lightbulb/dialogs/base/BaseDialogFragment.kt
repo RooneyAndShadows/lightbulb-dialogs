@@ -39,15 +39,16 @@ abstract class BaseDialogFragment : DialogFragment(), DefaultLifecycleObserver {
     private lateinit var rootView: View
     private var dialogTag: String = javaClass.name.plus("_TAG")
     private var isLifecycleOwnerInStateAllowingShow = false
+    private val dialogButtons: MutableList<DialogButton> = mutableListOf()
     private val onShowListeners: MutableList<DialogShowListener> = mutableListOf()
     private val onHideListeners: MutableList<DialogHideListener> = mutableListOf()
     private val onCancelListeners: MutableList<DialogCancelListener> = mutableListOf()
     private var dialogCallbacks: DialogListeners? = null
     private var dialogLifecycleOwner: LifecycleOwner? = null
     private var bottomSheetBehavior: LockableBottomSheetBehavior<View>? = null
-    protected lateinit var dialogHeaderView: DialogHeaderView
+    protected var dialogHeaderView: DialogHeaderView? = null
         private set
-    protected lateinit var dialogFooterView: DialogFooterView
+    protected var dialogFooterView: DialogFooterView? = null
         private set
     protected var isAttached = false
     var isDialogShown = false
@@ -68,8 +69,7 @@ abstract class BaseDialogFragment : DialogFragment(), DefaultLifecycleObserver {
         private set
     var dialogMessage: String? = null
         private set
-    val dialogButtons: List<DialogButtonConfiguration> = mutableListOf()
-        get() = field.toList()
+
 
     /**
      * Used to create layout for the dialog.
@@ -251,9 +251,9 @@ abstract class BaseDialogFragment : DialogFragment(), DefaultLifecycleObserver {
             dialogAnimationType = helper.animationType
             helper.buttonConfigurations?.forEach { savedButtonConfig ->
                 getButtonConfiguration(savedButtonConfig.buttonTag)?.apply {
-                    removeDialogButtonInternally(buttonTag, false)
-                    savedButtonConfig.addOnClickListeners(onClickListeners)
-                    addDialogButtonInternally(savedButtonConfig, false)
+                    buttonTitle = savedButtonConfig.buttonTitle
+                    buttonEnabled = savedButtonConfig.buttonEnabled
+                    closeDialogOnClick = savedButtonConfig.closeDialogOnClick
                 }
             }
             configureButtons()
@@ -388,11 +388,11 @@ abstract class BaseDialogFragment : DialogFragment(), DefaultLifecycleObserver {
         measureDialogLayout()
     }
 
-    fun addDialogButton(buttonConfig: DialogButtonConfiguration) {
+    fun addDialogButton(buttonConfig: DialogButton) {
         addDialogButtonInternally(buttonConfig, true)
     }
 
-    fun addOrReplaceDialogButton(buttonConfig: DialogButtonConfiguration) {
+    fun addOrReplaceDialogButton(buttonConfig: DialogButton) {
         removeDialogButtonInternally(buttonConfig.buttonTag, false)
         addDialogButtonInternally(buttonConfig, true)
     }
@@ -401,7 +401,7 @@ abstract class BaseDialogFragment : DialogFragment(), DefaultLifecycleObserver {
         removeDialogButtonInternally(index, true)
     }
 
-    fun removeDialogButton(buttonConfig: DialogButtonConfiguration) {
+    fun removeDialogButton(buttonConfig: DialogButton) {
         removeDialogButtonInternally(buttonConfig, true)
     }
 
@@ -409,7 +409,11 @@ abstract class BaseDialogFragment : DialogFragment(), DefaultLifecycleObserver {
         removeDialogButtonInternally(buttonTag, true)
     }
 
-    fun getButtonConfiguration(buttonTag: String): DialogButtonConfiguration? {
+    fun getButtons(): List<DialogButton> {
+        return dialogButtons.toList()
+    }
+
+    fun getButtonConfiguration(buttonTag: String): DialogButton? {
         return dialogButtons.singleOrNull { it.buttonTag == buttonTag }
     }
 
@@ -569,7 +573,7 @@ abstract class BaseDialogFragment : DialogFragment(), DefaultLifecycleObserver {
     private fun configureHeading() {
         if (!this::rootView.isInitialized) return
         val dialogView = rootView
-        dialogHeaderView = dialogView.findViewById<DialogHeaderView>(R.id.dialogTitleAndMessageContainer).apply {
+        dialogHeaderView = dialogView.findViewById<DialogHeaderView>(R.id.dialogTitleAndMessageContainer)?.apply {
             title = dialogTitle
             message = dialogMessage
         }
@@ -578,35 +582,35 @@ abstract class BaseDialogFragment : DialogFragment(), DefaultLifecycleObserver {
     private fun configureButtons() {
         if (!this::rootView.isInitialized) return
         val dialogView = rootView
-        dialogFooterView = dialogView.findViewById<DialogFooterView>(R.id.dialogButtonsContainer).apply {
+        dialogFooterView = dialogView.findViewById<DialogFooterView>(R.id.dialogButtonsContainer)?.apply {
             initialize(this@BaseDialogFragment)
         }
     }
 
-    private fun addDialogButtonInternally(buttonConfig: DialogButtonConfiguration, syncButtons: Boolean) {
+    private fun addDialogButtonInternally(buttonConfig: DialogButton, syncButtons: Boolean) {
         if (dialogButtons.contains(buttonConfig)) return
         if (dialogButtons.any { it.buttonTag == buttonConfig.buttonTag }) return
-        (dialogButtons as MutableList<DialogButtonConfiguration>).add(buttonConfig)
+        dialogButtons.add(buttonConfig)
         if (!syncButtons) return
         configureButtons()
     }
 
     private fun removeDialogButtonInternally(index: Int, syncButtons: Boolean) {
         if (dialogButtons.size <= index) return
-        (dialogButtons as MutableList<DialogButtonConfiguration>).removeAt(index)
+        dialogButtons.removeAt(index)
         if (!syncButtons) return
         configureButtons()
     }
 
     private fun removeDialogButtonInternally(buttonTag: String, syncButtons: Boolean) {
-        val buttons = (dialogButtons as MutableList<DialogButtonConfiguration>)
+        val buttons = dialogButtons
         if (!buttons.removeIf { it.buttonTag == buttonTag }) return
         if (!syncButtons) return
         configureButtons()
     }
 
-    private fun removeDialogButtonInternally(buttonConfig: DialogButtonConfiguration, syncButtons: Boolean) {
-        val buttons = (dialogButtons as MutableList<DialogButtonConfiguration>)
+    private fun removeDialogButtonInternally(buttonConfig: DialogButton, syncButtons: Boolean) {
+        val buttons = dialogButtons
         if (!buttons.remove(buttonConfig)) return
         if (!syncButtons) return
         configureButtons()

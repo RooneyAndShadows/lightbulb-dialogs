@@ -1,0 +1,19 @@
+<layout>
+
+    <data>
+
+        <variable
+            name="buttonConfiguration"
+            type="com.github.rooneyandshadows.lightbulb.dialogs.base.internal.DialogButton" />
+    </data>
+
+    <Button xmlns:android="http://schemas.android.com/apk/res/android"
+        xmlns:tools="http://schemas.android.com/tools"
+        style="@style/DialogButton"
+        android:enabled="@{buttonConfiguration.buttonEnabled}"
+        android:tag="@{buttonConfiguration.buttonTag}"
+        android:text="@{buttonConfiguration.buttonTitle}"
+        tools:ignore="HardcodedText"
+        tools:text="OK"
+        tools:textColor="?android:attr/textColorPrimary" />
+</layout>

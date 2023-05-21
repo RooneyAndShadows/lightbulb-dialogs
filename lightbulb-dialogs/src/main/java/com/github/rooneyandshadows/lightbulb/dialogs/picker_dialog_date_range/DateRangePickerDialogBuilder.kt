@@ -59,7 +59,7 @@ class DateRangePickerDialogBuilder @JvmOverloads constructor(
     }
 
     @Override
-    override fun withButton(configuration: DialogButtonConfiguration): DateRangePickerDialogBuilder {
+    override fun withButton(configuration: DialogButton): DateRangePickerDialogBuilder {
         return super.withButton(configuration) as DateRangePickerDialogBuilder
     }
 

@@ -6,52 +6,23 @@
     tools:layout_height="match_parent"
     tools:layout_width="match_parent">
 
-    <androidx.appcompat.widget.LinearLayoutCompat
+    <com.github.rooneyandshadows.lightbulb.dialogs.base.view.DialogHeaderView
         android:id="@+id/dialogTitleAndMessageContainer"
-        style="@style/DialogTitleAndMessageContainer"
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content"
         app:layout_constrainedHeight="true"
         app:layout_constraintBottom_toTopOf="@+id/dialogButtonsContainer"
         app:layout_constraintEnd_toEndOf="parent"
         app:layout_constraintStart_toStartOf="parent"
         app:layout_constraintTop_toTopOf="parent"
-        tools:layout_height="match_parent">
+        tools:layout_height="match_parent" />
 
-        <TextView
-            android:id="@+id/dialogTitleTextView"
-            style="@style/DialogTitle"
-            tools:ignore="HardcodedText"
-            tools:text="Title" />
-
-        <androidx.core.widget.NestedScrollView
-            android:layout_width="match_parent"
-            android:layout_height="wrap_content">
-
-            <TextView
-                android:id="@+id/dialogMessageTextView"
-                style="@style/DialogSubtitle"
-                tools:ignore="HardcodedText"
-                tools:text="Message" />
-        </androidx.core.widget.NestedScrollView>
-    </androidx.appcompat.widget.LinearLayoutCompat>
-
-    <androidx.appcompat.widget.LinearLayoutCompat
+    <com.github.rooneyandshadows.lightbulb.dialogs.base.view.DialogFooterView
         android:id="@+id/dialogButtonsContainer"
-        style="@style/DialogButtonsContainer"
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content"
         app:layout_constraintBottom_toBottomOf="parent"
         app:layout_constraintEnd_toEndOf="parent"
-        app:layout_constraintStart_toStartOf="parent">
+        app:layout_constraintStart_toStartOf="parent" />
 
-        <Button
-            android:id="@+id/dialogNegativeButton"
-            style="@style/DialogButton"
-            tools:ignore="HardcodedText"
-            tools:text="negative" />
-
-        <Button
-            android:id="@+id/dialogPositiveButton"
-            style="@style/DialogButton"
-            android:layout_marginStart="@dimen/dialog_buttons_spacing"
-            tools:ignore="HardcodedText"
-            tools:text="positive" />
-    </androidx.appcompat.widget.LinearLayoutCompat>
 </androidx.constraintlayout.widget.ConstraintLayout>

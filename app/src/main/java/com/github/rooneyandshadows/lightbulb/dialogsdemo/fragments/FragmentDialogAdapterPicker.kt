@@ -1,16 +1,14 @@
 package com.github.rooneyandshadows.lightbulb.dialogsdemo.fragments
 
 import android.os.Bundle
-import android.view.View
 import com.github.rooneyandshadows.lightbulb.annotation_processors.annotations.FragmentConfiguration
 import com.github.rooneyandshadows.lightbulb.annotation_processors.annotations.FragmentScreen
 import com.github.rooneyandshadows.lightbulb.application.fragment.base.BaseFragmentWithViewBinding
 import com.github.rooneyandshadows.lightbulb.application.fragment.cofiguration.ActionBarConfiguration
 import com.github.rooneyandshadows.lightbulb.commons.utils.BundleUtils
 import com.github.rooneyandshadows.lightbulb.commons.utils.ResourceUtils
-import com.github.rooneyandshadows.lightbulb.dialogs.base.BaseDialogFragment
-import com.github.rooneyandshadows.lightbulb.dialogs.base.internal.DialogButtonConfiguration
-import com.github.rooneyandshadows.lightbulb.dialogs.base.internal.callbacks.DialogButtonClickListener
+import com.github.rooneyandshadows.lightbulb.dialogs.base.BasePickerDialogFragment.Buttons.Companion.cancelSelectionButton
+import com.github.rooneyandshadows.lightbulb.dialogs.base.BasePickerDialogFragment.Buttons.Companion.confirmSelectionButton
 import com.github.rooneyandshadows.lightbulb.dialogs.picker_dialog_adapter.AdapterPickerDialogBuilder
 import com.github.rooneyandshadows.lightbulb.dialogs.picker_dialog_adapter.AdapterPickerDialogBuilder.AdapterPickerDialogInitializer
 import com.github.rooneyandshadows.lightbulb.dialogsdemo.*
@@ -94,22 +92,11 @@ class FragmentDialogAdapterPicker : BaseFragmentWithViewBinding<FragmentDemoDial
         ).apply {
             withTitle(title)
             withMessage(message)
-            withButton(DialogButtonConfiguration("POSITIVE_BUTTON_TAG", positiveText).apply {
-                addOnClickListener(object : DialogButtonClickListener {
-                    override fun doOnClick(buttonView: View?, dialogFragment: BaseDialogFragment) {
-                        (dialogFragment as DemoSingleSelectionDialog).confirmSelection()
-                    }
-                })
-            })
-            withButton(DialogButtonConfiguration("NEGATIVE_BUTTON_TAG", negativeText).apply {
-                addOnClickListener(object : DialogButtonClickListener {
-                    override fun doOnClick(buttonView: View?, dialogFragment: BaseDialogFragment) {
-                        (dialogFragment as DemoSingleSelectionDialog).cancelSelection()
-                    }
-                })
-            })
+            withButton(cancelSelectionButton(negativeText, onNegativeButtonClick))
+            withButton(confirmSelectionButton(positiveText, onPositiveButtonClick))
             withSelectionCallback(selectionCallback)
         }.buildDialog().apply {
+            //TODO withInitialDialogState
             if (savedInstanceState == null) return@apply
             val savedState = BundleUtils.getParcelable(DIALOG_STATE_TAG, savedInstanceState, Bundle::class.java)
             restoreDialogState(savedState)

@@ -13,18 +13,5 @@
         app:layout_constraintBottom_toBottomOf="parent"
         app:layout_constraintEnd_toEndOf="parent"
         app:layout_constraintStart_toStartOf="parent"
-        app:showDividers="middle">
-
-        <Button
-            android:id="@+id/dialog_negative_button"
-            style="@style/DialogButton"
-            tools:text="CANCEL"
-            tools:textColor="?android:attr/textColorPrimary" />
-
-        <Button
-            android:id="@+id/dialog_positive_button"
-            style="@style/DialogButton"
-            tools:text="OK"
-            tools:textColor="?android:attr/textColorPrimary" />
-    </androidx.appcompat.widget.LinearLayoutCompat>
+        app:showDividers="middle" />
 </merge>

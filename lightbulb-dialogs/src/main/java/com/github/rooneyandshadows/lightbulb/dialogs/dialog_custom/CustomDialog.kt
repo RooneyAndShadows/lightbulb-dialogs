@@ -8,8 +8,6 @@ import android.view.Window
 import android.widget.ProgressBar
 import com.github.rooneyandshadows.lightbulb.dialogs.base.BaseDialogFragment
 import androidx.appcompat.widget.LinearLayoutCompat
-import androidx.appcompat.widget.AppCompatTextView
-import com.github.rooneyandshadows.lightbulb.commons.utils.ResourceUtils
 import com.github.rooneyandshadows.lightbulb.dialogs.R
 import com.github.rooneyandshadows.lightbulb.dialogs.base.constraints.regular.RegularDialogConstraints
 import com.github.rooneyandshadows.lightbulb.dialogs.base.internal.*
@@ -17,7 +15,6 @@ import com.github.rooneyandshadows.lightbulb.dialogs.base.internal.*
 @Suppress("unused")
 open class CustomDialog : BaseDialogFragment() {
     private var loadingIndicator: ProgressBar? = null
-    private var titleView: AppCompatTextView? = null
     private var dialogInflater: CustomDialogInflater? = null
     var isLoading = false
         private set
@@ -47,7 +44,6 @@ open class CustomDialog : BaseDialogFragment() {
     @Override
     override fun setupDialogContent(view: View, savedInstanceState: Bundle?) {
         loadingIndicator = requireView().findViewById(R.id.loadingIndicator)
-        titleView = requireView().findViewById(R.id.dialogTitleTextView)
         setupLoadingView()
     }
 
@@ -102,11 +98,7 @@ open class CustomDialog : BaseDialogFragment() {
 
     private fun setupLoadingView() {
         loadingIndicator?.apply {
-            val endPadding = if (isLoading) ResourceUtils.getDimenPxById(context, R.dimen.dialog_spacing_size_small) else 0
             visibility = if (isLoading) View.VISIBLE else View.GONE
-            titleView?.apply {
-                setPadding(titleView!!.paddingLeft, titleView!!.paddingTop, endPadding, titleView!!.paddingBottom)
-            }
         }
     }
 }

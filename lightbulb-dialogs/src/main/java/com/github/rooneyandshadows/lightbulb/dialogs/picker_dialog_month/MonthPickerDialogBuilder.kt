@@ -63,7 +63,7 @@ class MonthPickerDialogBuilder @JvmOverloads constructor(
     }
 
     @Override
-    override fun withButton(configuration: DialogButtonConfiguration): MonthPickerDialogBuilder {
+    override fun withButton(configuration: DialogButton): MonthPickerDialogBuilder {
         return super.withButton(configuration) as MonthPickerDialogBuilder
     }
 

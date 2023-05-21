@@ -7,7 +7,10 @@ import com.github.rooneyandshadows.lightbulb.application.fragment.base.BaseFragm
 import com.github.rooneyandshadows.lightbulb.application.fragment.cofiguration.ActionBarConfiguration
 import com.github.rooneyandshadows.lightbulb.commons.utils.BundleUtils
 import com.github.rooneyandshadows.lightbulb.commons.utils.ResourceUtils
-import com.github.rooneyandshadows.lightbulb.dialogs.base.internal.DialogButtonConfiguration
+import com.github.rooneyandshadows.lightbulb.dialogs.base.BasePickerDialogFragment
+import com.github.rooneyandshadows.lightbulb.dialogs.base.BasePickerDialogFragment.Buttons.Companion.cancelSelectionButton
+import com.github.rooneyandshadows.lightbulb.dialogs.base.BasePickerDialogFragment.Buttons.Companion.confirmSelectionButton
+import com.github.rooneyandshadows.lightbulb.dialogs.base.internal.DialogButton
 import com.github.rooneyandshadows.lightbulb.dialogs.picker_dialog_chips.ChipsPickerDialog
 import com.github.rooneyandshadows.lightbulb.dialogs.picker_dialog_chips.ChipsPickerDialogBuilder
 import com.github.rooneyandshadows.lightbulb.dialogsdemo.*
@@ -82,8 +85,8 @@ class FragmentDialogChipsPicker : BaseFragmentWithViewBinding<FragmentDemoDialog
             withInitialDialogState(dialogSavedState)
             withTitle(title)
             withMessage(message)
-            withPositiveButton(DialogButtonConfiguration(positiveButtonText), positiveButtonClickListener)
-            withNegativeButton(DialogButtonConfiguration(negativeButtonText), negativeButtonClickListener)
+            withButton(cancelSelectionButton(positiveButtonText, positiveButtonClickListener))
+            withButton(confirmSelectionButton(negativeButtonText, negativeButtonClickListener))
             withSelectionCallback(onSelectionChanged)
         }.buildDialog()
     }

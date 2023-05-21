@@ -63,7 +63,7 @@ class ChipsPickerDialogBuilder @JvmOverloads constructor(
     }
 
     @Override
-    override fun withButton(configuration: DialogButtonConfiguration): ChipsPickerDialogBuilder {
+    override fun withButton(configuration: DialogButton): ChipsPickerDialogBuilder {
         return super.withButton(configuration) as ChipsPickerDialogBuilder
     }
 

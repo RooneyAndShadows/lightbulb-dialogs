@@ -14,7 +14,7 @@ import com.github.rooneyandshadows.lightbulb.commons.utils.ResourceUtils
 import com.github.rooneyandshadows.lightbulb.dialogs.R
 import com.github.rooneyandshadows.lightbulb.dialogs.base.internal.DialogAnimationTypes
 import com.github.rooneyandshadows.lightbulb.dialogs.base.internal.DialogAnimationTypes.*
-import com.github.rooneyandshadows.lightbulb.dialogs.base.internal.DialogButtonConfiguration
+import com.github.rooneyandshadows.lightbulb.dialogs.base.internal.DialogButton
 import com.github.rooneyandshadows.lightbulb.dialogs.base.internal.DialogTypes
 import com.github.rooneyandshadows.lightbulb.dialogs.base.internal.DialogTypes.*
 
@@ -135,8 +135,8 @@ class AlertDialogView @JvmOverloads constructor(
         }
     }
 
-    private fun generateButtonConfig(buttonTag: String, buttonText: String): DialogButtonConfiguration {
-        return DialogButtonConfiguration(
+    private fun generateButtonConfig(buttonTag: String, buttonText: String): DialogButton {
+        return DialogButton(
             buttonTag = buttonTag,
             buttonTitle = buttonText,
             buttonEnabled = true,

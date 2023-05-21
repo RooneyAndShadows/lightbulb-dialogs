@@ -39,24 +39,11 @@
 
     </androidx.appcompat.widget.LinearLayoutCompat>
 
-    <androidx.appcompat.widget.LinearLayoutCompat
+    <com.github.rooneyandshadows.lightbulb.dialogs.base.view.DialogFooterView
         android:id="@+id/dialogButtonsContainer"
-        style="@style/DialogButtonsContainer"
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content"
         app:layout_constraintBottom_toBottomOf="parent"
         app:layout_constraintEnd_toEndOf="parent"
-        app:layout_constraintStart_toStartOf="parent">
-
-        <Button
-            android:id="@+id/dialogNegativeButton"
-            style="@style/DialogButton"
-            tools:ignore="HardcodedText"
-            tools:text="negative" />
-
-        <Button
-            android:id="@+id/dialogPositiveButton"
-            style="@style/DialogButton"
-            android:layout_marginStart="@dimen/dialog_buttons_spacing"
-            tools:ignore="HardcodedText"
-            tools:text="positive" />
-    </androidx.appcompat.widget.LinearLayoutCompat>
+        app:layout_constraintStart_toStartOf="parent" />
 </androidx.constraintlayout.widget.ConstraintLayout>

@@ -71,15 +71,14 @@ class FragmentDialogLoading : BaseFragmentWithViewBinding<FragmentDemoDialogLoad
             val ctx = requireContext()
             val title = getDefaultDialogTitle(ctx)
             val message = getDefaultDialogMessage(ctx)
-            val onShowListener = object : DialogShowListener {
-                override fun doOnShow(dialogFragment: BaseDialogFragment) {
+            val onShowListener =
+                DialogShowListener { dialogFragment ->
                     requireView().postDelayed({
                         dialogFragment.dismiss()
                         val toastMessage = ResourceUtils.getPhrase(ctx, R.string.demo_action_completed_text)
                         InteractionUtils.showMessage(ctx, toastMessage)
                     }, 3000)
                 }
-            }
             withInitialDialogState(dialogSavedState)
             withTitle(title)
             withMessage(message)

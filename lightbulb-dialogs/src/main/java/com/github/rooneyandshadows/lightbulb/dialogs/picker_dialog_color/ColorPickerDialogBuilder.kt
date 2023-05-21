@@ -52,7 +52,7 @@ class ColorPickerDialogBuilder @JvmOverloads constructor(
     }
 
     @Override
-    override fun withButton(configuration: DialogButtonConfiguration): ColorPickerDialogBuilder {
+    override fun withButton(configuration: DialogButton): ColorPickerDialogBuilder {
         return super.withButton(configuration) as ColorPickerDialogBuilder
     }
 

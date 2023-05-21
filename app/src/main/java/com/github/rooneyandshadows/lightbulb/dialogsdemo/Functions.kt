@@ -2,23 +2,22 @@ package com.github.rooneyandshadows.lightbulb.dialogsdemo
 
 import android.content.Context
 import android.graphics.drawable.Drawable
-import android.view.View
-import androidx.databinding.BindingAdapter
-import androidx.databinding.InverseBindingAdapter
-import androidx.databinding.InverseBindingListener
 import com.github.rooneyandshadows.lightbulb.application.activity.slidermenu.drawable.ShowMenuDrawable
 import com.github.rooneyandshadows.lightbulb.commons.utils.InteractionUtils
 import com.github.rooneyandshadows.lightbulb.commons.utils.ResourceUtils
-import com.github.rooneyandshadows.lightbulb.dialogs.base.BaseDialogFragment
 import com.github.rooneyandshadows.lightbulb.dialogs.base.BasePickerDialogFragment
 import com.github.rooneyandshadows.lightbulb.dialogs.base.BasePickerDialogFragment.SelectionChangedListener
 import com.github.rooneyandshadows.lightbulb.dialogs.base.internal.DialogAnimationTypes
-import com.github.rooneyandshadows.lightbulb.dialogs.base.internal.DialogButtonConfiguration
+import com.github.rooneyandshadows.lightbulb.dialogs.base.internal.DialogButton
 import com.github.rooneyandshadows.lightbulb.dialogs.base.internal.DialogTypes
 import com.github.rooneyandshadows.lightbulb.dialogs.base.internal.callbacks.DialogButtonClickListener
 import com.github.rooneyandshadows.lightbulb.dialogs.picker_dialog_chips.adapter.ChipModel
 import com.github.rooneyandshadows.lightbulb.dialogsdemo.spinner.base.adapter.DialogPropertyItem
-import com.github.rooneyandshadows.lightbulb.textinputview.TextInputView
+
+object Constants {
+    const val DIALOG_POSITIVE_BUTTON_TAG = "DIALOG_POSITIVE_BUTTON_TAG"
+    const val DIALOG_NEGATIVE_BUTTON_TAG = "DIALOG_NEGATIVE_BUTTON_TAG"
+}
 
 fun getHomeDrawable(context: Context): Drawable {
     return ShowMenuDrawable(context).apply {
@@ -56,22 +55,30 @@ fun getDefaultNegativeButtonText(context: Context): String {
 }
 
 fun getDefaultPositiveButtonClickListener(): DialogButtonClickListener {
-    return object : DialogButtonClickListener {
-        override fun doOnClick(buttonView: View?, dialogFragment: BaseDialogFragment) {
-            val context = buttonView!!.context
-            val toastMessage = ResourceUtils.getPhrase(context, R.string.demo_positive_button_clicked_text)
-            InteractionUtils.showMessage(context, toastMessage)
-        }
+    return DialogButtonClickListener { buttonView, _ ->
+        val context = buttonView!!.context
+        val toastMessage = ResourceUtils.getPhrase(context, R.string.demo_positive_button_clicked_text)
+        InteractionUtils.showMessage(context, toastMessage)
     }
 }
 
 fun getDefaultNegativeButtonClickListener(): DialogButtonClickListener {
-    return object : DialogButtonClickListener {
-        override fun doOnClick(buttonView: View?, dialogFragment: BaseDialogFragment) {
-            val context = buttonView!!.context
-            val toastMessage = ResourceUtils.getPhrase(context, R.string.demo_negative_button_clicked_text)
-            InteractionUtils.showMessage(context, toastMessage)
-        }
+    return DialogButtonClickListener { buttonView, _ ->
+        val context = buttonView!!.context
+        val toastMessage = ResourceUtils.getPhrase(context, R.string.demo_negative_button_clicked_text)
+        InteractionUtils.showMessage(context, toastMessage)
+    }
+}
+
+fun getDefaultPositiveButton(context: Context): DialogButton {
+    return DialogButton(Constants.DIALOG_POSITIVE_BUTTON_TAG, getDefaultPositiveButtonText(context)).apply {
+        addOnClickListener(getDefaultPositiveButtonClickListener())
+    }
+}
+
+fun getDefaultNegativeButton(context: Context): DialogButton {
+    return DialogButton(Constants.DIALOG_NEGATIVE_BUTTON_TAG, getDefaultNegativeButtonText(context)).apply {
+        addOnClickListener(getDefaultNegativeButtonClickListener())
     }
 }
 
@@ -85,30 +92,6 @@ fun <SelectionType> getDefaultSelectionChangedListener(context: Context): Select
             val toastMessage = ResourceUtils.getPhrase(context, R.string.demo_selection_changed_text)
             InteractionUtils.showMessage(context, toastMessage)
         }
-    }
-}
-
-@InverseBindingAdapter(attribute = "dialogButtonText", event = "dialogButtonTextChanged")
-fun getSelectedValue(view: TextInputView): DialogButtonConfiguration? {
-    if (view.text == "") return null
-    return DialogButtonConfiguration(view.text, true, true)
-}
-
-@BindingAdapter(value = ["dialogButtonText"])
-fun setPickerSelection(view: TextInputView, newButtonConfiguration: DialogButtonConfiguration?) {
-    val newButtonTitle = newButtonConfiguration?.buttonTitle
-    if (newButtonTitle == null) {
-        view.text = ""
-        return
-    }
-    if (view.text == newButtonTitle) return
-    view.text = newButtonTitle
-}
-
-@BindingAdapter(value = ["dialogButtonTextChanged"], requireAll = false)
-fun bindPickerEvent(view: TextInputView, bindingListener: InverseBindingListener) {
-    view.addTextChangedCallback { _, _ ->
-        bindingListener.onChange()
     }
 }
 
@@ -138,7 +121,7 @@ fun generateChips(): List<ChipModel> {
     models.add(ChipModel("Letter"))
     models.add(ChipModel("Subtitle"))
     models.add(ChipModel("Height"))
-    models.add(ChipModel("Strenght"))
+    models.add(ChipModel("Strength"))
     models.add(ChipModel("Star"))
     models.add(ChipModel("Tag"))
     models.add(ChipModel("Search"))
@@ -163,7 +146,7 @@ fun generateChips(): List<ChipModel> {
     models.add(ChipModel("Letter"))
     models.add(ChipModel("Subtitle"))
     models.add(ChipModel("Height"))
-    models.add(ChipModel("Strenght"))
+    models.add(ChipModel("Strength"))
     models.add(ChipModel("Star"))
     models.add(ChipModel("Tag"))
     models.add(ChipModel("Search"))
@@ -188,7 +171,7 @@ fun generateChips(): List<ChipModel> {
     models.add(ChipModel("Letter"))
     models.add(ChipModel("Subtitle"))
     models.add(ChipModel("Height"))
-    models.add(ChipModel("Strenght"))
+    models.add(ChipModel("Strength"))
     models.add(ChipModel("Star"))
     models.add(ChipModel("Tag"))
     models.add(ChipModel("Search"))
@@ -213,7 +196,7 @@ fun generateChips(): List<ChipModel> {
     models.add(ChipModel("Letter"))
     models.add(ChipModel("Subtitle"))
     models.add(ChipModel("Height"))
-    models.add(ChipModel("Strenght"))
+    models.add(ChipModel("Strength"))
     models.add(ChipModel("Star"))
     models.add(ChipModel("Tag"))
     models.add(ChipModel("Search"))
@@ -238,6 +221,6 @@ fun generateChips(): List<ChipModel> {
     models.add(ChipModel("Letter"))
     models.add(ChipModel("Subtitle"))
     models.add(ChipModel("Height"))
-    models.add(ChipModel("Strenght"))
+    models.add(ChipModel("Strength"))
     return models
 }
