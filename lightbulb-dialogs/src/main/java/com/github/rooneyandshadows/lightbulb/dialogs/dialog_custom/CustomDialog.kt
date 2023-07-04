@@ -29,7 +29,7 @@ open class CustomDialog : BaseDialogFragment() {
     }
 
     @Override
-    override fun getDialogLayout(layoutInflater: LayoutInflater): View {
+    final override fun getDialogLayout(layoutInflater: LayoutInflater): View {
         val view = View.inflate(context, R.layout.dialog_custom, null)
         val contentContainer = view.findViewById<LinearLayoutCompat>(R.id.customDialogContentContainer)
         contentContainer.removeAllViews()

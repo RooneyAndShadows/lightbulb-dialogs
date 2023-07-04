@@ -104,12 +104,12 @@ class AlertDialogView @JvmOverloads constructor(
 
     fun setPositiveButtonText(buttonText: String) {
         this.dialogPositiveButtonText = buttonText
-        dialog.addOrReplaceDialogButton(generateButtonConfig(POSITIVE_BUTTON_TAG, buttonText))
+        dialog.addButton(generateButtonConfig(POSITIVE_BUTTON_TAG, buttonText))
     }
 
     fun setNegativeButtonText(buttonText: String) {
         this.dialogNegativeButtonText = buttonText
-        dialog.addOrReplaceDialogButton(generateButtonConfig(NEGATIVE_BUTTON_TAG, buttonText))
+        dialog.addButton(generateButtonConfig(NEGATIVE_BUTTON_TAG, buttonText))
     }
 
     fun setCancelable(isCancelable: Boolean) {

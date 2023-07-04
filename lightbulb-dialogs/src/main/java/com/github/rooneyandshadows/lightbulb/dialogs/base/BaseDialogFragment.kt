@@ -10,6 +10,8 @@ import android.graphics.drawable.ColorDrawable
 import android.os.Bundle
 import android.util.Log
 import android.view.*
+import android.view.ViewGroup.LayoutParams.MATCH_PARENT
+import android.view.ViewGroup.LayoutParams.WRAP_CONTENT
 import androidx.coordinatorlayout.widget.CoordinatorLayout
 import androidx.fragment.app.DialogFragment
 import androidx.fragment.app.FragmentManager
@@ -622,8 +624,8 @@ abstract class BaseDialogFragment : DialogFragment(), DefaultLifecycleObserver {
             return getDialogLayout(LayoutInflater.from(context))
         val parent = CoordinatorLayout(context)
         val params: CoordinatorLayout.LayoutParams = CoordinatorLayout.LayoutParams(
-            ViewGroup.LayoutParams.MATCH_PARENT,
-            ViewGroup.LayoutParams.WRAP_CONTENT
+            MATCH_PARENT,
+            WRAP_CONTENT
         )
         val child = getDialogLayout(LayoutInflater.from(context))
         LockableBottomSheetBehavior<View>().apply {

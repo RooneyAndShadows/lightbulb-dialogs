@@ -2,6 +2,7 @@
     <string name="app_name">Dialogs</string>
     <string name="demo_alert_title">Alert dialog</string>
     <string name="demo_custom_title">Custom dialog</string>
+    <string name="demo_custom_extended_title">Custom extended dialog</string>
     <string name="demo_loading_title">Loading dialog</string>
     <string name="demo_adapter_title">Adapter picker dialog</string>
     <string name="demo_color_title">Color picker dialog</string>

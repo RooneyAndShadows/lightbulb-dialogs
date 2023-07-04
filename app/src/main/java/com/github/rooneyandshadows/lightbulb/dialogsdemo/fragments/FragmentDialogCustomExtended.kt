@@ -13,11 +13,13 @@ import com.github.rooneyandshadows.lightbulb.dialogs.dialog_custom.CustomDialog
 import com.github.rooneyandshadows.lightbulb.dialogs.dialog_custom.CustomDialogBuilder
 import com.github.rooneyandshadows.lightbulb.dialogsdemo.*
 import com.github.rooneyandshadows.lightbulb.dialogsdemo.databinding.FragmentDemoDialogCustomBinding
+import com.github.rooneyandshadows.lightbulb.dialogsdemo.databinding.FragmentDemoDialogCustomExtendedBinding
+import com.github.rooneyandshadows.lightbulb.dialogsdemo.dialogs.DemoCustomDialog
 
-@FragmentScreen(screenName = "Custom", screenGroup = "Demo")
-@FragmentConfiguration(layoutName = "fragment_demo_dialog_custom", hasLeftDrawer = true)
-class FragmentDialogCustom : BaseFragmentWithViewBinding<FragmentDemoDialogCustomBinding>() {
-    private lateinit var customDialog: CustomDialog
+@FragmentScreen(screenName = "CustomExtended", screenGroup = "Demo")
+@FragmentConfiguration(layoutName = "fragment_demo_dialog_custom_extended", hasLeftDrawer = true)
+class FragmentDialogCustomExtended : BaseFragmentWithViewBinding<FragmentDemoDialogCustomExtendedBinding>() {
+    private lateinit var customDialog: DemoCustomDialog
 
     companion object {
         private const val DIALOG_TAG = "CUSTOM_DIALOG_TAG"
@@ -26,7 +28,7 @@ class FragmentDialogCustom : BaseFragmentWithViewBinding<FragmentDemoDialogCusto
 
     @Override
     override fun configureActionBar(): ActionBarConfiguration {
-        val title = ResourceUtils.getPhrase(requireContext(), R.string.demo_custom_title)
+        val title = ResourceUtils.getPhrase(requireContext(), R.string.demo_custom_extended_title)
         val subTitle = ResourceUtils.getPhrase(requireContext(), R.string.app_name)
         val homeIcon = getHomeDrawable(requireContext())
         return ActionBarConfiguration(R.id.toolbar)
@@ -55,15 +57,15 @@ class FragmentDialogCustom : BaseFragmentWithViewBinding<FragmentDemoDialogCusto
     }
 
     @Override
-    override fun doOnViewBound(viewBinding: FragmentDemoDialogCustomBinding, savedInstanceState: Bundle?) {
+    override fun doOnViewBound(viewBinding: FragmentDemoDialogCustomExtendedBinding, savedInstanceState: Bundle?) {
         super.doOnViewBound(viewBinding, savedInstanceState)
         viewBinding.dialogTypeDropdown.apply {
-            setLifecycleOwner(this@FragmentDialogCustom)
+            setLifecycleOwner(this@FragmentDialogCustomExtended)
             dialog = customDialog
             animationTypeSpinner = viewBinding.dialogAnimationTypeDropdown
         }
         viewBinding.dialogAnimationTypeDropdown.apply {
-            setLifecycleOwner(this@FragmentDialogCustom)
+            setLifecycleOwner(this@FragmentDialogCustomExtended)
             dialog = customDialog
             typeSpinner = viewBinding.dialogTypeDropdown
         }
@@ -75,9 +77,9 @@ class FragmentDialogCustom : BaseFragmentWithViewBinding<FragmentDemoDialogCusto
             this,
             childFragmentManager,
             DIALOG_TAG,
-            object : CustomDialogBuilder.CustomDialogInitializer<CustomDialog> {
-                override fun initialize(): CustomDialog {
-                    return CustomDialog.newCustomDialogInstance()
+            object : CustomDialogBuilder.CustomDialogInitializer<DemoCustomDialog> {
+                override fun initialize(): DemoCustomDialog {
+                    return DemoCustomDialog.newInstance()
                 }
             },
             object : CustomDialog.CustomDialogInflater {
