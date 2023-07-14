@@ -6,6 +6,7 @@ import android.view.LayoutInflater
 import android.view.View
 import android.view.Window
 import android.widget.ProgressBar
+import androidx.annotation.LayoutRes
 import com.github.rooneyandshadows.lightbulb.dialogs.base.BaseDialogFragment
 import androidx.appcompat.widget.LinearLayoutCompat
 import com.github.rooneyandshadows.lightbulb.dialogs.R
@@ -19,6 +20,9 @@ open class CustomDialog : BaseDialogFragment() {
     var isLoading = false
         private set
 
+    @LayoutRes
+    open val contentLayoutId: Int = -1
+
     companion object {
         private const val IS_LOADING_KEY = "IS_LOADING_KEY"
 
@@ -28,23 +32,28 @@ open class CustomDialog : BaseDialogFragment() {
         }
     }
 
+    protected open fun setupCustomDialogContent(view: View, savedInstanceState: Bundle?) {
+    }
+
     @Override
     final override fun getDialogLayout(layoutInflater: LayoutInflater): View {
         val view = View.inflate(context, R.layout.dialog_custom, null)
         val contentContainer = view.findViewById<LinearLayoutCompat>(R.id.customDialogContentContainer)
         contentContainer.removeAllViews()
         if (dialogType == DialogTypes.FULLSCREEN) contentContainer.layoutParams.height = 0
-        dialogInflater?.apply {
-            val content = inflateView(this@CustomDialog, layoutInflater)
+        val content = inflateContent()
+        if (content != null) {
             contentContainer.addView(content)
         }
         return view
     }
 
+
     @Override
-    override fun setupDialogContent(view: View, savedInstanceState: Bundle?) {
+    final override fun setupDialogContent(view: View, savedInstanceState: Bundle?) {
         loadingIndicator = requireView().findViewById(R.id.loadingIndicator)
         setupLoadingView()
+        setupCustomDialogContent(view, savedInstanceState)
     }
 
     @Override
@@ -92,7 +101,7 @@ open class CustomDialog : BaseDialogFragment() {
         this.dialogInflater = dialogInflater
     }
 
-    interface CustomDialogInflater {
+    fun interface CustomDialogInflater {
         fun inflateView(dialog: CustomDialog, layoutInflater: LayoutInflater): View?
     }
 
@@ -100,5 +109,15 @@ open class CustomDialog : BaseDialogFragment() {
         loadingIndicator?.apply {
             visibility = if (isLoading) View.VISIBLE else View.GONE
         }
+    }
+
+    private fun inflateContent(): View? {
+        if (dialogInflater != null) {
+            return dialogInflater!!.inflateView(this, layoutInflater)
+        }
+        if (contentLayoutId != -1) {
+            return layoutInflater.inflate(contentLayoutId, null)
+        }
+        return null
     }
 }

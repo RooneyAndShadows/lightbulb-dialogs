@@ -10,13 +10,13 @@ import com.github.rooneyandshadows.lightbulb.dialogs.base.internal.DialogTypes
 import com.github.rooneyandshadows.lightbulb.dialogs.base.internal.callbacks.*
 import com.github.rooneyandshadows.lightbulb.dialogs.dialog_custom.CustomDialog.CustomDialogInflater
 
-@Suppress("UNCHECKED_CAST", "unused")
+@Suppress("unused")
 class CustomDialogBuilder<DialogType : CustomDialog> @JvmOverloads constructor(
     lifecycleOwner: LifecycleOwner? = null,
     dialogParentFragmentManager: FragmentManager,
     dialogTag: String,
     private val dialogInitializer: CustomDialogInitializer<DialogType>,
-    private val dialogInflater: CustomDialogInflater,
+    private val dialogInflater: CustomDialogInflater? = null
 ) : BaseDialogBuilder<DialogType>(lifecycleOwner, dialogParentFragmentManager, dialogTag) {
     private var loading = false
 
@@ -99,7 +99,7 @@ class CustomDialogBuilder<DialogType : CustomDialog> @JvmOverloads constructor(
         return this
     }
 
-    interface CustomDialogInitializer<out DialogType : CustomDialog> {
+    fun interface CustomDialogInitializer<out DialogType : CustomDialog> {
         fun initialize(): DialogType
     }
 }

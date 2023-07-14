@@ -3,12 +3,11 @@ package com.github.rooneyandshadows.lightbulb.dialogsdemo.dialogs
 import android.os.Bundle
 import android.view.View
 import com.github.rooneyandshadows.lightbulb.dialogs.dialog_custom.CustomDialog
+import com.github.rooneyandshadows.lightbulb.dialogsdemo.R
 
 class DemoCustomDialog : CustomDialog() {
-
-    init {
-
-    }
+    override val contentLayoutId: Int
+        get() = R.layout.dialog_demo_custom
 
     companion object {
         fun newInstance(): DemoCustomDialog {
@@ -16,12 +15,7 @@ class DemoCustomDialog : CustomDialog() {
         }
     }
 
-    override fun doOnCreate(dialogArguments: Bundle?, savedInstanceState: Bundle?) {
-        super.doOnCreate(dialogArguments, savedInstanceState)
-
-    }
-
-    override fun setupDialogContent(view: View, savedInstanceState: Bundle?) {
-        super.setupDialogContent(view, savedInstanceState)
+    override fun setupCustomDialogContent(view: View, savedInstanceState: Bundle?) {
+        super.setupCustomDialogContent(view, savedInstanceState)
     }
 }

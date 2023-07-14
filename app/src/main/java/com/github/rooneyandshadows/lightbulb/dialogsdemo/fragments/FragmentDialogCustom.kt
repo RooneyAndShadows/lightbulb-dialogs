@@ -1,5 +1,6 @@
 package com.github.rooneyandshadows.lightbulb.dialogsdemo.fragments
 
+import android.annotation.SuppressLint
 import android.os.Bundle
 import android.view.LayoutInflater
 import android.view.View
@@ -70,22 +71,16 @@ class FragmentDialogCustom : BaseFragmentWithViewBinding<FragmentDemoDialogCusto
         viewBinding.dialog = customDialog
     }
 
+    @SuppressLint("InflateParams")
     private fun createDialog(dialogSavedState: Bundle?) {
         customDialog = CustomDialogBuilder(
             this,
             childFragmentManager,
             DIALOG_TAG,
-            object : CustomDialogBuilder.CustomDialogInitializer<CustomDialog> {
-                override fun initialize(): CustomDialog {
-                    return CustomDialog.newCustomDialogInstance()
-                }
-            },
-            object : CustomDialog.CustomDialogInflater {
-                override fun inflateView(dialog: CustomDialog, layoutInflater: LayoutInflater): View? {
-                    return View.inflate(requireContext(), R.layout.dialog_demo_custom, null)
-                }
-            }
-        ).apply {
+            { CustomDialog.newCustomDialogInstance() }
+        ) { _, layoutInflater ->
+            layoutInflater.inflate(R.layout.dialog_demo_custom, null)
+        }.apply {
             val ctx = requireContext()
             val title = getDefaultDialogTitle(ctx)
             val message = getDefaultDialogMessage(ctx)
