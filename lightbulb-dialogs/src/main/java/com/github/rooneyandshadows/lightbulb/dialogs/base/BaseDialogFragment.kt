@@ -588,8 +588,12 @@ abstract class BaseDialogFragment : DialogFragment(), DefaultLifecycleObserver {
     @Suppress("SameParameterValue")
     private fun addDialogButtonInternally(buttonConfig: DialogButton, syncButtons: Boolean) {
         if (dialogButtons.contains(buttonConfig)) return
-        if (dialogButtons.any { it.buttonTag == buttonConfig.buttonTag }) return
-        dialogButtons.add(buttonConfig)
+        val existingButtonPosition = dialogButtons.indexOfFirst { it.buttonTag == buttonConfig.buttonTag }
+        if (existingButtonPosition != -1) {
+            dialogButtons[existingButtonPosition] = buttonConfig
+        } else {
+            dialogButtons.add(buttonConfig)
+        }
         if (!syncButtons) return
         configureButtons()
     }
