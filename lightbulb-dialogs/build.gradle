@@ -49,6 +49,9 @@ afterEvaluate {
                 groupId "$environment.group_id"
                 version android.defaultConfig.versionName
                 artifactId project.name
+                artifact sourceJar {
+                    classifier "sources"
+                }
             }
         }
     }
