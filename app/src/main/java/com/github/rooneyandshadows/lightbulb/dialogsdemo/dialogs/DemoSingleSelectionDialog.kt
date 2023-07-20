@@ -14,35 +14,36 @@ import com.github.rooneyandshadows.lightbulb.dialogsdemo.utils.icon.AppIconUtils
 class DemoSingleSelectionDialog : AdapterPickerDialog<DemoModel>() {
     override val adapter: DialogPickerAdapter<DemoModel>
         get() = super.adapter as DialogPickerRadioButtonAdapter<DemoModel>
-    override val adapterCreator: AdapterCreator<DemoModel>
-        get() = object : AdapterCreator<DemoModel> {
-            @Override
-            override fun createAdapter(): DialogPickerRadioButtonAdapter<DemoModel> {
-                return object : DialogPickerRadioButtonAdapter<DemoModel>() {
-                    @Override
-                    override fun getItemIcon(context: Context, item: DemoModel): Drawable {
-                        return AppIconUtils.getIconWithAttributeColor(
-                            context,
-                            item.icon,
-                            R.attr.colorOnSurface,
-                            R.dimen.ICON_SIZE_RECYCLER_ITEM
-                        )
-                    }
-
-                    @Override
-                    override fun getItemIconBackground(context: Context, item: DemoModel): Drawable {
-                        return DrawableUtils.getRoundedCornersDrawable(
-                            item.iconBackgroundColor.color,
-                            ResourceUtils.dpToPx(100)
-                        )
-                    }
-                }
-            }
-        }
 
     companion object {
         fun newInstance(): DemoSingleSelectionDialog {
             return DemoSingleSelectionDialog()
+        }
+    }
+
+    init {
+        setAdapter(createAdapter())
+    }
+
+    private fun createAdapter(): DialogPickerRadioButtonAdapter<DemoModel> {
+        return object : DialogPickerRadioButtonAdapter<DemoModel>() {
+            @Override
+            override fun getItemIcon(context: Context, item: DemoModel): Drawable {
+                return AppIconUtils.getIconWithAttributeColor(
+                    context,
+                    item.icon,
+                    R.attr.colorOnSurface,
+                    R.dimen.ICON_SIZE_RECYCLER_ITEM
+                )
+            }
+
+            @Override
+            override fun getItemIconBackground(context: Context, item: DemoModel): Drawable {
+                return DrawableUtils.getRoundedCornersDrawable(
+                    item.iconBackgroundColor.color,
+                    ResourceUtils.dpToPx(100)
+                )
+            }
         }
     }
 }

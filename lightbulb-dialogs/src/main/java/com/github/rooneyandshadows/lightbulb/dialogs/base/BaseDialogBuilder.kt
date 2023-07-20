@@ -1,19 +1,26 @@
 package com.github.rooneyandshadows.lightbulb.dialogs.base
 
 import android.os.Bundle
+import androidx.fragment.app.Fragment
+import androidx.fragment.app.FragmentActivity
 import androidx.fragment.app.FragmentManager
 import androidx.lifecycle.LifecycleOwner
-import com.github.rooneyandshadows.lightbulb.dialogs.base.internal.*
-import com.github.rooneyandshadows.lightbulb.dialogs.base.internal.callbacks.*
+import com.github.rooneyandshadows.lightbulb.dialogs.base.internal.DialogAnimationTypes
+import com.github.rooneyandshadows.lightbulb.dialogs.base.internal.DialogButton
+import com.github.rooneyandshadows.lightbulb.dialogs.base.internal.DialogTypes
+import com.github.rooneyandshadows.lightbulb.dialogs.base.internal.callbacks.DialogCancelListener
+import com.github.rooneyandshadows.lightbulb.dialogs.base.internal.callbacks.DialogHideListener
+import com.github.rooneyandshadows.lightbulb.dialogs.base.internal.callbacks.DialogListeners
+import com.github.rooneyandshadows.lightbulb.dialogs.base.internal.callbacks.DialogShowListener
 
 @Suppress("UNCHECKED_CAST", "MemberVisibilityCanBePrivate")
 @JvmSuppressWildcards
 abstract class BaseDialogBuilder<DialogType : BaseDialogFragment> @JvmOverloads constructor(
-    protected val dialogLifecycleOwner: LifecycleOwner? = null,
-    protected val dialogParentFragmentManager: FragmentManager,
     protected val dialogTag: String,
+    protected val dialogParentFragmentManager: FragmentManager,
+    protected val dialogLifecycleOwner: LifecycleOwner? = null,
+    protected val initialDialogState: Bundle? = null
 ) {
-    protected var initialDialogState: Bundle? = null
     protected var title: String? = null
     protected var message: String? = null
     protected var buttonConfigurations: List<DialogButton> = mutableListOf()
@@ -28,10 +35,25 @@ abstract class BaseDialogBuilder<DialogType : BaseDialogFragment> @JvmOverloads 
     protected abstract fun setupRetainableSettings(dialog: DialogType)
     protected abstract fun initializeNewDialog(): DialogType
 
-    open fun withInitialDialogState(savedState: Bundle?): BaseDialogBuilder<DialogType> {
-        this.initialDialogState = savedState
-        return this
+    companion object {
+        const val IGNORE_MANUALLY_SAVED_STATE = "IGNORE_MANUALLY_SAVED_STATE"
     }
+
+    @JvmOverloads
+    constructor(dialogTag: String, fragment: Fragment, initialDialogState: Bundle? = null) : this(
+        dialogTag,
+        fragment.childFragmentManager,
+        fragment,
+        initialDialogState
+    )
+
+    @JvmOverloads
+    constructor(dialogTag: String, activity: FragmentActivity, initialDialogState: Bundle? = null) : this(
+        dialogTag,
+        activity.supportFragmentManager,
+        activity,
+        initialDialogState
+    )
 
     open fun withTitle(title: String): BaseDialogBuilder<DialogType> {
         this.title = title
@@ -102,7 +124,7 @@ abstract class BaseDialogBuilder<DialogType : BaseDialogFragment> @JvmOverloads 
         val dialog = dialogParentFragmentManager.findFragmentByTag(dialogTag) as DialogType?
         return dialog ?: initializeNewDialog().apply dialogInstance@{
             initialDialogState?.apply {
-                val ignoreManuallySavedState = getBoolean("IGNORE_MANUALLY_SAVED_STATE", false)
+                val ignoreManuallySavedState = getBoolean(IGNORE_MANUALLY_SAVED_STATE, false)
                 if (!ignoreManuallySavedState) this@dialogInstance.restoreDialogState(this)
                 return@dialogInstance
             }

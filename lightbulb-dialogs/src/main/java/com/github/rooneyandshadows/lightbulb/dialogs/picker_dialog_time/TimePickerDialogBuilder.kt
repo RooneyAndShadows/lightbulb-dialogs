@@ -1,6 +1,8 @@
 package com.github.rooneyandshadows.lightbulb.dialogs.picker_dialog_time
 
 import android.os.Bundle
+import androidx.fragment.app.Fragment
+import androidx.fragment.app.FragmentActivity
 import androidx.fragment.app.FragmentManager
 import androidx.lifecycle.LifecycleOwner
 import com.github.rooneyandshadows.lightbulb.dialogs.base.BaseDialogBuilder
@@ -11,12 +13,29 @@ import com.github.rooneyandshadows.lightbulb.dialogs.picker_dialog_time.TimePick
 
 @Suppress("unused")
 class TimePickerDialogBuilder @JvmOverloads constructor(
-    lifecycleOwner: LifecycleOwner? = null,
-    manager: FragmentManager,
     dialogTag: String,
-) : BaseDialogBuilder<TimePickerDialog>(lifecycleOwner, manager, dialogTag) {
+    dialogParentFragmentManager: FragmentManager,
+    dialogLifecycleOwner: LifecycleOwner? = null,
+    initialDialogState: Bundle? = null
+) : BaseDialogBuilder<TimePickerDialog>(dialogTag, dialogParentFragmentManager, dialogLifecycleOwner, initialDialogState) {
     private var timeSetListener: SelectionChangedListener<Time>? = null
     private var initialTime: Time? = null
+
+    @JvmOverloads
+    constructor(dialogTag: String, fragment: Fragment, initialDialogState: Bundle? = null) : this(
+        dialogTag,
+        fragment.childFragmentManager,
+        fragment,
+        initialDialogState
+    )
+
+    @JvmOverloads
+    constructor(dialogTag: String, activity: FragmentActivity, initialDialogState: Bundle? = null) : this(
+        dialogTag,
+        activity.supportFragmentManager,
+        activity,
+        initialDialogState
+    )
 
     @Override
     override fun setupNonRetainableSettings(dialog: TimePickerDialog) {
@@ -35,11 +54,6 @@ class TimePickerDialogBuilder @JvmOverloads constructor(
     @Override
     override fun initializeNewDialog(): TimePickerDialog {
         return TimePickerDialog.newInstance()
-    }
-
-    @Override
-    override fun withInitialDialogState(savedState: Bundle?): TimePickerDialogBuilder {
-        return super.withInitialDialogState(savedState) as TimePickerDialogBuilder
     }
 
     @Override

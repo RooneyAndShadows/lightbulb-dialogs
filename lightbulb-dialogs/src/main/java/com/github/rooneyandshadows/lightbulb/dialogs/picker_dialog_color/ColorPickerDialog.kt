@@ -31,18 +31,16 @@ class ColorPickerDialog : AdapterPickerDialog<ColorModel>() {
         set(value) {}
     override val adapter: ColorPickerAdapter
         get() = super.adapter as ColorPickerAdapter
-    override val adapterCreator: AdapterCreator<ColorModel>
-        get() = object : AdapterCreator<ColorModel> {
-            override fun createAdapter(): ColorPickerAdapter {
-                return ColorPickerAdapter(SELECT_SINGLE)
-            }
-        }
 
     companion object {
         private const val LAST_VISIBLE_ITEM_KEY = "LAST_VISIBLE_ITEM_KEY"
         fun newInstance(): ColorPickerDialog {
             return ColorPickerDialog()
         }
+    }
+
+    init {
+        setAdapter(ColorPickerAdapter(SELECT_SINGLE))
     }
 
     @Override

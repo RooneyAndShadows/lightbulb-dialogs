@@ -84,17 +84,11 @@ class FragmentDialogAdapterPicker : BaseFragmentWithViewBinding<FragmentDemoDial
         val onNegativeButtonClick = getDefaultNegativeButtonClickListener()
         val selectionCallback = getDefaultSelectionChangedListener<IntArray>(ctx)
         adapterPickerDialog = AdapterPickerDialogBuilder(
-            this,
-            childFragmentManager,
             DIALOG_TAG,
-            object : AdapterPickerDialogInitializer<DemoSingleSelectionDialog> {
-                @Override
-                override fun initialize(): DemoSingleSelectionDialog {
-                    return DemoSingleSelectionDialog.newInstance()
-                }
-            }
+            this,
+            { DemoSingleSelectionDialog.newInstance() },
+            savedInstanceState
         ).apply {
-            withInitialDialogState(savedInstanceState)
             withTitle(title)
             withMessage(message)
             withButton(cancelSelectionButton(negativeText, onNegativeButtonClick))

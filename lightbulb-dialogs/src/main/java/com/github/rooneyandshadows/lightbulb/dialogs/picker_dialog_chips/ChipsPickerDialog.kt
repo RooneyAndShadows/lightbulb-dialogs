@@ -24,12 +24,10 @@ import com.github.rooneyandshadows.lightbulb.dialogs.picker_dialog_chips.ChipsFi
 import com.github.rooneyandshadows.lightbulb.dialogs.picker_dialog_chips.adapter.ChipModel
 import com.github.rooneyandshadows.lightbulb.dialogs.picker_dialog_chips.adapter.ChipsPickerAdapter
 import com.github.rooneyandshadows.lightbulb.dialogs.picker_dialog_chips.adapter.ChipsPickerAdapter.*
-import com.github.rooneyandshadows.lightbulb.recycleradapters.abstraction.collection.EasyRecyclerAdapterCollection.CollectionChangeListener
 import java.util.function.Predicate
 import kotlin.math.ceil
 import kotlin.math.min
 import kotlin.streams.toList
-
 
 @Suppress("unused", "UNUSED_PARAMETER")
 class ChipsPickerDialog : AdapterPickerDialog<ChipModel>() {
@@ -48,12 +46,6 @@ class ChipsPickerDialog : AdapterPickerDialog<ChipModel>() {
     override var dialogType: DialogTypes
         get() = DialogTypes.BOTTOM_SHEET
         set(value) {}
-    override val adapterCreator: AdapterCreator<ChipModel>
-        get() = object : AdapterCreator<ChipModel> {
-            override fun createAdapter(): ChipsPickerAdapter {
-                return ChipsPickerAdapter()
-            }
-        }
 
     companion object {
         private const val DEFAULT_MAX_ROWS = 5
@@ -67,12 +59,9 @@ class ChipsPickerDialog : AdapterPickerDialog<ChipModel>() {
     }
 
     init {
-        with(adapter.collection) {
-            addOnCollectionChangedListener(object : CollectionChangeListener {
-                override fun onChanged() {
-                    measureDialogLayout()
-                }
-            })
+        setAdapter(ChipsPickerAdapter())
+        adapter.collection.addOnCollectionChangedListener {
+            measureDialogLayout()
         }
     }
 

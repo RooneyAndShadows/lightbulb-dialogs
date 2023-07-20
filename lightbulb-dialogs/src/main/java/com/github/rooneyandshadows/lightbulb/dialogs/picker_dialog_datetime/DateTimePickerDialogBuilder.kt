@@ -1,6 +1,8 @@
 package com.github.rooneyandshadows.lightbulb.dialogs.picker_dialog_datetime
 
 import android.os.Bundle
+import androidx.fragment.app.Fragment
+import androidx.fragment.app.FragmentActivity
 import androidx.fragment.app.FragmentManager
 import androidx.lifecycle.LifecycleOwner
 import com.github.rooneyandshadows.lightbulb.dialogs.base.BaseDialogBuilder
@@ -11,17 +13,30 @@ import java.time.OffsetDateTime
 
 @Suppress("unused")
 class DateTimePickerDialogBuilder @JvmOverloads constructor(
-    lifecycleOwner: LifecycleOwner? = null,
-    manager: FragmentManager,
     dialogTag: String,
-) : BaseDialogBuilder<DateTimePickerDialog>(
-    lifecycleOwner,
-    manager,
-    dialogTag
-) {
+    dialogParentFragmentManager: FragmentManager,
+    dialogLifecycleOwner: LifecycleOwner? = null,
+    initialDialogState: Bundle? = null
+) : BaseDialogBuilder<DateTimePickerDialog>(dialogTag, dialogParentFragmentManager, dialogLifecycleOwner, initialDialogState) {
     private var dateSetListener: SelectionChangedListener<OffsetDateTime>? = null
     private var initialDate: OffsetDateTime? = null
     private var dateFormat: String? = null
+
+    @JvmOverloads
+    constructor(dialogTag: String, fragment: Fragment, initialDialogState: Bundle? = null) : this(
+        dialogTag,
+        fragment.childFragmentManager,
+        fragment,
+        initialDialogState
+    )
+
+    @JvmOverloads
+    constructor(dialogTag: String, activity: FragmentActivity, initialDialogState: Bundle? = null) : this(
+        dialogTag,
+        activity.supportFragmentManager,
+        activity,
+        initialDialogState
+    )
 
     @Override
     override fun setupNonRetainableSettings(dialog: DateTimePickerDialog) {
@@ -41,11 +56,6 @@ class DateTimePickerDialogBuilder @JvmOverloads constructor(
     @Override
     override fun initializeNewDialog(): DateTimePickerDialog {
         return DateTimePickerDialog.newInstance()
-    }
-
-    @Override
-    override fun withInitialDialogState(savedState: Bundle?): DateTimePickerDialogBuilder {
-        return super.withInitialDialogState(savedState) as DateTimePickerDialogBuilder
     }
 
     @Override

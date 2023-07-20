@@ -1,6 +1,8 @@
 package com.github.rooneyandshadows.lightbulb.dialogs.dialog_custom
 
 import android.os.Bundle
+import androidx.fragment.app.Fragment
+import androidx.fragment.app.FragmentActivity
 import androidx.fragment.app.FragmentManager
 import androidx.lifecycle.LifecycleOwner
 import com.github.rooneyandshadows.lightbulb.dialogs.base.BaseDialogBuilder
@@ -12,13 +14,46 @@ import com.github.rooneyandshadows.lightbulb.dialogs.dialog_custom.CustomDialog.
 
 @Suppress("unused")
 class CustomDialogBuilder<DialogType : CustomDialog> @JvmOverloads constructor(
-    lifecycleOwner: LifecycleOwner? = null,
-    dialogParentFragmentManager: FragmentManager,
     dialogTag: String,
+    dialogParentFragmentManager: FragmentManager,
     private val dialogInitializer: CustomDialogInitializer<DialogType>,
-    private val dialogInflater: CustomDialogInflater? = null
-) : BaseDialogBuilder<DialogType>(lifecycleOwner, dialogParentFragmentManager, dialogTag) {
+    private val dialogInflater: CustomDialogInflater? = null,
+    dialogLifecycleOwner: LifecycleOwner? = null,
+    initialDialogState: Bundle? = null,
+) : BaseDialogBuilder<DialogType>(dialogTag, dialogParentFragmentManager, dialogLifecycleOwner, initialDialogState) {
     private var loading = false
+
+    @JvmOverloads
+    constructor(
+        dialogTag: String,
+        fragment: Fragment,
+        dialogInitializer: CustomDialogInitializer<DialogType>,
+        dialogInflater: CustomDialogInflater? = null,
+        initialDialogState: Bundle? = null
+    ) : this(
+        dialogTag,
+        fragment.childFragmentManager,
+        dialogInitializer,
+        dialogInflater,
+        fragment,
+        initialDialogState
+    )
+
+    @JvmOverloads
+    constructor(
+        dialogTag: String,
+        activity: FragmentActivity,
+        dialogInitializer: CustomDialogInitializer<DialogType>,
+        dialogInflater: CustomDialogInflater? = null,
+        initialDialogState: Bundle? = null
+    ) : this(
+        dialogTag,
+        activity.supportFragmentManager,
+        dialogInitializer,
+        dialogInflater,
+        activity,
+        initialDialogState
+    )
 
     @Override
     override fun setupNonRetainableSettings(dialog: DialogType) {
@@ -37,11 +72,6 @@ class CustomDialogBuilder<DialogType : CustomDialog> @JvmOverloads constructor(
     @Override
     override fun initializeNewDialog(): DialogType {
         return dialogInitializer.initialize()
-    }
-
-    @Override
-    override fun withInitialDialogState(savedState: Bundle?): CustomDialogBuilder<DialogType> {
-        return super.withInitialDialogState(savedState) as CustomDialogBuilder<DialogType>
     }
 
     @Override

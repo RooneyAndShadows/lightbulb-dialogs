@@ -74,17 +74,15 @@ class FragmentDialogCustom : BaseFragmentWithViewBinding<FragmentDemoDialogCusto
     @SuppressLint("InflateParams")
     private fun createDialog(dialogSavedState: Bundle?) {
         customDialog = CustomDialogBuilder(
-            this,
-            childFragmentManager,
             DIALOG_TAG,
-            { CustomDialog.newCustomDialogInstance() }
-        ) { _, layoutInflater ->
-            layoutInflater.inflate(R.layout.dialog_demo_custom, null)
-        }.apply {
+            this,
+            { CustomDialog.newCustomDialogInstance() },
+            { _: CustomDialog, layoutInflater: LayoutInflater -> layoutInflater.inflate(R.layout.dialog_demo_custom, null) },
+            dialogSavedState
+        ).apply {
             val ctx = requireContext()
             val title = getDefaultDialogTitle(ctx)
             val message = getDefaultDialogMessage(ctx)
-            withInitialDialogState(dialogSavedState)
             withTitle(title)
             withMessage(message)
             withButton(getDefaultNegativeButton(ctx))

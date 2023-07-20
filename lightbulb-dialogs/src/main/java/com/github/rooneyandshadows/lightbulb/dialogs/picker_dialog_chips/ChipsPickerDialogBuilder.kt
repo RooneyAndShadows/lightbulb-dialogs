@@ -1,6 +1,8 @@
 package com.github.rooneyandshadows.lightbulb.dialogs.picker_dialog_chips
 
 import android.os.Bundle
+import androidx.fragment.app.Fragment
+import androidx.fragment.app.FragmentActivity
 import androidx.lifecycle.LifecycleOwner
 import com.github.rooneyandshadows.lightbulb.dialogs.base.BasePickerDialogFragment.SelectionChangedListener
 import androidx.fragment.app.FragmentManager
@@ -11,10 +13,11 @@ import com.github.rooneyandshadows.lightbulb.dialogs.picker_dialog_chips.ChipsFi
 
 @Suppress("unused")
 class ChipsPickerDialogBuilder @JvmOverloads constructor(
-    lifecycleOwner: LifecycleOwner? = null,
-    manager: FragmentManager,
     dialogTag: String,
-) : BaseDialogBuilder<ChipsPickerDialog>(lifecycleOwner, manager, dialogTag) {
+    dialogParentFragmentManager: FragmentManager,
+    dialogLifecycleOwner: LifecycleOwner? = null,
+    initialDialogState: Bundle? = null
+) : BaseDialogBuilder<ChipsPickerDialog>(dialogTag, dialogParentFragmentManager, dialogLifecycleOwner, initialDialogState) {
     private var isFilterable: Boolean = true
     private var allowOptionAddition: Boolean = true
     private var maxRows: Int? = null
@@ -22,6 +25,22 @@ class ChipsPickerDialogBuilder @JvmOverloads constructor(
     private var changedCallback: SelectionChangedListener<IntArray>? = null
     private var onChipCreatedListener: OnOptionCreatedListener? = null
     private var selection: IntArray? = null
+
+    @JvmOverloads
+    constructor(dialogTag: String, fragment: Fragment, initialDialogState: Bundle? = null) : this(
+        dialogTag,
+        fragment.childFragmentManager,
+        fragment,
+        initialDialogState
+    )
+
+    @JvmOverloads
+    constructor(dialogTag: String, activity: FragmentActivity, initialDialogState: Bundle? = null) : this(
+        dialogTag,
+        activity.supportFragmentManager,
+        activity,
+        initialDialogState
+    )
 
     @Override
     override fun setupNonRetainableSettings(dialog: ChipsPickerDialog) {
@@ -45,11 +64,6 @@ class ChipsPickerDialogBuilder @JvmOverloads constructor(
     @Override
     override fun initializeNewDialog(): ChipsPickerDialog {
         return ChipsPickerDialog.newInstance()
-    }
-
-    @Override
-    override fun withInitialDialogState(savedState: Bundle?): ChipsPickerDialogBuilder {
-        return super.withInitialDialogState(savedState) as ChipsPickerDialogBuilder
     }
 
     @Override

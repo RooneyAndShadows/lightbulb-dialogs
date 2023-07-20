@@ -7,14 +7,21 @@ import com.github.rooneyandshadows.lightbulb.application.fragment.base.BaseFragm
 import com.github.rooneyandshadows.lightbulb.application.fragment.cofiguration.ActionBarConfiguration
 import com.github.rooneyandshadows.lightbulb.commons.utils.BundleUtils
 import com.github.rooneyandshadows.lightbulb.commons.utils.ResourceUtils
-import com.github.rooneyandshadows.lightbulb.dialogs.base.BasePickerDialogFragment
 import com.github.rooneyandshadows.lightbulb.dialogs.base.BasePickerDialogFragment.Buttons.Companion.cancelSelectionButton
 import com.github.rooneyandshadows.lightbulb.dialogs.base.BasePickerDialogFragment.Buttons.Companion.confirmSelectionButton
-import com.github.rooneyandshadows.lightbulb.dialogs.base.internal.DialogButton
 import com.github.rooneyandshadows.lightbulb.dialogs.picker_dialog_chips.ChipsPickerDialog
 import com.github.rooneyandshadows.lightbulb.dialogs.picker_dialog_chips.ChipsPickerDialogBuilder
-import com.github.rooneyandshadows.lightbulb.dialogsdemo.*
+import com.github.rooneyandshadows.lightbulb.dialogsdemo.R
 import com.github.rooneyandshadows.lightbulb.dialogsdemo.databinding.FragmentDemoDialogChipsPickerBinding
+import com.github.rooneyandshadows.lightbulb.dialogsdemo.generateChips
+import com.github.rooneyandshadows.lightbulb.dialogsdemo.getDefaultDialogMessage
+import com.github.rooneyandshadows.lightbulb.dialogsdemo.getDefaultDialogTitle
+import com.github.rooneyandshadows.lightbulb.dialogsdemo.getDefaultNegativeButtonClickListener
+import com.github.rooneyandshadows.lightbulb.dialogsdemo.getDefaultNegativeButtonText
+import com.github.rooneyandshadows.lightbulb.dialogsdemo.getDefaultPositiveButtonClickListener
+import com.github.rooneyandshadows.lightbulb.dialogsdemo.getDefaultPositiveButtonText
+import com.github.rooneyandshadows.lightbulb.dialogsdemo.getDefaultSelectionChangedListener
+import com.github.rooneyandshadows.lightbulb.dialogsdemo.getHomeDrawable
 
 @FragmentScreen(screenName = "ChipsPicker", screenGroup = "Demo")
 @FragmentConfiguration(layoutName = "fragment_demo_dialog_chips_picker", hasLeftDrawer = true)
@@ -73,7 +80,7 @@ class FragmentDialogChipsPicker : BaseFragmentWithViewBinding<FragmentDemoDialog
     }
 
     private fun createDialog(dialogSavedState: Bundle?) {
-        chipsPickerDialog = ChipsPickerDialogBuilder(this, childFragmentManager, DIALOG_TAG).apply {
+        chipsPickerDialog = ChipsPickerDialogBuilder(DIALOG_TAG, this, dialogSavedState).apply {
             val ctx = requireContext()
             val title = getDefaultDialogTitle(ctx)
             val message = getDefaultDialogMessage(ctx)
@@ -82,7 +89,6 @@ class FragmentDialogChipsPicker : BaseFragmentWithViewBinding<FragmentDemoDialog
             val positiveButtonClickListener = getDefaultPositiveButtonClickListener()
             val negativeButtonClickListener = getDefaultNegativeButtonClickListener()
             val onSelectionChanged = getDefaultSelectionChangedListener<IntArray>(ctx)
-            withInitialDialogState(dialogSavedState)
             withTitle(title)
             withMessage(message)
             withButton(cancelSelectionButton(negativeButtonText, positiveButtonClickListener))

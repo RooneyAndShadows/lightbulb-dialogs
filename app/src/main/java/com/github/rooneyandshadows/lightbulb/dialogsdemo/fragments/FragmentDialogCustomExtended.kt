@@ -2,18 +2,14 @@ package com.github.rooneyandshadows.lightbulb.dialogsdemo.fragments
 
 import android.annotation.SuppressLint
 import android.os.Bundle
-import android.view.LayoutInflater
-import android.view.View
 import com.github.rooneyandshadows.lightbulb.annotation_processors.annotations.FragmentConfiguration
 import com.github.rooneyandshadows.lightbulb.annotation_processors.annotations.FragmentScreen
 import com.github.rooneyandshadows.lightbulb.application.fragment.base.BaseFragmentWithViewBinding
 import com.github.rooneyandshadows.lightbulb.application.fragment.cofiguration.ActionBarConfiguration
 import com.github.rooneyandshadows.lightbulb.commons.utils.BundleUtils
 import com.github.rooneyandshadows.lightbulb.commons.utils.ResourceUtils
-import com.github.rooneyandshadows.lightbulb.dialogs.dialog_custom.CustomDialog
 import com.github.rooneyandshadows.lightbulb.dialogs.dialog_custom.CustomDialogBuilder
 import com.github.rooneyandshadows.lightbulb.dialogsdemo.*
-import com.github.rooneyandshadows.lightbulb.dialogsdemo.databinding.FragmentDemoDialogCustomBinding
 import com.github.rooneyandshadows.lightbulb.dialogsdemo.databinding.FragmentDemoDialogCustomExtendedBinding
 import com.github.rooneyandshadows.lightbulb.dialogsdemo.dialogs.DemoCustomDialog
 
@@ -76,15 +72,14 @@ class FragmentDialogCustomExtended : BaseFragmentWithViewBinding<FragmentDemoDia
     @SuppressLint("InflateParams")
     private fun createDialog(dialogSavedState: Bundle?) {
         customDialog = CustomDialogBuilder(
-            this,
-            childFragmentManager,
-            DIALOG_TAG,
-            { DemoCustomDialog.newInstance() }
+            dialogTag = DIALOG_TAG,
+            fragment = this,
+            dialogInitializer = { DemoCustomDialog.newInstance() },
+            initialDialogState = dialogSavedState
         ).apply {
             val ctx = requireContext()
             val title = getDefaultDialogTitle(ctx)
             val message = getDefaultDialogMessage(ctx)
-            withInitialDialogState(dialogSavedState)
             withTitle(title)
             withMessage(message)
             withButton(getDefaultNegativeButton(ctx))

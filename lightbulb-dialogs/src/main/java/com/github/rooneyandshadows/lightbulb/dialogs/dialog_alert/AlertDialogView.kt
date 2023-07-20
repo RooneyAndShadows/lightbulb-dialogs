@@ -18,7 +18,7 @@ import com.github.rooneyandshadows.lightbulb.dialogs.base.internal.DialogButton
 import com.github.rooneyandshadows.lightbulb.dialogs.base.internal.DialogTypes
 import com.github.rooneyandshadows.lightbulb.dialogs.base.internal.DialogTypes.*
 
-@Suppress("unused", "MemberVisibilityCanBePrivate", "UNUSED_PARAMETER")
+@Suppress("unused", "MemberVisibilityCanBePrivate")
 class AlertDialogView @JvmOverloads constructor(
     context: Context,
     attrs: AttributeSet? = null,
@@ -61,7 +61,7 @@ class AlertDialogView @JvmOverloads constructor(
     }
 
     fun initializeDialog() {
-        dialog = AlertDialogBuilder(null, fragmentManager, dialogTag).apply {
+        dialog = AlertDialogBuilder(dialogTag, fragmentManager).apply {
             dialogTitle?.apply { withTitle(this) }
             dialogMessage?.apply { withMessage(this) }
             dialogPositiveButtonText?.apply {

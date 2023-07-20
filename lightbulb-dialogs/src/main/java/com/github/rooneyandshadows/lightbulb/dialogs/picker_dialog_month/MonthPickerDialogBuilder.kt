@@ -1,6 +1,8 @@
 package com.github.rooneyandshadows.lightbulb.dialogs.picker_dialog_month
 
 import android.os.Bundle
+import androidx.fragment.app.Fragment
+import androidx.fragment.app.FragmentActivity
 import androidx.fragment.app.FragmentManager
 import androidx.lifecycle.LifecycleOwner
 import com.github.rooneyandshadows.lightbulb.dialogs.base.BaseDialogBuilder
@@ -11,10 +13,11 @@ import com.github.rooneyandshadows.lightbulb.dialogs.picker_dialog_month.MonthPi
 
 @Suppress("unused")
 class MonthPickerDialogBuilder @JvmOverloads constructor(
-    lifecycleOwner: LifecycleOwner? = null,
-    manager: FragmentManager,
     dialogTag: String,
-) : BaseDialogBuilder<MonthPickerDialog>(lifecycleOwner, manager, dialogTag) {
+    dialogParentFragmentManager: FragmentManager,
+    dialogLifecycleOwner: LifecycleOwner? = null,
+    initialDialogState: Bundle? = null
+) : BaseDialogBuilder<MonthPickerDialog>(dialogTag, dialogParentFragmentManager, dialogLifecycleOwner, initialDialogState) {
     private var monthSetListener: SelectionChangedListener<Month>? = null
     private var disabledMonths: MutableList<Month> = mutableListOf()
     private var enabledMonths: MutableList<Month> = mutableListOf()
@@ -22,6 +25,22 @@ class MonthPickerDialogBuilder @JvmOverloads constructor(
     private var initialSelection: Month? = null
     private var minYear = 1970
     private var maxYear = 2100
+
+    @JvmOverloads
+    constructor(dialogTag: String, fragment: Fragment, initialDialogState: Bundle? = null) : this(
+        dialogTag,
+        fragment.childFragmentManager,
+        fragment,
+        initialDialogState
+    )
+
+    @JvmOverloads
+    constructor(dialogTag: String, activity: FragmentActivity, initialDialogState: Bundle? = null) : this(
+        dialogTag,
+        activity.supportFragmentManager,
+        activity,
+        initialDialogState
+    )
 
     @Override
     override fun setupNonRetainableSettings(dialog: MonthPickerDialog) {
@@ -45,11 +64,6 @@ class MonthPickerDialogBuilder @JvmOverloads constructor(
     @Override
     override fun initializeNewDialog(): MonthPickerDialog {
         return MonthPickerDialog.newInstance()
-    }
-
-    @Override
-    override fun withInitialDialogState(savedState: Bundle?): MonthPickerDialogBuilder {
-        return super.withInitialDialogState(savedState) as MonthPickerDialogBuilder
     }
 
     @Override

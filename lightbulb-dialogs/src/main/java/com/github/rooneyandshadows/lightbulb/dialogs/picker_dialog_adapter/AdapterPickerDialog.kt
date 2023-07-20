@@ -25,16 +25,13 @@ import java.util.*
 @JvmSuppressWildcards
 abstract class AdapterPickerDialog<ItemType : EasyAdapterDataModel>
     : BasePickerDialogFragment<IntArray>(AdapterPickerDialogSelection(null, null)) {
-    private val internalAdapter: DialogPickerAdapter<ItemType> by lazy {
-        return@lazy adapterCreator.createAdapter()
-    }
+    private var internalAdapter: DialogPickerAdapter<ItemType>? = null
     protected lateinit var recyclerView: DialogRecyclerView
         private set
     var itemDecoration: ItemDecoration? = null
         private set
-    open val adapter: DialogPickerAdapter<ItemType>
+    open val adapter: DialogPickerAdapter<ItemType>?
         get() = internalAdapter
-    protected abstract val adapterCreator: AdapterCreator<ItemType>
 
     companion object {
         private const val ADAPTER_STATE_TAG = "ADAPTER_STATE_TAG"
@@ -84,10 +81,10 @@ abstract class AdapterPickerDialog<ItemType : EasyAdapterDataModel>
     @Override
     override fun onSelectionChange(newSelection: IntArray?) {
         val selection = newSelection ?: intArrayOf()
-        with(internalAdapter.collection) {
+        internalAdapter?.collection?.apply {
             val currentAdapterSelection = selectedPositionsAsArray
             val needAdapterSync = !selection.contentEquals(currentAdapterSelection)
-            if (!needAdapterSync) return@with
+            if (!needAdapterSync) return@apply
             selectPositions(selection, newState = true, incremental = false)
         }
     }
@@ -95,7 +92,7 @@ abstract class AdapterPickerDialog<ItemType : EasyAdapterDataModel>
     @Override
     override fun doOnViewStateRestored(savedInstanceState: Bundle?) {
         super.doOnViewStateRestored(savedInstanceState)
-        with(internalAdapter.collection) {
+        internalAdapter?.collection?.apply {
             addOnSelectionChangeListener(object : SelectionChangeListener {
                 override fun onChanged(newSelection: IntArray?) {
                     if (isDialogShown) dialogSelection.setDraftSelection(newSelection)
@@ -169,7 +166,7 @@ abstract class AdapterPickerDialog<ItemType : EasyAdapterDataModel>
     override fun doOnSaveDialogProperties(outState: Bundle) {
         super.doOnSaveDialogProperties(outState)
         outState.apply {
-            putParcelable(ADAPTER_STATE_TAG, internalAdapter.saveAdapterState())
+            putParcelable(ADAPTER_STATE_TAG, internalAdapter?.saveAdapterState())
         }
     }
 
@@ -178,26 +175,30 @@ abstract class AdapterPickerDialog<ItemType : EasyAdapterDataModel>
         super.doOnRestoreDialogProperties(savedState)
         savedState.apply {
             val adapterState = BundleUtils.getParcelable(ADAPTER_STATE_TAG, this, Bundle::class.java)!!
-            internalAdapter.restoreAdapterState(adapterState)
+            internalAdapter?.restoreAdapterState(adapterState)
         }
     }
 
     @Override
     override fun setSelection(newSelection: IntArray?) {
         super.setSelection(newSelection)
-        with(internalAdapter.collection) {
+        internalAdapter?.collection?.apply {
             val selection = newSelection ?: intArrayOf()
             selectPositions(positions = selection, newState = true, incremental = false)
         }
     }
 
+    fun setAdapter(adapter: DialogPickerAdapter<ItemType>) {
+        internalAdapter = adapter
+    }
+
     fun setData(data: List<ItemType>?) {
-        internalAdapter.collection.set(data ?: mutableListOf())
+        internalAdapter?.collection?.set(data ?: mutableListOf())
     }
 
     fun selectItem(item: ItemType?) {
-        if (item == null) return
-        val position = internalAdapter.collection.getPosition(item)
+        if (internalAdapter == null || item == null) return
+        val position = internalAdapter!!.collection.getPosition(item)
         if (position != -1) setSelection(intArrayOf(position))
     }
 
@@ -219,9 +220,5 @@ abstract class AdapterPickerDialog<ItemType : EasyAdapterDataModel>
                 removeItemDecorationAt(0)
             }
         }
-    }
-
-    interface AdapterCreator<ItemType : EasyAdapterDataModel> {
-        fun createAdapter(): DialogPickerAdapter<ItemType>
     }
 }

@@ -1,6 +1,8 @@
 package com.github.rooneyandshadows.lightbulb.dialogs.picker_dialog_adapter
 
 import android.os.Bundle
+import androidx.fragment.app.Fragment
+import androidx.fragment.app.FragmentActivity
 import androidx.fragment.app.FragmentManager
 import androidx.lifecycle.LifecycleOwner
 import androidx.recyclerview.widget.RecyclerView
@@ -10,16 +12,45 @@ import com.github.rooneyandshadows.lightbulb.dialogs.base.internal.*
 import com.github.rooneyandshadows.lightbulb.dialogs.base.internal.callbacks.*
 import com.github.rooneyandshadows.lightbulb.recycleradapters.abstraction.data.EasyAdapterDataModel
 
-@Suppress("UNCHECKED_CAST", "unused")
+@Suppress("unused")
 class AdapterPickerDialogBuilder<DialogType : AdapterPickerDialog<out EasyAdapterDataModel>> @JvmOverloads constructor(
-    lifecycleOwner: LifecycleOwner? = null,
-    manager: FragmentManager,
     dialogTag: String,
+    dialogParentFragmentManager: FragmentManager,
     private val dialogInitializer: AdapterPickerDialogInitializer<DialogType>,
-) : BaseDialogBuilder<DialogType>(lifecycleOwner, manager, dialogTag) {
+    dialogLifecycleOwner: LifecycleOwner? = null,
+    initialDialogState: Bundle? = null
+) : BaseDialogBuilder<DialogType>(dialogTag, dialogParentFragmentManager, dialogLifecycleOwner, initialDialogState) {
     private var changedCallback: SelectionChangedListener<IntArray>? = null
     private var itemDecoration: RecyclerView.ItemDecoration? = null
     private var selection: IntArray? = null
+
+    @JvmOverloads
+    constructor(
+        dialogTag: String,
+        fragment: Fragment,
+        dialogInitializer: AdapterPickerDialogInitializer<DialogType>,
+        initialDialogState: Bundle? = null
+    ) : this(
+        dialogTag,
+        fragment.childFragmentManager,
+        dialogInitializer,
+        fragment,
+        initialDialogState
+    )
+
+    @JvmOverloads
+    constructor(
+        dialogTag: String,
+        activity: FragmentActivity,
+        dialogInitializer: AdapterPickerDialogInitializer<DialogType>,
+        initialDialogState: Bundle? = null
+    ) : this(
+        dialogTag,
+        activity.supportFragmentManager,
+        dialogInitializer,
+        activity,
+        initialDialogState
+    )
 
     @Override
     override fun setupNonRetainableSettings(dialog: DialogType) {
@@ -39,11 +70,6 @@ class AdapterPickerDialogBuilder<DialogType : AdapterPickerDialog<out EasyAdapte
     @Override
     override fun initializeNewDialog(): DialogType {
         return dialogInitializer.initialize()
-    }
-
-    @Override
-    override fun withInitialDialogState(savedState: Bundle?): AdapterPickerDialogBuilder<DialogType> {
-        return super.withInitialDialogState(savedState) as AdapterPickerDialogBuilder<DialogType>
     }
 
     @Override
@@ -111,7 +137,7 @@ class AdapterPickerDialogBuilder<DialogType : AdapterPickerDialog<out EasyAdapte
         return this
     }
 
-    interface AdapterPickerDialogInitializer<DialogType : AdapterPickerDialog<out EasyAdapterDataModel>> {
+    fun interface AdapterPickerDialogInitializer<DialogType : AdapterPickerDialog<out EasyAdapterDataModel>> {
         fun initialize(): DialogType
     }
 }

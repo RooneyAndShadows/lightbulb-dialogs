@@ -1,6 +1,8 @@
 package com.github.rooneyandshadows.lightbulb.dialogs.dialog_loading
 
 import android.os.Bundle
+import androidx.fragment.app.Fragment
+import androidx.fragment.app.FragmentActivity
 import androidx.fragment.app.FragmentManager
 import androidx.lifecycle.LifecycleOwner
 import com.github.rooneyandshadows.lightbulb.dialogs.base.BaseDialogBuilder
@@ -10,10 +12,28 @@ import com.github.rooneyandshadows.lightbulb.dialogs.base.internal.DialogTypes
 import com.github.rooneyandshadows.lightbulb.dialogs.base.internal.callbacks.*
 
 class LoadingDialogBuilder @JvmOverloads constructor(
-    lifecycleOwner: LifecycleOwner? = null,
-    dialogParentFragmentManager: FragmentManager,
     dialogTag: String,
-) : BaseDialogBuilder<LoadingDialog>(lifecycleOwner, dialogParentFragmentManager, dialogTag) {
+    dialogParentFragmentManager: FragmentManager,
+    dialogLifecycleOwner: LifecycleOwner? = null,
+    initialDialogState: Bundle? = null
+) : BaseDialogBuilder<LoadingDialog>(dialogTag, dialogParentFragmentManager, dialogLifecycleOwner, initialDialogState) {
+
+    @JvmOverloads
+    constructor(dialogTag: String, fragment: Fragment, initialDialogState: Bundle? = null) : this(
+        dialogTag,
+        fragment.childFragmentManager,
+        fragment,
+        initialDialogState
+    )
+
+    @JvmOverloads
+    constructor(dialogTag: String, activity: FragmentActivity, initialDialogState: Bundle? = null) : this(
+        dialogTag,
+        activity.supportFragmentManager,
+        activity,
+        initialDialogState
+    )
+
     @Override
     override fun setupNonRetainableSettings(dialog: LoadingDialog) {
     }
@@ -25,11 +45,6 @@ class LoadingDialogBuilder @JvmOverloads constructor(
     @Override
     override fun initializeNewDialog(): LoadingDialog {
         return LoadingDialog.newInstance()
-    }
-
-    @Override
-    override fun withInitialDialogState(savedState: Bundle?): LoadingDialogBuilder {
-        return super.withInitialDialogState(savedState) as LoadingDialogBuilder
     }
 
     @Override

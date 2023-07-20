@@ -76,7 +76,11 @@ class FragmentDialogIconPicker : BaseFragmentWithViewBinding<FragmentDemoDialogI
 
 
     private fun createDialog(dialogSavedState: Bundle?) {
-        iconPickerDialog = IconPickerDialogBuilder(this, childFragmentManager, DIALOG_TAG).apply {
+        iconPickerDialog = IconPickerDialogBuilder(
+            DIALOG_TAG,
+            this,
+            dialogSavedState,
+        ).apply {
             val ctx = requireContext()
             val title = getDefaultDialogTitle(ctx)
             val message = getDefaultDialogMessage(ctx)
@@ -85,7 +89,6 @@ class FragmentDialogIconPicker : BaseFragmentWithViewBinding<FragmentDemoDialogI
             val positiveButtonClickListener = getDefaultPositiveButtonClickListener()
             val negativeButtonClickListener = getDefaultNegativeButtonClickListener()
             val onSelectionChanged = getDefaultSelectionChangedListener<IntArray>(ctx)
-            withInitialDialogState(dialogSavedState)
             withTitle(title)
             withMessage(message)
             withButton(cancelSelectionButton(positiveButtonText, negativeButtonClickListener))

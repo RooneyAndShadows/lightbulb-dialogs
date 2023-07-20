@@ -7,15 +7,19 @@ import com.github.rooneyandshadows.lightbulb.application.fragment.base.BaseFragm
 import com.github.rooneyandshadows.lightbulb.application.fragment.cofiguration.ActionBarConfiguration
 import com.github.rooneyandshadows.lightbulb.commons.utils.BundleUtils
 import com.github.rooneyandshadows.lightbulb.commons.utils.ResourceUtils
-import com.github.rooneyandshadows.lightbulb.dialogs.base.BasePickerDialogFragment
 import com.github.rooneyandshadows.lightbulb.dialogs.base.BasePickerDialogFragment.Buttons.Companion.cancelSelectionButton
 import com.github.rooneyandshadows.lightbulb.dialogs.base.BasePickerDialogFragment.Buttons.Companion.confirmSelectionButton
-import com.github.rooneyandshadows.lightbulb.dialogs.base.internal.DialogButton
 import com.github.rooneyandshadows.lightbulb.dialogs.picker_dialog_month.MonthPickerDialog
 import com.github.rooneyandshadows.lightbulb.dialogs.picker_dialog_month.MonthPickerDialog.Month
 import com.github.rooneyandshadows.lightbulb.dialogs.picker_dialog_month.MonthPickerDialogBuilder
-import com.github.rooneyandshadows.lightbulb.dialogsdemo.*
+import com.github.rooneyandshadows.lightbulb.dialogsdemo.R
 import com.github.rooneyandshadows.lightbulb.dialogsdemo.databinding.FragmentDemoDialogMonthPickerBinding
+import com.github.rooneyandshadows.lightbulb.dialogsdemo.getDefaultNegativeButtonClickListener
+import com.github.rooneyandshadows.lightbulb.dialogsdemo.getDefaultNegativeButtonText
+import com.github.rooneyandshadows.lightbulb.dialogsdemo.getDefaultPositiveButtonClickListener
+import com.github.rooneyandshadows.lightbulb.dialogsdemo.getDefaultPositiveButtonText
+import com.github.rooneyandshadows.lightbulb.dialogsdemo.getDefaultSelectionChangedListener
+import com.github.rooneyandshadows.lightbulb.dialogsdemo.getHomeDrawable
 
 @FragmentScreen(screenName = "Month", screenGroup = "Demo")
 @FragmentConfiguration(layoutName = "fragment_demo_dialog_month_picker", hasLeftDrawer = true)
@@ -78,8 +82,11 @@ class FragmentDialogMonthPicker : BaseFragmentWithViewBinding<FragmentDemoDialog
         val positiveButtonClickListener = getDefaultPositiveButtonClickListener()
         val negativeButtonClickListener = getDefaultNegativeButtonClickListener()
         val onSelectionChanged = getDefaultSelectionChangedListener<Month>(ctx)
-        monthPickerDialog = MonthPickerDialogBuilder(this, childFragmentManager, DIALOG_TAG).apply {
-            withInitialDialogState(dialogSavedState)
+        monthPickerDialog = MonthPickerDialogBuilder(
+            DIALOG_TAG,
+            this,
+            dialogSavedState,
+        ).apply {
             withButton(cancelSelectionButton(negativeButtonText, negativeButtonClickListener))
             withButton(confirmSelectionButton(positiveButtonText, positiveButtonClickListener))
             withOnDateSelectedEvent(onSelectionChanged)

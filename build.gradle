@@ -15,7 +15,7 @@ buildscript {
                 lightbulb            : [
                         commons              : "[1.2.0,1.3.0[",
                         application          : "[1.4.0,1.5.0[",
-                        recycler_adapters    : "[2.0.0,2.1.0[",
+                        recycler_adapters    : "[2.0.5,2.1.0[",
                         textinputview        : "1.0.11",
                         calendars            : "[2.0.0,2.1.0[",
                         annotation_processors: "1.0.6-RC3"

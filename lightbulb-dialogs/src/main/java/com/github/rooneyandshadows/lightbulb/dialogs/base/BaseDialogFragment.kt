@@ -416,14 +416,14 @@ abstract class BaseDialogFragment : DialogFragment(), DefaultLifecycleObserver {
 
     fun saveDialogState(): Bundle {
         return Bundle().apply {
-            if (isDialogShown) putBoolean("IGNORE_MANUALLY_SAVED_STATE", true)
+            if (isDialogShown) putBoolean(BaseDialogBuilder.IGNORE_MANUALLY_SAVED_STATE, true)
             else saveDialogProperties(this)
         }
     }
 
     fun restoreDialogState(savedState: Bundle?) {
         savedState?.apply {
-            val ignoreManualRestore = getBoolean("IGNORE_MANUALLY_SAVED_STATE", false)
+            val ignoreManualRestore = getBoolean(BaseDialogBuilder.IGNORE_MANUALLY_SAVED_STATE, false)
             if (ignoreManualRestore) return@apply
             restoreDialogProperties(this)
         }
@@ -547,6 +547,7 @@ abstract class BaseDialogFragment : DialogFragment(), DefaultLifecycleObserver {
                 window.setLayout(WindowManager.LayoutParams.MATCH_PARENT, WindowManager.LayoutParams.MATCH_PARENT)
                 setupFullScreenDialog(window, dialogView)
             }
+
             NORMAL -> setupRegularDialog(regularDialogConstraints, window, dialogView, fgPadding)
             BOTTOM_SHEET -> {
                 window.setGravity(Gravity.BOTTOM)

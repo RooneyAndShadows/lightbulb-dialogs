@@ -76,7 +76,7 @@ class FragmentDialogColorPicker : BaseFragmentWithViewBinding<FragmentDemoDialog
     }
 
     private fun createDialog(dialogSavedState: Bundle?) {
-        colorPickerDialog = ColorPickerDialogBuilder(this, childFragmentManager, DIALOG_TAG).apply {
+        colorPickerDialog = ColorPickerDialogBuilder(DIALOG_TAG, this, dialogSavedState).apply {
             val ctx = requireContext()
             val title = getDefaultDialogTitle(ctx)
             val message = getDefaultDialogMessage(ctx)
@@ -85,7 +85,6 @@ class FragmentDialogColorPicker : BaseFragmentWithViewBinding<FragmentDemoDialog
             val positiveButtonClickListener = getDefaultPositiveButtonClickListener()
             val negativeButtonClickListener = getDefaultNegativeButtonClickListener()
             val onSelectionChanged = getDefaultSelectionChangedListener<IntArray>(ctx)
-            withInitialDialogState(dialogSavedState)
             withTitle(title)
             withMessage(message)
             withButton(cancelSelectionButton(negativeButtonText, negativeButtonClickListener))

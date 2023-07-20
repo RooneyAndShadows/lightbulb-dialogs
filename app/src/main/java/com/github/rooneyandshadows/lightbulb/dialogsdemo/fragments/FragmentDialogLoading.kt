@@ -67,19 +67,21 @@ class FragmentDialogLoading : BaseFragmentWithViewBinding<FragmentDemoDialogLoad
     }
 
     private fun createDialog(dialogSavedState: Bundle?) {
-        loadingDialog = LoadingDialogBuilder(this, childFragmentManager, DIALOG_TAG).apply {
+        loadingDialog = LoadingDialogBuilder(
+            DIALOG_TAG,
+            this,
+            dialogSavedState,
+        ).apply {
             val ctx = requireContext()
             val title = getDefaultDialogTitle(ctx)
             val message = getDefaultDialogMessage(ctx)
-            val onShowListener =
-                DialogShowListener { dialogFragment ->
-                    requireView().postDelayed({
-                        dialogFragment.dismiss()
-                        val toastMessage = ResourceUtils.getPhrase(ctx, R.string.demo_action_completed_text)
-                        InteractionUtils.showMessage(ctx, toastMessage)
-                    }, 3000)
-                }
-            withInitialDialogState(dialogSavedState)
+            val onShowListener = DialogShowListener { dialogFragment ->
+                requireView().postDelayed({
+                    dialogFragment.dismiss()
+                    val toastMessage = ResourceUtils.getPhrase(ctx, R.string.demo_action_completed_text)
+                    InteractionUtils.showMessage(ctx, toastMessage)
+                }, 3000)
+            }
             withTitle(title)
             withMessage(message)
             withOnShowListener(onShowListener)

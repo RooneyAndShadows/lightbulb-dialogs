@@ -30,12 +30,6 @@ class IconPickerDialog : AdapterPickerDialog<IconModel>() {
         set(value) {}
     override val adapter: IconPickerAdapter
         get() = super.adapter as IconPickerAdapter
-    override val adapterCreator: AdapterCreator<IconModel>
-        get() = object : AdapterCreator<IconModel> {
-            override fun createAdapter(): IconPickerAdapter {
-                return IconPickerAdapter(SELECT_SINGLE)
-            }
-        }
 
     companion object {
         private const val LAST_VISIBLE_ITEM_KEY = "LAST_VISIBLE_ITEM_KEY"
@@ -43,6 +37,10 @@ class IconPickerDialog : AdapterPickerDialog<IconModel>() {
         fun newInstance(): IconPickerDialog {
             return IconPickerDialog()
         }
+    }
+
+    init {
+        setAdapter(IconPickerAdapter(SELECT_SINGLE))
     }
 
     @Override

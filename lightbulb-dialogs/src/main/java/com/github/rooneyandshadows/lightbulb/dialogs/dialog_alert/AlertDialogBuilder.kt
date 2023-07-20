@@ -1,6 +1,8 @@
 package com.github.rooneyandshadows.lightbulb.dialogs.dialog_alert
 
 import android.os.Bundle
+import androidx.fragment.app.Fragment
+import androidx.fragment.app.FragmentActivity
 import androidx.fragment.app.FragmentManager
 import androidx.lifecycle.LifecycleOwner
 import com.github.rooneyandshadows.lightbulb.dialogs.base.BaseDialogBuilder
@@ -10,14 +12,28 @@ import com.github.rooneyandshadows.lightbulb.dialogs.base.internal.DialogTypes
 import com.github.rooneyandshadows.lightbulb.dialogs.base.internal.callbacks.*
 
 class AlertDialogBuilder @JvmOverloads constructor(
-    lifecycleOwner: LifecycleOwner? = null,
-    dialogParentFragmentManager: FragmentManager,
     dialogTag: String,
-) : BaseDialogBuilder<AlertDialog>(
-    lifecycleOwner,
-    dialogParentFragmentManager,
-    dialogTag
-) {
+    dialogParentFragmentManager: FragmentManager,
+    dialogLifecycleOwner: LifecycleOwner? = null,
+    initialDialogState: Bundle? = null
+) : BaseDialogBuilder<AlertDialog>(dialogTag, dialogParentFragmentManager, dialogLifecycleOwner, initialDialogState) {
+
+    @JvmOverloads
+    constructor(dialogTag: String, fragment: Fragment, initialDialogState: Bundle? = null) : this(
+        dialogTag,
+        fragment.childFragmentManager,
+        fragment,
+        initialDialogState
+    )
+
+    @JvmOverloads
+    constructor(dialogTag: String, activity: FragmentActivity, initialDialogState: Bundle? = null) : this(
+        dialogTag,
+        activity.supportFragmentManager,
+        activity,
+        initialDialogState
+    )
+
     @Override
     override fun setupNonRetainableSettings(dialog: AlertDialog) {
     }
@@ -29,11 +45,6 @@ class AlertDialogBuilder @JvmOverloads constructor(
     @Override
     override fun initializeNewDialog(): AlertDialog {
         return AlertDialog.newInstance()
-    }
-
-    @Override
-    override fun withInitialDialogState(savedState: Bundle?): AlertDialogBuilder {
-        return super.withInitialDialogState(savedState) as AlertDialogBuilder
     }
 
     @Override
