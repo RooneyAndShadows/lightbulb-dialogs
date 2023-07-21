@@ -10,10 +10,13 @@ import com.github.rooneyandshadows.lightbulb.commons.utils.ResourceUtils
 import com.github.rooneyandshadows.lightbulb.dialogs.base.BasePickerDialogFragment.Buttons.Companion.cancelSelectionButton
 import com.github.rooneyandshadows.lightbulb.dialogs.base.BasePickerDialogFragment.Buttons.Companion.confirmSelectionButton
 import com.github.rooneyandshadows.lightbulb.dialogs.picker_dialog_adapter.AdapterPickerDialogBuilder
-import com.github.rooneyandshadows.lightbulb.dialogs.picker_dialog_adapter.AdapterPickerDialogBuilder.AdapterPickerDialogInitializer
-import com.github.rooneyandshadows.lightbulb.dialogsdemo.*
+import com.github.rooneyandshadows.lightbulb.dialogsdemo.R
 import com.github.rooneyandshadows.lightbulb.dialogsdemo.databinding.FragmentDemoDialogAdapterPickerBinding
 import com.github.rooneyandshadows.lightbulb.dialogsdemo.dialogs.DemoSingleSelectionDialog
+import com.github.rooneyandshadows.lightbulb.dialogsdemo.getDefaultNegativeButtonClickListener
+import com.github.rooneyandshadows.lightbulb.dialogsdemo.getDefaultPositiveButtonClickListener
+import com.github.rooneyandshadows.lightbulb.dialogsdemo.getDefaultSelectionChangedListener
+import com.github.rooneyandshadows.lightbulb.dialogsdemo.getHomeDrawable
 import com.github.rooneyandshadows.lightbulb.dialogsdemo.models.DemoModel
 
 @FragmentScreen(screenName = "Adapter", screenGroup = "Demo")

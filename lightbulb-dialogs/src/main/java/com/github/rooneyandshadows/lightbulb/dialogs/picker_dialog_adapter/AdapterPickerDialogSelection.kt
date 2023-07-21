@@ -7,7 +7,10 @@ import java.util.*
 internal class AdapterPickerDialogSelection(current: IntArray?, draft: IntArray?) :
     BaseDialogSelection<IntArray>(current, draft) {
     override fun compareValues(v1: IntArray?, v2: IntArray?): Boolean {
-        return Arrays.equals(v1, v2)
+        if ((v1 == null) && (v2 == null)) return true
+        val first = v1 ?: intArrayOf()
+        val second = v2 ?: intArrayOf()
+        return first.contentEquals(second)
     }
 
     override fun hasCurrentSelection(): Boolean {
