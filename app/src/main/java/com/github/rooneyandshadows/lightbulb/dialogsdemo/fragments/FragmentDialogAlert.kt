@@ -70,9 +70,9 @@ class FragmentDialogAlert : BaseFragmentWithViewBinding<FragmentDemoDialogAlertB
 
     private fun createDialog(dialogSavedState: Bundle?) {
         alertDialog = AlertDialogBuilder(
-            DIALOG_TAG,
-            this,
-            dialogSavedState
+            dialogTag = DIALOG_TAG,
+            fragment = this,
+            initialDialogState = dialogSavedState
         ).apply {
             val ctx = requireContext()
             withTitle(getDefaultDialogTitle(ctx))
