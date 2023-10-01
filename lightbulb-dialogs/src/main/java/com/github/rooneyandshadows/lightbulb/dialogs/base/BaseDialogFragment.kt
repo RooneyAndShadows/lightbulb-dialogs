@@ -659,7 +659,7 @@ abstract class BaseDialogFragment : DialogFragment(), DefaultLifecycleObserver {
                 }
             })
             val gesture = GestureDetector(activity, object : GestureDetector.SimpleOnGestureListener() {
-                override fun onFling(e1: MotionEvent, e2: MotionEvent, velocityX: Float, velocityY: Float): Boolean {
+                override fun onFling(e1: MotionEvent?, e2: MotionEvent, velocityX: Float, velocityY: Float): Boolean {
                     if (velocityY > 2000) {
                         handlingFling[0] = true
                         setState(BottomSheetBehavior.STATE_COLLAPSED)
